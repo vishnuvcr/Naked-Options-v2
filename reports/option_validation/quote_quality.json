@@ -15,9 +15,9 @@
     "strangle": 0.6918367346938775
   },
   "skip_reason_counts": {
-    "MISSING_SAME_STRIKE_EXIT": 450,
+    "MISSING_SAME_STRIKE_EXIT": 449,
     "MISSING_ENTRY_BAR": 6,
     "MISSING_EXIT_BAR": 2,
-    "NO_ONE_STEP_OTM_STRIKES": 1
+    "NO_ONE_STEP_OTM_STRIKES": 2
   }
 }

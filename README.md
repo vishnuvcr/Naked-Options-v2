@@ -87,7 +87,7 @@ The static research status page has been deployed successfully through [Pages pu
 
 The original nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged. This separate user-approved validation tests next-session intraday ATM straddles and one-step OTM strangles filtered by development-only 5/20-session technical Logistic volatility-expansion probabilities. It is not a live-trading workflow.
 
-**Latest status:** INCONCLUSIVE_PARTIAL_OR_INCOMPLETE_DATA. **Git SHA:** 08c7663b8f8a1321ab2b23b5e9bba6dc088fd5d7. **Workflow:** https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38545503819.
+**Latest status:** INCONCLUSIVE_PARTIAL_OR_INCOMPLETE_DATA. **Git SHA:** 0d33e2e046a26e017f0100f75e28243753177cb7. **Workflow:** https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384.
 
 - [Validation plan](research/OPTION_BUYING_VALIDATION_PLAN.md)
 - [Option validation results](research/option-validation/RESULTS.md)

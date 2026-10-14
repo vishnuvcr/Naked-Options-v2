@@ -1,8 +1,8 @@
 # Option-buying validation results — OPT-BUY-1.0
 
-**Last updated UTC:** 2026-10-14T10:08:50.809817+00:00
+**Last updated UTC:** 2026-10-14T10:24:33.438409+00:00
 **Decision status:** INCONCLUSIVE_PARTIAL_OR_INCOMPLETE_DATA
-**Acquisition status:** PASS
+**Acquisition status:** PASS_CACHED
 
 This report does not treat volatility-classification accuracy as option profitability. The original NIFTY-PRED-1.0 study remains closed and unchanged. Raw Dhan option quote files are not published.
 
@@ -35,9 +35,9 @@ Primary costs are ₹10/order and 50 bps adverse slippage per premium side. The 
 
 ## Data quality and limitations
 
-- Requests planned / attempted / cached / failed: 686 / 490 / 196 / 0.
+- Requests planned / attempted / cached / failed: 686 / 0 / 686 / 0.
 - Quote coverage: {'straddle': 0.8397959183673469, 'strangle': 0.6918367346938775}. The data gate requires at least 80% coverage for both structures.
-- Skip counts: {'MISSING_SAME_STRIKE_EXIT': 450, 'MISSING_ENTRY_BAR': 6, 'MISSING_EXIT_BAR': 2, 'NO_ONE_STEP_OTM_STRIKES': 1}.
+- Skip counts: {'MISSING_SAME_STRIKE_EXIT': 449, 'MISSING_ENTRY_BAR': 6, 'MISSING_EXIT_BAR': 2, 'NO_ONE_STEP_OTM_STRIKES': 2}.
 - Conflicting duplicate groups dropped: 452; conflict rate among duplicate groups: 1.409%.
 - Rolling relative strikes are used only to follow fixed numeric strikes within one session. No overnight or multi-day option P&L is tested.
 - If quote coverage is below threshold, output is INCONCLUSIVE even if a paired comparison has a small p-value.
