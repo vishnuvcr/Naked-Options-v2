@@ -3,7 +3,7 @@
 **Research version:** NIFTY-PRED-1.0  
 **Scope:** Prediction only. No trading strategy design, optimization, or recommendation in this study.  
 **Started:** 2026-10-14  
-**Status:** Phase 5 is running under a bounded, auditable execution plan; first full model fits completed, but the results merge is being repaired.
+**Status:** NIFTY-PRED-1.0 is closed with accepted limitations. Follow-on OPT-BUY-1.0 is also closed: no tested option-buying candidate passed the data-quality and profitability gates.
 
 ## Repository audit
 
@@ -34,20 +34,14 @@ No model will be declared best from training fit, shuffled validation, price-lev
 
 ## Current summary
 
-- Repository bootstrap and protocol: complete for NIFTY-PRED-1.0; original repository was empty at audit.
-- Daily target data: Dhan cache verified with 4,901 rows (2007-01-02 to 2026-10-13), SHA-256 b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050. Weekend-dated bars are now warnings, not automatically removed.
-- Data-quality tests and feature matrix: passed on the latest inspected workflow steps; feature/test build is verified.
-- Model experiments: Actions run [#41](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38526229786) completed technical and global model fitting (278 technical and 210 global experiment records) but failed while merging because an empty error CSV was parsed. Per-run CSVs were not included in its artifact, so no model ranking is accepted. The corrected run [#45](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38527508857) includes safe empty-file handling, per-run artifact uploads, and a QLIKE correction; it is pending.
-- Known defect correction: benchmark-relative out-of-sample R-squared has been fixed on the phase-5 branch; that branch's corrected run must be the canonical result.
-- External inputs: seven public daily series were validated in run #41 (S&P 500, Nasdaq, Nikkei 225, Hang Seng, CBOE VIX, India VIX proxy, U.S. 10-year yield proxy). USD/INR, gold and WTI failed OHLC checks and were not used. Historical options, FII/DII, breadth, point-in-time constituents and news/sentiment data are not verified as acquired.
-- Independent tester report is available on `research/independent-tester`; it identified the partial-forward-window volatility-label defect. Phase 5/7 remain open until the developer fix passes CI and a corrected model run is independently rechecked.
-- Provisional ARIMA(1,0,0) metrics did not show statistically significant improvement over zero-return forecasts at 1/5/20 sessions (raw p = 0.492/0.935/0.842; loss-difference intervals include zero). These are not final until the corrected merge rerun reproduces the outputs and Holm-adjusted comparisons are available. No best model is declared yet.
+- **Original prediction study (NIFTY-PRED-1.0): CLOSED WITH SCOPE LIMITATIONS.** Its corrected canonical run is [#49](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38533512128); see [results](research/RESULTS.md), [phase status](research/PHASE_STATUS.md), and [scientific manuscript](research/MANUSCRIPT.md).
+- **Follow-on option-buying validation (OPT-BUY-1.0): CLOSED — NO-GO for tested candidates; broader hypothesis inconclusive.** The completed [run #11](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384) and independent review found strangle quote coverage of 69.18% (<80%), conflicting duplicate groups at 1.409% (>1%), and negative net daily P&L confidence intervals for all four candidates. No paper/live strategy is approved; details are in [the option-validation results](research/option-validation/RESULTS.md) and [tester report](research/option-validation/TESTER_REPORT.md).
+- Daily NIFTY data: 4,901 rows from 2007-01-02 to 2026-10-13; SHA-256 `b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050`.
+- Data gaps remain documented: historical options features, FII/DII, PCR, breadth, point-in-time constituents/corporate actions, and timestamped news were not comprehensively verified for the original prediction study. These gaps limit the scope of inference.
+- Statistical integrity: the original study found no robust return/direction edge after multiple-testing correction. The option-buying follow-on did not demonstrate profitable net option P&L after modeled costs.
+- Audit trail: [error log](research/ERROR_LOG.md), [experiment log](research/EXPERIMENT_LOG.md), [interaction log](research/INTERACTION_LOG.md), [frozen option validation plan](research/OPTION_BUYING_VALIDATION_PLAN.md), [independent tester](research/option-validation/TESTER_REPORT.md), and [developer disposition](research/option-validation/DEVELOPER_DISPOSITION.md).
 
-See [phase status](research/PHASE_STATUS.md) for the authoritative gate state.
-
-- [Run 45 results and evidence register](research/RESULTS.md)
-- [Independent tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/independent-tester/research/TESTER_REPORT.md)
-- [Developer correction branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/developer-review)
+The original prediction study and follow-on option-buying study are both closed for their stated protocols. Any further work should start a separately versioned research question and preregistered protocol rather than reopen failed gates or repeat parameter loops.
 
 
 ## Latest correction checkpoint — 2026-10-14
