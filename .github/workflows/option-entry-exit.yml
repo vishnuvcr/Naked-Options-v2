@@ -41,6 +41,14 @@ jobs:
       - run: pip install -r requirements-research.txt -r requirements-option-validation.txt
       - name: Test cost and lot-size helpers
         run: pytest -q research/option-entry-exit/test_entry_exit.py research/option-validation/test_backtest.py
+      - name: Acquire validated daily NIFTY target if cache is absent
+        env:
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+        run: |
+          if [ ! -s data/cache/nifty50_daily.csv ]; then
+            python scripts/acquire_data.py --start 2007-01-01 --end $(date -u +%F)
+          fi
+          test -s data/cache/nifty50_daily.csv
       - name: Acquire or reuse private option cache
         continue-on-error: true
         env:
