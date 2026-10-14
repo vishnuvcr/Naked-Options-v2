@@ -42,3 +42,5 @@ The nine-phase work is closed for the bounded prediction-only scope with accepte
 
 No live strategy is approved. The first experiment is intraday-only because rolling strike-relative option series do not establish stable multi-day contract identity.
 <!-- OPTION_VALIDATION_PHASE_END -->
+
+- OPT-BUY-4.0 catalogue audit run 38636658709: failure; empirical strategy evaluation remains pending.
