@@ -138,3 +138,43 @@ Timestamped news/BERT sentiment, historical options/PCR, FII/DII, breadth, verif
 ## Independent tester handoff
 
 Tester: recompute headline metrics from the run #60 artifact; verify metric units/signs, `mean_loss_diff`, HAC lag choice, Holm families, confidence intervals, target-date alignment, QLIKE, class prevalence and probability calibration; inspect weekend dates and global close timing; compare manuscript claims to artifact. Return PASS / PASS WITH LIMITATIONS / FAIL with concrete defects. Do not expand the model universe or begin strategy work.
+
+
+## Final corrected results — run #62 (tester-reviewed)
+
+**Status:** PASS WITH SCOPE LIMITATIONS.  
+**Workflow:** [run #62](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38604064792) — SUCCESS.  
+**Commit:** `be02efcb8fbd21f36fec826bdcc3ee923f75849a`.  
+**Artifact:** `nifty-prediction-reports-38604064792.zip`; SHA-256 `14c9d6fc1bcb0f00ff28e708cb10a6cab9b378e5e60ff31f6e66aaa5e977172b`.  
+**Independent tester:** [final tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md).
+
+### Final data and integrity checks
+
+- NIFTY data: 4,901 Dhan daily observations, 2007-01-02 to 2026-10-13; SHA-256 `b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050`.
+- Final exported predictions: **471,735 rows; zero missing target dates; zero target dates on or before origin dates**.
+- Merged metrics: 1,097 rows, 485 OOS-evaluated rows, 482 status/selection rows and 130 explicit compute-budget-blocked rows. Technical catalogue: 632 cells / 244,209 OOS predictions; global catalogue: 462 cells / 224,609 OOS predictions; ARIMA: 2,917 predictions in separate benchmark output.
+- The new full-window volatility target test passed. Independent tester recomputed headline regression metrics, all 482 non-ARIMA block confidence intervals, ARIMA metrics/intervals, and Holm-adjusted p-values. Twenty-eight individual classification z/p values differed by at most approximately 5.5e-5 when recomputed from serialized prediction values; Holm adjustments and conclusions were unchanged.
+
+### Final headline results
+
+| Target / horizon | Best descriptive result | Statistical conclusion |
+|---|---|---|
+| Return, 1 session | CNN sequence technical: RMSE 0.007940; MSE skill +0.0875% | p=.790; Holm p=1.000. No useful return edge shown. |
+| Return, 5 sessions | XGBoost technical: RMSE 0.017352; MSE skill +2.0023% | p=.0967; Holm p=1.000. Not significant. |
+| Return, 20 sessions | Gradient boosting global: RMSE 0.033100; MSE skill +3.3303% | p=.4452; Holm p=1.000. Not significant. |
+| Direction, 1 session | CatBoost global: accuracy 54.29%; balanced accuracy 53.35%; log loss 0.6881 vs 0.6913 baseline | p=.2086; Holm p=1.000. Small descriptive improvement, not significant. |
+| Direction, 5/20 sessions | Accuracy often close to prevalence; several models have negative Brier skill or worse log loss | No robust directional winner. Read proper scores and balanced accuracy, not accuracy alone. |
+| Volatility, 1 session | XGBoost global: RMSE 0.005280; QLIKE -8.7674 vs -8.4312 baseline; QLIKE improvement +0.3362 | Holm p=1.96e-9. Strong metric-specific evidence for this one-session volatility forecast, subject to source-timing and model-selection limitations. |
+| Volatility, 5 sessions | Lasso global QLIKE improvement +0.1320 | Raw p=.00435, Holm p=.1350. Not significant after correction. |
+| Volatility, 20 sessions | Lasso global QLIKE improvement +0.1570 | Raw p=.0191, Holm p=.5933. Not significant after correction. |
+| Volatility expansion, 20 sessions | Logistic technical: accuracy 65.76%; balanced accuracy 66.11%; log loss 0.6210 vs 0.6934 baseline; Brier skill +0.1304 | Raw p=.00272; Holm p=.0572. Promising but misses the 0.05 adjusted threshold; exploratory, not confirmatory. |
+
+### Final inference and conclusion
+
+The corrected screen does **not** establish a robust return or direction forecasting winner. A global XGBoost one-session volatility forecast improves QLIKE after the configured Holm correction; other volatility-horizon results are not robust across multiplicity correction or metrics. Volatility-expansion classification has a promising 20-session technical result but does not cross the adjusted 0.05 threshold. No single model is a universal winner across target types and scoring rules.
+
+The independent tester's final disposition is **PASS WITH SCOPE LIMITATIONS**. The 1,260 null target-date defect from run #60 is resolved. Remaining limitations: twenty weekend-dated observations and global-market close-time alignment are not independently resolved; historical options/PCR, FII/DII, breadth, timestamped news and corporate-action features are absent or unverified; several PDF-specific algorithms are not exact reproductions. No trading strategy, option P&L, brokerage, slippage, spread, taxes, margin or live execution is part of this prediction-only study.
+
+## Final handoff
+
+Developer: close this bounded prediction-only phase; update README, phase status and logs; preserve all limitations; do not launch additional model loops or trading-strategy work under this request. Tester: archive this final PASS WITH SCOPE LIMITATIONS disposition and do not request further work unless a reproducible defect is found.
