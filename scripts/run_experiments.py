@@ -9,7 +9,7 @@ from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import mean_absolute_error, log_loss
 from models import regression_models, classification_models
 from sequence_models import sequence_models
-from forecast_metrics import regmetrics, clsmetrics, hac_test, block_ci, holm
+from forecast_metrics import regmetrics, clsmetrics, qlike_metrics, hac_test, block_ci, holm
 
 ROOT=Path(__file__).resolve().parents[1]
 CACHE=ROOT/"data"/"cache"; REPORT=ROOT/"reports"
@@ -83,7 +83,7 @@ def main():
             seqstatus={"status":"BLOCKED_NO_TORCH","reason":"PyTorch is not installed in this workflow"}
         else:
             regmodels.update(sr); clsmodels.update(sc)
-            seqstatus={"status":"PASS","regression_models":list(sr),"classification_models":list(sc),"epochs":8}
+            seqstatus={"status":"PASS","regression_models":list(sr),"classification_models":list(sc),"epochs":3}
     REPORT.mkdir(parents=True,exist_ok=True)
     (REPORT/"sequence_model_status.json").write_text(json.dumps(seqstatus,indent=2))
     tasks=[("return","target_return"),("level","target_log_close"),("volatility","target_future_vol"),
@@ -162,10 +162,10 @@ def main():
                         met["rmse_bps"]=met["rmse"]*10000
                         met["mse_skill_vs_historical_mean"]=float(1-mse/mm) if mm>0 else None
                     if task=="volatility":
+                        qlmetrics=qlike_metrics(yt,phat,b)
+                        met.update(qlmetrics)
                         av=np.maximum(yt,1e-8)**2; pv=np.maximum(phat,1e-8)**2; bv=np.maximum(b,1e-8)**2
                         ql=np.log(pv)+av/pv; qlb=np.log(bv)+av/bv
-                        met["qlike"]=float(np.mean(ql)); met["qlike_baseline"]=float(np.mean(qlb))
-                        met["qlike_skill_vs_baseline"]=float(1-np.mean(ql)/np.mean(qlb)) if np.mean(qlb)>0 else None
                         loss=ql-qlb
                     else:
                         loss=(actual_eval-pred_eval)**2-(actual_eval-base_eval)**2
