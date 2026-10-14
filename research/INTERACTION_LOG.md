@@ -99,3 +99,12 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 
 - Rechecked [run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097), the latest job steps and artifact listing. Status progressed from options-cache acquisition to the frozen strike-grid step. Daily data validation and 13 pre-analysis tests had completed; sanitized artifacts were still absent because upload remained pending.
 - Updated README, phase status, error log, experiment log and interaction log. The options step's success status was not treated as proof of adequate usable quotes because the step permits continuation on acquisition errors.
+
+
+## 2026-10-14 — OPT-BUY-2.0 run #4 results and corrective retest
+
+- User said “Proceed.” Retrieved the completed [run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097) job logs and sanitized artifact. Workflow succeeded and 13 regression tests passed before and after analysis.
+- Results: 1,055,699 raw / 1,023,541 usable quote rows; conflict rate 1.4256% (gate <=1%); candidate coverage 83.27% down to 16.94% (gate >=80%). Confirmatory gate failed.
+- All 32 model-filtered candidate × horizon mean net P&Ls at 50 bps/side and ₹10/order were negative, with 95% block-bootstrap upper bounds below zero. Therefore no candidate is approved; the grid is exploratory only. Common-date sensitivity was not produced.
+- All 32 p-values were NaN in the artifact. Committed a bounded correction to the p-value calculation (a543eed8059de79dbcc6b2dc53a3dd31f14298a9) and started [run #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562114651). No additional parameter grid will be run. User waived separate tester sign-off; the correction still needs to produce valid statistics.
+- Updated README, phase status, error log, experiment log and activity log with actual run evidence and the no-go disposition.
