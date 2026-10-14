@@ -59,3 +59,9 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 
 - Static review of the active corrected-rerun code found that the strangle builder currently selects the nearest available call strike above ATM and put strike below ATM. If the exact adjacent quote is missing, it could accept a farther OTM strike while the plan describes a one-step OTM strangle.
 - This was logged as ERR-OPT-004. The active run #9 is allowed to finish as a coverage pilot; its strangle results are preliminary until the next cached rerun enforces exact ATM+1 CALL and ATM−1 PUT relative offsets at entry, and exact numeric strike matching at exit. If either required entry series is absent, that date must be skipped rather than substituted.
+
+
+## 2026-10-14 — wider-strike acquisition completed; analysis running
+
+- Corrected run #9 passed the pre-acquisition unit-test gate and finished its expanded Dhan request step; its private market-data cache-save step succeeded. The P&L/statistical step is now active. The acquisition counts and quote-coverage outcome will be taken from the run manifest after the workflow writes it; step exit status alone is not treated as data-gate approval.
+- The narrow-grid pilot and exact one-step OTM selection issue remain logged. No strategy recommendation is made until exact-entry matching, coverage, costs, primary P&L statistics and independent review pass.
