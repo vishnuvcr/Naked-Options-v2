@@ -105,6 +105,9 @@ jobs:
       - name: Merge model, feature and benchmark results
         if: always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
         run: python scripts/merge_results.py
+      - name: Validate 20-session volatility-expansion classifier
+        if: always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
+        run: python scripts/validate_vol_expansion_20.py
       - name: Summarize data / run outcomes
         if: always()
         run: |
