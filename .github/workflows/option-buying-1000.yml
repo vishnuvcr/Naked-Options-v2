@@ -10,7 +10,8 @@ on:
   push:
     branches: [research/option-buying-1000-developer]
     paths:
-      - research/option-buying-1000/**
+      - research/option-buying-1000/strategy_catalogue.py
+      - research/option-buying-1000/test_strategy_catalogue.py
       - research/OPTION_BUYING_1000_PLAN.md
       - .github/workflows/option-buying-1000.yml
 permissions:
