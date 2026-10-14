@@ -93,20 +93,20 @@ jobs:
         if: steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success'
         run: python scripts/build_feature_matrix.py
       - name: Run technical-only model catalogue
-        if: always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
+        if: github.ref != 'refs/heads/research/vol-expansion-validation' && always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
         run: python scripts/run_experiments.py --features technical
       - name: Run global-augmented model catalogue
-        if: always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
+        if: github.ref != 'refs/heads/research/vol-expansion-validation' && always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
         run: python scripts/run_experiments.py --features global
       - name: Run ARIMA return benchmark
-        if: always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
+        if: github.ref != 'refs/heads/research/vol-expansion-validation' && always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
         continue-on-error: true
         run: python scripts/run_arima_baseline.py
       - name: Merge model, feature and benchmark results
-        if: always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
+        if: github.ref != 'refs/heads/research/vol-expansion-validation' && always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
         run: python scripts/merge_results.py
       - name: Validate 20-session volatility-expansion classifier
-        if: always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
+        if: github.ref == 'refs/heads/research/vol-expansion-validation' && always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
         run: python scripts/validate_vol_expansion_20.py
       - name: Summarize data / run outcomes
         if: always()
