@@ -60,3 +60,16 @@ The developer accepted the independent tester's no-go. No strategy, paper-tradin
 | Independent tester sign-off | WAIVED BY USER | User explicitly waived separate tester sign-off; data-quality and inference gates remain mandatory. |
 
 **Disposition:** NO-GO for any strike-selection candidate. Keep OPT-BUY-1.0 no-go unchanged. The one bounded corrective rerun must confirm valid p-values; do not start further parameter loops or approve paper/live deployment.
+
+
+## Uploaded-PDF method comparison — 2026-10-14
+
+| Phase | Status | Evidence / next gate |
+|---|---|---|
+| PDF inventory | IN PROGRESS | 13 uploaded PDFs extracted; method register on [research/pdf-method-audit](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/pdf-method-audit) in [PDF_METHOD_AUDIT.md](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-method-audit/research/PDF_METHOD_AUDIT.md). |
+| Classical method expansion | IMPLEMENTED; RUN PENDING | Added linear regression, Lasso, SGD, KNN, Decision Tree, Gradient Boosting and AdaBoost candidates. Empirical status requires completed workflow artifacts. |
+| Sequence / hybrid expansion | IMPLEMENTED; RUN PENDING | Added RNN, CNN, and four literature hybrid candidates to existing LSTM/GRU/TCN/Transformer family; bounded to short CPU fit and one-session return/direction. |
+| NLP / sentiment and specialized variants | BLOCKED OR NOT IMPLEMENTED | BERT requires verified point-in-time news; fuzzy NN, DBN, wavelet, Granger screening and backward elimination are not yet validated. These will not be reported as tested. |
+| Option strategy papers | OUT OF SCOPE | Three PDFs describe options strategies. The active research question remains prediction-only; these need a separate protocol. |
+
+The push-triggered workflow for branch `research/pdf-method-audit` is [run #55](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562973443), currently queued/pending at the last check. No expanded-model result has yet been accepted. The prior NIFTY-PRED-1.0 result remains valid only for its previously tested model/data scope.
