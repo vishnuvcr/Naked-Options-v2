@@ -89,3 +89,9 @@ Run #2 confirmed the actual blocker was upstream of options acquisition: `BLOCKE
 - **ERR-021 — HIGH, open for independent audit:** The paired-loss test is two-sided for `mean(model loss - baseline loss)=0`; a small p-value alone does not establish improvement. Negative mean loss difference favors the model; positive favors baseline. Tester must reproduce signs and p-values from predictions.
 - **ERR-022 — MEDIUM, documented:** Classification accuracy and minimum regression error do not define a universal winner across objectives. Class prevalence, thresholding and calibration affect classification metrics. Tester should check balanced accuracy, Brier/log loss and benchmark skill alongside accuracy.
 - **ERR-023 — MEDIUM, data limitation:** Twenty weekend-dated observations and global-market timestamp alignment remain unresolved risks. Preserve the source rows with warnings; do not infer verified point-in-time availability from daily data alone.
+
+
+## Tester finding T-01 and correction
+
+- **ERR-024 — HIGH:** Some `target_future_vol_5` and `target_future_vol_20` labels were computed from partial future-return windows near the end of the series. Those rows could have valid numeric labels but null `target_date_h`, violating full-horizon target integrity.
+- **Correction committed:** `scripts/build_feature_matrix.py` now emits h-session volatility only when all h future returns are present. `tests/test_research.py` asserts non-null labels have future target dates and partial future windows are not labelled. Corrected workflow retest is pending; do not claim the issue resolved until its artifact has zero null target dates among evaluated rows.
