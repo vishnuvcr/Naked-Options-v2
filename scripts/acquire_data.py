@@ -132,6 +132,15 @@ def main():
     if good:
         priority={"dhan_daily":0,"nse_official":1,"yahoo_nifty":2}
         selected_name,selected=sorted(good,key=lambda x:priority[x[0]])[0]
+        checks=[]
+        for other_name,other in good:
+            if other_name==selected_name: continue
+            z=selected[["date","close"]].merge(other[["date","close"]],on="date",suffixes=("_primary","_secondary"))
+            dif=(z.close_primary-z.close_secondary).abs()
+            checks.append({"source_id":other_name,"overlap_rows":len(z),
+              "median_abs_close_difference":float(dif.median()) if len(z) else None,
+              "max_abs_close_difference":float(dif.max()) if len(z) else None})
+        manifest["cross_source_checks"]=checks
         out=CACHE/"nifty50_daily.csv"; selected.to_csv(out,index=False)
         manifest.update({"status":"DATA_ACQUIRED","selected_target_source":selected_name,"target_file":str(out.relative_to(ROOT)),
           "target_rows":len(selected),"target_first_date":selected.date.min(),"target_last_date":selected.date.max(),"target_sha256":digest(out)})
