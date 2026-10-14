@@ -37,6 +37,40 @@ All merged auxiliary inputs must add their own source_id, observation_date, know
 - Every raw dataset receives a SHA-256 hash, row count, min/max observation date, retriever version and retrieval timestamp. Every processed dataset records its input hash(es), code commit and transformation version.
 - Vendor-license restrictions override convenience: licensed raw data may be kept as artifacts / cache per allowed terms but not published as public repository files if redistribution is prohibited.
 
+
+## Actual acquisition results from Actions run #41 (2026-10-14)
+
+Evidence: machine-generated reports from [Actions run #41](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38526229786), artifact ID 11876376800. The raw target/auxiliary files were not included in the artifact; hashes and coverage were retained in data_manifest.json. The workflow used a cached target plus the acquisition script's free external-data adapters.
+
+### Primary target
+
+| Series | Source | Rows | Coverage | SHA-256 | Validation |
+|---|---|---:|---|---|---|
+| NIFTY 50 daily OHLCV | Dhan daily API cache | 4,901 | 2007-01-02 to 2026-10-13 | b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050 | PASS; OHLC/date/hash checks passed; 20 weekend dates retained and flagged for exchange special-session verification |
+
+The Dhan series was cross-checked against Yahoo Finance's NIFTY proxy over 4,679 overlapping dates. Median absolute close difference in the normalized source representation was 0.0001953 and maximum 0.0007813. The values were compared only; no row-by-row averaging or source substitution occurred.
+
+### External daily features actually acquired
+
+| Input feature family | Source/proxy | Rows | First–last date | Status / caveat |
+|---|---|---:|---|---|
+| U.S. large-cap equities | Yahoo Finance ^GSPC | 4,976 | 2007-01-03 to 2026-10-13 | PASS |
+| Nasdaq | Yahoo Finance ^IXIC | 4,976 | 2007-01-03 to 2026-10-13 | PASS |
+| Japan equities | Yahoo Finance ^N225 | 4,833 | 2007-01-04 to 2026-10-13 | PASS |
+| Hong Kong equities | Yahoo Finance ^HSI | 4,870 | 2007-01-02 to 2026-10-13 | PASS |
+| U.S. implied volatility proxy | Yahoo Finance ^VIX | 4,978 | 2007-01-03 to 2026-10-13 | PASS |
+| India VIX proxy | Yahoo Finance ^INDIAVIX | 4,560 | 2008-03-03 to 2026-10-13 | PASS; Yahoo proxy, not official NSE source |
+| U.S. 10-year yield proxy | Yahoo Finance ^TNX | 4,974 | 2007-01-03 to 2026-10-13 | PASS; yield index convention needs interpretation |
+| USD/INR | Yahoo Finance INR=X | — | — | FAIL; 237 rows violated OHLC range checks; no file used |
+| Gold futures | Yahoo Finance GC=F | — | — | FAIL; 149 rows violated OHLC range checks; no file used |
+| WTI crude futures | Yahoo Finance CL=F | — | — | FAIL; non-positive OHLC values rejected by generic validation; no file used. The source can contain valid negative futures prices, so a dedicated price-change transformation must be preregistered before re-use. |
+
+Global feature construction used only earlier-date auxiliary observations than the NIFTY forecast-origin date, conservatively avoiding same-date closes from other markets. Feature matrix output reported 4,901 rows and 106 columns. The technical-only model run reported COMPLETE with 278 experiment records / 72,253 out-of-sample prediction rows; global-augmented run reported COMPLETE with 210 experiment records / 64,413 out-of-sample prediction rows. Per-run CSVs were not included in artifact 11876376800 due an artifact-path defect; performance ranking is therefore pending the corrected run's artifacts.
+
+### Not acquired in the run
+
+Historical options chains / contract-level implied volatility, PCR, strike/expiry/OI time series; official historical FII/FPI and DII flows; breadth/advances-declines; point-in-time constituents and constituent corporate actions; timestamped news/sentiment; and official NSE historical India VIX were not confirmed as acquired. The sources are documented above as candidates, but no feature-family effect is claimed. The community options datasets reviewed remain excluded pending license/provenance approval.
+
 ## Actual acquisition status
 
 This document records sources researched, not sources successfully downloaded. The first data workflow run must populate a machine-readable manifest and update this section with actual outcomes, sample ranges, missing values and hashes. Until this happens, source availability remains unverified.
