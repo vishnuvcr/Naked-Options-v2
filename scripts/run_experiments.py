@@ -207,7 +207,7 @@ def main():
     pd.DataFrame(pred_rows).to_csv(REPORT/f"predictions_{args.features}.csv",index=False)
     pd.DataFrame(err_rows).to_csv(REPORT/f"experiment_errors_{args.features}.csv",index=False)
     metadata={"research_version":"NIFTY-PRED-1.0","seed":SEED,"models_regression":list(regmodels),
-      "models_classification":list(clsmodels),"sequence_status":seqstatus,"features":cols,"experiments":len(metric_rows),
+      "models_classification":list(clsmodels),"sequence_status":seqstatus,"features":cols,"budget_policy":"FULL_CATALOGUE at horizon 1 for return/direction; core-screen for remaining target/horizon cells; excluded models recorded as BLOCKED_COMPUTE_BUDGET","experiments":len(metric_rows),
       "oos_predictions":len(pred_rows),"status":"COMPLETE" if pred_rows else "BLOCKED_NO_OOS_OUTPUT",
       "selection_rule":"validation CV loss only; final holdout used for one-time evaluation and no hyperparameter tuning","compute_budget":{"cv_folds":2,"primary_full_catalogue":[["return",1],["direction",1]],"core_screens":"all other target/horizon pairs","core_regression":["ridge","elastic_net","random_forest","hist_gradient"],"core_classification":["logistic","random_forest","hist_gradient"],"sequence_epochs":3}}
     (REPORT/f"experiment_run_{args.features}.json").write_text(json.dumps(metadata,indent=2))
