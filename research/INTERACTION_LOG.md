@@ -108,3 +108,13 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - All 32 model-filtered candidate × horizon mean net P&Ls at 50 bps/side and ₹10/order were negative, with 95% block-bootstrap upper bounds below zero. Therefore no candidate is approved; the grid is exploratory only. Common-date sensitivity was not produced.
 - All 32 p-values were NaN in the artifact. Committed a bounded correction to the p-value calculation (a543eed8059de79dbcc6b2dc53a3dd31f14298a9) and started [run #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562114651). No additional parameter grid will be run. User waived separate tester sign-off; the correction still needs to produce valid statistics.
 - Updated README, phase status, error log, experiment log and activity log with actual run evidence and the no-go disposition.
+
+
+## 2026-10-15 — OPT-BUY-3.0 entry/exit scope pivot
+
+- User directed the project to pause prediction and test option-buying entries/exits from random to targeted rules.
+- Audited the existing repository plan, phase status, error log, previous option-buying disposition, Dhan quote parser, cost model and Actions workflow.
+- Created developer branch `research/option-entry-exit-developer`. Frozen plan commit: `8215bc71aee08b6563a3f58a4f441fdffed02fa3`; research questions commit: `7e4066c3151ee76ae4bf08ec0eb9179730f55ca7`.
+- Added partial time-entry screen, helper tests and a manual/push-triggered workflow in commits `17bbf88c26734782af3fa4f0e3d1bbb166f8819d`, `9c3fedfecad60d9e24f5672a2c138fd120cb8a23`, `53029f81971b7adb395ac76a8b936830bbd6be7a`.
+- The executable is not yet the full frozen catalogue. No Actions result was verified during this log update; no candidate is approved. Independent tester branch/report must wait until results are acquired.
+- Log operational actions and outcomes, not hidden chain-of-thought or verbatim internal reasoning.
