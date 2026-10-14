@@ -137,14 +137,35 @@ def main():
                     warnings.simplefilter("ignore"); est.fit(Xfit,yd)
                 if kind=="reg":
                     phat=np.asarray(est.predict(Xeval),float)
-                    met=regmetrics(yt,phat,b)
-                    loss=(yt-phat)**2-(yt-b)**2
-                    ci=block_ci(loss,h,SEED+h)
-                    tst=hac_test(loss,h-1)
-                    common={"mae_baseline":float(np.mean(abs(yt-b))),"ci_loss_diff_low":ci[0],"ci_loss_diff_high":ci[1],**tst}
+                    if task=="volatility": phat=np.maximum(phat,1e-8)
+                    actual_eval,pred_eval,base_eval=yt,phat,b
+                    if task=="level":
+                        actual_eval,pred_eval,base_eval=np.exp(yt),np.exp(phat),np.exp(b)
+                        met=regmetrics(actual_eval,pred_eval,base_eval)
+                        met["log_scale_mae"]=float(np.mean(abs(yt-phat)))
+                        met["log_scale_rmse"]=float(np.sqrt(np.mean((yt-phat)**2)))
+                    else:
+                        met=regmetrics(yt,phat,b)
+                    if task=="return":
+                        meanb=np.full(len(yt),float(np.mean(yd)))
+                        mse=float(np.mean((yt-phat)**2)); mm=float(np.mean((yt-meanb)**2))
+                        met["mae_bps"]=met["mae"]*10000
+                        met["rmse_bps"]=met["rmse"]*10000
+                        met["mse_skill_vs_historical_mean"]=float(1-mse/mm) if mm>0 else None
+                    if task=="volatility":
+                        av=np.maximum(yt,1e-8)**2; pv=np.maximum(phat,1e-8)**2; bv=np.maximum(b,1e-8)**2
+                        ql=np.log(pv)+av/pv; qlb=np.log(bv)+av/bv
+                        met["qlike"]=float(np.mean(ql)); met["qlike_baseline"]=float(np.mean(qlb))
+                        met["qlike_skill_vs_baseline"]=float(1-np.mean(ql)/np.mean(qlb)) if np.mean(qlb)>0 else None
+                        loss=ql-qlb
+                    else:
+                        loss=(actual_eval-pred_eval)**2-(actual_eval-base_eval)**2
+                    ci=block_ci(loss,h,SEED+h); tst=hac_test(loss,h-1)
+                    common={"mae_baseline":float(np.mean(abs(actual_eval-base_eval))),"ci_loss_diff_low":ci[0],"ci_loss_diff_high":ci[1],**tst}
                     predprob=None
                 else:
                     phat=np.clip(prob1(est,Xeval),1e-6,1-1e-6)
+                    actual_eval,pred_eval,base_eval=yt,phat,b
                     met=clsmetrics(yt,phat,b)
                     loss=-(yt*np.log(phat)+(1-yt)*np.log(1-phat))+ (yt*np.log(np.clip(b,1e-6,1-1e-6))+(1-yt)*np.log(np.clip(1-b,1e-6,1-1e-6)))
                     ci=block_ci(loss,h,SEED+h); tst=hac_test(loss,h-1)
@@ -154,8 +175,8 @@ def main():
                     "selected_by_validation":name==winner,"validation_score":score,**met,**common})
                 for j,(_,tr) in enumerate(test.iterrows()):
                     pr={"origin_date":pd.to_datetime(tr.date).date().isoformat(),"target_date":tr.get(f"target_date_{h}"),
-                        "task":task,"horizon":h,"model":name,"actual":float(yt[j]),"baseline":float(b[j]),
-                        "prediction":float(phat[j]),"selected_by_validation":name==winner}
+                        "task":task,"horizon":h,"model":name,"actual":float(actual_eval[j]),"baseline":float(base_eval[j]),
+                        "prediction":float(pred_eval[j]),"selected_by_validation":name==winner}
                     if predprob is not None: pr["probability_positive"]=float(phat[j])
                     pred_rows.append(pr)
             except Exception as e:
