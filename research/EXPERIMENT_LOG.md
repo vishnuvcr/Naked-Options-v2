@@ -56,3 +56,14 @@ All experiment results remain unranked until a completed run emits machine-gener
 | OPT-INIT-001 | research/option-buying-validation | INITIALIZED; NO RESULTS | Test next-session intraday ATM straddle and one-step OTM strangle after a prespecified technical Logistic volatility-expansion alert. Dhan historical options are preferred if auth and schemas validate. Include Paytm Money brokerage, current statutory/exchange charges, and 0/25/50/100 bps adverse-slippage scenarios. Results must be acquired before developer/tester branches are created. |
 
 This is a user-approved scope amendment after NIFTY-PRED-1.0 closure. It does not replace or rewrite the original study. No option P&L result is available or asserted in this initialization entry.
+
+
+## OPT-BUY-1.0 — source acquisition attempts
+
+| Run | Commit | Result | Evidence |
+|---|---|---|---|
+| [Option validation #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38542434374) | 944ec84c8047d31dce66165bd8db0a094133dc23 | BLOCKED_REQUEST_AUTH_OR_SCHEMA | First Dhan request (WEEK, expiryCode=0, ATM CALL, 2022-11-01 to 2022-12-01) returned HTTP 400. Zero successful/empty requests; one failed request; no P&L. Unit tests passed. |
+| [Option validation #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38542754673) | 8a3d9a3c7f47628501c60229c5802653a637b1e5 | BLOCKED_REQUEST_AUTH_OR_SCHEMA | Same first-request 400 after adopting official NSE fee assumptions; no quotes or P&L; unit tests passed. |
+| [Option validation #6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923) | 29aa17d29794ac7ef9368a90f56d9d20582b9ef1 | IN PROGRESS AT LOG UPDATE | Uses Dhan's documented MONTH/expiryCode=1 request example and includes redacted provider error details. Empirical results pending; no inference until run completes. |
+
+The earlier attempts are retained as failed runs. The protocol is not considered data-complete until the provider request succeeds and quote-quality gates pass.
