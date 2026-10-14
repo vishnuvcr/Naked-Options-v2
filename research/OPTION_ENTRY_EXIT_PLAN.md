@@ -34,7 +34,7 @@ Among a frozen catalogue of random/control, time-based, gap, breakout, momentum,
 - Model brokerage, STT, stamp duty, SEBI fee, an explicitly estimated exchange fee, GST and adverse slippage.
 - Use chronological reporting, block-bootstrap uncertainty, one-sided positive-expectancy tests and Holm family-wise adjustment.
 - Create machine-readable ledgers, cost-sensitivity tables, coverage diagnostics, charts and a manuscript based on observed results.
-- Produce independent developer/tester review after empirical results are available; tester must independently check arithmetic, matching, gate decisions and multiplicity.
+- Run automated regression, data-integrity, trade-matching, cost, statistical, and robustness checks within the same research workflow; fix defects and rerun affected checks before accepting results.
 
 ## 4. Research hypotheses
 
@@ -137,7 +137,7 @@ Brokerage source: Paytm Money's official F&O FAQ says ₹10 per unique executed 
 - both chronological halves have positive mean P&L;
 - one-sided Holm-adjusted p < 0.05 for positive expectancy;
 - candidate passes every data/coverage/sample-size gate;
-- independent tester reports PASS or PASS WITH EXPLICIT LIMITATIONS and confirms computations.
+- independent automated validation reports PASS or PASS WITH EXPLICIT LIMITATIONS and confirms computations.
 
 The prior study's duplicate conflict rate exceeds 1%; do not relax the threshold to force confirmatory status. If the new shared cache has the same issue, candidates may be reported for diagnosis only as exploratory and all approval flags remain false even when descriptive metrics appear positive. A relative win over a worse/random baseline never substitutes for positive absolute expectancy.
 
@@ -149,7 +149,7 @@ The prior study's duplicate conflict rate exceeds 1%; do not relax the threshold
 | 2. Data validation | same developer branch | Use/reacquire cache; validate schema, timestamp, strike continuity, duplicates, gaps, coverage; block or proceed |
 | 3. Candidate implementation | same branch | Implement frozen entries/exits and arithmetic; unit-test formulae, no-lookahead, exact-strike handling, bar ordering |
 | 4. Bounded run and report | same branch | One full run plus defect-only rerun; save sanitized ledger, metrics, cost sensitivity, diagrams, manuscript, SHA/workflow link |
-| 5. Independent review | create `research/option-entry-exit-independent-tester` only after results acquisition | Tester independently validates math/signs, quote matching, cost cases, multiplicity and gates; write report |
+| 5. Independent review | create `research/option-entry-exit-independent-automated validation` only after results acquisition | Tester independently validates math/signs, quote matching, cost cases, multiplicity and gates; write report |
 | 6. Developer disposition | `research/option-entry-exit-developer` | Fix only confirmed defects, at most one corrective rerun; respond to tester report; do not optimize to bypass gates |
 | 7. Close | PR/status update to main after tester report | Update README, research status, errors, activity log; close as GO-TO-PAPER-VALIDATION, NO-GO or INCONCLUSIVE. No live deployment from a historical backtest |
 
@@ -161,7 +161,7 @@ The prior study's duplicate conflict rate exceeds 1%; do not relax the threshold
 - `research/option-entry-exit/entry_exit_backtest.py`, `test_entry_exit.py`, report renderer.
 - Sanitized acquisition/quote quality manifest, strategy metrics, primary candidate ledger, cost sensitivity, regime summary, SVG plots and a structured research manuscript.
 - Updated `README.md`, `research/PHASE_STATUS.md`, `research/EXPERIMENT_LOG.md`, `research/ERROR_LOG.md` and `research/INTERACTION_LOG.md`.
-- Post-results independent tester branch/report and developer disposition.
+- Post-results automated validation branch/report and developer disposition.
 - Manual `workflow_dispatch` plus bounded push-triggered workflow, cache re-use, pre/post unit tests, sanitized-only artifacts and no automatic live trades.
 
 ## 12. Limitations and future research
@@ -169,3 +169,8 @@ The prior study's duplicate conflict rate exceeds 1%; do not relax the threshold
 The rolling endpoint is not a stable point-in-time exchange contract/expiry archive. Historical bid/ask quotes and queue/market impact are not available in this cache, so adverse slippage is a stress assumption rather than measured spread. Some source conflicts have previously exceeded the frozen ceiling. Spot fields are provider-sampled. Lot-size proxy and transaction-fee estimates must be independently verified. FII/DII, PCR, market breadth, complete point-in-time corporate actions, timestamp-aligned news, and fully timestamp-aligned global data are not assured. Historical performance cannot establish live profitability.
 
 Future research should first improve point-in-time contract identity, bid/ask and execution-cost evidence, then separately preregister market-regime/context features or portfolio/risk controls only if there is enough valid quote coverage. It must not continue parameter optimization under this protocol.
+
+
+## User-approved process amendment — 2026-10-15
+
+The user explicitly rejected independent reviews. This study therefore has no separate tester role, tester branch, or tester-report dependency. All validation is performed in the same bounded workflow through unit tests, data-integrity checks, arithmetic invariants, statistical checks, robustness reruns, and documented error correction. This amendment changes the process, not the statistical acceptance gates or the prohibition on unsupported strategy approval.
