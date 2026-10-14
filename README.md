@@ -106,3 +106,10 @@ Frozen gates failed: strangle quote coverage 69.18% (minimum 80%) and conflictin
 - Automated run #1 failed at the data stage: the existing 13 regression tests passed, but no usable historical option quote rows were loaded. This is a data blocker, not a profitability finding. [Run #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551789841).
 - Diagnostic-output fix and inference-family correction are being tested in [run #2](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551939491) and [run #3](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552000337). No strike winner or strategy is approved.
 - Separate review branches: [developer](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-strike-selection-developer) and [independent tester](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-strike-selection-independent-tester). The tester's current report is blocked pending usable quotes.
+
+
+### Latest live status — 2026-10-14 17:34 IST
+
+- Corrected workflow [run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097) is still running. Steps 1–8 have completed, including daily target validation and the existing 13 regression tests. The workflow remains at **“Acquire/reuse options cache”**; the strike grid, artifact upload, and final regression step have not started.
+- The options-acquisition step began at 10:49:21 UTC (16:19:21 IST) and was still active at this check, with no published artifacts yet. The job has a 180-minute timeout. This is a long-running acquisition, not a completed result or a confirmed provider failure.
+- **No strike ranking, profitability inference, or strategy approval is available yet.** Continue only from sanitized run diagnostics; preserve all frozen quality/statistical gates.
