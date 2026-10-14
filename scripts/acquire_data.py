@@ -48,14 +48,8 @@ def normalise(frame, source):
     out = out.dropna(subset=["date","open","high","low","close"]).sort_values("date")
     if out.empty:
         raise ValueError("source returned no valid OHLC rows")
-    # Index trading bars on weekends are invalid for the normal daily session series.
-    # Exclude explicitly; the source manifest records the exclusion count.
-    weekdays = pd.to_datetime(out["date"], errors="coerce").dt.dayofweek
-    weekend_rows = int((weekdays >= 5).sum())
-    out = out.loc[weekdays < 5].copy()
-    if out.empty:
-        raise ValueError("no valid weekday OHLC rows after weekend exclusion")
-    out.attrs["weekend_rows_excluded"] = weekend_rows
+    # Preserve weekend-dated rows: NSE can schedule special sessions. The validator
+    # reports these dates as a warning instead of silently removing them.
     if out.date.duplicated().any():
         raise ValueError("duplicate session dates")
     if (out[["open","high","low","close"]] <= 0).any().any():
@@ -129,7 +123,7 @@ def main():
         rec={"source_id":name,"attempted_at_utc":now()}
         try:
             df=fn(); rec.update({"status":"PASS","rows":len(df),"first_date":df.date.min(),"last_date":df.date.max(),
-              "missing_volume":int(df.volume.isna().sum()),"weekend_rows_excluded":int(df.attrs.get("weekend_rows_excluded",0)),"csv_sha256":hashlib.sha256(df.to_csv(index=False).encode()).hexdigest()})
+              "missing_volume":int(df.volume.isna().sum()),"weekend_rows_observed":int((pd.to_datetime(df.date,errors="coerce").dt.dayofweek>=5).sum()),"csv_sha256":hashlib.sha256(df.to_csv(index=False).encode()).hexdigest()})
             good.append((name,df))
         except Exception as e:
             rec.update({"status":"FAIL","error_type":type(e).__name__,"error_summary":str(e)[:250]})
