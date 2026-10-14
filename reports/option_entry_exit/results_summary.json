@@ -1,0 +1,14 @@
+{
+  "version": "OPT-BUY-3.0",
+  "status": "BLOCKED_NO_VALID_QUOTES",
+  "data_gate_pass": false,
+  "strategy_approved": false,
+  "data_quality": {
+    "status": "BLOCKED_NO_VALID_QUOTES",
+    "parse_errors": []
+  },
+  "skips": {},
+  "candidate_count": 0,
+  "candidates": [],
+  "note": "This first bounded implementation screens time-based CALL/PUT entries only. Rule-based entries, random controls, barrier/trailing exits and 100bp recalculation remain pending code validation; no strategy can be approved from this run."
+}

@@ -34,13 +34,11 @@ The independent tester branch reports PASS WITH SCOPE LIMITATIONS for the bounde
 The nine-phase work is closed for the bounded prediction-only scope with accepted limitations. Phases 2 and 6 are partial by design/scope, not falsely marked complete. The final conclusion is that this model/data set did not establish a robust return/direction edge. No options strategy was tested or approved.
 
 <!-- OPTION_VALIDATION_PHASE_START -->
-## Follow-on option-buying validation — OPT-BUY-1.0
+## Separate follow-on study — option-buying validation (does not reopen NIFTY-PRED-1.0)
 
-| Track | Branch | Status | Evidence / decision |
+| Track | Branch | Status | Evidence / gate |
 |---|---|---|---|
-| Intraday option-buying validation | research/option-buying-validation | CLOSED — NO-GO FOR TESTED CANDIDATES; DATA GATE FAILED | [Run #11](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384) completed; 13 unit tests passed before and after analysis. Independent review is in [TESTER_REPORT.md](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-independent-tester/research/option-validation/TESTER_REPORT.md). |
+| Intraday option-buying validation | research/option-buying-validation | BLOCKED_NO_VALID_DAILY_DATA | Workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38617943823; commit: 53029f81971b7adb395ac76a8b936830bbd6be7a; acquisition: BLOCKED_NO_VALID_DAILY_DATA; requests failed: 0. Independent post-result developer/tester gate required. |
 
-Acquisition succeeded from cache (686 windows reused; no new requests or failed windows in the last run). The frozen acceptance gates fail: strangle eligible-date coverage 69.18% versus ≥80% required; conflicting duplicate groups 1.409% versus ≤1% allowed. All four candidates' mean net P&L and 95% daily-P&L intervals are negative at the primary cost setting, every 100-bps stress result and both chronological-half profitability tests fail. Positive paired differences versus always-buy reflect loss reduction against a worse baseline, not profitable option buying.
-
-The independent tester reproduced ledger arithmetic, four paired means, block-bootstrap intervals and p-values. Final decision: no tested strategy, paper-trading candidate or live deployment is approved. Do not relax gates or continue parameter loops. The original nine-phase NIFTY-PRED-1.0 remains closed and unchanged.
+No live strategy is approved. The first experiment is intraday-only because rolling strike-relative option series do not establish stable multi-day contract identity.
 <!-- OPTION_VALIDATION_PHASE_END -->
