@@ -1,0 +1,72 @@
+name: OPT-BUY-4.0 Unique Strategy Catalogue
+on:
+  workflow_dispatch:
+    inputs:
+      refresh_options:
+        description: Refresh option data cache if acquisition is implemented
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches: [research/option-buying-1000-developer]
+    paths:
+      - research/option-buying-1000/**
+      - research/OPTION_BUYING_1000_PLAN.md
+      - .github/workflows/option-buying-1000.yml
+permissions:
+  contents: write
+concurrency:
+  group: opt-buy-4-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  catalogue-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: true}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Generate 1,000+ distinct rule algorithms without outcome access
+        run: python research/option-buying-1000/strategy_catalogue.py
+      - name: Run registry integrity tests
+        run: |
+          python -m pip install pytest
+          pytest -q research/option-buying-1000/test_strategy_catalogue.py
+      - name: Record data availability without leaking credentials
+        env:
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, pathlib, hashlib, os
+          candidates=["data/cache/nifty50_daily.csv","data/cache/nifty50_intraday.csv","data/cache/options_rolling/manifest.json"]
+          out={"status":"AUDIT_ONLY","credentials_present":{"DHAN_ACCESS_TOKEN":bool(os.getenv("DHAN_ACCESS_TOKEN")),"HF_TOKEN":bool(os.getenv("HF_TOKEN"))},"files":[]}
+          for name in candidates:
+            p=pathlib.Path(name); row={"path":name,"exists":p.is_file(),"bytes":p.stat().st_size if p.is_file() else 0}
+            if p.is_file() and p.stat().st_size: row["sha256"]=hashlib.sha256(p.read_bytes()).hexdigest()
+            out["files"].append(row)
+          pathlib.Path("research/option-buying-1000/DATA_AUDIT.json").write_text(json.dumps(out,indent=2)+"\n")
+          print(json.dumps(out,indent=2))
+          PY
+      - name: Record research run and status
+        if: always()
+        env:
+          RUN_ID: ${{ github.run_id }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          printf '\n- OPT-BUY-4.0 catalogue audit run %s: %s at commit %s. Catalogue count is distinct rule logic; execution variants are excluded. No empirical performance claim is implied.\n' "$RUN_ID" "$JOB_STATUS" "$GITHUB_SHA" >> research/EXPERIMENT_LOG.md
+          if [ -f research/PHASE_STATUS.md ]; then printf '\n- OPT-BUY-4.0 catalogue audit run %s: %s; empirical strategy evaluation remains pending.\n' "$RUN_ID" "$JOB_STATUS" >> research/PHASE_STATUS.md; fi
+          if [ -f research/ERROR_LOG.md ]; then printf '\n- OPT-BUY-4.0 catalogue audit run %s status: %s; inspect Actions logs for failures. Secrets are not recorded.\n' "$RUN_ID" "$JOB_STATUS" >> research/ERROR_LOG.md; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/option-buying-1000 research/EXPERIMENT_LOG.md research/PHASE_STATUS.md research/ERROR_LOG.md
+          if ! git diff --cached --quiet; then git commit -m "research: record OPT-BUY-4.0 catalogue audit $RUN_ID"; git push; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: opt-buy-4-catalogue-${{ github.run_id }}
+          path: research/option-buying-1000/
+          if-no-files-found: warn
