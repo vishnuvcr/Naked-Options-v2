@@ -31,7 +31,7 @@ HTTP 200 returning HTML instead of the required payload is a source failure. Emp
 <!-- OPTION_VALIDATION_ERRORS_START -->
 ## Option-validation acquisition error log — OPT-BUY-1.0
 
-Stage: ANALYSIS; workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923; commit: 29aa17d29794ac7ef9368a90f56d9d20582b9ef1.
+Stage: ANALYSIS; workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38544279448; commit: b5f78b27b7f6f020d39f9507dfead79d65b9bff0.
 
 Request failure summaries (individual redacted request windows are preserved in the Actions cache manifest):
 - No acquisition request failures recorded in this run.

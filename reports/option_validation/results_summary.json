@@ -1,6 +1,6 @@
 {
   "plan_version": "OPT-BUY-1.0",
-  "created_at_utc": "2026-10-14T09:40:54.107592+00:00",
+  "created_at_utc": "2026-10-14T09:44:11.830793+00:00",
   "overall_status": "INCONCLUSIVE_PARTIAL_OR_INCOMPLETE_DATA",
   "acquisition_status": "PASS",
   "options_manifest_status": "PASS",
@@ -108,7 +108,7 @@
         "n_development": 3895,
         "n_test_origins": 980,
         "n_oof_probabilities": 3116,
-        "threshold": 0.5347163139035913,
+        "threshold": 0.5347163139038658,
         "oof_alert_fraction": 0.25,
         "test_alert_fraction": 0.2795918367346939,
         "folds": [
@@ -134,7 +134,7 @@
         "n_development": 3880,
         "n_test_origins": 980,
         "n_oof_probabilities": 3104,
-        "threshold": 0.6046664997016469,
+        "threshold": 0.6046664997016447,
         "oof_alert_fraction": 0.25,
         "test_alert_fraction": 0.3081632653061224,
         "folds": [

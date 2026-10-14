@@ -29,7 +29,7 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 <!-- OPTION_VALIDATION_INTERACTION_START -->
 ## 2026-10-14 — option-buying validation workflow stage
 
-- Stage: ANALYSIS; status: INCONCLUSIVE_PARTIAL_OR_INCOMPLETE_DATA; run: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923; commit SHA: 29aa17d29794ac7ef9368a90f56d9d20582b9ef1.
+- Stage: ANALYSIS; status: INCONCLUSIVE_PARTIAL_OR_INCOMPLETE_DATA; run: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38544279448; commit SHA: b5f78b27b7f6f020d39f9507dfead79d65b9bff0.
 - Dhan option data requests planned/successful-or-empty/failed: 196/196/0.
 - Result file: research/option-validation/RESULTS.md; sanitized summary: reports/option_validation/results_summary.json.
 - Raw option prices remain in Actions cache only; no credentials or raw quote file is intentionally staged.
