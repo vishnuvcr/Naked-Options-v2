@@ -55,7 +55,11 @@ jobs:
           REFRESH_OPTIONS: ${{ github.event.inputs.refresh_options }}
         run: |
           if [ -s data/cache/nifty50_daily.csv ]; then
-            python research/option-validation/backtest.py --acquire-options --refresh-options
+            if [ "${{ github.event.inputs.refresh_options }}" = "true" ]; then
+              python research/option-validation/backtest.py --acquire-options --refresh-options
+            else
+              python research/option-validation/backtest.py --acquire-options
+            fi
           else
             echo "BLOCKED_NO_VALID_DAILY_DATA"
           fi
