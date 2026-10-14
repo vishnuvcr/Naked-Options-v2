@@ -95,3 +95,8 @@ Run #2 confirmed the actual blocker was upstream of options acquisition: `BLOCKE
 
 - **ERR-024 — HIGH:** Some `target_future_vol_5` and `target_future_vol_20` labels were computed from partial future-return windows near the end of the series. Those rows could have valid numeric labels but null `target_date_h`, violating full-horizon target integrity.
 - **Correction committed:** `scripts/build_feature_matrix.py` now emits h-session volatility only when all h future returns are present. `tests/test_research.py` asserts non-null labels have future target dates and partial future windows are not labelled. Corrected workflow retest is pending; do not claim the issue resolved until its artifact has zero null target dates among evaluated rows.
+
+
+## ERR-024 resolution — verified by run #62
+
+The corrected target builder now requires a complete future-return window for volatility horizons 5 and 20. The new target-date test passed in CI. Corrected artifact [run #62](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38604064792) has 471,735 prediction rows and zero null target dates; all target dates are later than origins. Tester disposition: PASS WITH SCOPE LIMITATIONS. ERR-024 is RESOLVED. Remaining source calendar/global timing issues stay open as limitations (ERR-023).
