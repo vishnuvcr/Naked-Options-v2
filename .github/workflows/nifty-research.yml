@@ -43,7 +43,9 @@ jobs:
         id: market-cache
         uses: actions/cache@v4
         with:
-          path: data/cache
+          path: |
+            data/cache
+            reports/data_manifest.json
           key: nifty-pred-v1-${{ runner.os }}-${{ hashFiles('requirements-research.txt', 'scripts/acquire_data.py') }}-${{ github.run_id }}
           restore-keys: |
             nifty-pred-v1-${{ runner.os }}-${{ hashFiles('requirements-research.txt', 'scripts/acquire_data.py') }}-
@@ -58,7 +60,7 @@ jobs:
           DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          if [ ! -f data/cache/nifty50_daily.csv ] || [ "${{ github.event.inputs.refresh_data }}" = "true" ] || [ "${{ github.event_name }}" = "schedule" ]; then
+          if [ ! -f data/cache/nifty50_daily.csv ] || [ ! -f reports/data_manifest.json ] || [ "${{ github.event.inputs.refresh_data }}" = "true" ] || [ "${{ github.event_name }}" = "schedule" ]; then
             python scripts/acquire_data.py --start 2007-01-01 --external
           else
             echo "Reusing restored target cache; data acquisition intentionally skipped."
@@ -67,29 +69,41 @@ jobs:
         id: validate
         continue-on-error: true
         run: python scripts/validate_data.py
-      - name: Test target construction
+      - name: Test target construction and scoring
         run: python -m pytest -q
-      - name: Enforce data gate
+      - name: Refresh cache if validation failed
         if: steps.validate.outcome != 'success'
+        continue-on-error: true
+        env:
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python scripts/acquire_data.py --start 2007-01-01 --external
+      - name: Revalidate after refresh
+        id: validate_retry
+        if: steps.validate.outcome != 'success'
+        continue-on-error: true
+        run: python scripts/validate_data.py
+      - name: Enforce data gate
+        if: steps.validate.outcome != 'success' && steps.validate_retry.outcome != 'success'
         run: |
-          echo "No validated target series. Phase 3 is blocked; no model result will be claimed."
+          echo "No validated target series after one explicit refresh. Phase 3 is blocked; no model result will be claimed."
           exit 2
       - name: Build feature matrix
         id: features
-        if: steps.validate.outcome == 'success'
+        if: steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success'
         run: python scripts/build_feature_matrix.py
       - name: Run technical-only model catalogue
-        if: always() && steps.validate.outcome == 'success' && steps.features.outcome == 'success'
+        if: always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
         run: python scripts/run_experiments.py --features technical
       - name: Run global-augmented model catalogue
-        if: always() && steps.validate.outcome == 'success' && steps.features.outcome == 'success'
+        if: always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
         run: python scripts/run_experiments.py --features global
       - name: Run ARIMA return benchmark
-        if: always() && steps.validate.outcome == 'success' && steps.features.outcome == 'success'
+        if: always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
         continue-on-error: true
         run: python scripts/run_arima_baseline.py
       - name: Merge model, feature and benchmark results
-        if: always() && steps.validate.outcome == 'success' && steps.features.outcome == 'success'
+        if: always() && (steps.validate.outcome == 'success' || steps.validate_retry.outcome == 'success') && steps.features.outcome == 'success'
         run: python scripts/merge_results.py
       - name: Summarize data / run outcomes
         if: always()
