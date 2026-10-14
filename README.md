@@ -138,3 +138,12 @@ Corrective [run #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/3
 ## Developer correction branch — expanded PDF audit
 
 The independent review identified two report defects in run #56: an invalid ratio-style QLIKE skill field when QLIKE means are negative, and a hard-coded sequence epoch count. The bounded corrections are documented in [developer submission](research/PDF_METHOD_AUDIT_DEVELOPER_SUBMISSION.md), with tests and error log updates. Developer branch: [research/pdf-audit-developer](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/pdf-audit-developer). Independent tester branch/report: [research/pdf-audit-tester](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/pdf-audit-tester). Final status depends on the bounded workflow retest and tester verification; no model winner is approved meanwhile.
+
+
+## Corrected expanded catalogue — latest status
+
+- [Run #60](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38593936036) completed successfully on `research/pdf-audit-developer`. Artifact SHA-256: `b601320f64ab8ec0c62f0a07e458287cba781eca73107f1b2c38beda140a8151`.
+- [Expanded results and independent handoff checklist](research/PDF_METHOD_AUDIT_RESULTS.md), [manuscript supplement](research/MANUSCRIPT.md), [phase status](research/PHASE_STATUS.md), [experiment log](research/EXPERIMENT_LOG.md), and [error log](research/ERROR_LOG.md) now record run #60.
+- The merged table has 1,097 metric rows including 485 OOS-evaluated rows and 130 explicitly compute-blocked rows. Corrected QLIKE improvement uses a score difference; sequence metadata reflects the three-epoch budget.
+- Current bounded conclusion: no robust return/direction winner established. Some volatility scores improve descriptively but rankings vary by metric; volatility-expansion remains exploratory. Paired-loss p-values must be read with their sign: negative model-minus-baseline loss favors the model; positive favors baseline.
+- **Next gate:** independent tester audit only after results acquisition, now complete. No strategy research is included in this prediction-only phase.
