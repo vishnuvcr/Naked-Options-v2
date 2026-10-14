@@ -119,3 +119,14 @@ The first pilot data gate failed because quote coverage was only 17.45% (<80% th
 - Defect found in run #4 artifact: all 32 primary raw/Holm p-values were blank/NaN despite nonempty ledgers. Do not treat multiplicity-adjusted inference as complete. Developer added an explicit null-centered circular block-bootstrap p-value implementation in commit a543eed8059de79dbcc6b2dc53a3dd31f14298a9; [corrective rerun #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562114651) is in progress. No parameter search is being expanded; this is a bounded inference correction.
 - Additional scope limitation: the frozen plan calls for a common-date sensitivity, but run #4 artifact does not contain one. Do not claim cross-candidate superiority; record this as not completed under the failed quality gate.
 - Decision: **NO-GO / no strike candidate approved**. The study is non-confirmatory due conflict rate and coverage failures, all measured primary model-filtered means are negative, and the p-value output defect requires the single corrective rerun. No paper or live deployment.
+
+
+## Uploaded-PDF method comparison — bounded run initiated 2026-10-14
+
+| Run | Branch / commit | Status | Scope |
+|---|---|---|---|
+| PDF-METHOD-AUDIT-001 | [research/pdf-method-audit](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/pdf-method-audit), latest code commit `5cd571a013b6ba218ff2ea868edb571a5864b725` | Workflow [#55](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562973443) pending/queued at log time | Expanded classic regressors/classifiers and sequence candidates. New model outcomes pending; no result inferred from code presence. |
+
+Changes: added Linear Regression, Lasso, SGD, KNN, Decision Tree, Gradient Boosting and AdaBoost to classical registries; added vanilla RNN, CNN and LSTM+GRU, CNN+RNN, CNN+TCN, LSTM+TCN compact sequence candidates. The frozen runner uses chronological splits and existing scoring/uncertainty routines; sequence models are restricted to one-session return/direction for a bounded CPU budget.
+
+Uncovered method families are explicit: BERT/news fusion (requires timestamped news), self-organizing fuzzy neural networks, DBN, wavelet preprocessing, Granger feature screening and backward-elimination LSTM are not yet empirically tested. Three options-strategy PDFs remain outside the prediction-only question. The final artifact must classify each family as tested, failed, blocked or not implemented.
