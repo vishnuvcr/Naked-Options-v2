@@ -8,6 +8,7 @@ from sklearn.base import clone
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import mean_absolute_error, log_loss
 from models import regression_models, classification_models
+from sequence_models import sequence_models
 from forecast_metrics import regmetrics, clsmetrics, hac_test, block_ci, holm
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -72,6 +73,18 @@ def main():
         return 0
     if len(cols)<5: raise SystemExit("Blocked: too few recognized lagged feature columns")
     regmodels=regression_models(); clsmodels=classification_models()
+    seqstatus={"status":"NOT_REQUESTED","reason":"Sequence estimators are run only in the technical-only ablation"}
+    if args.features=="technical":
+        sr,sc=sequence_models()
+        if len(df)<1000:
+            seqstatus={"status":"BLOCKED_SAMPLE_SIZE","rows":len(df),"minimum_rows":1000}
+        elif not sr:
+            seqstatus={"status":"BLOCKED_NO_TORCH","reason":"PyTorch is not installed in this workflow"}
+        else:
+            regmodels.update(sr); clsmodels.update(sc)
+            seqstatus={"status":"PASS","regression_models":list(sr),"classification_models":list(sc),"epochs":8}
+    REPORT.mkdir(parents=True,exist_ok=True)
+    (REPORT/"sequence_model_status.json").write_text(json.dumps(seqstatus,indent=2))
     tasks=[("return","target_return"),("level","target_log_close"),("volatility","target_future_vol"),
            ("direction","target_direction"),("vol_expansion","target_vol_expansion")]
     metric_rows=[]; pred_rows=[]; err_rows=[]
@@ -90,6 +103,9 @@ def main():
             continue
         Xd=dev[cols].to_numpy(float); yd=pd.to_numeric(dev[target]).to_numpy(float)
         Xt=test[cols].to_numpy(float); yt=pd.to_numeric(test[target]).to_numpy(float)
+        seqcols=[f"ret_{k}" for k in range(60,-1,-1) if f"ret_{k}" in df.columns]
+        Xds=dev[seqcols].to_numpy(float)[:,:,None] if len(seqcols)>=40 else Xd
+        Xts=test[seqcols].to_numpy(float)[:,:,None] if len(seqcols)>=40 else Xt
         origins=dev.origin_i.to_numpy(int)
         if kind=="cls":
             yd=yd.astype(int); yt=yt.astype(int)
@@ -102,7 +118,9 @@ def main():
         for name,proto in registry.items():
             row={"task":task,"horizon":h,"model":name,"n_dev":len(dev),"n_test":len(test),"status":"PENDING"}
             try:
-                row["validation_score"]=cv_score(proto,Xd,yd,origins,h,kind)
+                is_seq=name.startswith("seq_")
+                Xfit,Xeval=(Xds,Xts) if is_seq else (Xd,Xt)
+                row["validation_score"]=cv_score(proto,Xfit,yd,origins,h,kind)
                 row["status"]="PASS" if row["validation_score"] is not None else "BLOCKED"
                 if row["status"]=="PASS": scored.append((row["validation_score"],name,proto))
             except Exception as e:
@@ -116,9 +134,9 @@ def main():
             try:
                 est=clone(proto)
                 with warnings.catch_warnings():
-                    warnings.simplefilter("ignore"); est.fit(Xd,yd)
+                    warnings.simplefilter("ignore"); est.fit(Xfit,yd)
                 if kind=="reg":
-                    phat=np.asarray(est.predict(Xt),float)
+                    phat=np.asarray(est.predict(Xeval),float)
                     met=regmetrics(yt,phat,b)
                     loss=(yt-phat)**2-(yt-b)**2
                     ci=block_ci(loss,h,SEED+h)
@@ -126,7 +144,7 @@ def main():
                     common={"mae_baseline":float(np.mean(abs(yt-b))),"ci_loss_diff_low":ci[0],"ci_loss_diff_high":ci[1],**tst}
                     predprob=None
                 else:
-                    phat=np.clip(prob1(est,Xt),1e-6,1-1e-6)
+                    phat=np.clip(prob1(est,Xeval),1e-6,1-1e-6)
                     met=clsmetrics(yt,phat,b)
                     loss=-(yt*np.log(phat)+(1-yt)*np.log(1-phat))+ (yt*np.log(np.clip(b,1e-6,1-1e-6))+(1-yt)*np.log(np.clip(1-b,1e-6,1-1e-6)))
                     ci=block_ci(loss,h,SEED+h); tst=hac_test(loss,h-1)
@@ -157,7 +175,7 @@ def main():
     pd.DataFrame(pred_rows).to_csv(REPORT/f"predictions_{args.features}.csv",index=False)
     pd.DataFrame(err_rows).to_csv(REPORT/f"experiment_errors_{args.features}.csv",index=False)
     metadata={"research_version":"NIFTY-PRED-1.0","seed":SEED,"models_regression":list(regmodels),
-      "models_classification":list(clsmodels),"features":cols,"experiments":len(metric_rows),
+      "models_classification":list(clsmodels),"sequence_status":seqstatus,"features":cols,"experiments":len(metric_rows),
       "oos_predictions":len(pred_rows),"status":"COMPLETE" if pred_rows else "BLOCKED_NO_OOS_OUTPUT",
       "selection_rule":"validation CV loss only; final holdout used for one-time evaluation and no hyperparameter tuning"}
     (REPORT/f"experiment_run_{args.features}.json").write_text(json.dumps(metadata,indent=2))
