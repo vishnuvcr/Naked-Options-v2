@@ -27,3 +27,10 @@ def test_block_bootstrap_is_reproducible():
     a=block_ci(np.arange(50),5,seed=17,reps=100)
     b=block_ci(np.arange(50),5,seed=17,reps=100)
     assert a==b
+
+
+def test_oos_r2_is_relative_to_forecast_baseline():
+    m=regmetrics([1,2,3],[1,3,2],[0,0,0])
+    expected=1-(2/3)/(14/3)
+    assert m["oos_r2_vs_baseline"]==pytest.approx(expected)
+    assert m["mse_skill_vs_baseline"]==pytest.approx(expected)
