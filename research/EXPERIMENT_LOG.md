@@ -60,3 +60,27 @@ The dated amendment in RESEARCH_PLAN.md is now part of the branch history. It pr
 | #40+ | 2ea446b3afa42e4283ab7e26964c08d2e2659821 | Expected after plan amendment; must be verified | Candidate canonical run using final policy. No final model metric is accepted until tests, completed job, artifact output and code SHA are verified. |
 
 The model pool and estimator caps are configuration choices fixed before inspecting out-of-sample performance. The locked holdout remains a one-time comparison source and is not used for selection.
+
+## Run 41 — full bounded execution completed through model fitting; merge failed
+
+| Run | Workflow / SHA | Source / split | Status | Evidence and limitation |
+|---|---|---|---|---|
+| RUN-41 | [Actions #41](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38526229786), commit 277758e43cadcef819672f4c1567660c683b5a2e | Dhan target SHA b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050; chronological 80/20 development/holdout; 2 folds | MODEL FITS COMPLETE; MERGE FAIL | Data validation and feature matrix passed; tests passed; technical run JSON reports COMPLETE (278 experiment records, 72,253 OOS predictions, 4 sequence architectures at 3 epochs); global run JSON reports COMPLETE (210 experiment records, 64,413 OOS predictions); ARIMA manifest PASS. Step 17 merge failed because a zero-column/no-error CSV was parsed. The workflow artifact omitted metrics_*.csv and predictions_*.csv, so model rankings are not available from this run and must not be reconstructed by guessing. |
+| ARIMA benchmark in RUN-41 | Same workflow/artifact; arima_metrics.csv was retained | 80% chronological training, latest 20% holdout; 1/5/20-session cumulative log return; zero-return comparator | PROVISIONAL / NOT YET GATE-APPROVED | Metrics are transcribed below from the uploaded machine-generated ARIMA metrics file. Raw p-values are not Holm-adjusted in that file; final merged table will recompute them. |
+| RUN-42–44 | Actions #42–44 | Same cached data / branch | CANCELLED | Superseded by successive fixes to merge parsing, output artifact globs and tests. No model outcomes accepted from those runs. |
+| RUN-45 | [Actions #45](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38527508857), commit c11ee9b408473cb2279e76a7e8a2b98a8a88b011 | Same target cache unless manifest hash changes | PENDING at log update | Contains empty-CSV-safe merge, corrected volatility QLIKE scoring, tests and full per-model CSV artifact paths. Accept only after completion and artifact review. |
+
+### Provisional ARIMA(1,0,0) results (paper-free holdout metrics from RUN-41)
+
+| Horizon | OOS n | MAE (log-return units) | RMSE | OOS R² vs zero-return | MSE skill vs training-mean forecast | Mean loss diff vs zero (positive = worse) | HAC p-value | 95% moving-block CI for loss diff |
+|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| 1 session | 980 | 0.005775 | 0.007957 | -0.003482 | -0.004050 | 2.197e-7 | 0.4917 | [-3.097e-7, 8.047e-7] |
+| 5 sessions | 976 | 0.013654 | 0.017518 | 0.001095 | -0.000965 | -3.365e-7 | 0.9351 | [-7.705e-6, 8.115e-6] |
+| 20 sessions | 961 | 0.025702 | 0.033486 | 0.010657 | -0.001352 | -1.208e-5 | 0.8420 | [-1.284e-4, 1.027e-4] |
+
+These are descriptive single-benchmark outputs from the retained ARIMA artifact, not evidence of statistically significant forecasting skill. All three HAC p-values are large and every loss-difference interval crosses zero. They remain provisional until the corrected merge rerun independently reproduces them and the Holm-adjusted final table is produced.
+
+## Failure-driven repair
+- Empty per-run CSVs are now treated as no data instead of merge-fatal.
+- The workflow now uploads both merged and per-run metrics/predictions/errors, together with experiment/error/phase logs; the prior artifact only held the merged file names and JSON.
+- Volatility uses a non-negative equivalent QLIKE score before computing skill versus baseline; the correction is covered by a unit test.
