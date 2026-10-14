@@ -21,3 +21,16 @@
 
 ## Tester disposition
 **FAIL / BLOCKED.** This is not a claim that all strikes are unprofitable. It means the evidence is currently insufficient to identify any reliable strike-selection edge. Developer must not progress to prospective paper testing.
+
+
+## Run #4 evidence update — 2026-10-14 (developer supplied; independent sign-off waived by user)
+
+- Run #4 [completed successfully]( https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097 ), with 13 regression tests passing before and after analysis. Artifact SHA-256: `7fae1922403e398f040ee8ca3a80f607e07e0d6569c98eb35b3ae0c6f168d285`.
+- Fresh quote data: 1,055,699 raw rows, 1,023,541 usable rows, 452 conflict groups among 31,706 duplicate groups (1.4256%, fails <=1% gate). Candidate coverage ranges 83.27% to 16.94%; only ATM/ATM clears the 80% coverage gate.
+- At primary costs (50 bps/side and ₹10/order), all 32 model-filtered candidate × horizon means were negative and each reported 95% block interval upper bound was below zero. These are exploratory only because the data-quality gate failed.
+- Run #4's 32 raw/Holm p-values were all NaN/blank despite populated ledger rows. A self-contained null-centered circular block-bootstrap correction was committed as `a543eed8059de79dbcc6b2dc53a3dd31f14298a9`; corrective [run #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562114651) remains in progress at the last check. This tester report does not claim independent reproduction of run #4's calculations.
+- The frozen plan's common-date sensitivity is absent. No cross-candidate superiority claim is supported.
+
+## Current tester disposition
+
+**FAIL / NO-GO for confirmatory interpretation.** User waived the separate tester sign-off requirement for this run; that waiver is not a tester pass. Do not approve any strike candidate or paper/live deployment. The single bounded statistical correction should be checked for finite p-values, but failed quote-quality/coverage gates and negative primary outcomes already rule out a confirmatory winner under the frozen plan.
