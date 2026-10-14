@@ -1,0 +1,105 @@
+name: NIFTY prediction research
+
+on:
+  workflow_dispatch:
+    inputs:
+      refresh_data:
+        description: "Refresh cached market data from sources"
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    - cron: "20 23 1 * *"
+  push:
+    branches: [main, "research/**", "developer/**", "tester/**"]
+    paths:
+      - "scripts/**"
+      - "tests/**"
+      - "requirements-research.txt"
+      - "research/RESEARCH_PLAN.md"
+      - ".github/workflows/nifty-research.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nifty-prediction-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-research.txt
+      - name: Restore reusable market-data cache
+        id: market-cache
+        uses: actions/cache@v4
+        with:
+          path: data/cache
+          key: nifty-pred-v1-${{ runner.os }}-${{ hashFiles('requirements-research.txt', 'scripts/acquire_data.py') }}-${{ github.run_id }}
+          restore-keys: |
+            nifty-pred-v1-${{ runner.os }}-${{ hashFiles('requirements-research.txt', 'scripts/acquire_data.py') }}-
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && pip install -r requirements-research.txt
+      - name: Acquire data (cache hit is reused unless refresh requested)
+        env:
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          if [ ! -f data/cache/nifty50_daily.csv ] || [ "${{ github.event.inputs.refresh_data }}" = "true" ] || [ "${{ github.event_name }}" = "schedule" ]; then
+            python scripts/acquire_data.py --start 2007-01-01 --external
+          else
+            echo "Reusing restored target cache; data acquisition intentionally skipped."
+          fi
+      - name: Validate target data
+        id: validate
+        continue-on-error: true
+        run: python scripts/validate_data.py
+      - name: Test target construction
+        run: python -m pytest -q
+      - name: Build feature matrix
+        if: steps.validate.outcome == 'success'
+        run: python scripts/build_feature_matrix.py
+      - name: Run fixed experiment catalogue
+        if: steps.validate.outcome == 'success'
+        run: python scripts/run_experiments.py
+      - name: Summarize data / run outcomes
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("reports/run_status.json")
+          def read(path):
+              f=Path(path)
+              if not f.exists(): return {"status":"NOT_CREATED"}
+              try: return json.loads(f.read_text())
+              except Exception: return {"status":"UNREADABLE"}
+          p.parent.mkdir(exist_ok=True, parents=True)
+          p.write_text(json.dumps({
+              "workflow_run_id": "${{ github.run_id }}",
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}",
+              "data_manifest": read("reports/data_manifest.json"),
+              "data_quality": read("reports/data_quality.json"),
+              "experiment_run": read("reports/experiment_run.json"),
+          }, indent=2))
+          PY
+      - name: Upload reproducible reports (raw/licensed market data excluded)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nifty-prediction-reports-${{ github.run_id }}
+          path: |
+            reports/*.json
+            reports/metrics.csv
+            reports/experiment_errors.csv
+            reports/predictions.csv
+          if-no-files-found: warn
+          retention-days: 90
