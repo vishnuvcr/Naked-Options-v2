@@ -1,5 +1,5 @@
 """Run preregistered chronological NIFTY forecast comparisons."""
-import json, warnings
+import argparse, json, warnings
 from datetime import datetime, timezone
 from pathlib import Path
 import numpy as np
@@ -54,10 +54,22 @@ def cv_score(model,X,y,origin,h,kind):
     return float(np.mean(scores)) if scores else None
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--features",choices=["technical","global"],default="global")
+    args=parser.parse_args()
     source=CACHE/"model_matrix.csv"
     if not source.exists(): raise SystemExit("Blocked: build validated feature matrix first")
     df=pd.read_csv(source)
     cols=[c for c in df.columns if c in BASE_FEATURES or c.startswith(FEATURE_PREFIX)]
+    if args.features == "technical": cols=[c for c in cols if not c.startswith("ext_")]
+    elif not any(c.startswith("ext_") for c in cols):
+        REPORT.mkdir(parents=True,exist_ok=True)
+        (REPORT/"experiment_run_global.json").write_text(json.dumps({"status":"BLOCKED_NO_GLOBAL_FEATURES","reason":"No validated auxiliary daily sources were available","features":[]},indent=2))
+        pd.DataFrame().to_csv(REPORT/"metrics_global.csv",index=False)
+        pd.DataFrame().to_csv(REPORT/"predictions_global.csv",index=False)
+        pd.DataFrame().to_csv(REPORT/"experiment_errors_global.csv",index=False)
+        print("BLOCKED: no verified global auxiliary features available")
+        return 0
     if len(cols)<5: raise SystemExit("Blocked: too few recognized lagged feature columns")
     regmodels=regression_models(); clsmodels=classification_models()
     tasks=[("return","target_return"),("level","target_log_close"),("volatility","target_future_vol"),
@@ -141,14 +153,14 @@ def main():
             adj=holm(ps)
             metrics.loc[idx,"p_holm"]=adj
     REPORT.mkdir(parents=True,exist_ok=True)
-    metrics.to_csv(REPORT/"metrics.csv",index=False)
-    pd.DataFrame(pred_rows).to_csv(REPORT/"predictions.csv",index=False)
-    pd.DataFrame(err_rows).to_csv(REPORT/"experiment_errors.csv",index=False)
+    metrics.to_csv(REPORT/f"metrics_{args.features}.csv",index=False)
+    pd.DataFrame(pred_rows).to_csv(REPORT/f"predictions_{args.features}.csv",index=False)
+    pd.DataFrame(err_rows).to_csv(REPORT/f"experiment_errors_{args.features}.csv",index=False)
     metadata={"research_version":"NIFTY-PRED-1.0","seed":SEED,"models_regression":list(regmodels),
       "models_classification":list(clsmodels),"features":cols,"experiments":len(metric_rows),
       "oos_predictions":len(pred_rows),"status":"COMPLETE" if pred_rows else "BLOCKED_NO_OOS_OUTPUT",
       "selection_rule":"validation CV loss only; final holdout used for one-time evaluation and no hyperparameter tuning"}
-    (REPORT/"experiment_run.json").write_text(json.dumps(metadata,indent=2))
+    (REPORT/f"experiment_run_{args.features}.json").write_text(json.dumps(metadata,indent=2))
     print(json.dumps(metadata,indent=2))
     return 0 if pred_rows else 3
 if __name__=="__main__": raise SystemExit(main())
