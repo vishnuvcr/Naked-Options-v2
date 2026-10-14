@@ -6,7 +6,7 @@ def regmetrics(y,p,b):
  y,p,b=map(lambda z:np.asarray(z,float),(y,p,b)); m=np.isfinite(y)&np.isfinite(p)&np.isfinite(b); y,p,b=y[m],p[m],b[m]
  if not len(y): return {"n":0}
  mse=np.mean((y-p)**2); bm=np.mean((y-b)**2); den=np.sum((y-y.mean())**2)
- return {"n":len(y),"mae":float(np.mean(abs(y-p))),"rmse":float(np.sqrt(mse)),"oos_r2_vs_mean":float(1-np.sum((y-p)**2)/den) if den else None,"mse_baseline":float(bm),"mse_skill_vs_baseline":float(1-mse/bm) if bm else None}
+ return {"n":len(y),"mae":float(np.mean(abs(y-p))),"rmse":float(np.sqrt(mse)),"oos_r2_vs_baseline":float(1-mse/bm) if bm else None,"mse_baseline":float(bm),"mse_skill_vs_baseline":float(1-mse/bm) if bm else None}
 def clsmetrics(y,p,b):
  y=np.asarray(y,int); p=np.clip(np.asarray(p,float),1e-7,1-1e-7); b=np.clip(np.asarray(b,float),1e-7,1-1e-7)
  if not len(y): return {"n":0}
