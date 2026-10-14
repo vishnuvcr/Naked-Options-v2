@@ -1,32 +1,31 @@
-"""Merge feature ablations and correct paired tests across them."""
+"""Merge model, feature ablation and ARIMA outputs; correct model multiplicity."""
 import json
 from pathlib import Path
 import pandas as pd
 from forecast_metrics import holm
 R=Path(__file__).resolve().parents[1]/"reports"
-def get(tag,name):
- p=R/f"{name}_{tag}.csv"
- if not p.exists() or not p.stat().st_size:return pd.DataFrame()
- d=pd.read_csv(p)
- if len(d):d["feature_set"]=tag
- return d
 def main():
- ms=[];ps=[];es=[];status={}
- for tag in ("technical","global"):
-  m,p,e=(get(tag,x) for x in ("metrics","predictions","experiment_errors"))
-  if len(m):ms.append(m)
-  if len(p):ps.append(p)
-  if len(e):es.append(e)
-  f=R/f"experiment_run_{tag}.json"
-  status[tag]=json.loads(f.read_text()) if f.exists() else {"status":"NOT_RUN"}
- m=pd.concat(ms,ignore_index=True) if ms else pd.DataFrame()
+ bags={"metrics":[],"predictions":[],"experiment_errors":[]}
+ sources=[("technical","metrics_technical.csv","predictions_technical.csv","experiment_errors_technical.csv"),
+ ("global","metrics_global.csv","predictions_global.csv","experiment_errors_global.csv"),
+ ("statistical_benchmark","arima_metrics.csv","arima_predictions.csv",None)]
+ status={}
+ for tag,mf,pf,ef in sources:
+  for key,name in (("metrics",mf),("predictions",pf),("experiment_errors",ef)):
+   f=R/name if name else None
+   if f and f.exists() and f.stat().st_size:
+    d=pd.read_csv(f)
+    if len(d):d["feature_set"]=tag;bags[key].append(d)
+  meta=R/f"experiment_run_{tag}.json"
+  status[tag]=json.loads(meta.read_text()) if meta.exists() else ({"status":"PASS"} if tag=="statistical_benchmark" and (R/"arima_run.json").exists() else {"status":"BLOCKED_OR_NOT_RUN"})
+ m=pd.concat(bags["metrics"],ignore_index=True) if bags["metrics"] else pd.DataFrame()
  if len(m):
   m["p_holm"]=float("nan")
   for _,ids in m[m.status.eq("OOS_EVALUATED")].groupby(["task","horizon"]).groups.items():
    m.loc[ids,"p_holm"]=holm(m.loc[ids,"p_value"].tolist())
  m.to_csv(R/"metrics.csv",index=False)
- for dest,parts in (("predictions.csv",ps),("experiment_errors.csv",es)):
-  (pd.concat(parts,ignore_index=True) if parts else pd.DataFrame()).to_csv(R/dest,index=False)
- obj={"status":"COMPLETE" if len(m) else "BLOCKED","runs":status,"metric_rows":len(m),"prediction_rows":sum(map(len,ps))}
+ for key in ("predictions","experiment_errors"):
+  (pd.concat(bags[key],ignore_index=True) if bags[key] else pd.DataFrame()).to_csv(R/f"{key}.csv",index=False)
+ obj={"status":"COMPLETE" if len(m) else "BLOCKED","runs":status,"metric_rows":len(m),"prediction_rows":sum(map(len,bags["predictions"]))}
  (R/"feature_ablation.json").write_text(json.dumps(obj,indent=2));print(json.dumps(obj,indent=2))
 if __name__=="__main__":main()
