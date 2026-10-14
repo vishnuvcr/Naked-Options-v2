@@ -2,7 +2,7 @@
 
 Version: NIFTY-PRED-1.0  
 Last updated: 2026-10-14  
-Status: Corrected run #49 completed; preliminary empirical results independently checked; tester gate remains open.
+Status: Corrected run #49 independently reviewed; bounded prediction-only study closed with scope limitations.
 
 ## Canonical run
 
@@ -37,7 +37,7 @@ Return forecasting does not show robust useful skill; the 1-session direction re
 
 ## Gate
 
-Phase 5: run complete, tester gate open. Phase 7: arithmetic checks passed; remaining multiplicity/ARIMA/calibration review. Phase 8: tester must issue explicit PASS/FAIL. Phase 9: manuscript remains provisional. No model or options strategy is approved.
+Phase 5: PASS. Phase 7: PASS for bounded prediction-only scope. Phase 8: tester PASS WITH SCOPE LIMITATIONS. Phase 9: manuscript complete. Phase 2 literature depth and Phase 6 source/regime coverage remain partial and are explicitly accepted limitations. No options strategy is approved.
 
 
 ## Additional validation and calibration
@@ -51,3 +51,8 @@ Phase 5: run complete, tester gate open. Phase 7: arithmetic checks passed; rema
 ## Final scoped conclusion
 
 The bounded prediction-only study passes the independent tester gate with scope limitations. No robust return/direction advantage is demonstrated. Some volatility-expansion log-loss comparisons are promising but exploratory. No options trading strategy, Paytm Money fee/slippage model, option-chain backtest or live deployment was evaluated.
+
+
+## Closure record
+
+The nine-phase study is closed for the bounded prediction-only scope. The conclusion is that this tested model/data set did not establish a robust return/direction edge. Unavailable options/FII-DII/PCR/breadth/news inputs and lack of brokerage/slippage/execution tests prohibit strategy-level claims.
