@@ -85,3 +85,11 @@ The developer accepted the independent tester's no-go. No strategy, paper-tradin
 ## Independent review of run #60 — gate did not pass
 
 Tester report: [PDF method audit tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md). Disposition: FAIL FOR FINAL SCIENTIFIC SIGN-OFF, while workflow execution itself passed. Main blocker: 1,260 missing target dates caused by partial future windows for volatility labels. Developer fix committed to `scripts/build_feature_matrix.py` with a new assertion test. Workflow #61 is testing the code correction and #62 is queued with the test addition. Do not close the independent-review gate until the corrected artifact is checked and the tester submits an updated disposition.
+
+
+## Final run #62 disposition
+
+- Workflow #62 succeeded. Final artifact has 471,735 prediction rows, zero null target dates and no target date on/before origin.
+- Independent tester: [PASS WITH SCOPE LIMITATIONS](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md). Headline metrics, non-ARIMA confidence intervals, ARIMA benchmark and Holm corrections were reproduced.
+- Conclusion: no robust return/direction winner. One-session global XGBoost volatility QLIKE improvement survives Holm correction; other volatility results are metric-specific and volatility-expansion remains exploratory.
+- Close bounded prediction-only research. Preserve calendar/global timing and unavailable feature families as limitations.
