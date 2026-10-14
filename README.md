@@ -36,3 +36,15 @@ No model will be declared best from training fit, shuffled validation, price-lev
 - No empirical result or best-performing model is claimed at this stage.
 
 See [phase status](research/PHASE_STATUS.md) for the authoritative gate state.
+
+## Corrected run #49 — 2026-10-14
+
+The forward-volatility label defect has been fixed and regression-tested. [Workflow #49](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38533512128) completed successfully. Artifact SHA-256: `97858125f14344520f77dd503d2c0441005e6da4cfa12fc23fe7427680f932e7`.
+
+- [Corrected results and evidence register](research/RESULTS.md)
+- [Phase status and gates](research/PHASE_STATUS.md)
+- [Experiment log](research/EXPERIMENT_LOG.md)
+- [Error log](research/ERROR_LOG.md)
+- [Independent tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/independent-tester/research/TESTER_REPORT.md)
+
+Preliminary findings: the 1-session direction result does not survive multiplicity correction; 5-/20-session return forecasts are worse than the zero-return baseline in the selected global models; volatility results are not statistically accepted after correction. Some volatility-expansion classifiers improve log loss, but this remains exploratory. No trading strategy has been validated; options data and broker-specific costs/slippage have not been tested. Phase 5/7 remain open until independent tester approval.
