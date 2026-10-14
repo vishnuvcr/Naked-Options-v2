@@ -1,0 +1,86 @@
+name: NIFTY option strike-selection study
+
+on:
+  workflow_dispatch:
+    inputs:
+      refresh_options:
+        description: Redownload historical rolling-option windows instead of reusing cache
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches:
+      - research/option-strike-selection
+    paths:
+      - .github/workflows/option-strike-selection.yml
+      - research/STRIKE_SELECTION_PLAN.md
+      - research/option-strike-selection/strike_grid.py
+      - research/option-validation/backtest.py
+      - requirements-option-validation.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: option-strike-selection-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  strike-grid:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/option-strike-selection
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            requirements-research.txt
+            requirements-option-validation.txt
+      - name: Restore private cached option data
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/cache
+            reports/data_quality.json
+          key: nifty-option-validation-Linux-${{ hashFiles('research/option-validation/backtest.py', 'scripts/build_feature_matrix.py', 'requirements-option-validation.txt') }}
+          restore-keys: |
+            nifty-option-validation-Linux-
+            nifty-pred-v1-Linux-
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-research.txt -r requirements-option-validation.txt
+      - name: Validate code and existing cost/matching tests
+        run: pytest -q research/option-validation/test_backtest.py
+      - name: Acquire/reuse options cache
+        continue-on-error: true
+        env:
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          REFRESH_OPTIONS: ${{ github.event.inputs.refresh_options }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_SERVER_URL: ${{ github.server_url }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          args=""
+          if [ "$REFRESH_OPTIONS" = "true" ]; then args="--refresh-options"; fi
+          python research/option-validation/backtest.py --acquire-options $args
+      - name: Run frozen strike grid
+        run: python research/option-strike-selection/strike_grid.py
+      - name: Upload sanitized results only
+        uses: actions/upload-artifact@v4
+        with:
+          name: option-strike-selection-${{ github.run_id }}
+          path: |
+            research/STRIKE_SELECTION_PLAN.md
+            reports/option_strike_selection/*.csv
+            reports/option_strike_selection/run_summary.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Final regression tests
+        if: always()
+        run: pytest -q research/option-validation/test_backtest.py
