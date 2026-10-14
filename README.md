@@ -147,3 +147,8 @@ The independent review identified two report defects in run #56: an invalid rati
 - The merged table has 1,097 metric rows including 485 OOS-evaluated rows and 130 explicitly compute-blocked rows. Corrected QLIKE improvement uses a score difference; sequence metadata reflects the three-epoch budget.
 - Current bounded conclusion: no robust return/direction winner established. Some volatility scores improve descriptively but rankings vary by metric; volatility-expansion remains exploratory. Paired-loss p-values must be read with their sign: negative model-minus-baseline loss favors the model; positive favors baseline.
 - **Next gate:** independent tester audit only after results acquisition, now complete. No strategy research is included in this prediction-only phase.
+
+
+## Tester finding and bounded correction
+
+The independent tester report is on [the final tester branch](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md). It found partial future-window volatility labels producing 1,260 null target dates in the run #60 artifact. The developer corrected `scripts/build_feature_matrix.py` to require all future returns in the horizon and added a regression test in `tests/test_research.py`. Corrected workflow #61 is running on the feature fix; workflow #62 is queued with the new test. Final sign-off is blocked until a corrected artifact proves zero null target dates among evaluated rows and the tester reviews it.
