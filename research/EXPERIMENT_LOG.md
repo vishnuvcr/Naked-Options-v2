@@ -67,3 +67,14 @@ This is a user-approved scope amendment after NIFTY-PRED-1.0 closure. It does no
 | [Option validation #6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923) | 29aa17d29794ac7ef9368a90f56d9d20582b9ef1 | IN PROGRESS AT LOG UPDATE | Uses Dhan's documented MONTH/expiryCode=1 request example and includes redacted provider error details. Empirical results pending; no inference until run completes. |
 
 The earlier attempts are retained as failed runs. The protocol is not considered data-complete until the provider request succeeds and quote-quality gates pass.
+
+## OPT-BUY-1.0 — first pilot outcome and corrected run
+
+| Run | Status | Outcome |
+|---|---|---|
+| [#6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923) | SUCCESS technically; pilot data gate FAIL | Dhan monthly option calls: 196 planned, 196 valid/empty, 0 failed. 303,548 raw rows; 294,419 usable; 45 conflicting duplicate groups / 9,084 duplicate groups. Only 171/980 (17.45%) dates had valid fixed-strike entry/exit for both structures. Four candidate average premium-normalized daily returns were negative. Results are preliminary and not accepted. |
+| [#7](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38544279448) | FAILED TEST GATE | Eight tests passed; one redaction-fixture assertion failed because expected error fields were missing from the fake response. Acquisition was skipped. Failure and correction are documented in ERROR_LOG.md. |
+| [#8](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38545312929) | CANCELLED / SUPERSEDED | Started from the pre-correction test fixture; do not treat its output as final. |
+| [#9](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38545503819) | RUNNING | Fixes cache filename and test fixture; expands request grid to monthly ATM−3…ATM+3 for calls and puts. Primary comparison is daily net rupee P&L; premium returns are secondary. |
+
+The first pilot data gate failed because quote coverage was only 17.45% (<80% threshold). Its paired percentage-return p-values do not qualify as evidence under this protocol; the wider-strike corrected run is required.
