@@ -102,3 +102,9 @@ The first pilot data gate failed because quote coverage was only 17.45% (<80% th
 - Workflow: [run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097), branch `research/option-strike-selection`, commit `29182fbf7e49fed42d4271c4bb41ad4f7dadd4e4`.
 - Status at check: running. Daily-target acquisition and validation completed, and the existing regression suite passed (13 tests). “Acquire/reuse options cache” remains in progress; strike grid, sanitized result upload and final tests remain pending.
 - No result artifact is currently available. This checkpoint is operational only; there are no strike ranks, candidate P&Ls, p-values, or strategy conclusions to report. User waived independent tester sign-off for this run, but the frozen data-quality and inference gates remain in force.
+
+
+### Run #4 progress checkpoint — 2026-10-14 — subsequent live poll
+
+- A subsequent live poll shows the options-cache step completed and the frozen strike grid is now running. Daily target validation and the pre-analysis regression suite (13 tests) passed.
+- The options step's workflow-level success is not interpreted as proof that option data passed the data gate because the step uses `continue-on-error: true`. No result artifact or strike-grid conclusion is available at this checkpoint.
