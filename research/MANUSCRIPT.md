@@ -114,3 +114,26 @@ The paired-loss convention is `model loss - baseline loss`; negative mean loss d
 ### Revised conclusion
 
 The expanded screen establishes no robust return/direction winner. Some volatility rows improve individual descriptive metrics, but model rankings vary by score and require independent reproduction. Volatility-expansion results remain exploratory. Missing point-in-time news, options/PCR, FII/DII, breadth and corporate-action features, rejected currency/commodity sources, calendar uncertainty and incomplete global close-time validation limit conclusions. No trading strategy or options recommendation follows from these prediction results.
+
+
+## Final corrected run #62 and independent validation
+
+The target-date defect identified in the prior run was corrected by requiring complete future-return windows for 5- and 20-session volatility labels. [Workflow #62](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38604064792) succeeded; the artifact SHA-256 is `14c9d6fc1bcb0f00ff28e708cb10a6cab9b378e5e60ff31f6e66aaa5e977172b`. The final prediction export contains 471,735 rows, zero missing target dates, and no target date at or before forecast origin. The independent tester reports [PASS WITH SCOPE LIMITATIONS](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md).
+
+### Final results table
+
+| Target / horizon | Result | Interpretation |
+|---|---|---|
+| Return, 1 session | CNN technical RMSE 0.007940; MSE skill +0.0875%; Holm p=1 | No evidence of useful return skill. |
+| Return, 5 sessions | XGBoost technical RMSE 0.017352; MSE skill +2.0023%; Holm p=1 | Descriptive gain, statistically unsupported. |
+| Return, 20 sessions | Gradient Boosting global RMSE 0.033100; MSE skill +3.3303%; Holm p=1 | Descriptive gain, statistically unsupported. |
+| Direction, 1 session | CatBoost global accuracy 54.29%, balanced accuracy 53.35%, log loss 0.6881 vs baseline 0.6913 | Not significant after correction; no robust directional edge. |
+| Volatility, 1 session | XGBoost global QLIKE -8.7674 vs -8.4312 baseline; improvement +0.3362; Holm p=1.96e-9 | Strong metric-specific one-session volatility result within this screening. Not a trading result. |
+| Volatility, 5/20 sessions | Lasso global QLIKE improvements +0.1320/+0.1570; Holm p=.135/.593 | Not significant after multiplicity correction. |
+| Volatility expansion, 20 sessions | Logistic technical log loss .6210 vs baseline .6934; Brier skill +.1304; Holm p=.0572 | Promising but misses adjusted .05 threshold; exploratory. |
+
+The tester independently recomputed the headline regression metrics, 482 non-ARIMA block confidence intervals, the separate ARIMA benchmark, and Holm-adjusted p-values. Small serialization-level differences in a subset of individual classification test statistics did not change adjusted conclusions. The final conclusion is that no robust return/direction winner is established; one-session volatility QLIKE improvement is statistically supported under the tested protocol, while longer-horizon volatility and volatility-expansion findings are weaker or exploratory.
+
+### Limitations and closure
+
+The study remains bounded by one chronological holdout, unresolved calendar verification for twenty weekend-dated NIFTY observations, incomplete point-in-time global close alignment, and unavailable/unverified historical options/PCR, FII/DII, breadth, timestamped news and corporate-action features. Several PDF-specific methods were not exact reproductions. No strategy, options P&L, brokerage, slippage, spread, taxes, margin or live execution was tested. **Final disposition: PASS WITH SCOPE LIMITATIONS; close prediction-only research.** Do not expand the model catalogue or infer an options strategy from these results.
