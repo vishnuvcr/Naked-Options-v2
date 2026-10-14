@@ -107,7 +107,7 @@ Research directions after this bounded study: acquire verified expiry/contract/l
 - Results: ../../reports/option_validation/results_summary.json
 - Primary comparisons: ../../reports/option_validation/primary_comparisons.csv
 - Cost/slippage matrix: ../../reports/option_validation/performance.csv
-- Sanitized trade ledger: ../../reports/option_validation/trade_ledger.csv
+- Sanitized trade ledger: [run #11 artifact ZIP](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384), which contains the 48,032-row `reports/option_validation/trade_ledger.csv`. Restricted raw option quotes are not included.
 - Restricted raw quote responses are stored only in the Actions cache and are not published.
 
 **Independent tester handoff:** recompute quote coverage/conflict counts, fixed-strike matching, P&L/cost arithmetic, bootstrap intervals and Holm adjustment from raw/cached inputs and the sanitized ledger. Block if any gate fails.
