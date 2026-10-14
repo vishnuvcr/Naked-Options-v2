@@ -45,3 +45,12 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Verified official NSE costs: option-sale STT was 0.10% through 2026-03-31 and is 0.15% from 2026-04-01; option stamp duty is 0.003% on buyer turnover; SEBI turnover fee is ₹10/crore; NSE Circular 1 dated 2026-02-27 gives a combined equity-options charge outflow of approximately ₹3,553/crore from 2026-03-01. Sources: https://www.nseindia.in/static/products-services/equity-derivatives-securities-transaction-tax, https://www.nseindia.com/static/invest/first-time-investor-sebi-turnover-fees-stt-other-levies, https://nsearchives.nseindia.com/content/circulars/FA73061.pdf
 - Paytm Money's current public F&O FAQ lists ₹10 brokerage per executed unique order: https://www.paytmmoney.com/stocks/customer/fno-faq/onboarding-and-kyc/account-segment-activation/how-to-activate-fo-from-mobile-app-web. ₹20/order remains the sensitivity case.
 - No live order will be placed. The test is intraday-only and stays blocked until options quotes, cost accounting, statistics and independent review pass.
+
+## 2026-10-14 — resume: option validation pilot and correction
+
+- Resumed user-approved option-buying validation from GitHub state, inspected the current branch/workflow and previous pilot outputs.
+- Run #6 successfully received 196/196 Dhan monthly-option responses, but only 171/980 candidate dates (17.45%) had valid fixed-strike entry/exit quotes. Four alert-filtered candidate variants had negative mean premium-normalized returns and fewer than 100 alert trades. Because the predeclared 80% coverage gate failed, the pilot p-values are not accepted as confirmatory strategy evidence.
+- Run #7 failed one redaction test due to a fake response missing errorCode/errorMessage. The legacy ATM cache fallback also contained a date formatting typo; both are corrected in the current source and retest.
+- The corrected source queries monthly ATM−3…ATM+3 series for both option types, reuses only verified MONTH/expiryCode=1 cache files, indexes exact-strike exits and vectorizes bootstrap draws.
+- The primary comparison now tests daily net rupee P&L per one-lot-proxy slot on identical eligible dates, using zero on no-alert dates; premium-normalized returns are secondary due to the variable/undefined denominator when filtering trades.
+- Current corrected Actions run: #9. No option-buying strategy is approved and no live order was placed.
