@@ -13,7 +13,7 @@
 5. **No strategy approval:** minimum 80% per-candidate coverage, conflict rate <=1%, at least 100 alert trades, positive after-cost mean with 95% block interval above zero, 100-bps robustness, both-half consistency, and corrected inference must all be demonstrated. No gate may be waived.
 
 ## Required developer actions
-- Run #2 confirmed the daily target cache was missing/unusable; developer added a cache-aware daily acquisition and validation step to the workflow. Verify in run #4. [Run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552069292) is the Pages run; strike workflow follow-up run is triggered by the workflow change.
+- Run #2 confirmed the daily target cache was missing/unusable; developer added a cache-aware daily acquisition and validation step to the workflow. Verify in run #4. The workflow correction triggered [strike-selection run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097). Review that run before closing the data gate.
 - If no usable quotes remain, classify the phase as data-blocked and stop rather than fabricate candidate results or repeatedly redownload without a diagnosed cause.
 - If usable quotes exist, independently check candidate strike/offset mapping, exact numeric-strike exit matching, fee arithmetic, bootstrap output, and Holm adjustment against a separate implementation.
 - Add the required common-date sensitivity or clearly record it as not implemented and do not claim cross-candidate apples-to-apples superiority.
