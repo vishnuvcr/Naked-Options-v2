@@ -271,7 +271,7 @@ def validate_payload(payload: dict, option_type: str) -> str:
 
 
 def acquire_options(refresh: bool = False) -> dict:
-    """Acquire only the four rolling series needed for the prespecified same-day structures."""
+    """Acquire monthly rolling-option offsets needed for same-session fixed-strike P&L validation."""
     ensure_dirs()
     token = os.getenv("DHAN_ACCESS_TOKEN", "").strip()
     try:
@@ -301,8 +301,7 @@ def acquire_options(refresh: bool = False) -> dict:
     chunks = list(request_chunks(request_start, end_exclusive))
     if not chunks:
         return write_blocked("BLOCKED_EMPTY_DATE_RANGE", "No trade dates remain in the supported historical range.")
-    # ATM CALL/PUT serve the straddle and define the ATM strike. One adjacent
-    # OTM CALL and PUT serve the strangle. Other offsets cannot affect this plan.
+    # Query ATM±3 for both option types so fixed numeric strikes chosen at entry are more likely present at exit.
     required_requests = tuple((offset, opt_type) for offset in range(-3, 4) for opt_type in OPTION_TYPES)
     planned = len(chunks) * len(required_requests)
     req_records, failures = [], []
@@ -456,7 +455,7 @@ def acquire_options(refresh: bool = False) -> dict:
         "expiry_code": 1,
         "requested_offset_type_pairs": [{"offset": x, "option_type": y} for x, y in required_requests],
         "requests_planned": planned,
-        "requests_attempted": planned - cached,
+        "requests_attempted": max(0, len(req_records) + len(failures) - cached),
         "requests_successful_or_empty": successes - cached,
         "requests_cached": cached,
         "requests_failed": len(failures),
@@ -475,7 +474,7 @@ def acquire_options(refresh: bool = False) -> dict:
     print(json.dumps(public, indent=2))
     return manifest
 
-def payload_to_rows(payload: dict, option_type: str) -> list[dict]:
+def payload_to_rows(payload: dict, option_type: str, relative_offset: int = 0) -> list[dict]:
     part = locate_option_series(payload, option_type)
     if part is None or not part.get("timestamp"):
         return []
@@ -496,6 +495,7 @@ def payload_to_rows(payload: dict, option_type: str) -> list[dict]:
         rows.append({
             "timestamp": stamp,
             "option_type": option_type,
+            "relative_offset": int(relative_offset),
             **{k: _to_float(v[i]) for k, v in columns.items()},
         })
     return rows
@@ -523,7 +523,7 @@ def load_quote_table(manifest: dict) -> tuple[pd.DataFrame, dict]:
             continue
         try:
             payload = json.loads(path.read_text(encoding="utf-8"))
-            rows.extend(payload_to_rows(payload, rec["option_type"]))
+            rows.extend(payload_to_rows(payload, rec["option_type"], int(rec.get("offset", 0))))
         except Exception as exc:
             parse_failures.append(f"{rec.get('file')}: {type(exc).__name__}")
     if not rows:
@@ -623,11 +623,26 @@ def build_trade_candidate(
     if structure == "straddle":
         legs = [("CALL", atm), ("PUT", atm)]
     elif structure == "strangle":
-        call_strikes = calls.loc[calls.strike > atm, "strike"].to_numpy(float)
-        put_strikes = puts.loc[puts.strike < atm, "strike"].to_numpy(float)
-        if not len(call_strikes) or not len(put_strikes):
+        # Never silently substitute ATM+2 / ATM-2 if the prescribed adjacent quote is missing.
+        if "relative_offset" not in entry.columns:
+            return None, "MISSING_RELATIVE_OFFSET_METADATA"
+        relative = pd.to_numeric(entry["relative_offset"], errors="coerce")
+        call_otm = entry[(entry.option_type == "CALL") & (relative == 1)].drop_duplicates("strike")
+        put_otm = entry[(entry.option_type == "PUT") & (relative == -1)].drop_duplicates("strike")
+        call_strikes = pd.to_numeric(call_otm.strike, errors="coerce").dropna().unique()
+        put_strikes = pd.to_numeric(put_otm.strike, errors="coerce").dropna().unique()
+        if len(call_strikes) != 1 or len(put_strikes) != 1:
             return None, "NO_ONE_STEP_OTM_STRIKES"
-        legs = [("CALL", float(np.min(call_strikes))), ("PUT", float(np.max(put_strikes)))]
+        call_strike, put_strike = float(call_strikes[0]), float(put_strikes[0])
+        nearest_call = calls.loc[calls.strike > atm, "strike"]
+        nearest_put = puts.loc[puts.strike < atm, "strike"]
+        if (
+            call_strike <= atm or put_strike >= atm or nearest_call.empty or nearest_put.empty
+            or not math.isclose(call_strike, float(nearest_call.min()), abs_tol=1e-6, rel_tol=0)
+            or not math.isclose(put_strike, float(nearest_put.max()), abs_tol=1e-6, rel_tol=0)
+        ):
+            return None, "RELATIVE_OFFSET_INCONSISTENT_WITH_ATM"
+        legs = [("CALL", call_strike), ("PUT", put_strike)]
     else:
         raise ValueError(f"Unknown structure {structure}")
     entry_prices = []

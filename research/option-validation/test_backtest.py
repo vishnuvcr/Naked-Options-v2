@@ -134,14 +134,14 @@ def test_primary_daily_pnl_uses_zero_for_non_alert_days():
 def test_fixed_strike_trade_candidate_uses_indexed_exit_rows():
     day = "2026-10-13"
     rows = [
-        {"date": day, "time": "09:20", "option_type": "CALL", "strike": 25000.0, "open": 100.0, "close": 100.0, "spot": 25010.0},
-        {"date": day, "time": "09:20", "option_type": "PUT", "strike": 25000.0, "open": 105.0, "close": 105.0, "spot": 25010.0},
-        {"date": day, "time": "09:20", "option_type": "CALL", "strike": 25050.0, "open": 80.0, "close": 80.0, "spot": 25010.0},
-        {"date": day, "time": "09:20", "option_type": "PUT", "strike": 24950.0, "open": 80.0, "close": 80.0, "spot": 25010.0},
-        {"date": day, "time": "15:25", "option_type": "CALL", "strike": 25000.0, "open": 118.0, "close": 120.0, "spot": 25020.0},
-        {"date": day, "time": "15:25", "option_type": "PUT", "strike": 25000.0, "open": 82.0, "close": 80.0, "spot": 25020.0},
-        {"date": day, "time": "15:25", "option_type": "CALL", "strike": 25050.0, "open": 94.0, "close": 95.0, "spot": 25020.0},
-        {"date": day, "time": "15:25", "option_type": "PUT", "strike": 24950.0, "open": 48.0, "close": 50.0, "spot": 25020.0},
+        {"date": day, "time": "09:20", "option_type": "CALL", "relative_offset": 0, "strike": 25000.0, "open": 100.0, "close": 100.0, "spot": 25010.0},
+        {"date": day, "time": "09:20", "option_type": "PUT", "relative_offset": 0, "strike": 25000.0, "open": 105.0, "close": 105.0, "spot": 25010.0},
+        {"date": day, "time": "09:20", "option_type": "CALL", "relative_offset": 1, "strike": 25050.0, "open": 80.0, "close": 80.0, "spot": 25010.0},
+        {"date": day, "time": "09:20", "option_type": "PUT", "relative_offset": -1, "strike": 24950.0, "open": 80.0, "close": 80.0, "spot": 25010.0},
+        {"date": day, "time": "15:25", "option_type": "CALL", "relative_offset": 0, "strike": 25000.0, "open": 118.0, "close": 120.0, "spot": 25020.0},
+        {"date": day, "time": "15:25", "option_type": "PUT", "relative_offset": 0, "strike": 25000.0, "open": 82.0, "close": 80.0, "spot": 25020.0},
+        {"date": day, "time": "15:25", "option_type": "CALL", "relative_offset": 1, "strike": 25050.0, "open": 94.0, "close": 95.0, "spot": 25020.0},
+        {"date": day, "time": "15:25", "option_type": "PUT", "relative_offset": -1, "strike": 24950.0, "open": 48.0, "close": 50.0, "spot": 25020.0},
     ]
     frame = pd.DataFrame(rows)
     exit_lookup = {
@@ -157,3 +157,36 @@ def test_fixed_strike_trade_candidate_uses_indexed_exit_rows():
     assert reason == "PASS"
     assert strangle["entry_prices"] == [80.0, 80.0]
     assert strangle["exit_prices"] == [95.0, 50.0]
+
+
+def test_payload_rows_preserve_requested_offset():
+    payload = {"data": {"ce": {
+        "timestamp": [1791883200], "open": [100.0], "high": [101.0],
+        "low": [99.0], "close": [100.5], "strike": [25050.0], "spot": [25010.0]
+    }}}
+    rows = mod.payload_to_rows(payload, "CALL", relative_offset=1)
+    assert len(rows) == 1
+    assert rows[0]["relative_offset"] == 1
+    assert rows[0]["strike"] == 25050.0
+
+
+def test_strangle_does_not_substitute_farther_otm_strikes():
+    day = "2026-10-13"
+    rows = [
+        {"date": day, "time": "09:20", "option_type": "CALL", "relative_offset": 0, "strike": 25000.0, "open": 100.0, "close": 100.0, "spot": 25010.0},
+        {"date": day, "time": "09:20", "option_type": "PUT", "relative_offset": 0, "strike": 25000.0, "open": 105.0, "close": 105.0, "spot": 25010.0},
+        {"date": day, "time": "09:20", "option_type": "CALL", "relative_offset": 2, "strike": 25100.0, "open": 60.0, "close": 60.0, "spot": 25010.0},
+        {"date": day, "time": "09:20", "option_type": "PUT", "relative_offset": -2, "strike": 24900.0, "open": 60.0, "close": 60.0, "spot": 25010.0},
+        {"date": day, "time": "15:25", "option_type": "CALL", "relative_offset": 0, "strike": 25000.0, "open": 115.0, "close": 115.0, "spot": 25015.0},
+        {"date": day, "time": "15:25", "option_type": "PUT", "relative_offset": 0, "strike": 25000.0, "open": 90.0, "close": 90.0, "spot": 25015.0},
+        {"date": day, "time": "15:25", "option_type": "CALL", "relative_offset": 2, "strike": 25100.0, "open": 80.0, "close": 80.0, "spot": 25015.0},
+        {"date": day, "time": "15:25", "option_type": "PUT", "relative_offset": -2, "strike": 24900.0, "open": 50.0, "close": 50.0, "spot": 25015.0},
+    ]
+    frame = pd.DataFrame(rows)
+    lookup = {
+        (day, "15:25", row["option_type"], row["strike"]): row["close"]
+        for row in rows if row["time"] == "15:25"
+    }
+    trade, reason = mod.build_trade_candidate(frame, day, "strangle", {day: frame}, lookup)
+    assert trade is None
+    assert reason == "NO_ONE_STEP_OTM_STRIKES"
