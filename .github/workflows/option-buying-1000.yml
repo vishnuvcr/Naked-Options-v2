@@ -28,7 +28,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: pip
       - name: Generate 1,000+ distinct rule algorithms without outcome access
         run: python research/option-buying-1000/strategy_catalogue.py
       - name: Run registry integrity tests
