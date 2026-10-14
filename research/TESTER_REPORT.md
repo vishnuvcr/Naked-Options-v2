@@ -125,3 +125,11 @@ No trading strategy is recommended. No option-chain backtest, Paytm Money fee/sl
 - Rechecked selected models' HAC p-values from the merged predictions; differences are effectively zero for selected models except technical Transformer 1-session direction, where the difference is about 4.2e-7 and does not affect its non-significant conclusion. A larger discrepancy observed among unselected sequence-model probabilities is small in absolute terms but should remain recorded.
 
 Updated gate decision: ARIMA, Holm and selected-model HAC checks pass. Phase 5 execution/target-window gate passes. Phase 7 remains **CONDITIONAL** pending explicit reviewer agreement on scope and probability-calibration limitations; overall manuscript is not yet approved as a trading study.
+
+
+## Final scoped gate update — 2026-10-14
+
+- Recomputed decile expected calibration error (ECE) descriptively from saved OOS probabilities. Selected global CatBoost 1-session direction: ECE 0.016, Brier 0.2472, accuracy 54.08%. Selected technical Logistic volatility-expansion ECE: 0.184 (1 session), 0.053 (5 sessions), 0.040 (20 sessions). This is supplemental, not a preregistered endpoint; 1-session expansion probabilities are poorly calibrated and all results remain single-holdout estimates.
+- Auxiliary features use backward as-of joins with same-date matches excluded. ARIMA benchmark skill, HAC p-values and block CIs were independently reproduced from its separate prediction file. Holm adjustments reproduce within 1e-16. Selected-model HAC p-values reproduce to numerical precision except technical 1-session Transformer direction (difference ~4.2e-7), which is non-significant either way.
+
+**Tester disposition for the bounded prediction-only study: PASS WITH SCOPE LIMITATIONS.** The target-window defect is resolved; loss metrics, block CIs, HAC tests, Holm corrections and ARIMA benchmark are reproducible. No robust return/direction edge is demonstrated. Volatility-expansion results remain exploratory. This does not approve a trading strategy, options backtest, live deployment, or claims about unacquired options/FII-DII/PCR/breadth/news data. The manuscript may be finalized as a prediction-only mixed/negative-results study with these limitations explicit.
