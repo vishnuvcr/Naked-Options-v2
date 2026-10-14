@@ -51,7 +51,7 @@ All experiment results remain unranked until a completed run emits machine-gener
 <!-- OPTION_VALIDATION_EXPERIMENT_START -->
 ## Follow-on option-buying validation — OPT-BUY-1.0
 
-- Last stage: ACQUISITION; decision: BLOCKED_NO_VALID_DAILY_DATA; workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38617943823; commit: 53029f81971b7adb395ac76a8b936830bbd6be7a.
+- Last stage: ACQUISITION; decision: BLOCKED_NO_VALID_DAILY_DATA; workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38621480232; commit: 6c4f94e28c2dd88744071e5c7156a2397e55f4c1.
 - Options requests planned: 0; completed/empty: 0; failed: 0.
 - Primary comparisons written: 0; result file: research/option-validation/RESULTS.md.
 - Raw data were not committed or uploaded. Missing/failed requests remain visible in the sanitized acquisition summary/error log.
@@ -60,3 +60,5 @@ All experiment results remain unranked until a completed run emits machine-gener
 - OPT-BUY-3.0 Actions run 38617943823; branch research/option-entry-exit-developer; commit 53029f81971b7adb395ac76a8b936830bbd6be7a. See research/option-entry-exit/RESULTS.md.
 
 - OPT-BUY-3.0 Actions run 38620992395; branch research/option-entry-exit-developer; commit aa379a8099a3146ae6cde79886606b765d1fda01. See research/option-entry-exit/RESULTS.md.
+
+- OPT-BUY-3.0 Actions run 38621480232; branch research/option-entry-exit-developer; commit 6c4f94e28c2dd88744071e5c7156a2397e55f4c1. See research/option-entry-exit/RESULTS.md.

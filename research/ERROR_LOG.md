@@ -34,7 +34,7 @@ HTTP 200 returning HTML instead of the required payload is a source failure. Emp
 <!-- OPTION_VALIDATION_ERRORS_START -->
 ## Option-validation acquisition error log — OPT-BUY-1.0
 
-Stage: ACQUISITION; workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38617943823; commit: 53029f81971b7adb395ac76a8b936830bbd6be7a.
+Stage: ACQUISITION; workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38621480232; commit: 6c4f94e28c2dd88744071e5c7156a2397e55f4c1.
 
 Request failure summaries (individual redacted request windows are preserved in the Actions cache manifest):
 - FileNotFoundError: Validated daily NIFTY cache is missing: data/cache/nifty50_daily.csv

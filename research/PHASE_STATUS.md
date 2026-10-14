@@ -38,7 +38,7 @@ The nine-phase work is closed for the bounded prediction-only scope with accepte
 
 | Track | Branch | Status | Evidence / gate |
 |---|---|---|---|
-| Intraday option-buying validation | research/option-buying-validation | BLOCKED_NO_VALID_DAILY_DATA | Workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38617943823; commit: 53029f81971b7adb395ac76a8b936830bbd6be7a; acquisition: BLOCKED_NO_VALID_DAILY_DATA; requests failed: 0. Independent post-result developer/tester gate required. |
+| Intraday option-buying validation | research/option-buying-validation | BLOCKED_NO_VALID_DAILY_DATA | Workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38621480232; commit: 6c4f94e28c2dd88744071e5c7156a2397e55f4c1; acquisition: BLOCKED_NO_VALID_DAILY_DATA; requests failed: 0. Independent post-result developer/tester gate required. |
 
 No live strategy is approved. The first experiment is intraday-only because rolling strike-relative option series do not establish stable multi-day contract identity.
 <!-- OPTION_VALIDATION_PHASE_END -->
