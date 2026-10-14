@@ -81,3 +81,8 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Run #1: regression tests passed (13/13); strike grid blocked because no usable option quote rows were loaded. [Run #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551789841).
 - Corrected blocked-run diagnostics and added the prespecified block-bootstrap/Holm inference family. Follow-up [run #2](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551939491) and [run #3](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552000337) were in progress/pending when logged.
 - Developer branch: `research/option-strike-selection-developer`; independent tester branch: `research/option-strike-selection-independent-tester`. Tester disposition is blocked pending usable quotes. No strategy approval or fabricated P&L.
+
+## 2026-10-14 — user instruction on OPT-BUY-2.0 review gate
+
+- User instructed: “No tester review needed. Proceed.” Developer workflow continues without waiting for the separate tester sign-off. This changes the review requirement only; it does not waive data-quality, statistical, or execution-cost acceptance criteria, and does not authorize unsupported claims or live trading.
+- Corrected workflow run: [38552144097](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097). Daily-data acquisition and validation steps completed; options-cache acquisition is still running at time of entry. Final status and bounded disposition will be recorded from the run's artifacts.
