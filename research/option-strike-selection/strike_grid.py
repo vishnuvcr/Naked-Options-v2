@@ -141,10 +141,25 @@ def main():
         sub=ledger_frame[(ledger_frame.candidate==label)&(ledger_frame.horizon==h)&
           (ledger_frame.mode=="model_filtered")&(ledger_frame.slippage_bps_per_side==PRIMARY_SLIP)&
           (ledger_frame.brokerage_per_order==PRIMARY_BROKER)].sort_values("date")
-        p=float("nan")
-        if len(sub)>=3:
-          _,_,p=bt.block_bootstrap_difference(sub.net_pnl_rupees.to_numpy(float),block_len=h,n_boot=2000,seed=bt.SEED+h+co*13+abs(po)*29)
-        primary_tests.append({"candidate":label,"horizon":h,"pvalue_raw":p})
+        # Guard the inferential family against silent NaNs: compute the null-centered
+        # circular block-bootstrap p-value directly from the exact primary ledger subset.
+        # This is a two-sided test of mean net daily P&L = 0, not a comparison to always-buy.
+        values = pd.to_numeric(sub["net_pnl_rupees"], errors="coerce").to_numpy(float) if len(sub) else np.array([], dtype=float)
+        values = values[np.isfinite(values)]
+        p = float("nan")
+        if len(values) >= 3:
+          rng = np.random.default_rng(bt.SEED + h + co * 13 + abs(po) * 29)
+          block_len = max(1, min(int(h), len(values)))
+          n_boot = 2000
+          n_blocks = int(np.ceil(len(values) / block_len))
+          starts = rng.integers(0, len(values), size=(n_boot, n_blocks))
+          offsets = np.arange(block_len)
+          indices = ((starts[:, :, None] + offsets[None, None, :]) % len(values)).reshape(n_boot, -1)[:, :len(values)]
+          centered = values - float(np.mean(values))
+          boot_null_means = centered[indices].mean(axis=1)
+          observed_abs_mean = abs(float(np.mean(values)))
+          p = float((1 + np.sum(np.abs(boot_null_means) >= observed_abs_mean)) / (n_boot + 1))
+        primary_tests.append({"candidate":label,"horizon":h,"n_observations":int(len(values)),"pvalue_raw":p})
     adjusted=bt.holm_adjust([x["pvalue_raw"] for x in primary_tests])
     for item,padj in zip(primary_tests,adjusted):
         item["pvalue_holm"]=float(padj)
