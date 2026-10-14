@@ -31,3 +31,7 @@ A phase is not PASS merely because files or workflows exist. Gates require execu
 ## Phase 5 status — revised compute gate (2026-10-14)
 
 The full grid remained active at the experiment step without producing final artifacts. A dated amendment to RESEARCH_PLAN.md now limits full catalogue comparisons to next-session return and direction and keeps core regression/classification models for all other target/horizon combinations. Excluded catalogue cells are emitted as BLOCKED_COMPUTE_BUDGET. Estimator counts are bounded. Phase 5 remains OPEN until a final workflow completes and all results/defect checks pass.
+
+## Independent audit update — 2026-10-14
+
+Run #45 artifact was recovered and inspected. Core return/level MSE skill and QLIKE arithmetic were independently recomputed from prediction rows (max discrepancy below 3e-9 after matching the variance floor). The tester identified a confirmed defect: forward-volatility labels near the tail were computed from partial future windows because pandas standard deviation skips missing values. The developer-review branch now requires complete horizon windows and adds a unit test. Phase 5/7 remain OPEN until CI passes, the feature matrix is rebuilt, and a new run has no invalid target-date rows.
