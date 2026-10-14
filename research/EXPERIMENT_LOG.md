@@ -84,3 +84,11 @@ These are descriptive single-benchmark outputs from the retained ARIMA artifact,
 - Empty per-run CSVs are now treated as no data instead of merge-fatal.
 - The workflow now uploads both merged and per-run metrics/predictions/errors, together with experiment/error/phase logs; the prior artifact only held the merged file names and JSON.
 - Volatility uses a non-negative equivalent QLIKE score before computing skill versus baseline; the correction is covered by a unit test.
+
+### Independent arithmetic check of ARIMA artifact (RUN-41)
+
+The saved ARIMA prediction rows were independently loaded from the downloaded Actions artifact and grouped by horizon. Recomputed metrics exactly agree with arima_metrics.csv to displayed precision:
+- H1: n=980, MAE=0.0057752702, RMSE=0.0079569628, R²/skill vs zero baseline = -0.0034821835; baseline MSE=6.30936e-05.
+- H5: n=976, MAE=0.0136542811, RMSE=0.0175183386, R²/skill vs zero baseline = 0.0010953078; baseline MSE=3.07229e-04.
+- H20: n=961, MAE=0.0257020026, RMSE=0.0334859257, R²/skill vs zero baseline = 0.0106569452; baseline MSE=0.00113339.
+The H1 origins span 2022-10-31–2026-10-12; targets span 2022-11-01–2026-10-13. H5 origins end 2026-10-06 and H20 origins end 2026-09-11 so every horizon target is inside the same latest 2026-10-13 date boundary. This confirms arithmetic for the ARIMA artifact only; it does not repair the missing model comparison CSVs from run #41.
