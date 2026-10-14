@@ -51,3 +51,9 @@ Run #2 confirmed the actual blocker was upstream of options acquisition: `BLOCKE
 - [Run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097) completed its daily target acquisition/validation and pre-analysis regression step (13 tests passed) but remains in the “Acquire/reuse options cache” step. The step has been active since 10:49:21 UTC; no sanitized artifact is available yet.
 - This is recorded as a **long-running step under observation**, not a confirmed API defect: live job metadata does not expose an error or a terminal conclusion. Job timeout is 180 minutes. Do not infer quote availability, strike performance, or profitability before terminal logs/artifacts exist.
 - Next check: after the job transitions to completed or failed, retrieve its logs and artifacts, classify any real source/API/cache failure, and update this entry with the evidence.
+
+
+### OPT-BUY-2.0 live checkpoint — 2026-10-14 — subsequent live poll
+
+- A newer poll of [run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097) shows the options-cache step has completed and “Run frozen strike grid” has started. Daily validation and 13 pre-analysis regression tests completed. The options step's workflow-level conclusion is success, but it is configured with `continue-on-error: true`; therefore this status does not verify a `PASS` acquisition manifest or acceptable quote coverage.
+- No artifacts are available yet because artifact upload is still pending. This is a status transition, not a confirmed data-quality result or a strike-performance finding. Review sanitized acquisition and grid outputs once the run reaches artifact upload/terminal state.
