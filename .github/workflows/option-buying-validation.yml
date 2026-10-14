@@ -116,6 +116,10 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python research/option-validation/backtest.py --analyze
 
+      - name: Render structured manuscript and SVG charts
+        if: always()
+        run: python research/option-validation/render_report.py
+
       - name: Re-run unit tests after analysis
         if: always()
         run: pytest -q research/option-validation/test_backtest.py
@@ -127,7 +131,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for f in README.md research/PHASE_STATUS.md research/EXPERIMENT_LOG.md research/ERROR_LOG.md research/INTERACTION_LOG.md research/option-validation/RESULTS.md reports/option_validation/acquisition_summary.json reports/option_validation/acquisition_failures.csv reports/option_validation/classifier_manifest.json reports/option_validation/quote_quality.json reports/option_validation/results_summary.json reports/option_validation/performance.csv reports/option_validation/primary_comparisons.csv reports/option_validation/trade_ledger.csv reports/option_validation/signals.csv; do
+          for f in README.md research/PHASE_STATUS.md research/EXPERIMENT_LOG.md research/ERROR_LOG.md research/INTERACTION_LOG.md research/option-validation/RESULTS.md research/option-validation/MANUSCRIPT.md research/option-validation/figures/net_pnl_comparison.svg research/option-validation/figures/slippage_sensitivity.svg reports/option_validation/acquisition_summary.json reports/option_validation/acquisition_failures.csv reports/option_validation/classifier_manifest.json reports/option_validation/quote_quality.json reports/option_validation/results_summary.json reports/option_validation/performance.csv reports/option_validation/primary_comparisons.csv reports/option_validation/trade_ledger.csv reports/option_validation/signals.csv; do
             if [ -f "$f" ]; then git add "$f"; fi
           done
           if ! git diff --cached --quiet; then
@@ -145,6 +149,8 @@ jobs:
           path: |
             research/OPTION_BUYING_VALIDATION_PLAN.md
             research/option-validation/RESULTS.md
+            research/option-validation/MANUSCRIPT.md
+            research/option-validation/figures/*.svg
             reports/option_validation/acquisition_summary.json
             reports/option_validation/acquisition_failures.csv
             reports/option_validation/classifier_manifest.json

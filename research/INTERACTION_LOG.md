@@ -49,3 +49,12 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Actions run #7 failed before its data acquisition step because one response-redaction test expected errorCode and errorMessage in a fake provider response that no longer contained those fields. The implementation itself redacted the bearer token correctly, but the fixture/assertions disagreed.
 - Code review also caught a legacy ATM cache fallback date format that omitted the year in the second date; this would have missed existing ATM cache files and unnecessarily repeated two monthly-option requests per date window.
 - Corrected the fake response and full-date filename. The complete suite will be rerun by the next automatic Actions workflow.
+
+
+## Run #9 audit and exact-offset cached rerun — 2026-10-14
+
+- Run #9 expanded acquisition succeeded: 686 request windows planned, 196 reused from cache, 490 new valid/empty responses, zero failed. Data contained 1,062,082 raw rows and 1,029,545 usable rows.
+- Eligibility: 83.98% straddle dates and 69.18% strangle dates, below the 80% minimum for strangle. Conflicts: 452 / 32,085 duplicate groups = 1.41%, above the 1% ceiling. Data gate fails.
+- Four model-filtered variants had mean daily net P&L at ₹10/order and 50 bps slippage between −₹315.71 and −₹369.43 per one-lot-proxy slot. Paired daily P&L improvement against always-buy was significant after Holm adjustment (~0.002), but the candidates themselves lost money; all 100 bps checks and both-half profitability checks failed. This is loss reduction against a worse benchmark, not a profitable option-buying result.
+- Independent ledger audit passed 48,032 row-level P&L/cost checks, bootstrap intervals, paired comparisons and Holm adjustment; the data gate still blocks acceptance.
+- Corrected cached rerun retains source-request offsets, requires actual CALL +1 / PUT −1 strangle entry, uses exact numeric exit strike, fixes the request counter, and generates the structured manuscript and SVG charts. Gate limits stay unchanged.

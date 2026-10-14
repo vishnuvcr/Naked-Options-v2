@@ -125,3 +125,10 @@ These changes address data coverage and the denominator used in the first succes
 4. Runtime/cache: quote data are grouped by date and indexed by exact exit strike; bootstrap sampling is vectorized. The workflow saves private raw data to GitHub Actions cache immediately after acquisition; raw option quotes remain out of repository commits and uploaded artifacts.
 
 First-pilot numbers are retained as preliminary and are not accepted as final strategy evidence. The first run had only 17.45% valid date coverage, and all four model-filtered candidates had negative mean daily premium-normalized returns and fewer than 100 alert trades. Its paired percentage-return p-values do not count as primary evidence under the amended protocol. The next run must acquire the wider offset grid, pass data-quality gates, and be independently reviewed.
+
+
+## Exact-offset and manuscript amendment
+
+The pilot audit found that the selector could substitute a farther OTM contract when the adjacent strike was missing. The final bounded retest preserves the provider-requested relative offset on each row, requires CALL offset +1 and PUT offset −1 at entry for the one-step strangle, and tracks those numeric strikes to exit. Missing/inconsistent legs are skipped and counted, never substituted. The acquisition-window manifest count is now derived from resolved cached/network request records so early-stop cases cannot be overstated.
+
+The same cached rerun renders the complete structured manuscript and two SVG charts from sanitized outputs. The data-quality ceilings remain frozen at at least 80% coverage for each structure and at most 1% conflict rate. These gates will not be relaxed to force a positive conclusion. No live order or deployment is in scope.
