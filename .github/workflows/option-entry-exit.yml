@@ -1,0 +1,82 @@
+name: OPT-BUY-3.0 Entry Exit Research
+on:
+  workflow_dispatch:
+    inputs:
+      refresh_options:
+        description: Refresh historical options cache
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches: [research/option-entry-exit-developer]
+    paths:
+      - research/OPTION_ENTRY_EXIT_PLAN.md
+      - research/option-entry-exit/entry_exit_backtest.py
+      - research/option-entry-exit/test_entry_exit.py
+      - .github/workflows/option-entry-exit.yml
+permissions:
+  contents: write
+concurrency:
+  group: opt-buy-3-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: true}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-option-validation.txt
+      - uses: actions/cache@v4
+        with:
+          path: data/cache
+          key: opt-buy-3-${{ runner.os }}-${{ hashFiles('research/option-entry-exit/entry_exit_backtest.py') }}
+          restore-keys: |
+            nifty-option-validation-${{ runner.os }}-
+            nifty-option-strike-grid-${{ runner.os }}-
+      - run: pip install -r requirements-research.txt -r requirements-option-validation.txt
+      - name: Test cost and lot-size helpers
+        run: pytest -q research/option-entry-exit/test_entry_exit.py research/option-validation/test_backtest.py
+      - name: Acquire or reuse private option cache
+        continue-on-error: true
+        env:
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          REFRESH_OPTIONS: ${{ github.event.inputs.refresh_options }}
+        run: |
+          if [ ! -f data/cache/options_rolling/manifest.json ] || [ "$REFRESH_OPTIONS" = "true" ]; then
+            args=""
+            if [ "$REFRESH_OPTIONS" = "true" ]; then args="--refresh-options"; fi
+            python research/option-validation/backtest.py --acquire-options $args
+          fi
+      - name: Run bounded entry-exit screen
+        continue-on-error: true
+        run: python research/option-entry-exit/entry_exit_backtest.py
+      - name: Test after run
+        if: always()
+        run: pytest -q research/option-entry-exit/test_entry_exit.py research/option-validation/test_backtest.py
+      - name: Commit sanitized report and logs
+        if: always()
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          printf '\n- OPT-BUY-3.0 Actions run %s; branch %s; commit %s. See research/option-entry-exit/RESULTS.md.\n' "$RUN_ID" "$GITHUB_REF_NAME" "$GITHUB_SHA" >> research/EXPERIMENT_LOG.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for f in README.md research/PHASE_STATUS.md research/EXPERIMENT_LOG.md research/ERROR_LOG.md research/option-entry-exit/RESULTS.md reports/option_entry_exit/results_summary.json reports/option_entry_exit/candidate_metrics.csv reports/option_entry_exit/trade_ledger_sanitized.csv; do
+            if [ -f "$f" ]; then git add "$f"; fi
+          done
+          if ! git diff --cached --quiet; then git commit -m "research: record OPT-BUY-3.0 run $RUN_ID"; git push; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: opt-buy-3-results-${{ github.run_id }}
+          path: |
+            research/option-entry-exit/RESULTS.md
+            reports/option_entry_exit/*.json
+            reports/option_entry_exit/*.csv
+          if-no-files-found: warn
+          retention-days: 90
