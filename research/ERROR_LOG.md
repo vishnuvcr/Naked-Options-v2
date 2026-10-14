@@ -57,3 +57,12 @@ Run #2 confirmed the actual blocker was upstream of options acquisition: `BLOCKE
 
 - A newer poll of [run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097) shows the options-cache step has completed and “Run frozen strike grid” has started. Daily validation and 13 pre-analysis regression tests completed. The options step's workflow-level conclusion is success, but it is configured with `continue-on-error: true`; therefore this status does not verify a `PASS` acquisition manifest or acceptable quote coverage.
 - No artifacts are available yet because artifact upload is still pending. This is a status transition, not a confirmed data-quality result or a strike-performance finding. Review sanitized acquisition and grid outputs once the run reaches artifact upload/terminal state.
+
+
+### OPT-BUY-2.0 — run #4 terminal findings (2026-10-14)
+
+- [Run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097) completed successfully at workflow level. 13 tests passed before and after the grid. Artifact SHA-256: `7fae1922403e398f040ee8ca3a80f607e07e0d6569c98eb35b3ae0c6f168d285`.
+- Fresh quote diagnostics: raw 1,055,699; usable 1,023,541; 452 conflicting groups / 31,706 duplicate groups = 1.4256% (>1% gate). Coverage by candidate ranged from 83.27% to 16.94%, with only ATM/ATM >=80%.
+- At primary costs, every model-filtered candidate/horizon had negative mean net P&L and a 95% block interval wholly below zero. These outcomes are exploratory because the frozen data-quality gate failed.
+- **High-severity inference defect:** all 32 raw and Holm-adjusted p-values in `primary_tests_holm.csv` were blank/NaN although the ledger contained observations. Root cause was not conclusively isolated in the prior run; a self-contained null-centered circular block-bootstrap p-value implementation has been committed as a543eed8059de79dbcc6b2dc53a3dd31f14298a9. Corrective [run #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562114651) is in progress; require finite p-values and test output before closing.
+- Common-date sensitivity promised in the frozen plan is absent from the artifact. Log as not completed; no cross-candidate superiority claims.
