@@ -60,3 +60,14 @@ The developer accepted the independent tester's no-go. No strategy, paper-tradin
 | Independent tester sign-off | WAIVED BY USER | User explicitly waived separate tester sign-off; data-quality and inference gates remain mandatory. |
 
 **Disposition:** NO-GO for any strike-selection candidate. Keep OPT-BUY-1.0 no-go unchanged. The one bounded corrective rerun must confirm valid p-values; do not start further parameter loops or approve paper/live deployment.
+
+
+## Uploaded-PDF model audit extension — 2026-10-14
+
+| Gate | Status | Evidence / next action |
+|---|---|---|
+| PDF method inventory | COMPLETE FOR SCREENING | [Method audit](PDF_METHOD_AUDIT.md); all 13 uploaded PDFs inventoried with out-of-scope and blocked methods marked. |
+| Expanded run execution | PASS | [Workflow #56](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38585954777) completed data validation, technical/global catalogue, ARIMA, report merge and artifact upload. |
+| Empirical summary | PROVISIONAL | [Run #56 results](PDF_METHOD_AUDIT_RESULTS.md); no model winner declared. Return gains are small and inspected return rows are not adjusted-significant. |
+| Independent statistical/code audit | OPEN | Verify QLIKE skill NaNs, sequence epoch mismatch, p-value/Holm families, horizon/target alignment, calendar flags and global timing. Create tester branch/report before final disposition. |
+| Strategy work | OUT OF SCOPE | Prediction-only request; no option strategy or trading recommendation is made from these metrics. |
