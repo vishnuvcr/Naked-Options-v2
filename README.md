@@ -83,12 +83,13 @@ Conclusion: no robust return/direction edge is demonstrated. Volatility-expansio
 The static research status page has been deployed successfully through [Pages publish workflow #2](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38535940026). Future updates to the README, results, phase status, manuscript, figure or docs trigger the lightweight publishing workflow without rerunning the model catalogue.
 
 
-## Follow-on study: option-buying validation — 2026-10-14
+## Follow-on study: option-buying validation — OPT-BUY-1.0
 
-The nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged. Following user approval, a separate bounded validation track is being initialized on [research/option-buying-validation](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-validation). It will test whether the earlier volatility-expansion classifier adds value for next-session intraday long-option structures after transaction costs and adverse-slippage sensitivity. Classification accuracy alone is not treated as proof of option profitability.
+The original nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged. A user-approved follow-on is testing whether its volatility-expansion alerts add value for same-session intraday long straddles/strangles after Paytm Money brokerage, statutory charges and slippage stress tests.
 
-- [Option-buying validation plan](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-validation/research/OPTION_BUYING_VALIDATION_PLAN.md)
-- [Option-validation results and status](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-validation/research/option-validation)
-- [Option validation workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-validation/.github/workflows/option-buying-validation.yml)
+- [Validation plan](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-validation/research/OPTION_BUYING_VALIDATION_PLAN.md)
+- [Current results record](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-validation/research/option-validation/RESULTS.md)
+- [Option validation workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/workflows/option-buying-validation.yml)
+- [Latest run #6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923)
 
-Status at initialization: no option P&L result exists yet. Any strategy conclusion is blocked until data quality, cost accounting, robustness checks and the independent post-results tester gate pass.
+**Status (2026-10-14):** first authenticated Dhan expired-options request using WEEK/expiryCode=0 returned HTTP 400; no option data or P&L was produced. The first run's error is recorded. A second test uses Dhan's documented MONTH/expiryCode=1 format and adds redacted provider-error details. It is currently running. Until this source gate passes, no option-buying edge or strategy can be claimed. The initial prediction study's findings are not proof of option profitability.
