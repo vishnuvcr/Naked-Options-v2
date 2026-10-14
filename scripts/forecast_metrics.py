@@ -33,3 +33,27 @@ def holm(ps):
  out=[None]*len(ps); v=sorted([(i,float(p)) for i,p in enumerate(ps) if p is not None and np.isfinite(p)],key=lambda z:z[1]); run=0.
  for j,(i,p) in enumerate(v):run=max(run,min(1.,(len(v)-j)*p));out[i]=run
  return out
+
+def qlike_metrics(actual_vol, pred_vol, baseline_vol):
+    """QLIKE scores on variance forecasts; improvement is baseline score minus model score.
+
+    QLIKE may be negative when expressed without an additive constant. A ratio of
+    score means is therefore not a meaningful scale-free skill measure.
+    """
+    actual_vol, pred_vol, baseline_vol = map(
+        lambda z: np.asarray(z, float), (actual_vol, pred_vol, baseline_vol)
+    )
+    m = np.isfinite(actual_vol) & np.isfinite(pred_vol) & np.isfinite(baseline_vol)
+    actual_vol, pred_vol, baseline_vol = actual_vol[m], pred_vol[m], baseline_vol[m]
+    if not len(actual_vol):
+        return {"qlike": None, "qlike_baseline": None, "qlike_improvement_vs_baseline": None}
+    actual_var = np.maximum(actual_vol, 1e-8) ** 2
+    pred_var = np.maximum(pred_vol, 1e-8) ** 2
+    baseline_var = np.maximum(baseline_vol, 1e-8) ** 2
+    model_score = np.log(pred_var) + actual_var / pred_var
+    baseline_score = np.log(baseline_var) + actual_var / baseline_var
+    return {
+        "qlike": float(np.mean(model_score)),
+        "qlike_baseline": float(np.mean(baseline_score)),
+        "qlike_improvement_vs_baseline": float(np.mean(baseline_score - model_score)),
+    }
