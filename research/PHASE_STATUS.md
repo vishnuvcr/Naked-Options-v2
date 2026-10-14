@@ -73,3 +73,18 @@ The developer accepted the independent tester's no-go. No strategy, paper-tradin
 | Option strategy papers | OUT OF SCOPE | Three PDFs describe options strategies. The active research question remains prediction-only; these need a separate protocol. |
 
 The push-triggered workflow for branch `research/pdf-method-audit` is [run #55](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562973443), currently queued/pending at the last check. No expanded-model result has yet been accepted. The prior NIFTY-PRED-1.0 result remains valid only for its previously tested model/data scope.
+
+
+## OPT-BUY-3.0 — entry/exit research (2026-10-15)
+
+| Phase | Status | Evidence / next gate |
+|---|---|---|
+| 1. Audit and freeze | COMPLETE | [Frozen protocol](OPTION_ENTRY_EXIT_PLAN.md), [questions](OPTION_ENTRY_EXIT_QUESTIONS.md), branch `research/option-entry-exit-developer`. |
+| 2. Data validation | PENDING WORKFLOW | Validate private cache, schema, duplicate conflicts and date coverage. Known inherited conflict rate exceeds the frozen 1% ceiling. |
+| 3. Implementation | PARTIAL | Fixed-time CALL/PUT and fixed-duration/EOD exits implemented; broader random/rule-based and barrier/trailing catalogue not complete. |
+| 4. Empirical run | PENDING | Require observed Actions run and sanitized outputs. |
+| 5. Independent tester | NOT STARTED | Create tester branch only after results acquisition; independently check arithmetic, costs, quote matching, no-lookahead, bootstrap and Holm correction. |
+| 6. Developer correction | NOT STARTED | Fix tester-confirmed defects without relaxing gates. |
+| 7. Close | NOT STARTED | Finalize README, logs, manuscript and disposition after tester report. |
+
+**Disposition:** IN PROGRESS; NO STRATEGY APPROVED. Earlier OPT-BUY-1.0/2.0 no-go results remain unchanged.
