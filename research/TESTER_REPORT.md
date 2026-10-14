@@ -78,3 +78,40 @@ Phase 9: manuscript remains provisional.**
 I independently recalculated benchmark-relative MSE skill for return and level predictions and variance-scale QLIKE skill from the saved merged predictions. Across 91 regression model/target/horizon/feature-set entries, the largest absolute discrepancy versus the artifact metrics was approximately 2.04e-9 after applying the same 1e-12 variance floor. This confirms the core reported loss-skill arithmetic for those entries, but does not validate p-values, confidence intervals, or model selection.
 
 The confirmed tail-window defect remains: the artifact contains missing target_date values for horizon-5 and horizon-20 volatility/volatility-expansion observations while the labels themselves are present. This is consistent with the old feature builder's partial-window standard deviation. The developer branch now corrects the construction and tests the boundary; a successful CI run and regenerated artifact are still required before approving the gate.
+
+
+---
+
+# Independent tester report — corrected run #49
+
+Date: 2026-10-14  
+Artifact: [Actions run #49](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38533512128)  
+Reviewed commit: `9b655da8d72667a6d2f15e4dad5df55a1bec2e84`  
+Artifact SHA-256: `97858125f14344520f77dd503d2c0441005e6da4cfa12fc23fe7427680f932e7`
+
+## Gate checks
+
+- Workflow completed successfully. Data validation, target construction/scoring tests, feature matrix, technical and global catalogues, ARIMA, merge and report steps passed.
+- The corrected future-volatility builder now requires all horizon observations. The boundary test passed. Across 139,289 OOS prediction rows, target_date has zero missing values and zero dates on/before origin_date. For target dates represented in the OOS origin calendar, the offset matches the declared horizon (1, 5, or 20 sessions).
+- Independently recalculated 91 regression benchmark-relative MSE/QLIKE skill values from the merged prediction file. Maximum absolute difference from the saved metrics was approximately 2.04e-9.
+- Independently recalculated 140 non-ARIMA moving-block confidence intervals using the registered seed and horizon. Maximum absolute difference was below 8e-9.
+- Independently recomputed HAC paired-loss p-values for 140 non-ARIMA evaluated models; maximum absolute difference was approximately 1.24e-5, concentrated in small probability-loss mean differences. This is small numerically but should be checked against full-precision predictions before the statistical gate is finally closed. ARIMA predictions are a separate CSV and were not included in that merged-prediction check.
+- Selected one-session global CatBoost direction accuracy is 54.08%, but raw p=.0288 and Holm p=.5478; not statistically accepted. Selected one-session global CatBoost return MSE skill is +0.17%, p=.579 and Holm p=1. Selected global 5-/20-session return models have negative MSE skill (-25.8% and -157.0%) and are worse than the zero-return benchmark under the recorded Holm family.
+- Volatility model MSE skill is positive for selected global ElasticNet, but QLIKE skill is negative at 1 session and its 5-/20-session QLIKE comparisons do not survive Holm adjustment. Do not promote volatility results based on MSE alone.
+- Some technical Logistic volatility-expansion models show adjusted log-loss improvements at 5 and 20 sessions; the 1-session technical model has negative Brier skill. Treat this as exploratory and require probability calibration, regime stability and independent period validation.
+- Data scope remains limited: options chains, FII/DII, PCR, breadth, point-in-time constituents, corporate-action events and timestamped news were not verified as acquired. Global series timing/holiday alignment needs further review.
+
+## Decision
+
+**Phase 5 corrected-run gate: PASS for execution and target-window correction.**  
+**Phase 7 statistical gate: CONDITIONAL / NOT FULLY PASSED.** Arithmetic skill and block-CI checks reproduce, but the tester has not yet completed full-precision HAC/Holm family verification, ARIMA artifact review, probability calibration, and global-source timing checks.  
+**Overall research: NOT APPROVED FOR TRADING OR FINAL MANUSCRIPT SIGN-OFF.**
+
+No trading strategy is recommended. No option-chain backtest, Paytm Money fee/slippage model, or live execution analysis is included in this prediction-only study.
+
+## Developer instructions
+
+1. Preserve this report and close remaining Phase 7 checks: compare full-precision model output and predictions for probability-loss/HAC differences, independently validate Holm correction family, and audit ARIMA predictions/metrics.
+2. Audit auxiliary-series timestamp availability and holiday alignment; keep unavailable data families explicitly marked as not acquired.
+3. Update README, RESULTS.md, PHASE_STATUS.md and ERROR_LOG.md on main with corrected run #49 evidence.
+4. Do not call the study complete or design a live options strategy until Phase 7 passes. If remaining data families cannot be acquired within the bounded plan, record the limitation and finalize a prediction-only conclusion.
