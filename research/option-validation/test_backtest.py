@@ -1,0 +1,79 @@
+import importlib.util
+from pathlib import Path
+import math
+import pandas as pd
+
+SCRIPT = Path(__file__).with_name("backtest.py")
+spec = importlib.util.spec_from_file_location("option_backtest", SCRIPT)
+mod = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(mod)
+
+
+def test_paytm_order_fee_and_cost_formula_are_positive():
+    trade = {
+        "entry_prices": [100.0, 110.0],
+        "exit_prices": [120.0, 100.0],
+        "trade_date": "2026-10-13",
+        "lot_size": 75,
+        "structure": "straddle",
+    }
+    out = mod.calculate_trade(trade, slippage_bps=0, brokerage_per_order=10)
+    assert out["gross_pnl_points"] == 10.0
+    assert out["brokerage_rupees"] == 40.0
+    assert out["stt_rate"] == 0.0015
+    assert out["net_pnl_rupees"] < out["gross_pnl_rupees"]
+    assert out["entry_debit_rupees"] > 0
+    assert 0 < out["total_cost_rupees"]
+
+
+def test_slippage_never_improves_long_option_pnl():
+    trade = {
+        "entry_prices": [100.0, 90.0],
+        "exit_prices": [120.0, 100.0],
+        "trade_date": "2025-10-13",
+        "lot_size": 25,
+        "structure": "straddle",
+    }
+    no_slip = mod.calculate_trade(trade, slippage_bps=0, brokerage_per_order=10)
+    high_slip = mod.calculate_trade(trade, slippage_bps=100, brokerage_per_order=10)
+    assert high_slip["net_pnl_rupees"] < no_slip["net_pnl_rupees"]
+
+
+def test_pre_april_2026_stt_rate():
+    trade = {
+        "entry_prices": [10.0, 10.0],
+        "exit_prices": [11.0, 9.0],
+        "trade_date": "2026-03-31",
+        "lot_size": 50,
+        "structure": "straddle",
+    }
+    out = mod.calculate_trade(trade, slippage_bps=0, brokerage_per_order=10)
+    assert out["stt_rate"] == 0.001
+
+
+def test_quote_matching_does_not_use_another_strike():
+    rows = pd.DataFrame([
+        {"date": "2026-10-13", "time": "09:20", "option_type": "CALL",
+         "strike": 25000.0, "open": 100.0, "close": 105.0, "spot": 25010.0},
+        {"date": "2026-10-13", "time": "15:25", "option_type": "CALL",
+         "strike": 25050.0, "open": 80.0, "close": 90.0, "spot": 25040.0},
+    ])
+    assert mod.match_exit_price(rows, "2026-10-13", "CALL", 25000.0) is None
+
+
+def test_block_bootstrap_deterministic_and_finite():
+    series = [0.01, -0.02, 0.03, -0.01, 0.00, 0.02, -0.015, 0.004] * 8
+    a = mod.block_bootstrap_mean(series, block_len=5, n_boot=200, seed=12)
+    b = mod.block_bootstrap_mean(series, block_len=5, n_boot=200, seed=12)
+    assert a == b
+    assert all(math.isfinite(v) for v in a)
+    assert a[0] <= a[1]
+
+
+def test_holm_preserves_order_and_bounds():
+    p = [0.01, 0.04, 0.03, float("nan")]
+    adjusted = mod.holm_adjust(p)
+    assert len(adjusted) == 4
+    assert adjusted[0] >= p[0]
+    assert all(0 <= x <= 1 for x in adjusted[:3])
+    assert math.isnan(adjusted[3])
