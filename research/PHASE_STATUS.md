@@ -42,3 +42,13 @@ The nine-phase work is closed for the bounded prediction-only scope with accepte
 
 No live strategy is approved. The first experiment is intraday-only because rolling strike-relative option series do not establish stable multi-day contract identity.
 <!-- OPTION_VALIDATION_PHASE_END -->
+
+
+## OPT-BUY-2.0 strike grid — final bounded disposition (2026-10-14)
+
+- Workflow [run #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562114651) succeeded at workflow level; artifact SHA-256 `e727095479b645703252832956a99a2924a5b5f68c507d68ec38b66ec9bd61e5`.
+- Developer result: [research/option-strike-selection/RESULTS.md](option-strike-selection/RESULTS.md). Independent tester: [TESTER_REPORT.md](option-strike-selection/TESTER_REPORT.md) on branch `research/option-strike-selection-independent-tester-final`.
+- Disposition: **NO-GO for all 16 strike pairs / both alert horizons.** At ₹10/order and 50 bps adverse slippage per premium side, all 32 model-filtered cells have negative mean net P&L, all 32 95% intervals are entirely below zero, and neither chronological half is positive. Mean daily net P&L range: −₹316.87 to −₹622.96 per eligible-date slot.
+- Data gates failed: duplicate-conflict rate 1.4154% (>1% maximum); only ATM/ATM at both horizons passes 80% coverage. Several cells have fewer than 100 alert trades.
+- Run #5's primary test CSV has blank raw/Holm p-values and zero observations for all 32 rows. This is an unresolved reporting defect; no significance claims are permitted. It does not alter the no-go decision because the quality gate fails and all measured candidate outcomes are negative.
+- Do not continue parameter search, relax gates, paper-trade or live-trade these candidates. Any new study requires a new protocol version and better data quality. OPT-BUY-2.0 frozen grid is closed NO-GO.
