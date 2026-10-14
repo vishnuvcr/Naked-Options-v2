@@ -129,7 +129,7 @@ def main():
         rec={"source_id":name,"attempted_at_utc":now()}
         try:
             df=fn(); rec.update({"status":"PASS","rows":len(df),"first_date":df.date.min(),"last_date":df.date.max(),
-              "missing_volume":int(df.volume.isna().sum()),"csv_sha256":hashlib.sha256(df.to_csv(index=False).encode()).hexdigest()})
+              "missing_volume":int(df.volume.isna().sum()),"weekend_rows_excluded":int(df.attrs.get("weekend_rows_excluded",0)),"csv_sha256":hashlib.sha256(df.to_csv(index=False).encode()).hexdigest()})
             good.append((name,df))
         except Exception as e:
             rec.update({"status":"FAIL","error_type":type(e).__name__,"error_summary":str(e)[:250]})
