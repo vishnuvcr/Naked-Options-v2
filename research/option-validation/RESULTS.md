@@ -50,7 +50,7 @@ Primary costs are ₹10/order and 50 bps adverse slippage per premium side. The 
 - Quote coverage: reports/option_validation/quote_quality.json
 - Primary comparisons: reports/option_validation/primary_comparisons.csv
 - Cost sensitivity matrix: reports/option_validation/performance.csv
-- Sanitized trade-outcome ledger: reports/option_validation/trade_ledger.csv
+- Sanitized trade-outcome ledger: [run #11 artifact ZIP](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384) (contains reports/option_validation/trade_ledger.csv; raw option quotes are not included).
 - Raw option responses remain only in Actions cache at data/cache/options_rolling; they are not committed or uploaded.
 
 Developer handoff: independently inspect date/strike matching, costs, P&L units, split integrity, and all acceptance gates before discussing even paper-trading validation.
