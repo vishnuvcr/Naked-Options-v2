@@ -44,3 +44,10 @@ HTTP 200 returning HTML instead of the required payload is a source failure. Emp
 ### OPT-BUY-2.0 root-cause update — 2026-10-14
 
 Run #2 confirmed the actual blocker was upstream of options acquisition: `BLOCKED_NO_VALID_DAILY_DATA`, with `requests_planned=0`. The strike workflow omitted the predecessor workflow's daily-series acquisition/validation step when the cache was absent. Corrected the workflow to acquire the daily NIFTY series with configured repository secrets when needed, validate it, then proceed to options acquisition. Retest: [run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097). Until that run resolves the input-data gate, no option quote coverage or P&L inference is valid.
+
+
+### OPT-BUY-2.0 live checkpoint — 2026-10-14 17:34 IST
+
+- [Run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097) completed its daily target acquisition/validation and pre-analysis regression step (13 tests passed) but remains in the “Acquire/reuse options cache” step. The step has been active since 10:49:21 UTC; no sanitized artifact is available yet.
+- This is recorded as a **long-running step under observation**, not a confirmed API defect: live job metadata does not expose an error or a terminal conclusion. Job timeout is 180 minutes. Do not infer quote availability, strike performance, or profitability before terminal logs/artifacts exist.
+- Next check: after the job transitions to completed or failed, retrieve its logs and artifacts, classify any real source/API/cache failure, and update this entry with the evidence.
