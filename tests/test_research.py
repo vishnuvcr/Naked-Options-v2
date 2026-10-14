@@ -40,3 +40,10 @@ def test_feature_values_do_not_depend_on_future_rows():
     cols=["ret_0","ret_1","mom_20","vol_20","range","gap"]
     for col in cols:
         assert np.allclose(full.loc[:69,col],prefix.loc[:69,col],equal_nan=True)
+
+def test_forward_volatility_requires_full_horizon_window():
+    out=build(sample(140))
+    assert out.target_future_vol_5.iloc[-5:].isna().all()
+    assert out.target_future_vol_20.iloc[-20:].isna().all()
+    assert out.target_future_vol_5.iloc[-6:].notna().all()
+    assert out.target_future_vol_20.iloc[-21:].notna().all()
