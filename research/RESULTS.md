@@ -35,3 +35,7 @@ No model can yet be ranked because no experiment output has been verified. This 
 The canonical bounded workflow candidate is [Actions run #34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38525308372) at commit d654d8f825ba19dc8dfc08f9f2e7b8f26779e7d3. Its data validation, feature construction and unit tests were progressing successfully at the last inspection. The experiment stage has not yet emitted a completed metric table; all result cells above remain BLOCKED until that run and artifact review complete.
 
 No best model, final out-of-sample accuracy, statistical significance or calibration claim is made from a pending run.
+
+## Compute-budget amendment
+
+The model grid has been bounded before accepting any out-of-sample result. Full algorithm comparisons are made for next-session return and direction; a core set covers remaining target/horizon cells. This choice is documented in RESEARCH_PLAN.md and all omitted family cells are explicitly blocked. It constrains the scope of conclusions: no cross-family winner is inferred for a target/horizon with only a core screen. No empirical performance figure is available from the superseded runs.
