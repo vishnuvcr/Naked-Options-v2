@@ -116,3 +116,13 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Independent tester then identified 1,260 null target dates in volatility/volatility-expansion predictions caused by partial future-return windows. Tester report: `research/PDF_METHOD_AUDIT_TESTER_REPORT.md` on `research/pdf-audit-tester-final`.
 - Developer correction: future volatility labels at horizons 5 and 20 now require a complete future window; a unit test checks non-null labels have future target dates and incomplete windows remain missing. Workflows #61 and #62 are queued/running for bounded retest. Final sign-off remains open until a corrected artifact is verified.
 - Only visible conversation actions and research decisions are recorded here; private hidden reasoning is not copied into repository logs.
+
+
+## 2026-10-14 — corrected NIFTY prediction study closed
+
+- Workflow #62 completed successfully on `research/pdf-audit-developer`: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38604064792. Artifact SHA-256: `14c9d6fc1bcb0f00ff28e708cb10a6cab9b378e5e60ff31f6e66aaa5e977172b`.
+- Corrected feature construction requires complete future-return windows for h=5/h=20 volatility targets. CI tests passed. Final prediction artifact has 471,735 rows, zero missing target dates, and no target date at or before forecast origin.
+- Independent tester retested and recorded **PASS WITH SCOPE LIMITATIONS**. Headline regression metrics, all 482 non-ARIMA confidence intervals, ARIMA benchmark, and Holm-adjusted p-values were independently checked. Small serialized-prediction precision differences in 28 individual classification z/p values did not alter corrected conclusions.
+- Final finding: no robust return/direction winner. One-session global XGBoost volatility QLIKE improved after the configured Holm correction; longer-horizon volatility results were not significant after correction. Twenty-session volatility expansion is promising but exploratory (Holm p=.0572). No trading strategy is approved.
+- Remaining limitations: 20 weekend-dated observations and global close-time alignment remain unverified; historical options/PCR, FII/DII, breadth, point-in-time news and corporate actions are absent/unverified; some PDF-specific algorithms were not exact reproductions.
+- Main README on `main` links the final results, manuscript, phase status, error log, tester report and successful workflow. Prediction-only phase is closed; no additional model loops or strategy research were initiated.
