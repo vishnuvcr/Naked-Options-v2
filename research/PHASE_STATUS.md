@@ -5,16 +5,38 @@ Research version: NIFTY-PRED-1.0
 
 | Phase | Branch | Status | Gate / evidence | Next action |
 |---|---|---|---|---|
-| 1. Repository audit and design | research/phase-1-audit | COMPLETE | Initial repository was empty; new prediction-only scope, nine-phase plan and acceptance gates committed. Historical work was not overwritten. | Retain audit record; no further work unless an actual scope change is needed. |
-| 2. Literature review | research/phase-2-literature | COMPLETE (preliminary review) | Project-library manuscripts reviewed and literature/source matrix committed. Public NSE report families and two Hugging Face options collections checked; license and provenance cautions recorded. | Finalize formatted references in manuscript after result stage; literature discovery must not be confused with dataset ingestion. |
-| 3. Data collection/validation/cache | research/phase-3-data | PASS for daily target; auxiliary data PARTIAL | GitHub Actions run 29's logs confirmed a cached Dhan daily series with 4,901 rows from 2007-01-02 to 2026-10-13, SHA-256 b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050. An earlier validator incorrectly rejected 20 weekend-dated observations; after this was changed to a warning (to preserve possible special sessions), later runs passed validation and feature construction. | Record all auxiliary series actually fetched in the final manifest; options, FII/DII, breadth, India VIX and timestamped news are not yet confirmed as present. |
-| 4. Baselines and benchmark establishment | research/phase-4-baselines | IN PROGRESS | Baseline/metric tests are present; the ARIMA benchmark step has not yet been confirmed complete. | Verify zero/mean return benchmarks, persistence and ARIMA predictions against hand-computed cases. |
-| 5. Systematic model experiments | research/phase-5-models | IN PROGRESS | Unit tests passed 8/8 on run 29; data validation and feature matrix passed on runs 30/31. Run 29 was cancelled before model outcomes; run 30 and branch run 31 reached the technical-only model step. Sequence compute has been bounded to 3 epochs, 2 time-series folds and next-session return/direction. The OOS R-squared label was corrected to benchmark-relative in the phase-5 branch; that correction must be included in the final run. | Finish one completed, reproducible model run and inspect per-model failure/status logs before proceeding. |
-| 6. Feature, horizon and regime analysis | research/phase-6-features-regimes | BLOCKED pending model outputs | Technical features and lagged external-source features are implemented; auxiliary source acquisition and an ablation result are not yet verified. | Run the fixed feature ablation after Phase 5 produces results; explicitly mark absent source families as unavailable. |
-| 7. Statistical validation and robustness | research/phase-7-validation | BLOCKED pending result artifacts | HAC-style paired-loss test, moving-block bootstrap and Holm utilities are implemented; no final validated comparison table yet. | Independently recompute metrics, correct multiple testing across all compared families and inspect overlapping horizons/regimes. |
-| 8. Independent tester review and defect correction | research/phase-8-independent-review | BLOCKED pending results | No final OOS result set exists. | Create separate developer/tester branches only after results are acquired; then independently inspect formulas, labels, source provenance, leakage and conclusions. |
-| 9. Manuscript and publication | research/phase-9-publication | IN PROGRESS (shell only) | Structured manuscript shell and Pages workflow exist. Pages deployment succeeded on an earlier code-only run; that page did not contain empirical result tables. | Populate empirical sections only from final report artifacts and verify final deployment. |
+| 1. Repository audit and design | research/phase-1-audit | IN PROGRESS | GitHub repo was empty: no files, branches, commits or datasets. Scope and criteria drafted. | Finish bootstrap, code, and audit summary. |
+| 2. Literature review | research/phase-2-literature | IN PROGRESS | Reviewed NIFTY ML paper in Project library; official NSE / Dhan source pages and forecasting-test literature. | Finalize reference matrix and gaps. |
+| 3. Data collection/validation/cache | research/phase-3-data | NOT STARTED | No data downloads or token access verified yet. | Run acquisition workflow and record hashes. |
+| 4. Baselines | research/phase-4-baselines | BLOCKED | Requires validated target data. | Start after Phase 3 data gate. |
+| 5. Model experiments | research/phase-5-models | BLOCKED | No fitted models / predictions verified. | Run frozen catalogue after data gate. |
+| 6. Feature/horizon/regime analysis | research/phase-6-features-regimes | BLOCKED | Depends on source availability and model outputs. | Test verified feature families only. |
+| 7. Statistical validation | research/phase-7-validation | BLOCKED | No locked holdout outputs. | Compute uncertainty, dependence-aware tests, multiplicity correction. |
+| 8. Independent tester | research/phase-8-independent-review | BLOCKED | No empirical artifacts available. | Create developer/tester branches after results. |
+| 9. Manuscript/publication | research/phase-9-publication | BLOCKED | No empirical result tables or deployment evidence. | Finish manuscript and verify Pages only after prior gates. |
 
 ## Gate rule
 
-A phase is not PASS merely because files or workflows exist. Gates require execution artifacts and review evidence. A phase can complete with a negative result if the protocol ran and evidence is saved. A missing auxiliary dataset blocks only dependent feature families; it does not justify fabricating values or claiming the family was tested. Final phase closure records remaining limitations and future directions.
+A phase is not PASS merely because files or workflows exist. Gates require execution artifacts and review evidence. A phase can complete with a negative result if the protocol ran and evidence is saved. If credentials or external permissions are missing, record BLOCKED and use free-source alternatives where possible. The final phase must record limitations and future directions.
+
+## Phase 5 branch checkpoint — 2026-10-14
+
+- Phases 1–4 have separate historical checkpoint branches; the working model pipeline is on research/phase-5-models.
+- Daily target: 4,901 observations from 2007-01-02 through 2026-10-13; SHA-256 b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050. The 20 weekend-dated observations are preserved and flagged for special-session/calendar cross-check; validation now passes with a warning, not deletion.
+- Unit tests passed 8/8 on an earlier run; the corrected branch adds a specific benchmark-relative OOS-R-squared arithmetic test.
+- Current canonical compute-bounded candidate: Actions run #34, commit d654d8f825ba19dc8dfc08f9f2e7b8f26779e7d3. At last check it was running validation/tests; model outputs not yet available.
+- The candidate selection uses two chronological folds for all model families; sequence families have three epochs and are restricted to next-session return and direction. All other sequence target/horizon cells must be reported BLOCKED_COMPUTE_BUDGET.
+- Final Phase 5 gate remains OPEN until Actions #34 completes and metrics/predictions plus independent checks are available.
+
+## Phase 5 status — revised compute gate (2026-10-14)
+
+The full grid remained active at the experiment step without producing final artifacts. A dated amendment to RESEARCH_PLAN.md now limits full catalogue comparisons to next-session return and direction and keeps core regression/classification models for all other target/horizon combinations. Excluded catalogue cells are emitted as BLOCKED_COMPUTE_BUDGET. Estimator counts are bounded. Phase 5 remains OPEN until a final workflow completes and all results/defect checks pass.
+
+## Independent audit update — 2026-10-14
+
+Run #45 artifact was recovered and inspected. Core return/level MSE skill and QLIKE arithmetic were independently recomputed from prediction rows (max discrepancy below 3e-9 after matching the variance floor). The tester identified a confirmed defect: forward-volatility labels near the tail were computed from partial future windows because pandas standard deviation skips missing values. The developer-review branch now requires complete horizon windows and adds a unit test. Phase 5/7 remain OPEN until CI passes, the feature matrix is rebuilt, and a new run has no invalid target-date rows.
+
+
+## Main branch checkpoint — 2026-10-14
+
+Run #45 completed and its artifact was inspected. A first independent recomputation matched 91 regression skill/QLIKE-skill entries within 3e-9. The independent tester identified a confirmed tail-label issue: future volatility windows near the end of the dataset were partially populated. The developer-review branch now requires complete future windows and includes a boundary test. CI and a corrected rerun are pending; no final phase gate is passed.
