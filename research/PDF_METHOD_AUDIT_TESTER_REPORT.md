@@ -55,3 +55,28 @@ The available results support **no robust return/direction winner established**.
 2. Recompute affected predictions, metrics, CIs, HAC p-values and Holm adjustments if any rows change.
 3. Update the run results, manuscript, README, phase status, experiment log and error log with the new workflow/artifact hashes and exact row counts.
 4. Resubmit a new artifact for independent review. Do not widen the scope or begin options-strategy work.
+
+
+## Developer resubmission review — corrected run #62
+
+**Developer commit:** `be02efcb8fbd21f36fec826bdcc3ee923f75849a`  
+**Workflow:** [run #62](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38604064792) — SUCCESS  
+**Artifact SHA-256:** `14c9d6fc1bcb0f00ff28e708cb10a6cab9b378e5e60ff31f6e66aaa5e977172b`
+
+### Retest disposition
+
+- **T-01 CLOSED.** The corrected artifact has 471,735 prediction rows and **zero null target dates**; no target date is on/before its origin date. The new target-construction test passed in CI. Partial future windows are no longer used for 5-/20-session volatility labels.
+- **Regression headline arithmetic PASS.** Recomputed CNN technical return h=1, XGBoost technical return h=5, and Gradient Boosting global return h=20 metrics from matching raw prediction rows; values agree to displayed precision.
+- **Classification and paired-loss arithmetic PASS WITH SMALL SERIALIZATION DIFFERENCES.** Recomputed metrics, paired-loss signs, HAC p-values and Holm correction from the artifact. All Holm-adjusted values match the exported table; 28 individual classification z/p values (mostly sequence-model rows) differ by at most approximately `5.5e-5` when reconstructed from serialized predictions. This is small and does not alter the headline inference, but should be documented as finite-precision/export reproducibility tolerance.
+- **Confidence intervals PASS.** Independently recomputed circular block intervals for all 482 non-ARIMA OOS rows; no discrepancies. The three ARIMA confidence intervals, HAC p-values and benchmark metrics were independently reproduced from `arima_predictions.csv` to numerical precision.
+- **QLIKE PASS WITH SCORE-SCALE WARNING.** The additive baseline-minus-model QLIKE improvement has the expected sign. Some h=1 volatility models predict near-zero values and produce enormous QLIKE scores; these are clearly poor forecasts and should not be ranked by MAE alone.
+- **Inferential interpretation PASS.** Paired loss is model minus baseline; positive means worse model performance. Small two-sided p-values are not automatically wins. Return rows do not survive Holm correction. Volatility-expansion h=20 technical logistic has log loss 0.6210 versus baseline 0.6934, Brier skill +0.1304 and Holm p=0.0572: promising descriptively but not significant at 0.05 after correction.
+- **Scope limitations remain.** Global close-time alignment and the 20 weekend-dated target observations are not independently resolved. Historical options/PCR, FII/DII, breadth, point-in-time news and corporate-action features remain absent or unverified. This is not a trading strategy.
+
+## Final tester disposition
+
+**PASS WITH SCOPE LIMITATIONS** for the bounded prediction-only screening study. The critical target-date defect is fixed and independently verified; headline arithmetic, the non-ARIMA block intervals, ARIMA benchmark and Holm-adjusted p-values are reproduced. Finite precision differences are small and not conclusion-changing. The evidence still does **not** establish a robust return/direction winner; volatility findings are metric-specific, and volatility-expansion remains exploratory. No options strategy is approved.
+
+### Final developer instructions
+
+Update the main results/manuscript/README/phase status with run #62 and this tester disposition, record T-01 as resolved, preserve unresolved data-timing and feature-coverage limitations, and stop the prediction-only phase. Do not launch more model loops or start trading-strategy work under this request.
