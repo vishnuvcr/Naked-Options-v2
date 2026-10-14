@@ -36,10 +36,12 @@ The nine-phase work is closed for the bounded prediction-only scope with accepte
 
 ## Separate follow-on study (does not reopen NIFTY-PRED-1.0)
 
-A user-approved scope amendment initiated 2026-10-14 opens a separate validation track. It does not reopen or change the closed nine-phase NIFTY-PRED-1.0 study.
+A user-approved scope amendment on 2026-10-14 created OPT-BUY-1.0 as a separate, bounded test. It does not alter the closed nine-phase NIFTY-PRED-1.0 study.
 
-| Track | Branch | Status | Evidence / next gate |
+| Track | Branch | Status | Evidence / final gate |
 |---|---|---|---|
-| Intraday option-buying validation | research/option-buying-validation | PILOT GATE FAILED ON COVERAGE; CORRECTED RERUN RUNNING | Pilot [run #6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923) acquired 196/196 narrow-grid requests, but only 171/980 dates had valid fixed-strike entry/exit (17.45%; required ≥80%). No strategy inference is accepted. In [run #9](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38545503819), the expanded monthly ATM−3…ATM+3 request grid has acquired successfully and the cache is saved; the P&L/statistical step is running. Primary comparisons use daily net rupee P&L. |
+| Intraday option-buying validation | research/option-buying-validation | CLOSED — NO-GO FOR TESTED CANDIDATES; BROADER HYPOTHESIS INCONCLUSIVE | [Run #11](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384) completed with 13 tests passing before and after analysis. Independent review: [TESTER_REPORT.md](research/option-validation/TESTER_REPORT.md). |
 
-The pilot found negative average premium-normalized returns for all four alert-filtered variants, but its quote coverage gate failed; its p-values are not treated as confirmatory evidence. The corrected run must pass data quality, cost and statistical gates, followed by separate developer/tester review. No strategy is approved.
+Acquisition succeeded from cache; the quote universe has 1,062,082 raw and 1,029,545 usable rows. The frozen data gate fails: strangle eligible-date coverage 69.18% (<80%) and conflicting duplicate groups 1.409% (>1%). All four filtered candidates have negative mean net daily P&L and negative 95% intervals; 100-bps and both-half profitability checks also fail. Significant paired improvement versus always-buy is loss reduction, not profitability.
+
+The developer accepted the independent tester's no-go. No strategy, paper-trading candidate or live deployment is approved. Do not relax the frozen gates or run further parameter loops.
