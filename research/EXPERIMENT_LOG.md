@@ -51,8 +51,8 @@ All experiment results remain unranked until a completed run emits machine-gener
 <!-- OPTION_VALIDATION_EXPERIMENT_START -->
 ## Follow-on option-buying validation — OPT-BUY-1.0
 
-- Last stage: ANALYSIS; decision: INCONCLUSIVE_PARTIAL_OR_INCOMPLETE_DATA; workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38544279448; commit: b5f78b27b7f6f020d39f9507dfead79d65b9bff0.
-- Options requests planned: 196; completed/empty: 196; failed: 0.
+- Last stage: ANALYSIS; decision: INCONCLUSIVE_PARTIAL_OR_INCOMPLETE_DATA; workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38545503819; commit: 08c7663b8f8a1321ab2b23b5e9bba6dc088fd5d7.
+- Options requests planned: 686; completed/empty: 490; failed: 0.
 - Primary comparisons written: 4; result file: research/option-validation/RESULTS.md.
 - Raw data were not committed or uploaded. Missing/failed requests remain visible in the sanitized acquisition summary/error log.
 <!-- OPTION_VALIDATION_EXPERIMENT_END -->
