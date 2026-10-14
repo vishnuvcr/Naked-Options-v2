@@ -41,3 +41,9 @@ Run #45 artifact was recovered and inspected. Core return/level MSE skill and QL
 
 - Run #48 failed at the unit-test gate before feature construction or model fitting. The precise failure was an `AttributeError` in the new boundary test: `.notna()` was called on a NumPy scalar. The target-label code itself was not shown to fail in this run.
 - Next developer action: use `pd.notna` for scalar assertions, rerun the full test suite, then rerun the bounded experiment only after CI passes. Phase 5/7 remain OPEN; no new empirical results are available from run #48.
+
+
+## Correction workflow audit — 2026-10-14
+
+- Run #48 failed at the unit-test gate before feature construction or model fitting. The precise failure was an `AttributeError` in the new boundary test: `.notna()` was called on a NumPy scalar. The target-label code itself was not shown to fail in this run.
+- Fixed the test to use `pd.notna` and committed the correction at `9b655da8d72667a6d2f15e4dad5df55a1bec2e84`. Next action is full tests followed by a bounded experiment rerun only if CI passes. Phase 5/7 remain OPEN; run #48 contributes no new empirical results.
