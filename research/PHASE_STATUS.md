@@ -88,3 +88,17 @@ The push-triggered workflow for branch `research/pdf-method-audit` is [run #55](
 | 7. Close | NOT STARTED | Finalize README, logs, manuscript and disposition after tester report. |
 
 **Disposition:** IN PROGRESS; NO STRATEGY APPROVED. Earlier OPT-BUY-1.0/2.0 no-go results remain unchanged.
+
+
+## OPT-BUY-3.0 — Entry × exit criteria (2026-10-15)
+
+| Phase | Status | Evidence / next action |
+|---|---|---|
+| Scope amendment and protocol | COMPLETE | User explicitly removed independent review. [Frozen protocol](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-entry-exit-developer/research/OPTION_ENTRY_EXIT_PLAN.md) amended; no tester branch/report gate. |
+| Data/cache validation | BLOCKED / RECHECK REQUIRED | Latest committed screen reports BLOCKED_NO_VALID_QUOTES; confirm cache restore/acquisition and preserve source errors. |
+| Full catalogue implementation | INCOMPLETE | Existing implementation only tests fixed-time CALL/PUT entries and fixed holds/EOD. Random controls, signal rules, straddles, premium barriers/trailing exits, 100-bps recalculation remain outstanding. |
+| Automated validation | NOT YET VERIFIED | Existing tests are committed but this session has not observed an Actions result. Check fee math, entry/exit matching, bootstrap/null, no-trade sessions, and time truncation. |
+| Bounded empirical results | NOT YET AVAILABLE | Do not claim profitability until valid quotes, complete registered cells, after-cost sensitivity and multiplicity outputs exist. |
+| Manuscript and final disposition | PENDING | Produce from actual completed artifacts; close within the frozen phase budget, even if inconclusive. |
+
+Process rule: no independent review/tester branch. The single workflow must run automated tests and checks, correct defects, document outcomes, and avoid claiming tests passed unless an actual run confirms it.
