@@ -66,6 +66,28 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+def safe_response_detail(response, secret: str = "") -> str:
+    """Expose a short provider error hint without authorization material."""
+    try:
+        payload = response.json()
+        if isinstance(payload, dict):
+            pieces = []
+            for key in ("errorCode", "errorType", "errorMessage", "remarks", "message", "code", "error"):
+                val = payload.get(key)
+                if val is not None and not isinstance(val, (dict, list)):
+                    pieces.append(f"{key}={val}")
+            body = " ".join(pieces) if pieces else json.dumps(payload, ensure_ascii=True)
+        else:
+            body = str(payload)
+    except Exception:
+        body = str(getattr(response, "text", ""))
+    if secret:
+        body = body.replace(secret, "[REDACTED]")
+    body = re.sub(r"(?i)(access-token|authorization|token)\s*[:=]\s*[^\s,;]+", r"\1=[REDACTED]", body)
+    body = re.sub(r"\beyJ[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b", "[REDACTED_JWT]", body)
+    return body.replace("|", "/").replace("\n", " ")[:240]
+
+
 def ensure_dirs() -> None:
     REPORT.mkdir(parents=True, exist_ok=True)
     OPTION_CACHE.mkdir(parents=True, exist_ok=True)
@@ -333,8 +355,8 @@ def acquire_options(refresh: bool = False) -> dict:
                 "interval": 5,
                 "securityId": 13,
                 "instrument": "OPTIDX",
-                "expiryFlag": "WEEK",
-                "expiryCode": 0,
+                "expiryFlag": "MONTH",
+                "expiryCode": 1,
                 "strike": offset_label(offset),
                 "drvOptionType": opt_type,
                 "requiredData": ["open", "high", "low", "close", "iv", "volume", "strike", "oi", "spot"],
@@ -348,11 +370,11 @@ def acquire_options(refresh: bool = False) -> dict:
                     response = session.post("https://api.dhan.co/v2/charts/rollingoption",
                                             json=request_body, timeout=45)
                     if response.status_code in (401, 403):
-                        last_error = f"AUTH_HTTP_{response.status_code}"
+                        last_error = f"AUTH_HTTP_{response.status_code}:{safe_response_detail(response, token)}"
                         stop_all_requests = True
                         break
                     if response.status_code in (400, 404, 422):
-                        last_error = f"REQUEST_SCHEMA_HTTP_{response.status_code}"
+                        last_error = f"REQUEST_SCHEMA_HTTP_{response.status_code}:{safe_response_detail(response, token)}"
                         stop_all_requests = True
                         break
                     if response.status_code == 429 or response.status_code >= 500:
@@ -411,8 +433,8 @@ def acquire_options(refresh: bool = False) -> dict:
         "history_start_clipped_to_provider_window": bool(request_start > requested_start),
         "request_window_days_max": 30,
         "interval_minutes": 5,
-        "expiry_flag": "WEEK",
-        "expiry_code": 0,
+        "expiry_flag": "MONTH",
+        "expiry_code": 1,
         "requested_offset_type_pairs": [{"offset": x, "option_type": y} for x, y in required_requests],
         "requests_planned": planned,
         "requests_attempted": len(req_records) + len(failures),

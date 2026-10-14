@@ -86,3 +86,19 @@ def test_nifty_lot_size_proxy_includes_december_2025_revision():
     assert mod.lot_size_proxy("2025-12-30") == 75
     assert mod.lot_size_proxy("2025-12-31") == 65
     assert mod.lot_size_proxy("2026-10-13") == 65
+
+
+def test_safe_response_detail_redacts_access_token_and_jwt():
+    class FakeResponse:
+        text = ""
+        def json(self):
+            return {
+                "errorCode": "BAD_REQUEST",
+                "errorMessage": "bad schema",
+                "debug": "access-token=secret-token eyJabcdefghijklmno.abcdefghijk.abcdefghijk"
+            }
+    detail = mod.safe_response_detail(FakeResponse(), secret="secret-token")
+    assert "BAD_REQUEST" in detail
+    assert "bad schema" in detail
+    assert "secret-token" not in detail
+    assert "eyJabcdefghijklmno" not in detail

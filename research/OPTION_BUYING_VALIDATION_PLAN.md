@@ -41,7 +41,7 @@ All four combinations (5-session alert × straddle, 5-session × strangle, 20-se
 
 **Primary target/features:** validated Dhan daily NIFTY-50 cache already used by NIFTY-PRED-1.0. External/global features are excluded for reproducing the original technical classifier.
 
-**Primary option source:** DhanHQ API v2 POST /charts/rollingoption. Its documentation describes rolling expired-option history up to five years, at most 30 calendar days per request, 5-minute candles and ATM-relative strikes with OHLC, IV, volume, OI and spot. Source: https://dhanhq.co/docs/v2/expired-options-data/
+**Primary option source:** DhanHQ API v2 POST /charts/rollingoption. Its documentation describes rolling expired-option history up to five years, at most 30 calendar days per request, 5-minute candles and ATM-relative strikes with OHLC, IV, volume, OI and spot. Source: https://dhanhq.co/docs/v2/expired-options-data/ The first attempted WEEK/expiryCode=0 request returned HTTP 400 before any quote was acquired. The next attempt uses the API page's documented MONTH/expiryCode=1 example; the result is therefore explicitly a nearest-monthly rolling series and must not be relabelled as weekly-option performance.
 
 **Free-source checks:** official NSE derivatives reports: https://www.nseindia.com/all-reports-derivatives. The existing data catalog lists public Hugging Face collections; one has a CC-BY-NC licence and another has an unverified “other” licence. They are not substituted into this test unless licence, provenance, timestamp integrity and redistribution rights are verified. Dhan credentials are accessed only through GitHub Actions secret DHAN_ACCESS_TOKEN, never committed or logged.
 
