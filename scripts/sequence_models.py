@@ -1,9 +1,12 @@
-"""Optional compact LSTM, GRU, TCN and Transformer estimators for lagged returns."""
+"""Compact sequence estimators for the PDF-method coverage experiment.
+All neural candidates use fixed seeds and short CPU-only training budgets.
+"""
 import importlib.util
 import numpy as np
 from sklearn.base import BaseEstimator
+
 class SequenceEstimator(BaseEstimator):
- def __init__(self,arch="lstm",kind="reg",epochs=8,hidden=16,seed=20261014):
+ def __init__(self,arch="lstm",kind="reg",epochs=3,hidden=16,seed=20261014):
   self.arch=arch;self.kind=kind;self.epochs=epochs;self.hidden=hidden;self.seed=seed
  def fit(self,X,y):
   import torch
@@ -11,7 +14,7 @@ class SequenceEstimator(BaseEstimator):
   torch.manual_seed(self.seed);torch.set_num_threads(2)
   a=np.asarray(X,float);mu=float(np.nanmean(a));sd=float(np.nanstd(a))+1e-8
   a=np.nan_to_num(a,nan=mu,posinf=mu,neginf=mu);a=(a-mu)/sd
-  self.xmu_=mu;self.xsd_=sd; yy=np.asarray(y,float)
+  self.xmu_=mu;self.xsd_=sd;yy=np.asarray(y,float)
   self.ymu_=float(yy.mean()) if self.kind=="reg" else 0.
   self.ysd_=float(yy.std()+1e-8) if self.kind=="reg" else 1.
   yy=(yy-self.ymu_)/self.ysd_ if self.kind=="reg" else yy
@@ -19,19 +22,41 @@ class SequenceEstimator(BaseEstimator):
   class Net(nn.Module):
    def __init__(self):
     super().__init__();self.arch=arch
-    if arch in ("lstm","gru"):
-     self.rnn=(nn.LSTM(1,h,batch_first=True) if arch=="lstm" else nn.GRU(1,h,batch_first=True))
-    elif arch=="tcn":
-     self.conv=nn.Sequential(nn.Conv1d(1,h,3,padding=1),nn.GELU(),nn.Conv1d(h,h,3,padding=2,dilation=2),nn.GELU(),nn.AdaptiveAvgPool1d(1))
+    def branch(name):
+     if name=="lstm": return nn.LSTM(1,h,batch_first=True)
+     if name=="gru": return nn.GRU(1,h,batch_first=True)
+     if name=="rnn": return nn.RNN(1,h,batch_first=True,nonlinearity="tanh")
+     if name=="cnn": return nn.Sequential(nn.Conv1d(1,h,3,padding=1),nn.GELU(),nn.Conv1d(h,h,3,padding=1),nn.GELU(),nn.AdaptiveAvgPool1d(1))
+     if name=="tcn": return nn.Sequential(nn.Conv1d(1,h,3,padding=1),nn.GELU(),nn.Conv1d(h,h,3,padding=2,dilation=2),nn.GELU(),nn.AdaptiveAvgPool1d(1))
+     if name=="transformer":
+      inp=nn.Linear(1,h);pos=nn.Parameter(torch.zeros(1,L,h))
+      layer=nn.TransformerEncoderLayer(h,4,batch_first=True,dropout=0.1)
+      return nn.ModuleDict({"input":inp,"trans":nn.TransformerEncoder(layer,2),"pos_holder":nn.Identity()}),pos
+     raise ValueError("unknown architecture "+name)
+    if "+" in arch:
+     self.names=arch.split("+");self.branches=nn.ModuleList([branch(n) if n!="transformer" else branch(n)[0] for n in self.names])
+     self.positions=nn.ParameterList([branch("transformer")[1] for n in self.names if n=="transformer"])
+     self.head=nn.Linear(h*len(self.names),1)
     else:
-     self.input=nn.Linear(1,h);self.pos=nn.Parameter(torch.zeros(1,L,h))
-     layer=nn.TransformerEncoderLayer(h,4,batch_first=True,dropout=0.1)
-     self.trans=nn.TransformerEncoder(layer,2)
-    self.head=nn.Linear(h,1)
+     self.names=[arch];b=branch(arch)
+     if arch=="transformer": self.input,self.trans=b[0]["input"],b[0]["trans"];self.pos=b[1]
+     elif arch in ("lstm","gru","rnn"):self.rnn=b
+     else:self.conv=b
+     self.head=nn.Linear(h,1)
+   def encode(self,name,module,z,pos=None):
+    if name in ("lstm","gru","rnn"):return module(z)[0][:,-1,:]
+    if name in ("cnn","tcn"):return module(z.transpose(1,2)).squeeze(-1)
+    if name=="transformer":return module["trans"](module["input"](z)+pos)[:,-1,:]
    def forward(self,z):
-    if self.arch in ("lstm","gru"):z=self.rnn(z)[0][:,-1,:]
-    elif self.arch=="tcn":z=self.conv(z.transpose(1,2)).squeeze(-1)
-    else:z=self.trans(self.input(z)+self.pos)[:,-1,:]
+    if "+" in self.arch:
+     positions=iter(self.positions);out=[]
+     for name,module in zip(self.names,self.branches):
+      pos=next(positions) if name=="transformer" else None
+      out.append(self.encode(name,module,z,pos))
+     z=torch.cat(out,dim=1)
+    elif self.arch=="transformer":z=self.trans(self.input(z)+self.pos)[:,-1,:]
+    elif self.arch in ("lstm","gru","rnn"):z=self.rnn(z)[0][:,-1,:]
+    else:z=self.conv(z.transpose(1,2)).squeeze(-1)
     return self.head(z).squeeze(-1)
   self.net_=Net();x=torch.tensor(a,dtype=torch.float32);t=torch.tensor(yy,dtype=torch.float32)
   opt=torch.optim.Adam(self.net_.parameters(),lr=.001,weight_decay=.0001)
@@ -56,6 +81,6 @@ class SequenceEstimator(BaseEstimator):
   return np.c_[1-p,p]
 def sequence_models():
  if importlib.util.find_spec("torch") is None:return {},{}
- names=("lstm","gru","tcn","transformer")
- return ({f"seq_{n}":SequenceEstimator(n,"reg") for n in names},
-         {f"seq_{n}":SequenceEstimator(n,"cls") for n in names})
+ names=("lstm","gru","rnn","cnn","tcn","transformer","lstm+gru","cnn+rnn","cnn+tcn","lstm+tcn")
+ return ({f"seq_{n.replace('+','_')}":SequenceEstimator(n,"reg",epochs=3) for n in names},
+         {f"seq_{n.replace('+','_')}":SequenceEstimator(n,"cls",epochs=3) for n in names})
