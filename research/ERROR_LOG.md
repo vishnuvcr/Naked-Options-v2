@@ -34,10 +34,10 @@ HTTP 200 returning HTML instead of the required payload is a source failure. Emp
 <!-- OPTION_VALIDATION_ERRORS_START -->
 ## Option-validation acquisition error log — OPT-BUY-1.0
 
-Stage: ACQUISITION; workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38621480232; commit: 6c4f94e28c2dd88744071e5c7156a2397e55f4c1.
+Stage: ACQUISITION; workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38621701520; commit: 0d9eb96d36316bf009f88e828d37812b2cd286cd.
 
 Request failure summaries (individual redacted request windows are preserved in the Actions cache manifest):
-- FileNotFoundError: Validated daily NIFTY cache is missing: data/cache/nifty50_daily.csv
+- RequestOrSchemaFailure:HTTP_504: 13
 
 Credentials/authorization headers are not logged. See reports/option_validation/acquisition_summary.json for the sanitized status summary.
 <!-- OPTION_VALIDATION_ERRORS_END -->
@@ -53,3 +53,4 @@ Credentials/authorization headers are not logged. See reports/option_validation/
 | OPT-DEV-005 | 2026-10-14 | OPT-BUY-1.0 acquisition manifest | LOW | The attempted-window count was derived from planned minus cached; early-stop cases could overstate network requests. | Count derived from intended work rather than resolved request records. | Count request attempts from returned records plus failures minus cached records. | Fix committed; cached rerun pending. |
 
 | OPT-TEST-001 | 2026-10-14 | OPT-BUY-1.0 independent review | HIGH | Frozen acceptance gates remain unmet after the corrected cached run: strangle coverage 69.18% (<80%) and conflicting duplicate group rate 1.409% (>1%). All four candidate average net P&Ls and 95% block intervals are negative at the primary cost setting. | The bounded monthly rolling quote data and model-filtered immediate intraday monetization did not yield sufficient eligible quotes or a profitable result. | Independent reviewer audited the artifact, verified 48,032 ledger rows, reproduced P&L/cost arithmetic to <2e-12 rupees, and reproduced the four paired block-bootstrap comparisons. Do not relax thresholds; close this version as no-go and preserve the data-quality limitation. | CLOSED AS NEGATIVE/INCONCLUSIVE — NO STRATEGY APPROVED |
+| ERR-DATA | 2026-10-14 | 3 | MEDIUM | nse_official: ValueError: NSE response contains no recognized data rows | Source access/schema/data quality issue | Appended by acquisition workflow; inspect reports/data_manifest.json | OPEN |
