@@ -85,11 +85,14 @@ The static research status page has been deployed successfully through [Pages pu
 
 ## Follow-on study: option-buying validation — OPT-BUY-1.0
 
-The original nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged. A user-approved follow-on is testing whether its volatility-expansion alerts add value for same-session intraday long straddles/strangles after Paytm Money brokerage, statutory charges and slippage stress tests.
+The original nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged. A separate follow-on tests whether volatility-expansion alerts add value for same-session intraday long straddles/strangles after Paytm Money brokerage, statutory fees and adverse-slippage sensitivity.
 
 - [Validation plan](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-validation/research/OPTION_BUYING_VALIDATION_PLAN.md)
 - [Current results record](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-validation/research/option-validation/RESULTS.md)
 - [Option validation workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/workflows/option-buying-validation.yml)
-- [Latest run #6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923)
+- [Run #6 pilot artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923)
+- [Corrected wider-strike run #9](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38545503819)
 
-**Status (2026-10-14):** first authenticated Dhan expired-options request using WEEK/expiryCode=0 returned HTTP 400; no option data or P&L was produced. The first run's error is recorded. A second test uses Dhan's documented MONTH/expiryCode=1 format and adds redacted provider-error details. It is currently running. Until this source gate passes, no option-buying edge or strategy can be claimed. The initial prediction study's findings are not proof of option profitability.
+**Pilot status:** run #6 successfully received 196/196 monthly-option responses, but only 171/980 (17.45%) dates had valid fixed-strike entry/exit prices for either structure. All four model-filtered candidates lost on average. Because quote coverage was below the predeclared 80% gate, those p-values are **not accepted as primary strategy evidence**. The corrected run expands requests to ATM−3…ATM+3 for both calls and puts and compares alert-filtered versus always-buy using paired daily net rupee P&L, assigning zero to non-alert dates. Run #9 is the corrected rerun after cache-path and test-fixture corrections.
+
+No option-buying strategy is approved. Continue only if quote matching, cost tests, robustness checks and independent review pass; otherwise report an inconclusive or negative conclusion. No live orders are placed.
