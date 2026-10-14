@@ -51,8 +51,9 @@ The developer accepted the independent tester's no-go. No strategy, paper-tradin
 | Phase | Status | Evidence / next gate |
 |---|---|---|
 | Protocol and branch setup | COMPLETE | [Frozen plan](STRIKE_SELECTION_PLAN.md); [research branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-strike-selection) |
-| Acquisition and regression | BLOCKED / RETRYING | Run #1: 13 tests passed; analysis reported no usable option quotes. [Run #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551789841) |
-| Diagnostic rerun and inference correction | IN PROGRESS | [Run #2](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551939491), [run #3](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552000337) |
-| Independent tester gate | BLOCKED | No performance claim until usable quotes, coverage and duplicate quality are verified. [Tester branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-strike-selection-independent-tester) |
+| Daily target acquisition/validation and regression tests | PASS IN RUN #4 | Daily-target acquisition and validation steps completed; existing cost/matching regression suite passed (13 tests). [Run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097) |
+| Historical options-cache acquisition | RUNNING — LONG STEP | Current job still reports the acquisition step in progress, started 10:49:21 UTC; no artifact has been published. Workflow timeout is 180 minutes. There is no confirmed acquisition failure yet. |
+| Frozen strike grid, sanitized artifact upload, final tests | NOT STARTED | Await acquisition step completion; then inspect usable rows, date coverage, duplicates/conflicts, cost assumptions and block-bootstrap/Holm outputs. |
+| Independent tester gate | WAIVED BY USER FOR THIS RUN | User said tester review is not needed. This does not waive data-quality or statistical gates. No performance claim until evidence clears those gates. |
 
 No strike-selection strategy is approved. Existing OPT-BUY-1.0 no-go remains unchanged.
