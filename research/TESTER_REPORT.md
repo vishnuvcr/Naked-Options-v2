@@ -31,15 +31,21 @@ The target is a standard-deviation / absolute-return proxy, but run_experiments.
 
 Independently recompute paired losses from predictions, check HAC lag against horizon overlap, verify Holm correction family against the plan, and compare adjusted p-values. Nominal significance remains exploratory until reproduced.
 
-### MEDIUM-004 — Source/feature availability
+### HIGH-004 — Partial forward-volatility windows (CONFIRMED, BLOCKING)
+
+The prediction CSV contains null target dates for 3 observations at horizon 5 and 18 observations at horizon 20 for the volatility and volatility-expansion tasks. The feature builder uses `fr.std(axis=1, ddof=1)` which skips missing future returns, so the last rows can be labelled using fewer than the declared horizon. These are not valid 5-/20-session targets and must not be evaluated as such.
+
+Developer fix required: make future volatility missing unless all h future returns exist; add a regression test for the last h rows; rebuild the feature matrix and rerun experiments. After rerun, assert every OOS prediction has a non-null target_date later than origin_date and all horizon targets have complete windows.
+
+### MEDIUM-005 — Source/feature availability
 
 Global features include S&P 500, Nasdaq, Nikkei, Hang Seng, India VIX, CBOE VIX and US 10-year yield. Same-date closes are excluded, but timing and holiday alignment need review. USD/INR, gold and WTI were rejected; historical options, FII/DII, PCR, breadth and timestamped news were not acquired.
 
-### MEDIUM-005 — Classification baseline
+### MEDIUM-006 — Classification baseline
 
 Verify baseline probabilities use development data only and Brier/log-loss skill use the same valid observations. Report balanced accuracy and calibration alongside raw accuracy.
 
-### LOW-006 — Calendar
+### LOW-007 — Calendar
 
 Twenty weekend-dated rows are preserved and flagged. Cross-check special sessions; do not delete solely based on weekend dates.
 
@@ -53,7 +59,7 @@ Twenty weekend-dated rows are preserved and flagged. Cross-check special session
 
 ## Gate decision
 
-**Phase 5: OPEN pending independent metric reproduction and final code/artifact reconciliation.  
+**Phase 5: FAIL pending full-window volatility label correction, tests, and rerun.  
 Phase 6: partial; global feature ablation ran, regime segmentation and source families remain incomplete.  
 Phase 7: open; significance/QLIKE audit not passed.  
 Phase 8: report submitted, not approved.  
@@ -63,6 +69,6 @@ Phase 9: manuscript remains provisional.**
 
 1. Verify exact commit/code bundle and independently compare exponentiated level predictions/actuals against source targets; add target-unit tests if absent.
 2. Recompute QLIKE from squared realized/predicted volatility; correct p-value formatting so underflow is not presented as literal zero.
-3. Recompute candidate/baseline metrics from predictions, including paired losses, block confidence intervals, HAC tests and Holm correction.
+3. Correct the partial forward-volatility window defect and rerun. Independently recompute candidate/baseline metrics from predictions, including paired losses, block confidence intervals, HAC tests and Holm correction.
 4. Check global feature availability timing, overlapping target-date dependence and classification baselines.
 5. Run tests and regenerate artifacts; update RESULTS.md, ERROR_LOG.md, PHASE_STATUS.md and README.md. Resubmit for tester review; do not progress to publication gate before passing.
