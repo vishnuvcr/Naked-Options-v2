@@ -73,3 +73,8 @@ Potentially blocked or not yet implemented families:
 ## Expanded run #56 status — 2026-10-14
 
 The corrected expanded catalogue completed in [workflow run #56](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38585954777). The data manifest, metrics, prediction file and sequence status are documented in [PDF_METHOD_AUDIT_RESULTS.md](PDF_METHOD_AUDIT_RESULTS.md). The run is complete, but the independent inference gate is still open: sequence epoch metadata conflicts with the frozen three-epoch budget, and exported `qlike_skill_vs_baseline` values are NaN despite finite QLIKE values. A few adjusted p-values below .05 require independent verification of the exact testing family. No model winner or trading conclusion is approved. Methods not run or exactly reproduced remain explicitly blocked/not tested.
+
+
+## Expanded run #56 status — 2026-10-14
+
+The corrected expanded catalogue completed in [workflow run #56](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38585954777). The data manifest, metrics, prediction file and sequence status are documented in [PDF_METHOD_AUDIT_RESULTS.md](PDF_METHOD_AUDIT_RESULTS.md). The run is complete, but the independent inference gate is still open: sequence epoch metadata conflicts with the frozen three-epoch budget, and exported `qlike_skill_vs_baseline` values are NaN despite finite QLIKE values. A few adjusted p-values below .05 require independent verification of the exact testing family. No model winner or trading conclusion is approved. Methods not run or exactly reproduced remain explicitly blocked/not tested.
