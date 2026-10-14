@@ -133,3 +133,8 @@ Corrective [run #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/3
 - **No best model is approved yet.** Return-model differences are small and the inspected return rows do not survive Holm correction. Some direction/volatility-expansion p-values are below .05 but require independent verification of hypothesis families and test calculations.
 - Two explicit audit issues remain open: (1) exported `qlike_skill_vs_baseline` is NaN with finite QLIKE values; (2) sequence metadata says eight epochs despite the documented three-epoch budget. See [error log](research/ERROR_LOG.md) and [phase status](research/PHASE_STATUS.md).
 - The expanded audit remains prediction-only. It does not include option P&L, Paytm Money costs, slippage, or an approved trading strategy. Blocked/unreplicated PDF methods and missing data families are documented, not silently treated as tested.
+
+
+## Developer correction branch — expanded PDF audit
+
+The independent review identified two report defects in run #56: an invalid ratio-style QLIKE skill field when QLIKE means are negative, and a hard-coded sequence epoch count. The bounded corrections are documented in [developer submission](research/PDF_METHOD_AUDIT_DEVELOPER_SUBMISSION.md), with tests and error log updates. Developer branch: [research/pdf-audit-developer](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/pdf-audit-developer). Independent tester branch/report: [research/pdf-audit-tester](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/pdf-audit-tester). Final status depends on the bounded workflow retest and tester verification; no model winner is approved meanwhile.
