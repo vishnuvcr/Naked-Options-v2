@@ -127,3 +127,12 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Updated the OPT-BUY-3.0 protocol on research/option-entry-exit-developer (commit aa379a8099a3146ae6cde79886606b765d1fda01). Automated quality checks remain mandatory; this changes governance only, not data gates or statistical acceptance criteria.
 - Current implementation is partial and latest saved results are blocked for lack of valid quotes. This is not a positive or negative strategy result. The repository status explicitly lists the outstanding full-catalogue, cost sensitivity, session accounting and exit-matching work.
 - Only operational decisions and actions are logged; private hidden reasoning is not copied into repository files.
+
+
+## 2026-10-15 — Continue OPT-BUY-3.0
+
+- Inspected actual GitHub Actions run #3. It completed successfully at the workflow level, but the empirical result was BLOCKED_NO_VALID_QUOTES with zero candidates; 16 tests passed. This was not treated as a strategy result.
+- Identified stale-manifest logic that skipped acquisition despite no usable quote rows; workflow changed to require a successful manifest plus at least one existing valid cache file before reusing cache, otherwise it attempts refresh.
+- Identified single-leg backtest passing through a legacy two-leg-only cost helper. Replaced that path with explicit single-leg fee/slippage calculation and expanded tests.
+- Expanded finite screen to seeded random direction/time, fixed-time CALL/PUT controls, causal spot-momentum/range-breakout entries; EOD, fixed-hold, premium TP/SL and trailing exits; 0/25/50/100 bps per-side and ₹10/₹20 per-order sensitivities. New run triggered; empirical results pending.
+- No independent tester branch or review gate was created. Operational notes only; hidden reasoning is not logged.
