@@ -38,3 +38,10 @@ Return forecasting does not show robust useful skill; the 1-session direction re
 ## Gate
 
 Phase 5: run complete, tester gate open. Phase 7: arithmetic checks passed; remaining multiplicity/ARIMA/calibration review. Phase 8: tester must issue explicit PASS/FAIL. Phase 9: manuscript remains provisional. No model or options strategy is approved.
+
+
+## Final tester disposition — 2026-10-14
+
+The independent tester now reports **PASS WITH SCOPE LIMITATIONS** for the bounded prediction-only study: [tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/independent-tester/research/TESTER_REPORT.md). Holm corrections were independently reproduced within 1e-16. ARIMA(1,0,0) benchmark skill, HAC p-values and block confidence intervals reproduced from the separate ARIMA predictions file. The selected 1-session global direction model has ECE 0.016; the selected technical volatility-expansion model has descriptive ECE 0.184/0.053/0.040 at 1/5/20 sessions, so its 1-session probabilities are poorly calibrated.
+
+Scoped conclusion: no robust return/direction edge was demonstrated. Volatility-expansion findings remain exploratory. This is not a trading strategy; options chains, broker fees/slippage, Paytm Money execution and live deployment were not tested.
