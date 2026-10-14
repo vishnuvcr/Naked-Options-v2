@@ -32,3 +32,11 @@ HTTP 200 returning HTML instead of the required payload is a source failure. Emp
 | ERR-OPT-005 | 2026-10-14 | OPT-BUY-1.0 acquisition manifest | LOW | The request manifest currently reports attempted windows as planned minus cached, which can overstate attempts if the loop stops early after auth/schema rejection. | Attempt count is derived from planned work, not completed request records. | Set attempted network windows to max(0, len(request_records) + len(failures) - cached_records); keep planned, cached, success and failure counts separate. Add arithmetic assertions to the independent tester. | OPEN — include in final code correction |
 
 | OPT-TEST-001 | 2026-10-14 | OPT-BUY-1.0 independent review | HIGH | Frozen acceptance gates remain unmet: strangle coverage 69.18% (<80%), conflicting quote groups 1.409% (>1%), and all four candidates have negative mean net P&L and negative 95% intervals. | The bounded monthly rolling quote universe lacks sufficient eligible strangle dates; modeled net outcome is not profitable. | Independent tester reproduced ledger arithmetic and paired comparisons from run #11 artifact; result is closed as no-go. Do not relax thresholds to force a pass. | CLOSED — NO-GO FOR TESTED CANDIDATES; BROADER HYPOTHESIS INCONCLUSIVE |
+
+## OPT-BUY-2.0 errors and corrective actions — 2026-10-14
+
+| ID | Severity | Observation | Correction / disposition |
+|---|---|---|---|
+| OPT-BUY-2-001 | HIGH | Run #1: 13 existing tests passed, but strike-grid analysis reported no usable quote rows; result artifacts were skipped. [Run](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551789841) | Modified script to emit sanitized blocked summary and empty tables so the acquisition failure remains inspectable. Verify in run #2. |
+| OPT-BUY-2-002 | HIGH | Initial grid code did not implement the frozen family-wise Holm adjustment. | Added primary block-bootstrap p-values and Holm correction across 32 candidate/horizon tests in commit `aac22f3b8092160d98a28d3c7445ef0b2d300253`; verify in run #3 and independent review. |
+| OPT-BUY-2-003 | OPEN | Quote coverage, data conflict rate and actual acquisition failure cause remain unverified for OPT-BUY-2.0. | Await sanitized run diagnostics; no confirmatory conclusions until gates are checked. |
