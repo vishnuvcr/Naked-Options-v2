@@ -45,5 +45,5 @@ def test_forward_volatility_requires_full_horizon_window():
     out=build(sample(140))
     assert out.target_future_vol_5.iloc[-5:].isna().all()
     assert out.target_future_vol_20.iloc[-20:].isna().all()
-    assert out.target_future_vol_5.iloc[-6].notna()
-    assert out.target_future_vol_20.iloc[-21].notna()
+    assert pd.notna(out.target_future_vol_5.iloc[-6])
+    assert pd.notna(out.target_future_vol_20.iloc[-21])
