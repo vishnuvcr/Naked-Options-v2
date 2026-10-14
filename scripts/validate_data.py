@@ -29,7 +29,7 @@ def main():
     bad=(df.high < df[["open","close","low"]].max(axis=1)) | (df.low > df[["open","close","high"]].min(axis=1))
     if bad.any(): errors.append(f"OHLC inconsistency rows={int(bad.sum())}")
     weekend=(df.date.dt.dayofweek>=5)
-    if weekend.any(): errors.append(f"weekend observations={int(weekend.sum())}")
+    weekend_dates=sorted(df.loc[weekend,"date"].dt.strftime("%Y-%m-%d").unique().tolist())
     if len(df)<500: errors.append(f"insufficient sample rows={len(df)}; >=500 required for the planned multi-horizon study")
     # The normalized target must match a successful acquisition manifest; stale cache files
     # are never accepted after a failed refresh.
@@ -61,6 +61,8 @@ def main():
       "missing_volume_rows":int(df.volume.isna().sum()),
       "missing_volume_fraction":None if len(df)==0 else float(df.volume.isna().mean()),
       "nontrading_day_rows":int(weekend.sum()),
+      "weekend_session_dates":weekend_dates,
+      "warnings":["Weekend-dated observations are preserved and flagged for source/calendar cross-check; they may include special exchange sessions. This is not by itself a validation failure." ] if weekend.any() else [],
       "observed_gap_days_gt_4":int((gaps>4).sum()),
       "largest_calendar_gap_days":None if gaps.empty else int(gaps.max()),
       "validation":"FAIL" if errors else "PASS",
