@@ -34,3 +34,13 @@ def test_oos_r2_is_relative_to_forecast_baseline():
     expected=1-(2/3)/(14/3)
     assert m["oos_r2_vs_baseline"]==pytest.approx(expected)
     assert m["mse_skill_vs_baseline"]==pytest.approx(expected)
+
+def test_qlike_loss_is_nonnegative_and_zero_at_correct_variance():
+    from forecast_metrics import qlike_loss
+    actual=np.array([0.25,1.0,4.0])
+    exact=qlike_loss(actual,actual)
+    over=qlike_loss(actual,actual*4.0)
+    under=qlike_loss(actual,actual*0.25)
+    assert np.allclose(exact,0.0)
+    assert np.all(over>=0) and np.all(under>=0)
+    assert np.all(qlike_loss(actual,actual*4.0)>=exact)

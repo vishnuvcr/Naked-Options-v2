@@ -33,3 +33,16 @@ def holm(ps):
  out=[None]*len(ps); v=sorted([(i,float(p)) for i,p in enumerate(ps) if p is not None and np.isfinite(p)],key=lambda z:z[1]); run=0.
  for j,(i,p) in enumerate(v):run=max(run,min(1.,(len(v)-j)*p));out[i]=run
  return out
+
+def qlike_loss(actual_variance, forecast_variance):
+    """Nonnegative QLIKE-equivalent loss for positive realized/forecast variance.
+
+    loss = ratio - log(ratio) - 1, where ratio = realized variance / forecast variance.
+    It differs from log(forecast variance) + realized/forecast by a term constant
+    with respect to the forecast for a given realized observation, so paired losses
+    are equivalent while the score itself is nonnegative.
+    """
+    actual=np.maximum(np.asarray(actual_variance,dtype=float),1e-12)
+    forecast=np.maximum(np.asarray(forecast_variance,dtype=float),1e-12)
+    ratio=actual/forecast
+    return ratio-np.log(ratio)-1.0

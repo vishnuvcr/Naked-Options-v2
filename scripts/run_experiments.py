@@ -9,7 +9,7 @@ from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import mean_absolute_error, log_loss
 from models import regression_models, classification_models
 from sequence_models import sequence_models
-from forecast_metrics import regmetrics, clsmetrics, hac_test, block_ci, holm
+from forecast_metrics import regmetrics, clsmetrics, hac_test, block_ci, holm, qlike_loss
 from experiment_budget import allowed_candidates, exclusion_reason
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -165,7 +165,7 @@ def main():
                         met["mse_skill_vs_historical_mean"]=float(1-mse/mm) if mm>0 else None
                     if task=="volatility":
                         av=np.maximum(yt,1e-8)**2; pv=np.maximum(phat,1e-8)**2; bv=np.maximum(b,1e-8)**2
-                        ql=np.log(pv)+av/pv; qlb=np.log(bv)+av/bv
+                        ql=qlike_loss(av,pv); qlb=qlike_loss(av,bv)
                         met["qlike"]=float(np.mean(ql)); met["qlike_baseline"]=float(np.mean(qlb))
                         met["qlike_skill_vs_baseline"]=float(1-np.mean(ql)/np.mean(qlb)) if np.mean(qlb)>0 else None
                         loss=ql-qlb
