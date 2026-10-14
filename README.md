@@ -152,3 +152,12 @@ The independent review identified two report defects in run #56: an invalid rati
 ## Tester finding and bounded correction
 
 The independent tester report is on [the final tester branch](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md). It found partial future-window volatility labels producing 1,260 null target dates in the run #60 artifact. The developer corrected `scripts/build_feature_matrix.py` to require all future returns in the horizon and added a regression test in `tests/test_research.py`. Corrected workflow #61 is running on the feature fix; workflow #62 is queued with the new test. Final sign-off is blocked until a corrected artifact proves zero null target dates among evaluated rows and the tester reviews it.
+
+
+## Final status — run #62 and independent review
+
+- [Corrected workflow #62](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38604064792) succeeded. Artifact SHA-256: `14c9d6fc1bcb0f00ff28e708cb10a6cab9b378e5e60ff31f6e66aaa5e977172b`.
+- Final artifact contains 471,735 predictions, zero missing target dates and no target date on/before forecast origin. The target-date defect is resolved.
+- Independent tester disposition: [PASS WITH SCOPE LIMITATIONS](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md).
+- Final [results](research/PDF_METHOD_AUDIT_RESULTS.md), [manuscript](research/MANUSCRIPT.md), [phase status](research/PHASE_STATUS.md), [experiment log](research/EXPERIMENT_LOG.md) and [error log](research/ERROR_LOG.md) record the final run.
+- Conclusion: no robust return/direction winner established. One-session global XGBoost volatility QLIKE improves after Holm correction; other volatility results are metric-specific and volatility-expansion remains exploratory. Unresolved calendar/global timing and unavailable feature families remain limitations. Prediction-only phase is closed; no strategy is approved.
