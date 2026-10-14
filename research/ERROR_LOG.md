@@ -20,6 +20,14 @@ HTTP 200 returning HTML instead of the required payload is a source failure. Emp
 
 | ERR-014 | 2026-10-14 | 8/9 | LOW | Manuscript placeholders remained after corrected results. | Manuscript had not been updated with run #49. | Updated manuscript and added selected-results figure; tester report passes with scope limitations. | Run #49 artifact and manuscript reviewed. | RESOLVED |
 
+
+
+## Developer correction log — 2026-10-14
+
+| Ref | Issue found | Correction | Result handling |
+|---|---|---|---|
+| OPT-DEV-001 | Initial implementation retained NIFTY lot size 75 after 2024-11 and did not account for the NSE 2025 revision from 75 to 65 for newly revised-expiry contracts. This was detected during pre-results source review, before any result was accepted. | Lot-size proxy now uses 50 before 2024-04-26, 25 from 2024-04-26 through 2024-11-19, 75 through the 2025-12-30 expiry-transition date, and 65 from 2025-12-31 as a trade-date approximation. NSE circular 176/2025 specifies the 75-to-65 change and expiry-specific effective dates: https://nsearchives.nseindia.com/content/circulars/FAOP70616.pdf | Outputs from the initial uncorrected run are not accepted as final results. The corrected branch commit triggers a fresh run; currency P&L remains a proxy and premium-point results are primary. |
+
 <!-- OPTION_VALIDATION_ERRORS_START -->
 ## Option-validation acquisition error log — OPT-BUY-1.0
 

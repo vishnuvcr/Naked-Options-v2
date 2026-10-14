@@ -586,7 +586,9 @@ def lot_size_proxy(trade_date: str) -> int:
         return 50
     if trade_date < "2024-11-20":
         return 25
-    return 75
+    if trade_date < "2025-12-31":
+        return 75
+    return 65
 
 
 def calculate_trade(trade: dict, slippage_bps: int, brokerage_per_order: int) -> dict:
