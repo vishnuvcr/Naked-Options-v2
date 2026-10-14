@@ -1,0 +1,83 @@
+{
+  "plan_version": "OPT-BUY-1.0",
+  "created_at_utc": "2026-10-14T10:20:37.432410+00:00",
+  "status": "PASS_CACHED",
+  "daily_data_sha256": "b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050",
+  "requested_date_start": "2022-11-01",
+  "request_date_start_after_5y_clip": "2022-11-01",
+  "request_date_end_exclusive": "2026-10-14",
+  "history_start_clipped_to_provider_window": false,
+  "request_window_days_max": 30,
+  "interval_minutes": 5,
+  "expiry_flag": "MONTH",
+  "expiry_code": 1,
+  "requested_offset_type_pairs": [
+    {
+      "offset": -3,
+      "option_type": "CALL"
+    },
+    {
+      "offset": -3,
+      "option_type": "PUT"
+    },
+    {
+      "offset": -2,
+      "option_type": "CALL"
+    },
+    {
+      "offset": -2,
+      "option_type": "PUT"
+    },
+    {
+      "offset": -1,
+      "option_type": "CALL"
+    },
+    {
+      "offset": -1,
+      "option_type": "PUT"
+    },
+    {
+      "offset": 0,
+      "option_type": "CALL"
+    },
+    {
+      "offset": 0,
+      "option_type": "PUT"
+    },
+    {
+      "offset": 1,
+      "option_type": "CALL"
+    },
+    {
+      "offset": 1,
+      "option_type": "PUT"
+    },
+    {
+      "offset": 2,
+      "option_type": "CALL"
+    },
+    {
+      "offset": 2,
+      "option_type": "PUT"
+    },
+    {
+      "offset": 3,
+      "option_type": "CALL"
+    },
+    {
+      "offset": 3,
+      "option_type": "PUT"
+    }
+  ],
+  "requests_planned": 686,
+  "requests_attempted": 0,
+  "requests_successful_or_empty": 0,
+  "requests_cached": 686,
+  "requests_failed": 0,
+  "request_stopped_early_for_auth_or_schema": false,
+  "failure_summaries": {},
+  "raw_quote_cache_path": "data/cache/options_rolling (not committed or uploaded)",
+  "request_status_counts": {
+    "CACHED": 686
+  }
+}
