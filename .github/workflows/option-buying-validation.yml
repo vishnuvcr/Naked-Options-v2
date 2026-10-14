@@ -22,7 +22,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: option-buying-validation
+  group: option-buying-validation-v2-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -81,6 +81,7 @@ jobs:
         run: pytest -q research/option-validation/test_backtest.py
 
       - name: Acquire or reuse historical rolling option bars
+        timeout-minutes: 30
         id: acquire_options
         continue-on-error: true
         env:
