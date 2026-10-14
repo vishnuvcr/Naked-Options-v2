@@ -146,3 +146,11 @@ Result interpretation: return rows show no Holm-adjusted evidence of skill. Clas
 | PDF-AUDIT-060 | `research/pdf-audit-developer` / `e93fe35d8bb11df65d1c466434d5401298c077ed` | [GitHub Actions #60](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38593936036) | `b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050` | WORKFLOW SUCCESS; RESULTS ACQUIRED; INDEPENDENT AUDIT NEXT | 1,097 merged metric rows; 485 OOS-evaluated rows; 130 compute-budget-blocked rows; empty technical/global model-error CSVs; corrected QLIKE score-difference export and three-epoch metadata. Artifact SHA-256 `b601320f64ab8ec0c62f0a07e458287cba781eca73107f1b2c38beda140a8151`. See [run #60 results](PDF_METHOD_AUDIT_RESULTS.md). |
 
 Interpretation rule: negative mean paired loss difference (`model loss - baseline loss`) favors the model; positive favors baseline. Small p-values alone do not imply improvement. Return rows show no Holm-adjusted evidence of skill; volatility rankings differ by MAE/RMSE and QLIKE. No robust return/direction winner is established.
+
+
+## Final corrected run #62
+
+- Workflow: [run #62](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38604064792), commit `be02efcb8fbd21f36fec826bdcc3ee923f75849a` — SUCCESS.
+- Artifact SHA-256: `14c9d6fc1bcb0f00ff28e708cb10a6cab9b378e5e60ff31f6e66aaa5e977172b`.
+- Final output: 471,735 predictions, zero null target dates. Tester disposition: PASS WITH SCOPE LIMITATIONS. Full final tables are in [PDF audit results](PDF_METHOD_AUDIT_RESULTS.md).
+- Final inference: one-session volatility QLIKE improved after Holm correction; no robust return/direction winner. Close the bounded prediction-only scope; retain missing data and source-timing issues as limitations.
