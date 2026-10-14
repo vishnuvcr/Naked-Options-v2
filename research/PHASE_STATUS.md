@@ -102,3 +102,14 @@ The push-triggered workflow for branch `research/pdf-method-audit` is [run #55](
 | Manuscript and final disposition | PENDING | Produce from actual completed artifacts; close within the frozen phase budget, even if inconclusive. |
 
 Process rule: no independent review/tester branch. The single workflow must run automated tests and checks, correct defects, document outcomes, and avoid claiming tests passed unless an actual run confirms it.
+
+
+### OPT-BUY-3.0 progress update — 2026-10-15
+
+| Work item | Status | Evidence |
+|---|---|---|
+| User governance change | COMPLETE | No independent review, tester branch or tester-report gate. |
+| Cache retry correction | COMMITTED; workflow verification pending | Workflow now treats a stale/non-success manifest as unusable and attempts refreshed Dhan acquisition. Commit `03ee91ba312977499544733dc1177b10f04d6feb`. |
+| Entry/exit screen expansion | COMMITTED; automated run pending | Added seeded random direction/time control, fixed-time CALL/PUT controls, causal spot-momentum and range-breakout entries; EOD/fixed holds/premium barrier/trailing exits; single-leg costs; 0/25/50/100 bps and ₹10/₹20 per-order sensitivity. Commit `fc487511aa7aa82d33c71dc4fdeca2870be153cb`. |
+| Automated checks | EXPANDED; run pending | Added tests for single-leg two-order brokerage, slippage monotonicity, brokerage sensitivity, Holm adjustment, bootstrap reproducibility, invalid premiums and seeded signal reproducibility. Commit `6c4f94e28c2dd88744071e5c7156a2397e55f4c1`. |
+| Data and final results | PENDING | Last confirmed completed run #3 still had zero valid quotes and zero candidates; see [run #3](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38620992395). Runs #4/#5 are now triggered by the fixes; do not treat them as complete until their final status and artifacts are read. |
