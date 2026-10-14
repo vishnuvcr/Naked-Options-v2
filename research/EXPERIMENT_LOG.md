@@ -119,3 +119,12 @@ The first pilot data gate failed because quote coverage was only 17.45% (<80% th
 - Defect found in run #4 artifact: all 32 primary raw/Holm p-values were blank/NaN despite nonempty ledgers. Do not treat multiplicity-adjusted inference as complete. Developer added an explicit null-centered circular block-bootstrap p-value implementation in commit a543eed8059de79dbcc6b2dc53a3dd31f14298a9; [corrective rerun #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562114651) is in progress. No parameter search is being expanded; this is a bounded inference correction.
 - Additional scope limitation: the frozen plan calls for a common-date sensitivity, but run #4 artifact does not contain one. Do not claim cross-candidate superiority; record this as not completed under the failed quality gate.
 - Decision: **NO-GO / no strike candidate approved**. The study is non-confirmatory due conflict rate and coverage failures, all measured primary model-filtered means are negative, and the p-value output defect requires the single corrective rerun. No paper or live deployment.
+
+
+## Uploaded-PDF model audit — run #56
+
+| Run | Branch / commit | Workflow | Data hash | Status | Outcome |
+|---|---|---|---|---|---|
+| PDF-AUDIT-056 | `research/pdf-method-audit` / `cdf8bab26d9234a6312b1ae00a3f35370574c792` | [GitHub Actions #56](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38585954777) | `b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050` | WORKFLOW SUCCESS; TESTER GATE OPEN | Data validation, feature matrix, technical/global catalogues, ARIMA, merge and artifact upload completed. Artifact SHA-256 `02a222453c7ac4e21e82253f407893e1943da0d5e6fec874750a350ba11aceb2`. See [expanded results](PDF_METHOD_AUDIT_RESULTS.md). QLIKE skill export and sequence epoch metadata require review; rejected USD/INR, gold, WTI and NSE sources are logged. No best model declared. |
+
+Run #56 reports 632 technical experiment cells and 244,839 out-of-sample prediction rows in its run metadata. Descriptive one-session return RMSE values are tightly grouped around 0.00794, with no adjusted-significant evidence in the inspected top return rows. Direction and volatility-expansion metrics vary by horizon and need independent statistical review. Some Holm-adjusted p-values are below .05, so exact families and loss definitions must be independently checked before confirmatory claims.
