@@ -13,7 +13,7 @@ def build(df):
     x["log_close"]=np.log(c); x["intraday_return"]=np.log(df["close"]/df["open"])
     x["range"]=np.log(df["high"]/df["low"]); x["gap"]=np.log(df["open"]/df["close"].shift(1))
     x["log_volume"]=np.log1p(pd.to_numeric(df.volume,errors="coerce").clip(lower=0))
-    for k in (0,1,2,3,5,10,20,40,60): x[f"ret_{k}"]=r.shift(k)
+    for k in range(61): x[f"ret_{k}"]=r.shift(k)
     for w in (5,10,14,20,40,60):
         x[f"mom_{w}"]=np.log(c)-np.log(c).shift(w)
         x[f"vol_{w}"]=r.rolling(w,min_periods=w).std()
