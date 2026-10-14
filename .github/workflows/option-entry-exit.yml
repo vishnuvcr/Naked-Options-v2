@@ -47,11 +47,40 @@ jobs:
           DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
           REFRESH_OPTIONS: ${{ github.event.inputs.refresh_options }}
         run: |
-          if [ ! -f data/cache/options_rolling/manifest.json ] || [ "$REFRESH_OPTIONS" = "true" ]; then
-            args=""
-            if [ "$REFRESH_OPTIONS" = "true" ]; then args="--refresh-options"; fi
-            python research/option-validation/backtest.py --acquire-options $args
+          # Reuse only a manifest that claims success and has at least one cached request file.
+          # A stale BLOCKED manifest must not suppress a new acquisition attempt.
+          usable_manifest=0
+          if [ -f data/cache/options_rolling/manifest.json ] && [ "$REFRESH_OPTIONS" != "true" ]; then
+            usable_manifest=$(python - <<'PY'
+          import json, pathlib
+          p=pathlib.Path("data/cache/options_rolling/manifest.json")
+          try:
+              m=json.loads(p.read_text())
+              ok=m.get("status") in {"PASS","PASS_CACHED","PASS_WITH_LIMITATIONS"}
+              req=m.get("requests",[])
+              found=any(r.get("status") in {"PASS","CACHED"} and pathlib.Path(r.get("file","")).exists() for r in req)
+              print(1 if ok and found else 0)
+          except Exception:
+              print(0)
+          PY
+          )
           fi
+          if [ "$usable_manifest" != "1" ] || [ "$REFRESH_OPTIONS" = "true" ]; then
+            python research/option-validation/backtest.py --acquire-options --refresh-options
+          fi
+          python - <<'PY'
+          import json, pathlib, sys
+          p=pathlib.Path("data/cache/options_rolling/manifest.json")
+          if not p.exists():
+              print("ERROR: acquisition did not write an option manifest")
+              sys.exit(2)
+          m=json.loads(p.read_text())
+          req=m.get("requests",[])
+          usable=sum(1 for r in req if r.get("status") in {"PASS","CACHED"} and pathlib.Path(r.get("file","")).exists())
+          print(f"acquisition_status={m.get('status')} request_records={len(req)} usable_cache_files={usable}")
+          if usable == 0:
+              print("WARNING: no usable cached quote files; backtest will record BLOCKED rather than infer profitability")
+          PY
       - name: Run bounded entry-exit screen
         continue-on-error: true
         run: python research/option-entry-exit/entry_exit_backtest.py
