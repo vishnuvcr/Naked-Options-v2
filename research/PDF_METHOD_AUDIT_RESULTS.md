@@ -51,3 +51,48 @@ The corrected workflow completed and supports a broad empirical screening, but i
 - Reconcile declared versus actual sequence epochs and any compute-budget exclusions.
 - Review weekend sessions and global-market timestamp alignment.
 - Submit a concise PASS / PASS WITH LIMITATIONS / FAIL report; no parameter search loops.
+
+
+## Corrected bounded run — run #60
+
+**Workflow:** [run #60](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38593936036)  
+**Branch/commit:** `research/pdf-audit-developer` / `e93fe35d8bb11df65d1c466434d5401298c077ed`  
+**Artifact:** `nifty-prediction-reports-38593936036.zip`; artifact SHA-256 `b601320f64ab8ec0c62f0a07e458287cba781eca73107f1b2c38beda140a8151`.  
+**Workflow disposition:** all research and artifact steps succeeded. This is result acquisition, not independent sign-off.
+
+### Run-level accounting
+
+- Validated Dhan NIFTY series: 4,901 rows (2007-01-02–2026-10-13), SHA-256 `b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050`; 20 weekend-dated observations remain flagged for exchange-calendar/source verification.
+- The merged metric table contains 1,097 rows: 485 OOS-evaluated rows, 482 model-selection/status rows, and 130 explicit `BLOCKED_COMPUTE_BUDGET` rows. The two per-run model error CSVs are empty (no recorded model fit/runtime failures). The artifact contains 244,839 prediction rows across the technical/global catalogues plus a separate ARIMA prediction file; global metadata reports 462 catalogue cells and technical metadata reports 632 catalogue cells.
+- Sequence estimators ran in the technical-only catalogue for one-session return and direction under the three-epoch budget; other sequence target/horizon cells were deliberately blocked. Corrected metadata records three epochs.
+- The QLIKE export now records score improvement as baseline mean score minus model mean score, rather than a ratio of potentially negative means.
+
+### Headline results, interpreted conservatively
+
+| Target / horizon | Best descriptive error row in run #60 | Benchmark comparison / inference |
+|---|---|---|
+| Return, 1 session | CNN sequence, technical: MAE 0.005770; RMSE 0.007940; MSE skill +0.0875% | p=.7901; Holm p=1.0. No evidence of useful return skill. |
+| Return, 5 sessions | XGBoost, technical: MAE 0.013527; RMSE 0.017352; MSE skill +2.0023% | p=.0967; Holm p=1.0. Not statistically supported. |
+| Return, 20 sessions | Gradient boosting, global: MAE 0.026134; RMSE 0.033100; MSE skill +3.3303% | p=.4452; Holm p=1.0. Not statistically supported. |
+| Direction, 1 session | The highest accuracy is not treated as a winner; many classifier probabilities underperform prevalence log-loss/Brier baselines | Report accuracy together with balanced accuracy and proper scoring rules; no directional edge is established by this screening. |
+| Direction, 5/20 sessions | Several high-accuracy rows have poor recall/balanced accuracy or poor log loss, consistent with threshold/class-imbalance effects | Accuracy alone is insufficient; no robust directional winner established. |
+| Volatility, 1 session | Ridge technical has MAE 0.003627; XGBoost global has RMSE 0.005280 and QLIKE -8.7674 vs baseline -8.4312 | Error rankings differ by metric. QLIKE improvement is +0.3362 for the XGBoost global row, but its interpretation needs independent formula and alignment review. |
+| Volatility, 5 sessions | ElasticNet global: MAE 0.002381; RMSE 0.003724 | Some rows improve MSE or QLIKE descriptively, but adjusted paired-loss results are not uniformly significant. |
+| Volatility, 20 sessions | KNN technical: MAE 0.001967; RMSE 0.002892 | Best MAE is not the same as best QLIKE; no single volatility winner is selected without metric-specific preregistration and independent validation. |
+| Volatility expansion, 1/5/20 sessions | Classifier accuracy ranges depend strongly on horizon and threshold; several rows have high accuracy but weak/degenerate class recall | Exploratory only. Proper-score and class-balance checks take precedence over headline accuracy; no trading inference. |
+
+### Statistical interpretation and known caveats
+
+The workflow's paired-loss convention is `model loss - baseline loss`; negative mean loss difference favors the model, positive favors the baseline. A two-sided p-value tests difference from zero, not whether the model is better. Some highly significant rows are significantly worse than baseline. Thus p-values and Holm-adjusted p-values must always be interpreted alongside the sign of `mean_loss_diff`, benchmark-relative skill, confidence intervals and proper scores. The run is a broad screening over a single chronological holdout, not proof of generalization.
+
+### Data/method limitations retained
+
+Timestamped news/BERT sentiment, historical options chains/PCR, FII/DII, market breadth, verified USD/INR/gold/WTI series, corporate-action point-in-time features, and exact replication of several PDF-specific methods remain unavailable, rejected, or not implemented. Seven global/context series passed the configured validator, but full release-time/holiday alignment has not been independently established. No trading strategy, option P&L, Paytm Money brokerage, slippage, spread, taxes, margin or live execution was evaluated.
+
+### Final research conclusion before independent audit
+
+**No robust NIFTY 50 return or direction forecasting winner is established by this bounded run.** Some volatility metrics show descriptive improvement, but rankings differ by metric and the source/timing and statistical protocol limitations prevent confirmatory claims. Volatility-expansion results are exploratory. Preserve negative and blocked results; do not turn these forecasts into trading recommendations.
+
+## Independent tester handoff checklist
+
+The separate tester branch is created only after this completed result acquisition and documentation. Tester: independently recompute a stratified sample and the headline rows from the downloaded artifact; verify metric units and signs, `mean_loss_diff`, HAC lag choice, Holm family definitions, confidence intervals, target-date alignment, QLIKE calculations, class prevalence and probability calibration; inspect data calendar/global close timing; check manuscript claims against the run #60 artifact. Report PASS / PASS WITH LIMITATIONS / FAIL and return concrete defects to the developer branch. Do not expand the model universe or begin strategy work.
