@@ -93,8 +93,6 @@ def test_safe_response_detail_redacts_access_token_and_jwt():
         text = ""
         def json(self):
             return {
-                "errorCode": "BAD_REQUEST",
-                "errorMessage": "bad schema",
                 "debug": "access-token=secret-token eyJabcdefghijklmno.abcdefghijk.abcdefghijk"
             }
     detail = mod.safe_response_detail(FakeResponse(), secret="secret-token")
@@ -102,3 +100,13 @@ def test_safe_response_detail_redacts_access_token_and_jwt():
     assert "bad schema" in detail
     assert "secret-token" not in detail
     assert "eyJabcdefghijklmno" not in detail
+
+
+def test_exit_price_lookup_uses_exact_date_time_type_and_strike():
+    lookup = {
+        ("2026-10-13", "15:25", "CALL", 25000.0): 105.0,
+        ("2026-10-13", "15:25", "CALL", 25050.0): 90.0,
+    }
+    assert mod.match_exit_price(lookup, "2026-10-13", "CALL", 25000.0) == 105.0
+    assert mod.match_exit_price(lookup, "2026-10-13", "CALL", 25025.0) is None
+    assert mod.match_exit_price(lookup, "2026-10-14", "CALL", 25000.0) is None

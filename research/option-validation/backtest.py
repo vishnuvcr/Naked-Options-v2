@@ -319,10 +319,10 @@ def acquire_options(refresh: bool = False) -> dict:
             break
         for offset, opt_type in required_requests:
             rel = Path("data/cache/options_rolling") / (
-                f"{d0:%Y%m%d}_{d1:%Y%m%d}_{'m' if offset < 0 else 'p'}{abs(offset):02d}_{opt_type}.json"
+                f"{d0:%Y%m%d}_{d1:%Y%m%d}_MONTH1_{'m' if offset < 0 else 'p'}{abs(offset):02d}_{opt_type}.json"
             )
             if offset == 0:
-                rel = Path("data/cache/options_rolling") / f"{d0:%Y%m%d}_{d1:%Y%m%d}_ATM_{opt_type}.json"
+                rel = Path("data/cache/options_rolling") / f"{d0:%Y%m%d}_{d1:%Y%m%d}_MONTH1_ATM_{opt_type}.json"
             path = ROOT / rel
             if path.exists() and not refresh:
                 try:
@@ -547,8 +547,13 @@ def load_quote_table(manifest: dict) -> tuple[pd.DataFrame, dict]:
     return quotes, meta
 
 
-def match_exit_price(rows: pd.DataFrame, trade_date: str, option_type: str, strike: float):
-    if rows.empty:
+def match_exit_price(rows, trade_date: str, option_type: str, strike: float):
+    # Hot path uses a prebuilt dictionary; tests may pass a DataFrame.
+    key = (str(trade_date), EXIT_TIME, str(option_type), round(float(strike), 6))
+    if isinstance(rows, dict):
+        value = rows.get(key)
+        return float(value) if value is not None and math.isfinite(float(value)) and float(value) > 0 else None
+    if rows is None or rows.empty:
         return None
     subset = rows[
         (rows.date.astype(str) == str(trade_date))
@@ -562,9 +567,25 @@ def match_exit_price(rows: pd.DataFrame, trade_date: str, option_type: str, stri
     return float(vals.iloc[0]) if len(vals) and vals.iloc[0] > 0 else None
 
 
-def build_trade_candidate(quotes: pd.DataFrame, trade_date: str, structure: str):
-    entry = quotes[(quotes.date == trade_date) & (quotes.time == ENTRY_TIME)].copy()
-    exit_rows = quotes[(quotes.date == trade_date) & (quotes.time == EXIT_TIME)].copy()
+def build_trade_candidate(
+    quotes: pd.DataFrame,
+    trade_date: str,
+    structure: str,
+    quote_days: dict | None = None,
+    exit_lookup: dict | None = None,
+):
+    # Grouped, day-local tables keep each lookup proportional to one trading session,
+    # rather than scanning the complete multi-year quote table for every trade date.
+    if quote_days is not None:
+        day_quotes = quote_days.get(str(trade_date))
+        if day_quotes is None:
+            return None, "NO_QUOTES_FOR_DATE"
+    else:
+        day_quotes = quotes[quotes.date.astype(str) == str(trade_date)]
+    if day_quotes.empty:
+        return None, "NO_QUOTES_FOR_DATE"
+    entry = day_quotes[day_quotes.time == ENTRY_TIME].copy()
+    exit_rows = day_quotes[day_quotes.time == EXIT_TIME].copy()
     if entry.empty:
         return None, "MISSING_ENTRY_BAR"
     if exit_rows.empty:
@@ -599,7 +620,8 @@ def build_trade_candidate(quotes: pd.DataFrame, trade_date: str, structure: str)
         if erow.empty:
             return None, "MISSING_ENTRY_LEG"
         entry_price = float(erow.iloc[0]["open"])
-        exit_price = match_exit_price(quotes, trade_date, opt_type, strike)
+        lookup_source = exit_lookup if exit_lookup is not None else day_quotes
+        exit_price = match_exit_price(lookup_source, trade_date, opt_type, strike)
         if not math.isfinite(entry_price) or entry_price <= 0:
             return None, "INVALID_ENTRY_PREMIUM"
         if exit_price is None:
@@ -607,11 +629,11 @@ def build_trade_candidate(quotes: pd.DataFrame, trade_date: str, structure: str)
         entry_prices.append(entry_price)
         exit_prices.append(exit_price)
     return {
-        "trade_date": trade_date,
+        "trade_date": str(trade_date),
         "structure": structure,
         "entry_prices": entry_prices,
         "exit_prices": exit_prices,
-        "lot_size": lot_size_proxy(trade_date),
+        "lot_size": lot_size_proxy(str(trade_date)),
     }, "PASS"
 
 
@@ -679,22 +701,24 @@ def calculate_trade(trade: dict, slippage_bps: int, brokerage_per_order: int) ->
     }
 
 
+def circular_block_indices(n: int, block_len: int, n_boot: int, rng):
+    """Vectorized circular moving-block sample indices; each row has length n."""
+    block_len = max(1, min(int(block_len), int(n)))
+    n_blocks = int(math.ceil(n / block_len))
+    starts = rng.integers(0, n, size=(n_boot, n_blocks), endpoint=False)
+    offsets = np.arange(block_len, dtype=int)[None, None, :]
+    indices = (starts[:, :, None] + offsets) % n
+    return indices.reshape(n_boot, -1)[:, :n]
+
+
 def block_bootstrap_mean(values, block_len: int, n_boot: int = BOOTSTRAP_REPS, seed: int = SEED):
     x = np.asarray(list(values), dtype=float)
     x = x[np.isfinite(x)]
     if len(x) < 2:
         return (float("nan"), float("nan"))
     rng = np.random.default_rng(seed)
-    n = len(x)
-    block_len = max(1, min(int(block_len), n))
-    means = np.empty(n_boot, dtype=float)
-    n_blocks = int(math.ceil(n / block_len))
-    for b in range(n_boot):
-        idx = []
-        for _ in range(n_blocks):
-            start = int(rng.integers(0, n))
-            idx.extend((start + j) % n for j in range(block_len))
-        means[b] = float(np.mean(x[np.asarray(idx[:n], dtype=int)]))
+    indices = circular_block_indices(len(x), block_len, n_boot, rng)
+    means = x[indices].mean(axis=1)
     return float(np.quantile(means, 0.025)), float(np.quantile(means, 0.975))
 
 
@@ -704,22 +728,11 @@ def block_bootstrap_difference(values, block_len: int, n_boot: int = BOOTSTRAP_R
     if len(x) < 3:
         return (float("nan"), float("nan"), float("nan"))
     rng = np.random.default_rng(seed)
-    n = len(x)
-    block_len = max(1, min(int(block_len), n))
-    means = np.empty(n_boot, dtype=float)
-    null_means = np.empty(n_boot, dtype=float)
-    centered = x - np.mean(x)
-    n_blocks = int(math.ceil(n / block_len))
-    for b in range(n_boot):
-        idx = []
-        for _ in range(n_blocks):
-            start = int(rng.integers(0, n))
-            idx.extend((start + j) % n for j in range(block_len))
-        idx = np.asarray(idx[:n], dtype=int)
-        means[b] = float(np.mean(x[idx]))
-        null_means[b] = float(np.mean(centered[idx]))
+    indices = circular_block_indices(len(x), block_len, n_boot, rng)
+    means = x[indices].mean(axis=1)
+    centered_means = (x - np.mean(x))[indices].mean(axis=1)
     observed = float(np.mean(x))
-    p = (1.0 + float(np.sum(np.abs(null_means) >= abs(observed)))) / (n_boot + 1.0)
+    p = (1.0 + float(np.sum(np.abs(centered_means) >= abs(observed)))) / (n_boot + 1.0)
     lo, hi = float(np.quantile(means, 0.025)), float(np.quantile(means, 0.975))
     return lo, hi, p
 
@@ -846,6 +859,15 @@ def analyze_options() -> dict:
     frame = read_daily_and_build_matrix()
     signals, classifier_meta = build_signals(frame)
     quotes, quote_meta = load_quote_table(raw_manifest)
+    quote_days = {
+        str(day): group.reset_index(drop=True)
+        for day, group in quotes.groupby("date", sort=False)
+    } if not quotes.empty else {}
+    exit_lookup = {
+        (str(row.date), EXIT_TIME, str(row.option_type), round(float(row.strike), 6)): float(row.close)
+        for row in quotes.loc[quotes.time == EXIT_TIME].itertuples(index=False)
+        if math.isfinite(float(row.close)) and float(row.close) > 0
+    } if not quotes.empty else {}
     if quotes.empty:
         return write_blocked("BLOCKED_NO_VALID_OPTION_QUOTES", "The acquisition attempt yielded no valid option quotes at the prespecified times.", raw_manifest, quote_meta)
     # Candidate dates must be derived from model holdout origins, not from quote availability.
@@ -862,7 +884,7 @@ def analyze_options() -> dict:
     skip_counts = Counter()
     for trade_date in all_trade_dates:
         for structure in ("straddle", "strangle"):
-            trade, reason = build_trade_candidate(quotes, trade_date, structure)
+            trade, reason = build_trade_candidate(quotes, trade_date, structure, quote_days=quote_days, exit_lookup=exit_lookup)
             structure_cache[(trade_date, structure)] = trade
             if trade is None:
                 skip_counts[reason] += 1

@@ -96,6 +96,15 @@ jobs:
           if [ "$REFRESH_OPTIONS" = "true" ]; then args="--refresh-options"; fi
           python research/option-validation/backtest.py --acquire-options $args
 
+      - name: Persist private market-data cache before analysis
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/cache
+            reports/data_quality.json
+          key: nifty-option-validation-${{ runner.os }}-${{ hashFiles('research/option-validation/backtest.py', 'scripts/build_feature_matrix.py', 'requirements-option-validation.txt') }}
+
       - name: Compute option P&L, costs and statistical comparisons
         id: analyze
         if: always()
