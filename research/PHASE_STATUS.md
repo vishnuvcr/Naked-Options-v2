@@ -35,3 +35,9 @@ The full grid remained active at the experiment step without producing final art
 ## Independent audit update — 2026-10-14
 
 Run #45 artifact was recovered and inspected. Core return/level MSE skill and QLIKE arithmetic were independently recomputed from prediction rows (max discrepancy below 3e-9 after matching the variance floor). The tester identified a confirmed defect: forward-volatility labels near the tail were computed from partial future windows because pandas standard deviation skips missing values. The developer-review branch now requires complete horizon windows and adds a unit test. Phase 5/7 remain OPEN until CI passes, the feature matrix is rebuilt, and a new run has no invalid target-date rows.
+
+
+## Correction workflow audit — 2026-10-14
+
+- Run #48 failed at the unit-test gate before feature construction or model fitting. The precise failure was an `AttributeError` in the new boundary test: `.notna()` was called on a NumPy scalar. The target-label code itself was not shown to fail in this run.
+- Next developer action: use `pd.notna` for scalar assertions, rerun the full test suite, then rerun the bounded experiment only after CI passes. Phase 5/7 remain OPEN; no new empirical results are available from run #48.
