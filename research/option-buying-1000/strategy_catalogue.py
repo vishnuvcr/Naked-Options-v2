@@ -61,7 +61,7 @@ for (a,da,ra),(b,db,rb) in pair_list:
   seen.add(sig)
   rows.append({"strategy_id":f"NOB-{len(rows)+1:04d}","strategy_name":f"{op}: {a} + {b}",
    "family":"distinct_two-signal_decision_graph","rule_signature":sig,"logic_spec_json":canonical,
-   "required_data":";".join(sorted({ra,rb})),"direction_rule":"bullish signal => long CALL; bearish signal => long PUT; no future outcome may choose direction",
+   "required_data":";".join(sorted({ra,rb})),"logic_pseudocode":("Compute causal signed features A and B from completed data; map each to {-1,0,+1}; apply operator "+op+" exactly as specified; if final signed signal is +1 buy CALL, if -1 buy PUT, otherwise no trade. All thresholds/windows must be frozen in the strategy manifest before outcome scoring."),"direction_rule":"bullish signal => long CALL; bearish signal => long PUT; no future outcome may choose direction",
    "causality":"Only completed, timestamped inputs at or before entry; no lookahead",
    "data_gate":"CONDITIONAL_POINT_IN_TIME_SOURCE_REQUIRED" if any(x in ra+rb for x in ["option_chain","futures_oi","published_fii","market_breadth","global_indices","timestamped_fx","timestamped_gold"]) else "OHLC_OR_CALENDAR_SOURCE_REQUIRED",
    "status":"CATALOGUED_NOT_TESTED"})
