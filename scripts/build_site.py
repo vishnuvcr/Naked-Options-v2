@@ -12,7 +12,7 @@ def read(p):
 def main():
  DOCS.mkdir(exist_ok=True)
  data=read("data_manifest.json"); quality=read("data_quality.json")
- run=read("experiment_run_global.json") or read("experiment_run.json")
+ run=read("feature_ablation.json") or read("experiment_run_global.json") or read("experiment_run.json")
  rows=[]
  m=R/"metrics.csv"
  if m.exists() and m.stat().st_size:
