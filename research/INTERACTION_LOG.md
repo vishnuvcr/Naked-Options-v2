@@ -108,3 +108,11 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - All 32 model-filtered candidate × horizon mean net P&Ls at 50 bps/side and ₹10/order were negative, with 95% block-bootstrap upper bounds below zero. Therefore no candidate is approved; the grid is exploratory only. Common-date sensitivity was not produced.
 - All 32 p-values were NaN in the artifact. Committed a bounded correction to the p-value calculation (a543eed8059de79dbcc6b2dc53a3dd31f14298a9) and started [run #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562114651). No additional parameter grid will be run. User waived separate tester sign-off; the correction still needs to produce valid statistics.
 - Updated README, phase status, error log, experiment log and activity log with actual run evidence and the no-go disposition.
+
+
+## 2026-10-14 — run #60 finalization and tester gate
+
+- User instruction: proceed autonomously; do not begin tester review until results are acquired. This timing rule was followed: run #60 finished, its artifact was downloaded, and results/manuscript/README/status/logs were updated before the independent tester branch was created.
+- Independent tester then identified 1,260 null target dates in volatility/volatility-expansion predictions caused by partial future-return windows. Tester report: `research/PDF_METHOD_AUDIT_TESTER_REPORT.md` on `research/pdf-audit-tester-final`.
+- Developer correction: future volatility labels at horizons 5 and 20 now require a complete future window; a unit test checks non-null labels have future target dates and incomplete windows remain missing. Workflows #61 and #62 are queued/running for bounded retest. Final sign-off remains open until a corrected artifact is verified.
+- Only visible conversation actions and research decisions are recorded here; private hidden reasoning is not copied into repository logs.
