@@ -91,3 +91,26 @@ For the implemented paired-loss tests, `mean_loss_diff = model loss - baseline l
 ### Revised conclusion
 
 The expanded screen does not establish a robust return/direction winner. Certain volatility rows improve individual descriptive metrics, but the best model varies by scoring rule and needs independent reproduction. Volatility-expansion results remain exploratory. Unavailable point-in-time news, options/PCR, FII/DII, breadth and corporate-action features, rejected currency/commodity sources, calendar uncertainty and incomplete global close-time validation limit the conclusions. No trading strategy or options recommendation follows from these prediction results.
+
+
+## Expanded PDF-method catalogue supplement — run #60
+
+Workflow [#60](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38593936036) completed on `research/pdf-audit-developer` at commit `e93fe35d8bb11df65d1c466434d5401298c077ed`. The artifact contains the corrected QLIKE score-difference field and three-epoch sequence metadata. The validated target data remain 4,901 Dhan daily observations (2007-01-02 through 2026-10-13). The merged metrics table has 1,097 rows, including 485 OOS-evaluated rows and 130 explicitly compute-budget-blocked rows.
+
+### Supplementary results
+
+| Target | Representative run #60 result | Finding |
+|---|---|---|
+| 1-session return | CNN sequence, technical; RMSE 0.007940; MSE skill +0.0875%; Holm p=1 | No supported return advantage. |
+| 5-session return | XGBoost, technical; RMSE 0.017352; MSE skill +2.0023%; Holm p=1 | Small descriptive gain, statistically unsupported. |
+| 20-session return | Gradient boosting, global; RMSE 0.033100; MSE skill +3.3303%; Holm p=1 | Descriptive gain, statistically unsupported. |
+| Volatility | Best MAE and best QLIKE differ by horizon/model | Rankings are metric-dependent; report each score rather than a universal winner. |
+| Direction / volatility expansion | Accuracy is sensitive to class prevalence and threshold; some high-accuracy rows have weak balanced accuracy or proper scores | Accuracy-only rankings do not establish a robust edge. |
+
+### Inferential caution
+
+The paired-loss convention is `model loss - baseline loss`; negative mean loss difference favors the model and positive favors the baseline. A two-sided p-value only establishes a difference from zero, not improvement. Interpret the sign together with benchmark skill, confidence intervals, proper scoring rules and multiplicity adjustment. The model catalogue is a screening exercise on one chronological holdout, not exhaustive tuning or proof of stability.
+
+### Revised conclusion
+
+The expanded screen establishes no robust return/direction winner. Some volatility rows improve individual descriptive metrics, but model rankings vary by score and require independent reproduction. Volatility-expansion results remain exploratory. Missing point-in-time news, options/PCR, FII/DII, breadth and corporate-action features, rejected currency/commodity sources, calendar uncertainty and incomplete global close-time validation limit conclusions. No trading strategy or options recommendation follows from these prediction results.
