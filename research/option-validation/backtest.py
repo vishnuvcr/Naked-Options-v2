@@ -249,6 +249,7 @@ def validate_payload(payload: dict, option_type: str) -> str:
 
 
 def acquire_options(refresh: bool = False) -> dict:
+    """Acquire only the four rolling series needed for the prespecified same-day structures."""
     ensure_dirs()
     token = os.getenv("DHAN_ACCESS_TOKEN", "").strip()
     try:
@@ -262,151 +263,164 @@ def acquire_options(refresh: bool = False) -> dict:
             "error_type": type(exc).__name__,
             "error_summary": str(exc)[:250],
             "requests_planned": 0,
-            "requests_passed": 0,
+            "requests_successful_or_empty": 0,
             "requests_failed": 0,
         }
         (OPTION_CACHE / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         (REPORT / "acquisition_summary.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+        update_managed_documents("ACQUISITION", manifest=manifest)
         return manifest
-    trade_dates = pd.to_datetime(signals.trade_date, errors="raise").dt.date
-    start = min(trade_dates)
-    end_exclusive = max(trade_dates) + timedelta(days=1)
+
+    dates = pd.to_datetime(signals.trade_date, errors="raise").dt.date
+    requested_start = min(dates)
+    end_exclusive = max(dates) + timedelta(days=1)
     history_floor = date.today() - timedelta(days=365 * 5)
-    requested_start = start
-    if start < history_floor:
-        start = history_floor
-    chunks = list(request_chunks(start, end_exclusive))
-    planned = len(chunks) * len(OFFSETS) * len(OPTION_TYPES)
-    req_records = []
-    failures = []
-    cached = 0
-    successes = 0
-    if not token:
-        old_manifest_path = OPTION_CACHE / "manifest.json"
-        if old_manifest_path.exists() and not refresh:
-            old = json.loads(old_manifest_path.read_text(encoding="utf-8"))
-            good_records = [
-                x for x in old.get("requests", [])
-                if x.get("status") in {"PASS", "EMPTY", "CACHED"} and (ROOT / x.get("file", "")).exists()
-            ]
-            cached_names = {x["file"] for x in good_records}
-        else:
-            cached_names = set()
-        # If the full request grid exists already, no credential is needed to reuse it.
-        for d0, d1 in chunks:
-            for offset in OFFSETS:
-                for opt_type in OPTION_TYPES:
-                    rel = Path("data/cache/options_rolling") / (
-                        f"{d0:%Y%m%d}_{d1:%Y%m%d}_{'m' if offset < 0 else 'p'}{abs(offset):02d}_{opt_type}.json"
-                    )
-                    if offset == 0:
-                        rel = Path("data/cache/options_rolling") / f"{d0:%Y%m%d}_{d1:%Y%m%d}_ATM_{opt_type}.json"
-                    path = ROOT / rel
-                    if path.exists() and not refresh:
-                        try:
-                            payload = json.loads(path.read_text(encoding="utf-8"))
-                            validate_payload(payload, opt_type)
-                            req_records.append({"from": d0.isoformat(), "to_exclusive": d1.isoformat(), "offset": offset, "option_type": opt_type, "status": "CACHED", "file": str(rel)})
-                            cached += 1
-                            successes += 1
-                        except Exception as exc:
-                            failures.append({"from": d0.isoformat(), "to_exclusive": d1.isoformat(), "offset": offset, "option_type": opt_type, "error_type": type(exc).__name__, "error_summary": str(exc)[:180]})
-                    else:
-                        failures.append({"from": d0.isoformat(), "to_exclusive": d1.isoformat(), "offset": offset, "option_type": opt_type, "error_type": "MissingCredential", "error_summary": "DHAN_ACCESS_TOKEN is not configured and the raw response is not cached"})
-        status = "PASS_CACHED" if not failures and successes == planned else "BLOCKED_NO_TOKEN"
-    else:
-        session = requests.Session()
+    request_start = max(requested_start, history_floor)
+    chunks = list(request_chunks(request_start, end_exclusive))
+    if not chunks:
+        return write_blocked("BLOCKED_EMPTY_DATE_RANGE", "No trade dates remain in the supported historical range.")
+    # ATM CALL/PUT serve the straddle and define the ATM strike. One adjacent
+    # OTM CALL and PUT serve the strangle. Other offsets cannot affect this plan.
+    required_requests = ((0, "CALL"), (0, "PUT"), (1, "CALL"), (-1, "PUT"))
+    planned = len(chunks) * len(required_requests)
+    req_records, failures = [], []
+    successes, cached = 0, 0
+    stop_all_requests = False
+    refresh = refresh or os.getenv("REFRESH_OPTIONS", "").lower() in {"1", "true", "yes"}
+
+    session = requests.Session()
+    if token:
         session.headers.update({"Accept": "application/json", "Content-Type": "application/json", "access-token": token})
-        refresh = refresh or os.getenv("REFRESH_OPTIONS", "").lower() in {"1", "true", "yes"}
-        for d0, d1 in chunks:
-            for offset in OFFSETS:
-                for opt_type in OPTION_TYPES:
-                    rel = Path("data/cache/options_rolling") / (
-                        f"{d0:%Y%m%d}_{d1:%Y%m%d}_{'m' if offset < 0 else 'p'}{abs(offset):02d}_{opt_type}.json"
-                    )
-                    if offset == 0:
-                        rel = Path("data/cache/options_rolling") / f"{d0:%Y%m%d}_{d1:%Y%m%d}_ATM_{opt_type}.json"
-                    path = ROOT / rel
-                    if path.exists() and not refresh:
-                        try:
-                            payload = json.loads(path.read_text(encoding="utf-8"))
-                            state = validate_payload(payload, opt_type)
-                            req_records.append({"from": d0.isoformat(), "to_exclusive": d1.isoformat(), "offset": offset, "option_type": opt_type, "status": "CACHED" if state == "PASS" else "EMPTY", "file": str(rel)})
-                            successes += 1
-                            cached += 1
+
+    for d0, d1 in chunks:
+        if stop_all_requests:
+            break
+        for offset, opt_type in required_requests:
+            rel = Path("data/cache/options_rolling") / (
+                f"{d0:%Y%m%d}_{d1:%Y%m%d}_{'m' if offset < 0 else 'p'}{abs(offset):02d}_{opt_type}.json"
+            )
+            if offset == 0:
+                rel = Path("data/cache/options_rolling") / f"{d0:%Y%m%d}_{d1:%Y%m%d}_ATM_{opt_type}.json"
+            path = ROOT / rel
+            if path.exists() and not refresh:
+                try:
+                    payload = json.loads(path.read_text(encoding="utf-8"))
+                    state = validate_payload(payload, opt_type)
+                    req_records.append({"from": d0.isoformat(), "to_exclusive": d1.isoformat(),
+                                        "offset": offset, "option_type": opt_type,
+                                        "status": "CACHED" if state == "PASS" else "EMPTY",
+                                        "file": str(rel)})
+                    successes += 1
+                    cached += 1
+                    continue
+                except Exception:
+                    # Corrupt cache is not trusted. Replace it only when authenticated access exists.
+                    if not token:
+                        failures.append({"from": d0.isoformat(), "to_exclusive": d1.isoformat(),
+                                         "offset": offset, "option_type": opt_type,
+                                         "error_type": "InvalidCacheNoCredential",
+                                         "error_summary": "Cached response failed schema validation; refresh requires DHAN_ACCESS_TOKEN"})
+                        continue
+            if not token:
+                failures.append({"from": d0.isoformat(), "to_exclusive": d1.isoformat(),
+                                 "offset": offset, "option_type": opt_type,
+                                 "error_type": "MissingCredential",
+                                 "error_summary": "DHAN_ACCESS_TOKEN is not configured and response not cached"})
+                continue
+
+            request_body = {
+                "exchangeSegment": "NSE_FNO",
+                "interval": 5,
+                "securityId": 13,
+                "instrument": "OPTIDX",
+                "expiryFlag": "WEEK",
+                "expiryCode": 0,
+                "strike": offset_label(offset),
+                "drvOptionType": opt_type,
+                "requiredData": ["open", "high", "low", "close", "iv", "volume", "strike", "oi", "spot"],
+                "fromDate": d0.isoformat(),
+                "toDate": d1.isoformat(),
+            }
+            last_error = "unknown"
+            state = "FAIL"
+            for attempt in range(3):
+                try:
+                    response = session.post("https://api.dhan.co/v2/charts/rollingoption",
+                                            json=request_body, timeout=45)
+                    if response.status_code in (401, 403):
+                        last_error = f"AUTH_HTTP_{response.status_code}"
+                        stop_all_requests = True
+                        break
+                    if response.status_code in (400, 404, 422):
+                        last_error = f"REQUEST_SCHEMA_HTTP_{response.status_code}"
+                        stop_all_requests = True
+                        break
+                    if response.status_code == 429 or response.status_code >= 500:
+                        last_error = f"HTTP_{response.status_code}"
+                        if attempt < 2:
+                            time.sleep(2 ** attempt)
                             continue
-                        except Exception:
-                            pass
-                    payload_req = {
-                        "exchangeSegment": "NSE_FNO",
-                        "interval": "5",
-                        "securityId": 13,
-                        "instrument": "OPTIDX",
-                        "expiryFlag": "WEEK",
-                        "expiryCode": 0,
-                        "strike": offset_label(offset),
-                        "drvOptionType": opt_type,
-                        "requiredData": ["open", "high", "low", "close", "iv", "volume", "strike", "oi", "spot"],
-                        "fromDate": d0.isoformat(),
-                        "toDate": d1.isoformat(),
-                    }
-                    state = "FAIL"
-                    last_error = "unknown error"
-                    for attempt in range(4):
-                        try:
-                            response = session.post(
-                                "https://api.dhan.co/v2/charts/rollingoption",
-                                json=payload_req,
-                                timeout=45,
-                            )
-                            if response.status_code == 429 or response.status_code >= 500:
-                                last_error = f"HTTP_{response.status_code}"
-                                time.sleep(min(2 ** attempt, 8))
-                                continue
-                            if not response.ok or "json" not in response.headers.get("content-type", "").lower():
-                                last_error = f"HTTP_OR_CONTENT_TYPE_{response.status_code}"
-                                break
-                            payload = response.json()
-                            state = validate_payload(payload, opt_type)
-                            path.parent.mkdir(parents=True, exist_ok=True)
-                            tmp = path.with_suffix(".json.tmp")
-                            tmp.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
-                            tmp.replace(path)
-                            req_records.append({"from": d0.isoformat(), "to_exclusive": d1.isoformat(), "offset": offset, "option_type": opt_type, "status": state, "file": str(rel)})
-                            successes += 1
-                            break
-                        except Exception as exc:
-                            last_error = f"{type(exc).__name__}: {str(exc)[:150]}"
-                            if attempt < 3:
-                                time.sleep(min(2 ** attempt, 8))
-                    else:
-                        state = "FAIL"
-                    if state == "FAIL":
-                        rec = {"from": d0.isoformat(), "to_exclusive": d1.isoformat(), "offset": offset, "option_type": opt_type, "error_type": "RequestOrSchemaFailure", "error_summary": last_error}
-                        failures.append(rec)
-                    time.sleep(0.22)
-        session.close()
-        status = "PASS" if not failures and successes == planned else ("PARTIAL" if successes > 0 else "BLOCKED_NO_VALID_OPTION_DATA")
+                        break
+                    if not response.ok or "json" not in response.headers.get("content-type", "").lower():
+                        last_error = f"HTTP_OR_CONTENT_TYPE_{response.status_code}"
+                        stop_all_requests = True
+                        break
+                    payload = response.json()
+                    state = validate_payload(payload, opt_type)
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    tmp = path.with_suffix(".json.tmp")
+                    tmp.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
+                    tmp.replace(path)
+                    req_records.append({"from": d0.isoformat(), "to_exclusive": d1.isoformat(),
+                                        "offset": offset, "option_type": opt_type,
+                                        "status": state, "file": str(rel)})
+                    successes += 1
+                    break
+                except Exception as exc:
+                    last_error = f"{type(exc).__name__}: {str(exc)[:140]}"
+                    if attempt < 2:
+                        time.sleep(2 ** attempt)
+            if state == "FAIL":
+                failures.append({"from": d0.isoformat(), "to_exclusive": d1.isoformat(),
+                                 "offset": offset, "option_type": opt_type,
+                                 "error_type": "RequestOrSchemaFailure", "error_summary": last_error})
+                if stop_all_requests:
+                    break
+            time.sleep(0.15)
+
+    session.close()
+    if stop_all_requests:
+        status = "BLOCKED_REQUEST_AUTH_OR_SCHEMA"
+    elif failures and successes:
+        status = "PARTIAL"
+    elif failures and not successes:
+        status = "BLOCKED_NO_TOKEN" if not token else "BLOCKED_NO_VALID_OPTION_DATA"
+    elif not failures and successes == planned:
+        status = "PASS_CACHED" if cached == planned else "PASS"
+    else:
+        status = "PARTIAL"
+
     manifest = {
         "plan_version": PLAN_VERSION,
         "created_at_utc": utc_now(),
         "status": status,
         "daily_data_sha256": sha256(CACHE / "nifty50_daily.csv"),
         "requested_date_start": requested_start.isoformat(),
-        "request_date_start_after_5y_clip": start.isoformat(),
+        "request_date_start_after_5y_clip": request_start.isoformat(),
         "request_date_end_exclusive": end_exclusive.isoformat(),
-        "history_start_clipped_to_provider_window": bool(start > requested_start),
+        "history_start_clipped_to_provider_window": bool(request_start > requested_start),
         "request_window_days_max": 30,
         "interval_minutes": 5,
         "expiry_flag": "WEEK",
         "expiry_code": 0,
-        "offsets": list(OFFSETS),
-        "option_types": list(OPTION_TYPES),
+        "requested_offset_type_pairs": [{"offset": x, "option_type": y} for x, y in required_requests],
         "requests_planned": planned,
+        "requests_attempted": len(req_records) + len(failures),
         "requests_successful_or_empty": successes,
         "requests_cached": cached,
         "requests_failed": len(failures),
-        "failure_summaries": dict(Counter(f"{x.get('error_type')}:{x.get('error_summary','')}" for x in failures)),
+        "request_stopped_early_for_auth_or_schema": stop_all_requests,
+        "failure_summaries": dict(Counter(f"{x.get('error_type')}:{x.get('error_summary', '')}" for x in failures)),
         "requests": req_records,
         "failures": failures,
         "raw_quote_cache_path": "data/cache/options_rolling (not committed or uploaded)",
@@ -419,7 +433,6 @@ def acquire_options(refresh: bool = False) -> dict:
     update_managed_documents("ACQUISITION", manifest=manifest)
     print(json.dumps(public, indent=2))
     return manifest
-
 
 def payload_to_rows(payload: dict, option_type: str) -> list[dict]:
     part = locate_option_series(payload, option_type)

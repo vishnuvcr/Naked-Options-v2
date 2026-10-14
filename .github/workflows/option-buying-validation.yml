@@ -23,7 +23,7 @@ permissions:
 
 concurrency:
   group: option-buying-validation
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   validate-and-backtest:
