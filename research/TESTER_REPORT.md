@@ -17,15 +17,15 @@ Status: **FAIL — do not pass the research gate yet.**
 
 ## Findings and gates
 
-### HIGH-001 — Level target/unit mismatch (BLOCKING)
+### HIGH-001 — Level target transform needs explicit test (REVIEW REQUIRED, not yet confirmed defect)
 
-Artifact level predictions/actuals are in index-point units (mean actual around 22,519), but current build_feature_matrix.py defines target_log_close_h = log(close.shift(-h)) and run_experiments.py references target_log_close. A log-price target should be around 10, not 22,000. Exact run source must be identified. Do not accept level scores until run commit and target schema agree.
+The artifact's level predictions/actuals are in index-point units (mean actual around 22,519), while build_feature_matrix.py stores target_log_close in log units. However, run_experiments.py explicitly exponentiates actual, prediction and baseline before calculating point-scale metrics, so the unit difference may be intentional. The remaining test is to independently confirm the artifact's level rows match exp(target_log_close) and that the persistence baseline equals the origin close. Do not label this a confirmed defect unless the exact row-level comparison fails.
 
-Required fix: include target schema/units in every manifest; assert target scale; use target_close with persistence close_t, or target_log_close with persistence log_close_t, consistently. Add tests and rerun level experiments.
+Recommended safeguard: include a target schema/units map in each manifest and add a unit test proving point-scale predictions/actuals equal the exponentiated log-price values, with persistence baseline equal to close_t.
 
-### HIGH-002 — Volatility target and QLIKE semantics (BLOCKING)
+### HIGH-002 — Verify QLIKE target transformation (REVIEW REQUIRED, code appears to square values)
 
-target_future_vol is a standard deviation / absolute-return proxy, while QLIKE is described as a variance forecast loss. Confirm the squared transformation or use a loss appropriate to standard deviation. QLIKE results are not accepted until actual and forecast are both variance-scale, positive, and baseline uses same scale. Displayed p=0 is numeric underflow, not literal zero; format as p<1e-6.
+The target is a standard-deviation / absolute-return proxy, but run_experiments.py squares actual, forecast and baseline before applying qlike_loss, which appears scale-consistent. Independently recompute this from prediction rows to confirm. Displayed p=0 is numerical underflow, not literal zero; format as p<1e-6.
 
 ### HIGH-003 — Recompute and multiplicity (BLOCKING for significance)
 
@@ -47,13 +47,13 @@ Twenty weekend-dated rows are preserved and flagged. Cross-check special session
 
 - One-session return models show no useful gain over zero-return in this run.
 - One-session direction results are close to chance and do not survive Holm adjustment.
-- Some volatility models appear promising, but QLIKE target-scale mismatch blocks acceptance.
+- Some volatility models appear promising; QLIKE is squared to variance scale in the runner, but the tester must reproduce the result independently before acceptance.
 - Level results are blocked by target/unit mismatch.
 - ARIMA(1,0,0) has no significant gain over zero-return in the reported 1/5/20-session results; recompute independently.
 
 ## Gate decision
 
-**Phase 5: FAIL pending target reconciliation and independent metric reproduction.  
+**Phase 5: OPEN pending independent metric reproduction and final code/artifact reconciliation.  
 Phase 6: partial; global feature ablation ran, regime segmentation and source families remain incomplete.  
 Phase 7: open; significance/QLIKE audit not passed.  
 Phase 8: report submitted, not approved.  
@@ -61,8 +61,8 @@ Phase 9: manuscript remains provisional.**
 
 ## Developer instructions
 
-1. Identify exact commit/code bundle that generated run #45. Resolve level target schema and units; add target-unit tests.
-2. Ensure QLIKE uses realized variance and forecast variance, or replace it with a scale-appropriate loss. Correct p-value formatting.
+1. Verify exact commit/code bundle and independently compare exponentiated level predictions/actuals against source targets; add target-unit tests if absent.
+2. Recompute QLIKE from squared realized/predicted volatility; correct p-value formatting so underflow is not presented as literal zero.
 3. Recompute candidate/baseline metrics from predictions, including paired losses, block confidence intervals, HAC tests and Holm correction.
 4. Check global feature availability timing, overlapping target-date dependence and classification baselines.
 5. Run tests and regenerate artifacts; update RESULTS.md, ERROR_LOG.md, PHASE_STATUS.md and README.md. Resubmit for tester review; do not progress to publication gate before passing.
