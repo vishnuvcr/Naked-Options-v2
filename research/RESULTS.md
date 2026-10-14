@@ -2,7 +2,7 @@
 
 Version: NIFTY-PRED-1.0  
 Last updated: 2026-10-14  
-Status: Corrected run #49 completed; preliminary empirical results independently checked; tester gate remains open.
+Status: Corrected run #49 independently reviewed; bounded prediction-only study closed with scope limitations.
 
 ## Canonical run
 
@@ -37,7 +37,7 @@ Return forecasting does not show robust useful skill; the 1-session direction re
 
 ## Gate
 
-Phase 5: run complete, tester gate open. Phase 7: arithmetic checks passed; remaining multiplicity/ARIMA/calibration review. Phase 8: tester must issue explicit PASS/FAIL. Phase 9: manuscript remains provisional. No model or options strategy is approved.
+Phase 5: PASS. Phase 7: PASS for bounded prediction-only scope. Phase 8: tester PASS WITH SCOPE LIMITATIONS. Phase 9: manuscript complete. Phase 2 literature depth and Phase 6 source/regime coverage remain partial and are explicitly accepted limitations. No options strategy is approved.
 
 
 ## Final tester disposition — 2026-10-14
@@ -45,3 +45,8 @@ Phase 5: run complete, tester gate open. Phase 7: arithmetic checks passed; rema
 The independent tester now reports **PASS WITH SCOPE LIMITATIONS** for the bounded prediction-only study: [tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/independent-tester/research/TESTER_REPORT.md). Holm corrections were independently reproduced within 1e-16. ARIMA(1,0,0) benchmark skill, HAC p-values and block confidence intervals reproduced from the separate ARIMA predictions file. The selected 1-session global direction model has ECE 0.016; the selected technical volatility-expansion model has descriptive ECE 0.184/0.053/0.040 at 1/5/20 sessions, so its 1-session probabilities are poorly calibrated.
 
 Scoped conclusion: no robust return/direction edge was demonstrated. Volatility-expansion findings remain exploratory. This is not a trading strategy; options chains, broker fees/slippage, Paytm Money execution and live deployment were not tested.
+
+
+## Closure record
+
+The nine-phase study is closed for the bounded prediction-only scope. The tested model/data set did not establish a robust return/direction edge. Unavailable options/FII-DII/PCR/breadth/news inputs and lack of brokerage/slippage/execution tests prohibit strategy-level claims.
