@@ -31,6 +31,22 @@ def main():
     weekend=(df.date.dt.dayofweek>=5)
     if weekend.any(): errors.append(f"weekend observations={int(weekend.sum())}")
     if len(df)<500: errors.append(f"insufficient sample rows={len(df)}; >=500 required for the planned multi-horizon study")
+    # The normalized target must match a successful acquisition manifest; stale cache files
+    # are never accepted after a failed refresh.
+    manifest_path=ROOT/"reports"/"data_manifest.json"
+    if not manifest_path.exists():
+        errors.append("data acquisition manifest is missing")
+    else:
+        try:
+            manifest=json.loads(manifest_path.read_text(encoding="utf-8"))
+            if manifest.get("status")!="DATA_ACQUIRED" or not manifest.get("selected_target_source"):
+                errors.append("acquisition manifest does not certify a valid target source")
+            else:
+                expected=manifest.get("target_sha256")
+                actual=hashlib.sha256(src.read_bytes()).hexdigest()
+                if not expected or expected!=actual: errors.append("data file hash does not match acquisition manifest")
+        except Exception as exc:
+            errors.append(f"acquisition manifest unreadable: {type(exc).__name__}")
     # Dates absent between observations are reported, not assumed to be errors: NSE holidays exist.
     dates=df.date.sort_values().reset_index(drop=True)
     gaps=dates.diff().dt.days.dropna()
