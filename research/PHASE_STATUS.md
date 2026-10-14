@@ -31,3 +31,20 @@ A phase is not PASS merely because files or workflows exist. Gates require execu
 ## Phase 5 status — revised compute gate (2026-10-14)
 
 The full grid remained active at the experiment step without producing final artifacts. A dated amendment to RESEARCH_PLAN.md now limits full catalogue comparisons to next-session return and direction and keeps core regression/classification models for all other target/horizon combinations. Excluded catalogue cells are emitted as BLOCKED_COMPUTE_BUDGET. Estimator counts are bounded. Phase 5 remains OPEN until a final workflow completes and all results/defect checks pass.
+
+## Current execution checkpoint — 2026-10-14 (after run #41)
+
+| Phase | Current evidence | Gate |
+|---|---|---|
+| 1. Repository audit | Empty initial repo documented; plan/scope and logs bootstrapped. | COMPLETE |
+| 2. Literature | Uploaded NIFTY/deep-learning/sentiment/ANN papers appraised; options-strategy papers explicitly excluded; official NSE and free source families documented. | COMPLETE for first-pass review |
+| 3. Data | Dhan daily target: 4,901 valid rows, 2007-01-02 to 2026-10-13, SHA b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050. Seven external series passed quality checks; USD/INR, gold, crude failed and are not included. Feature matrix: 4,901 rows, 106 feature columns. | PASS for acquired series; auxiliary coverage partial |
+| 4. Baselines | ARIMA(1,0,0) successfully forecast 1/5/20-session returns. Run-41 artifact showed no statistically significant gain over zero-return baseline (p=.492, .935, .842; CIs include zero). | COMPLETE provisionally; awaiting corrected merged output |
+| 5. Models | Technical fit produced JSON status COMPLETE (278 experiment rows, 72,253 OOS predictions) including LSTM/GRU/TCN/Transformer comparisons for 1-session return/direction; global fit COMPLETE (210 experiment rows, 64,413 predictions). | OPEN: run #41 failed at merge; no per-model CSVs were uploaded. Corrected bounded rerun #45 must produce and upload them. |
+| 6. Features/regimes | Global-market augmentation was actually run; official options, FII/DII, breadth and timestamped news remain absent. No regime-based result yet. | BLOCKED pending recovered metrics and further source gate |
+| 7. Statistics/robustness | HAC tests, bootstrap intervals and Holm adjustment are implemented; QLIKE score correction now includes a unit test. | OPEN; run #45 must pass and results must be independently recomputed |
+| 8. Independent review | Separate tester review not started; must follow complete result acquisition. | BLOCKED |
+| 9. Manuscript/publication | Manuscript shell and Pages publisher exist; run #41 uploaded a status page with 0 merged OOS rows because merge failed. | BLOCKED pending accepted results |
+
+## Correction and next gate
+Run #41's model fitting completed, but it does not establish a best model because its merge step failed and the per-run CSVs were omitted from the artifact. The correction ensures empty CSVs do not crash merge, uploads all technical/global per-run CSVs, and scores QLIKE on a non-negative equivalent form. Do not mark Phase 5 PASS until Actions run #45 completes, artifacts are reviewed, and metric tests/checks pass.
