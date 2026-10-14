@@ -49,7 +49,31 @@ def main():
     if not manifest_path.exists(): raise SystemExit("BLOCKED: option cache manifest missing")
     manifest = json.loads(manifest_path.read_text())
     quotes, qmeta = bt.load_quote_table(manifest)
-    if quotes.empty: raise SystemExit("BLOCKED: no usable option quote rows")
+    if quotes.empty:
+        OUT.mkdir(parents=True, exist_ok=True)
+        summary = {"study":"OPT-BUY-2.0","status":"BLOCKED_NO_USABLE_QUOTES",
+          "quotes":qmeta,"acquisition_status":manifest.get("status"),
+          "requests_planned":manifest.get("requests_planned"),
+          "requests_successful_or_empty":manifest.get("requests_successful_or_empty"),
+          "requests_cached":manifest.get("requests_cached"),
+          "requests_failed":manifest.get("requests_failed"),
+          "failure_summaries":manifest.get("failure_summaries", {}),
+          "confirmatory_gate_pass":False,
+          "decision":"No strike-performance analysis was run because the manifest contained no usable quote rows. No winner or P&L inference is permitted."}
+        (OUT/"run_summary.json").write_text(json.dumps(summary,indent=2,default=str))
+        pd.DataFrame([{"candidate":f"C{co}_P{po}","call_offset":co,"put_offset":po,
+          "total_test_dates":0,"eligible_dates":0,"coverage":0.0,"skip_counts":"NO_USABLE_QUOTES"}
+          for co in CALL_OFFSETS for po in PUT_OFFSETS]).to_csv(OUT/"coverage.csv",index=False)
+        pd.DataFrame(columns=["candidate","call_offset","put_offset","horizon","mode","slippage_bps_per_side",
+          "brokerage_per_order_rupees","eligible_dates","trade_count","coverage",
+          "mean_net_pnl_per_eligible_date_rupees","ci95_low_rupees","ci95_high_rupees",
+          "mean_net_pnl_per_trade_rupees","mean_net_return_per_trade","win_rate",
+          "first_half_mean_pnl","second_half_mean_pnl"]).to_csv(OUT/"candidate_metrics.csv",index=False)
+        pd.DataFrame(columns=["date","candidate","horizon","mode","alert","did_trade",
+          "slippage_bps_per_side","brokerage_per_order","net_pnl_rupees","net_return_on_debit",
+          "call_offset","put_offset"]).to_csv(OUT/"primary_ledger.csv",index=False)
+        print(json.dumps(summary,indent=2,default=str))
+        return
     frame = bt.read_daily_and_build_matrix()
     signals, classifier_meta = bt.build_signals(frame)
     days = sorted(signals.trade_date.astype(str).unique())
