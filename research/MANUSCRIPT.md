@@ -68,3 +68,26 @@ See [LITERATURE_REVIEW.md](LITERATURE_REVIEW.md) for the source register and bib
 ## Final scope note
 
 Historical option chains, FII/DII, PCR, breadth, timestamped news, and corporate-action features were not verified as acquired. No brokerage/slippage simulation, Paytm Money execution analysis, options backtest, or live strategy is included. See the [independent tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/independent-tester/research/TESTER_REPORT.md).
+
+
+## Expanded PDF-method catalogue supplement (run #60, 14 October 2026)
+
+This supplement records the later bounded method-screening run and does not replace the earlier run #49 evidence record. Workflow #60 completed successfully on `research/pdf-audit-developer` at commit `e93fe35d8bb11df65d1c466434d5401298c077ed`; the report artifact is [nifty-prediction-reports-38593936036](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38593936036). The validated target data hash and coverage remained unchanged: 4,901 Dhan daily rows from 2007-01-02 through 2026-10-13. The merged metric table contained 1,097 rows, including 485 OOS-evaluated metric rows and 130 explicitly compute-blocked rows. No model error rows were emitted by the technical or global run.
+
+### Supplementary results
+
+| Forecast target | Representative run #60 row | Finding |
+|---|---|---|
+| 1-session return | CNN sequence, technical; RMSE 0.007940; MSE skill +0.0875%; Holm p=1 | No supported return advantage. |
+| 5-session return | XGBoost, technical; RMSE 0.017352; MSE skill +2.0023%; Holm p=1 | Small descriptive gain, statistically unsupported. |
+| 20-session return | Gradient boosting, global; RMSE 0.033100; MSE skill +3.3303%; Holm p=1 | Descriptive gain, statistically unsupported. |
+| Volatility | Best MAE and best QLIKE differ across horizons/models | Volatility ranking is metric-dependent; report both rather than selecting a universal winner. |
+| Direction / volatility expansion | Accuracy can be inflated by class prevalence and decision threshold; several rows have poor balanced accuracy or proper scores | Accuracy-only rankings are not evidence of a robust predictive edge. |
+
+### Inferential caution
+
+For the implemented paired-loss tests, `mean_loss_diff = model loss - baseline loss`; negative favors the model and positive favors the baseline. A small two-sided p-value only establishes a loss difference, not improvement. Rows with p-values below .05 can therefore represent statistically worse forecasts. Interpret the sign, benchmark skill, confidence interval, proper score and multiplicity correction together. The model catalogue is a screening exercise on one chronological holdout; it is not exhaustive hyperparameter optimization or proof of out-of-sample stability.
+
+### Revised conclusion
+
+The expanded screen does not establish a robust return/direction winner. Certain volatility rows improve individual descriptive metrics, but the best model varies by scoring rule and needs independent reproduction. Volatility-expansion results remain exploratory. Unavailable point-in-time news, options/PCR, FII/DII, breadth and corporate-action features, rejected currency/commodity sources, calendar uncertainty and incomplete global close-time validation limit the conclusions. No trading strategy or options recommendation follows from these prediction results.
