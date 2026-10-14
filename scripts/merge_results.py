@@ -14,7 +14,10 @@ def main():
   for key,name in (("metrics",mf),("predictions",pf),("experiment_errors",ef)):
    f=R/name if name else None
    if f and f.exists() and f.stat().st_size:
-    d=pd.read_csv(f)
+    try:
+     d=pd.read_csv(f)
+    except pd.errors.EmptyDataError:
+     status.setdefault("empty_csv_files",[]).append(name); continue
     if len(d):d["feature_set"]=tag;bags[key].append(d)
   meta=R/f"experiment_run_{tag}.json"
   status[tag]=json.loads(meta.read_text()) if meta.exists() else ({"status":"PASS"} if tag=="statistical_benchmark" and (R/"arima_run.json").exists() else {"status":"BLOCKED_OR_NOT_RUN"})
