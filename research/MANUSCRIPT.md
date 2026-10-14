@@ -25,11 +25,11 @@ Actual source status and field definitions are recorded in [DATA_CATALOG.md](DAT
 
 ## 5. Scientific methodology
 
-The preregistered protocol freezes model families and acceptance criteria before experiments. Chronological development and validation precede an untouched final holdout. Hyperparameters are selected through expanding-window time-series folds. Preprocessing is fitted within each training fold and targets use strictly future returns. Level forecasts are benchmarked against persistence; returns against zero, historical mean and autoregressive baselines. Forecast scores are target-specific and uncertainty is quantified.
+The first 80% of the 4,901-row daily series was used for development and the final 20% for holdout evaluation. Candidate selection used two expanding chronological folds with a horizon gap. The catalogue included linear methods, SVM/SVR, tree ensembles, boosting, MLP and compact LSTM/GRU/TCN/Transformer models. Full catalogue comparison was limited to one-session return/direction; other target/horizon cells used a prespecified core set and excluded cells were explicitly marked BLOCKED_COMPUTE_BUDGET. Level forecasts were benchmarked against persistence, returns against zero, and classification against development-sample prevalence.
 
 ## 6. Statistical analysis
 
-Planned metrics include MAE, RMSE, benchmark-relative out-of-sample R-squared, direction accuracy / balanced accuracy / precision / recall / F1 / ROC-AUC / Brier / log loss, volatility MAE/RMSE/QLIKE, moving-block bootstrap confidence intervals, appropriate DM/HAC or Clark-West tests and Holm-adjusted p-values. The executable analysis and metric definitions must be linked to the supplement.
+Planned metrics include MAE, RMSE, benchmark-relative out-of-sample R-squared, direction accuracy / balanced accuracy / precision / recall / F1 / ROC-AUC / Brier / log loss, volatility MAE/RMSE/QLIKE, moving-block bootstrap confidence intervals, appropriate DM/HAC or Clark-West tests and Holm-adjusted p-values. Metrics included MAE, RMSE, benchmark-relative MSE skill, classification accuracy/balanced accuracy/Brier/log loss, variance-scale QLIKE, HAC paired-loss tests, moving-block confidence intervals and Holm adjustment within task/horizon families. The independent tester reproduced 91 regression skill metrics, 140 non-ARIMA confidence intervals, Holm adjustments and ARIMA benchmark metrics.
 
 ## 7. Results
 
@@ -41,7 +41,7 @@ The one-session return improvement is negligible and statistically unsupported; 
 
 ## 9. Strengths and limitations
 
-Protocol strengths include target-specific benchmarks, chronological holdout, feature availability rules, preregistered experiments, failure logs, fixed random seeds and a separate tester gate. Limitations remain unresolved: data depth and API access are not verified; historical options, point-in-time constituent, FII/DII and timestamped news data may not be freely available; newer regimes may be underpowered; and deep models may be infeasible on modest compute.
+Strengths include target-specific benchmarks, chronological holdout, conservative prior-date joins for external series, cached data hashes, fixed random seeds, explicit compute exclusions, error logs and independent review. Limitations include one holdout period; incomplete options/FII-DII/PCR/breadth/news/corporate-action data; limited regime analysis; a descriptive non-preregistered calibration diagnostic; and no transaction-cost or execution backtest.
 
 ## 10. Conclusion
 
@@ -53,16 +53,16 @@ Future work should prioritize timestamp-aligned historical option data, validate
 
 ## References
 
-See [LITERATURE_REVIEW.md](LITERATURE_REVIEW.md) for the source register and bibliographic links. The final version will format all citations and supplement metadata.
+See [LITERATURE_REVIEW.md](LITERATURE_REVIEW.md) for the source register and bibliographic links. External literature is contextual, not empirical evidence from this run. The source register and bibliography are maintained in LITERATURE_REVIEW.md.
 
 ## Supplementary material
 
 - Source manifest and retrieval hashes: included in [run #49 artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38533512128).
-- Frozen split boundaries and row hashes: pending.
+- Frozen split: chronological 80/20 with two expanding CV folds; data/source hashes are in the run manifest.
 - Experiment configurations, seeds and package versions: pending.
 - Out-of-sample predictions, metrics and tests: included in the run #49 artifact; summary in [RESULTS.md](RESULTS.md).
-- Charts, model diagnostics and regime results: pending.
-- Tester report and defect-closure evidence: pending.
+- Selected results chart: [selected_model_results.svg](figures/selected_model_results.svg). Full regime analysis is not performed.
+- Tester report and defect-closure evidence: [independent tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/independent-tester/research/TESTER_REPORT.md).
 
 
 ## Final scope note
