@@ -60,3 +60,5 @@ The dated amendment in RESEARCH_PLAN.md is now part of the branch history. It pr
 | #40+ | 2ea446b3afa42e4283ab7e26964c08d2e2659821 | Expected after plan amendment; must be verified | Candidate canonical run using final policy. No final model metric is accepted until tests, completed job, artifact output and code SHA are verified. |
 
 The model pool and estimator caps are configuration choices fixed before inspecting out-of-sample performance. The locked holdout remains a one-time comparison source and is not used for selection.
+
+| #49 | 2026-10-14 | 5/7 | 9b655da8d72667a6d2f15e4dad5df55a1bec2e84 | 97858125f14344520f77dd503d2c0441005e6da4cfa12fc23fe7427680f932e7 | SUCCESS | Tests, target validation, feature matrix, technical/global catalogues, ARIMA, merge and report generation passed. Zero null target dates in OOS predictions. Independent arithmetic reproduced 91 regression skill metrics (max discrepancy ~2.04e-9) and 140 non-ARIMA block CIs (max discrepancy <8e-9). Tester gate remains open. |
