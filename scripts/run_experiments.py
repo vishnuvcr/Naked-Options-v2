@@ -37,7 +37,7 @@ def append_error(label,exc):
     with p.open("a",encoding="utf-8") as f: f.write(row)
 
 def cv_score(model,X,y,origin,h,kind):
-    splitter=TimeSeriesSplit(n_splits=2 if getattr(model,"arch",None) is not None else 4)
+    splitter=TimeSeriesSplit(n_splits=2)
     scores=[]
     for tr,va in splitter.split(X):
         train=tr[origin[tr]+h<=origin[va[0]]]
