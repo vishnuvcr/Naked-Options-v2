@@ -51,9 +51,10 @@ The developer accepted the independent tester's no-go. No strategy, paper-tradin
 | Phase | Status | Evidence / next gate |
 |---|---|---|
 | Protocol and branch setup | COMPLETE | [Frozen plan](STRIKE_SELECTION_PLAN.md); [research branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-strike-selection) |
-| Daily target acquisition/validation and regression tests | PASS IN RUN #4 | Daily-target acquisition and validation steps completed; existing cost/matching regression suite passed (13 tests). [Run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097) |
-| Historical options-cache acquisition | RUNNING — LONG STEP | Current job still reports the acquisition step in progress, started 10:49:21 UTC; no artifact has been published. Workflow timeout is 180 minutes. There is no confirmed acquisition failure yet. |
-| Frozen strike grid, sanitized artifact upload, final tests | NOT STARTED | Await acquisition step completion; then inspect usable rows, date coverage, duplicates/conflicts, cost assumptions and block-bootstrap/Holm outputs. |
-| Independent tester gate | WAIVED BY USER FOR THIS RUN | User said tester review is not needed. This does not waive data-quality or statistical gates. No performance claim until evidence clears those gates. |
+| Daily target acquisition/validation and regression tests | PASS IN RUN #4 | Daily-target acquisition/validation completed; pre-analysis regression suite passed (13 tests). [Run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097) |
+| Historical options-cache acquisition | STEP COMPLETE; DATA GATE UNVERIFIED | Step concluded successfully at workflow level, but acquisition is configured with `continue-on-error`; must inspect manifest/diagnostics before treating quotes as usable. |
+| Frozen strike grid | IN PROGRESS | Current live job has advanced to this step. No artifacts uploaded yet. |
+| Sanitized artifact upload and final tests | NOT STARTED | Await grid step and inspect summary, quote coverage, duplicates/conflicts, execution-cost assumptions and block-bootstrap/Holm output. |
+| Independent tester gate | WAIVED BY USER FOR THIS RUN | User waived separate tester sign-off. The waiver does not waive data-quality, statistical or execution-cost gates. |
 
 No strike-selection strategy is approved. Existing OPT-BUY-1.0 no-go remains unchanged.
