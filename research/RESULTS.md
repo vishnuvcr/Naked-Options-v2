@@ -38,3 +38,16 @@ Return forecasting does not show robust useful skill; the 1-session direction re
 ## Gate
 
 Phase 5: run complete, tester gate open. Phase 7: arithmetic checks passed; remaining multiplicity/ARIMA/calibration review. Phase 8: tester must issue explicit PASS/FAIL. Phase 9: manuscript remains provisional. No model or options strategy is approved.
+
+
+## Additional validation and calibration
+
+- Independent tester disposition: [PASS WITH SCOPE LIMITATIONS](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/independent-tester/research/TESTER_REPORT.md).
+- Holm adjustment was independently recomputed for each task/horizon family; maximum absolute difference was below 1e-16.
+- ARIMA(1,0,0) return benchmark checks from its separate prediction artifact reproduced skill and HAC p-values to numerical precision. MSE skill vs zero-return was -0.35% at 1 session (p=.492), +0.11% at 5 sessions (p=.935), and +1.07% at 20 sessions (p=.842); confidence intervals include zero at all horizons.
+- Supplemental decile ECE (descriptive, not preregistered): selected global CatBoost 1-session direction ECE 0.016; selected technical Logistic volatility-expansion ECE 0.184 / 0.053 / 0.040 at 1/5/20 sessions. The 1-session expansion probabilities are poorly calibrated. Single-holdout results do not establish regime stability.
+- Auxiliary global features use backward as-of joins with same-date matches excluded. This reduces same-date look-ahead risk, but source coverage and market-calendar alignment remain limitations.
+
+## Final scoped conclusion
+
+The bounded prediction-only study passes the independent tester gate with scope limitations. No robust return/direction advantage is demonstrated. Some volatility-expansion log-loss comparisons are promising but exploratory. No options trading strategy, Paytm Money fee/slippage model, option-chain backtest or live deployment was evaluated.
