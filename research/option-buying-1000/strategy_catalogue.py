@@ -50,7 +50,9 @@ OPS=[
 ("A_THEN_B","A precedes B in a frozen causal window"),("B_THEN_A","B precedes A"),
 ("CONTEXT_REVERSAL","context from A, reversal trigger from B"),("REGIME_GATE","A gated by state B")]
 rows=[]; seen=set()
-for (a,da,ra),(b,db,rb) in itertools.permutations(P,2):
+pair_list=list(itertools.permutations(P,2))
+pair_list.sort(key=lambda pair: hashlib.sha256((pair[0][0]+"|"+pair[1][0]).encode()).hexdigest())
+for (a,da,ra),(b,db,rb) in pair_list:
  for op,definition in OPS:
   spec={"operator":op,"left":a,"right":b,"definition":definition}
   canonical=json.dumps(spec,sort_keys=True,separators=(",",":"))
