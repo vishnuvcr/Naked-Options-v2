@@ -3,25 +3,29 @@
 **Version:** OPT-BUY-4.0  
 **Date:** 2026-10-15 (Asia/Kolkata)  
 **Developer branch:** `research/option-buying-1000-developer`  
-**Status:** protocol created; implementation and empirical runs pending  
+**Status:** protocol revised to require 1,000+ distinct strategy logics; implementation and empirical runs pending  
 **Instrument scope:** NIFTY 50 single-leg long calls or long puts only. No spreads, no short-option legs, no live orders.
 
 ## 1. Research question
 
 Does any preregistered NIFTY 50 naked long-option buying configuration show positive, robust out-of-sample net expectancy after brokerage, statutory fees, exchange charges, GST, and adverse slippage, while passing fixed data-quality, trade-count, and statistical gates?
 
-“1,000 strategies” means at least 1,000 distinct, explicitly enumerated entry × direction × strike × exit configurations, not 1,000 post-hoc parameter tweaks selected after seeing the test set. The complete registry must be written to CSV/JSON before outcome analysis and receive stable IDs.
+“1,000+ unique strategies” means at least 1,000 distinct, explicitly specified decision algorithms whose entry/selection logic is materially different. A change only to strike bucket, holding period, stop/target, threshold value, or other execution parameter does **not** create a new strategy and must not increase the unique-strategy count. Each strategy must have a unique rule specification, causal input set, signal/decision procedure, direction mapping, and deterministic pseudocode or executable function. All strategy definitions and IDs must be frozen in CSV/JSON before outcome analysis. Configurations are downstream evaluations of a strategy and are counted separately.
 
-## 2. Minimum strategy count and factorial design
+## 2. Minimum unique-strategy count and evaluation configurations
 
-The target is **at least 1,200 unique configurations** from a frozen Cartesian registry:
+The primary target is **at least 1,000 unique strategy algorithms**, not 1,000 configurations. The strategy registry must include a `strategy_id`, human-readable name, hypothesis, exact causal inputs, signal logic/pseudocode, direction rule, required data, expected frequency, and unit tests. Strategy IDs must represent distinct algorithms, not aliases or parameter variants.
+
+Build the 1,000+ strategy catalogue from materially different decision mechanisms across (where data permits): price action and candle structure; opening gaps and opening range; momentum and trend; mean reversion; realized/intraday volatility; volatility expansion/contraction; volume and breadth; futures basis and market internals; options-chain OI/volume/IV/Greeks and skew/term structure; expiry/calendar effects; global-market lead/lag; cross-asset and gold/rates/FX signals; regime-conditioned logic; multi-signal conjunctions/voting/state machines; and simple interpretable statistical/ML models trained only on past data. Every family must include explicit baselines and ablations. Data-dependent families are marked blocked if point-in-time inputs are unavailable, not simulated with invented values. Do not pad the catalogue with superficial permutations. A deterministic deduplication/review test must flag identical or near-identical rule signatures; count only materially distinct logic.
+
+After freezing the unique algorithms, evaluate each eligible strategy on a common, bounded set of execution configurations. The following grid is an initial evaluation matrix, **not** the strategy-count definition:
 
 - **12 entry/control families**: seeded random-time/random-direction control; fixed-time entries; opening-gap continuation; opening-gap fade; opening-range breakout; opening-range fade; causal spot momentum; causal trend alignment; causal mean-reversion; prior-bar range breakout; volatility expansion; spot/OI alignment only when timestamped OI is available (otherwise replace with a prespecified range/volatility rule and document the substitution before outcome inspection).
 - **2 option directions**: long CALL and long PUT. Signal-aligned direction rules and direction-agnostic controls must be distinguished in the registry; no future return may choose the direction.
 - **5 strike buckets**: ATM and fixed numeric offsets defined from the spot/strike interval at entry (ATM, one-step ITM, one-step OTM, two-step ITM, two-step OTM). Exact numeric contract identity must be verified at both entry and exit; rolling-relative series must not be mistaken for the same contract.
 - **10 exit policies**: exit after 1, 2, 3, 6, or 12 five-minute bars; fixed-time/EOD; premium take-profit; premium stop-loss; paired premium TP/SL; trailing premium stop. Trigger levels and precedence for bars touching both barriers are frozen before analysis and use conservative ordering.
 
-The 12 × 2 × 5 × 10 grid yields 1,200 cells. If a data source cannot support a cell (e.g. unavailable strike/contract identity), retain the cell in the registry as blocked/not estimable; never fabricate or silently replace its data. Any substitution to an entry family must occur before inspecting strategy outcomes and be logged.
+The 12 × 2 × 5 × 10 grid yields 1,200 evaluation cells for a small set of baseline families only; it does not meet the 1,000-unique-strategy requirement. The full catalogue must separately contain at least 1,000 unique algorithm definitions, each linked to a controlled execution-configuration set. If a data source cannot support a strategy or configuration, retain its registry record as blocked/not estimable; never fabricate or silently replace data. Any substitution must occur before inspecting outcomes and be logged.
 
 ## 3. Primary outcome and controls
 
@@ -53,11 +57,11 @@ Use the frozen Paytm Money-compatible fee schedule and date-appropriate NSE/stat
 
 ## 7. Implementation phases and gates
 
-1. **Freeze registry and protocol** — this document, research questions, immutable cell IDs, entry/exit definitions, cost schedule and stopping rule.
+1. **Freeze registry and protocol** — this document, research questions, immutable unique strategy IDs and rule signatures (minimum 1,000 materially distinct algorithms), separately identified evaluation-configuration IDs, entry/exit definitions, cost schedule and stopping rule.
 2. **Data audit/cache** — reuse validated cache; otherwise try configured Dhan access and documented free sources. Record source, schema, coverage, request outcomes, hashes, licence and cache provenance. Do not log credentials.
 3. **Implement registry runner** — deterministic, causal signals; exact contract matching; conservative barrier execution; common-date ledger; no-lookahead tests.
 4. **Unit/regression checks** — single-leg fee arithmetic, monotonic cost sensitivity, stop/target precedence, reproducible random controls, split integrity, missing bars, duplicate handling, bootstrap and Holm tests.
-5. **Run full registry once** — minimum 1,200 stable cell IDs; produce per-cell status and sanitized ledgers/artifacts. No ad-hoc expansion after seeing results.
+5. **Run full registry once** — first verify at least 1,000 unique strategy definitions after signature-based deduplication; then evaluate all data-eligible strategies on the frozen configuration matrix. Publish separate counts for unique algorithms, execution configurations, tested cells, blocked strategies and estimable strategies. No ad-hoc expansion after seeing results.
 6. **Correct verified defects only** — log errors and corrective commits; rerun affected tests and the frozen registry as needed, not new parameter searches.
 7. **Final analysis** — cost sensitivities, chronological halves, uncertainty, multiplicity, data-quality disposition, charts and machine-readable results.
 8. **Manuscript and close** — methods, results, limitations, conclusions and further research; update README, phase status, experiment/error/activity logs and Pages status. Stop at the frozen gate even if no strategy passes.
@@ -74,7 +78,7 @@ Use the frozen Paytm Money-compatible fee schedule and date-appropriate NSE/stat
 
 ## 9. Stop rules and interpretation
 
-The study stops after the single frozen 1,200-cell catalogue and necessary defect-correction reruns. It does not continue into unbounded grid search. If data-quality gates fail, report **INCONCLUSIVE / NO-GO**, not “best strategy.” If every candidate loses after costs, conclude that none of the tested configurations is supported. Never infer that all possible naked-option buying is impossible from a finite sample.
+The study stops after the single frozen catalogue of at least 1,000 unique algorithms, its prespecified bounded evaluation matrix, and necessary defect-correction reruns. It does not continue into unbounded grid search. If data-quality gates fail, report **INCONCLUSIVE / NO-GO**, not “best strategy.” If every candidate loses after costs, conclude that none of the tested strategies is supported. Never infer that all possible naked-option buying is impossible from a finite sample.
 
 ## 10. Governance
 
