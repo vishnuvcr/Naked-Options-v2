@@ -147,10 +147,16 @@ jobs:
           path: |
             reports/*.json
             reports/metrics.csv
-            reports/experiment_errors.csv
             reports/predictions.csv
+            reports/experiment_errors.csv
+            reports/metrics_*.csv
+            reports/predictions_*.csv
+            reports/experiment_errors_*.csv
             reports/arima_metrics.csv
             reports/arima_predictions.csv
+            research/ERROR_LOG.md
+            research/EXPERIMENT_LOG.md
+            research/PHASE_STATUS.md
           if-no-files-found: warn
           retention-days: 90
 
