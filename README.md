@@ -82,7 +82,7 @@ Conclusion: no robust return/direction edge is demonstrated. Volatility-expansio
 
 The static research status page has been deployed successfully through [Pages publish workflow #2](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38535940026). Future updates to the README, results, phase status, manuscript, figure or docs trigger the lightweight publishing workflow without rerunning the model catalogue.
 
-
+<!-- OPTION_VALIDATION_README_START -->
 ## Follow-on study: option-buying validation — 2026-10-14
 
 The nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged. Following user approval, a separate bounded validation track is being initialized on [research/option-buying-validation](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-validation). It will test whether the earlier volatility-expansion classifier adds value for next-session intraday long-option structures after transaction costs and adverse-slippage sensitivity. Classification accuracy alone is not treated as proof of option profitability.
@@ -92,3 +92,4 @@ The nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged
 - [Option validation workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-validation/.github/workflows/option-buying-validation.yml)
 
 Status at initialization: no option P&L result exists yet. Any strategy conclusion is blocked until data quality, cost accounting, robustness checks and the independent post-results tester gate pass.
+<!-- OPTION_VALIDATION_README_END -->

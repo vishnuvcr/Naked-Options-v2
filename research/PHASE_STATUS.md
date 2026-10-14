@@ -33,7 +33,7 @@ The independent tester branch reports PASS WITH SCOPE LIMITATIONS for the bounde
 
 The nine-phase work is closed for the bounded prediction-only scope with accepted limitations. Phases 2 and 6 are partial by design/scope, not falsely marked complete. The final conclusion is that this model/data set did not establish a robust return/direction edge. No options strategy was tested or approved.
 
-
+<!-- OPTION_VALIDATION_PHASE_START -->
 ## Separate follow-on study (does not reopen NIFTY-PRED-1.0)
 
 A user-approved scope amendment initiated 2026-10-14 opens a distinct option-buying validation track on [research/option-buying-validation](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-validation). This is not a new phase of the original nine-phase prediction-only study and does not change its closed statuses.
@@ -43,3 +43,4 @@ A user-approved scope amendment initiated 2026-10-14 opens a distinct option-buy
 | Intraday option-buying validation | research/option-buying-validation | INITIALIZED — NO EMPIRICAL RESULTS YET | Build source adapter and leakage-safe classifier reconstruction; validate fixed-strike same-session long straddles/strangles; cost/slippage stress tests; only after result acquisition create developer/tester branches. |
 
 No option strategy is approved at initialization. Dhan rolling options data use strike-relative series; a trade is valid only when actual strike is matched at entry and exit on the same session. Missing quotes must be skipped and counted, never forward-filled. If authentication/data-quality gates fail, report the blocker without fabricating output.
+<!-- OPTION_VALIDATION_PHASE_END -->

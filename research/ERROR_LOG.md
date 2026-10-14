@@ -19,3 +19,10 @@ HTTP 200 returning HTML instead of the required payload is a source failure. Emp
 | ERR-013 | 2026-10-14 | 5/7 | MEDIUM | Research status documentation was stale after corrected run #49 completed. | Prior checkpoint wording had not been replaced with final workflow evidence. | Updated main README, RESULTS.md and PHASE_STATUS.md with corrected run #49 evidence; tester report updated on independent-tester branch. | Run #49 succeeded; artifact SHA-256 97858125f14344520f77dd503d2c0441005e6da4cfa12fc23fe7427680f932e7. | DOCUMENTATION UPDATED; PHASE 7 REVIEW OPEN |
 
 | ERR-014 | 2026-10-14 | 8/9 | LOW | Manuscript placeholders remained after corrected results. | Manuscript had not been updated with run #49. | Updated manuscript and added selected-results figure; tester report passes with scope limitations. | Run #49 artifact and manuscript reviewed. | RESOLVED |
+
+<!-- OPTION_VALIDATION_ERRORS_START -->
+## Option-validation acquisition error log — OPT-BUY-1.0
+
+Initialization is recorded on the follow-on research branch. Actual source failures will be added after the acquisition attempt; no failure is inferred before the workflow runs.
+
+<!-- OPTION_VALIDATION_ERRORS_END -->

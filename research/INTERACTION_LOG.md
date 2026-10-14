@@ -26,7 +26,7 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Public free-source review recorded official NSE index/India VIX/breadth/FII-DII/derivatives reports and two Hugging Face options collections. The collections are not ingested yet: one is CC-BY-NC-4.0 and ~4 GB, the other has 'other' licensing, ~2.5 GB and incomplete intraday OI/settlement fields. See DATA_CATALOG.md.
 - At the last check, run 30 on main, run 31 on research/phase-5-models, and the corrected run 32 were respectively active/active/queued. No completed model metrics have yet been accepted.
 
-
+<!-- OPTION_VALIDATION_INTERACTION_START -->
 ## 2026-10-14 — separate option-buying validation initialized
 
 - User approved extending the closed prediction-only study with a separate, bounded option-buying validation phase. The original NIFTY-PRED-1.0 plan/results remain unchanged.
@@ -35,3 +35,4 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Scope chosen: same-session intraday entry/exit only. Rolling relative strikes/expiry data do not prove a stable contract can be tracked across multiple days; multi-day P&L is excluded unless contract identity and expiry are available and verified.
 - Cost plan includes Paytm Money ₹10/order baseline, ₹20/order sensitivity, option-sale STT, stamp duty, SEBI/exchange charges and adverse 0/25/50/100 bps-per-side slippage sensitivity. Since the rolling OHLC source lacks historical bid/ask, this is a sensitivity analysis, not an observed-spread simulation.
 - No historical option data has yet been downloaded and no option P&L has been computed at this point. The log records auditable actions and decisions, not hidden reasoning or verbatim internal chain-of-thought.
+<!-- OPTION_VALIDATION_INTERACTION_END -->

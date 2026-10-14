@@ -48,7 +48,7 @@ All experiment results remain unranked until a completed run emits machine-gener
 
 | #49 | 2026-10-14 | 5/7 | 9b655da8d72667a6d2f15e4dad5df55a1bec2e84 | 97858125f14344520f77dd503d2c0441005e6da4cfa12fc23fe7427680f932e7 | SUCCESS | Tests, target validation, feature matrix, technical/global catalogues, ARIMA, merge and report generation passed. Zero null target dates in OOS predictions. Independent skill metrics and block-CI checks reproduced; final statistical tester gate remains open. |
 
-
+<!-- OPTION_VALIDATION_EXPERIMENT_START -->
 ## Follow-on option-buying validation — 2026-10-14
 
 | Run ID | Branch | Status | Scope / gate |
@@ -56,3 +56,4 @@ All experiment results remain unranked until a completed run emits machine-gener
 | OPT-INIT-001 | research/option-buying-validation | INITIALIZED; NO RESULTS | Test next-session intraday ATM straddle and one-step OTM strangle after a prespecified technical Logistic volatility-expansion alert. Dhan historical options are preferred if auth and schemas validate. Include Paytm Money brokerage, current statutory/exchange charges, and 0/25/50/100 bps adverse-slippage scenarios. Results must be acquired before developer/tester branches are created. |
 
 This is a user-approved scope amendment after NIFTY-PRED-1.0 closure. It does not replace or rewrite the original study. No option P&L result is available or asserted in this initialization entry.
+<!-- OPTION_VALIDATION_EXPERIMENT_END -->
