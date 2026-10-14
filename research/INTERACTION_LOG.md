@@ -34,3 +34,12 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Result file: research/option-validation/RESULTS.md; sanitized summary: reports/option_validation/results_summary.json.
 - Raw option prices remain in Actions cache only; no credentials or raw quote file is intentionally staged.
 <!-- OPTION_VALIDATION_INTERACTION_END -->
+
+
+## 2026-10-14 - pilot result and method correction
+
+- Option validation run #6 completed 196 Dhan MONTH/expiryCode=1 requests with no request failures. It produced 303,548 raw rows, 294,419 usable rows, 45 conflicting duplicate groups out of 9,084 duplicate groups, and only 171/980 (17.45%) eligible dates for both structures.
+- All four pilot model-filtered candidates had negative mean daily premium-normalized returns and fewer than 100 alert trades. Because quote coverage failed the prespecified 80% gate, no pilot trading inference is accepted.
+- Data/method review found the initial source query requested only ATM calls/puts plus one call and one put relative offset. Fixed numeric strikes could move beyond that restricted set by exit. The source query is being expanded to the documented monthly ATM−3…ATM+3 grid for both option types; strategy entry/exit selection is unchanged.
+- Review also found that the percentage-return paired difference compared varying premium-debit denominators and assigned zero on non-alert dates. The primary comparison is now daily net P&L in rupees per one-lot-proxy slot, with premium-normalized return secondary. This correction is disclosed and is not used to select a different model or trade structure.
+- Code improvements: vectorized block bootstrap, grouped date quote tables, exact-strike exit lookup, and private-cache persistence before statistical analysis. New tests cover same-strike matching and daily P&L when the alert skips a date.

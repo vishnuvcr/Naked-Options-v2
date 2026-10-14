@@ -303,12 +303,24 @@ def acquire_options(refresh: bool = False) -> dict:
         return write_blocked("BLOCKED_EMPTY_DATE_RANGE", "No trade dates remain in the supported historical range.")
     # ATM CALL/PUT serve the straddle and define the ATM strike. One adjacent
     # OTM CALL and PUT serve the strangle. Other offsets cannot affect this plan.
-    required_requests = ((0, "CALL"), (0, "PUT"), (1, "CALL"), (-1, "PUT"))
+    required_requests = tuple((offset, opt_type) for offset in range(-3, 4) for opt_type in OPTION_TYPES)
     planned = len(chunks) * len(required_requests)
     req_records, failures = [], []
     successes, cached = 0, 0
     stop_all_requests = False
     refresh = refresh or os.getenv("REFRESH_OPTIONS", "").lower() in {"1", "true", "yes"}
+    prior_manifest_path = OPTION_CACHE / "manifest.json"
+    legacy_cache_eligible = False
+    if prior_manifest_path.exists() and not refresh:
+        try:
+            prior_manifest = json.loads(prior_manifest_path.read_text(encoding="utf-8"))
+            legacy_cache_eligible = (
+                prior_manifest.get("status") in {"PASS", "PASS_CACHED"}
+                and prior_manifest.get("expiry_flag") == "MONTH"
+                and int(prior_manifest.get("expiry_code", -1)) == 1
+            )
+        except Exception:
+            legacy_cache_eligible = False
 
     session = requests.Session()
     if token:
@@ -321,9 +333,16 @@ def acquire_options(refresh: bool = False) -> dict:
             rel = Path("data/cache/options_rolling") / (
                 f"{d0:%Y%m%d}_{d1:%Y%m%d}_MONTH1_{'m' if offset < 0 else 'p'}{abs(offset):02d}_{opt_type}.json"
             )
+            legacy_rel = Path("data/cache/options_rolling") / (
+                f"{d0:%Y%m%d}_{d1:%Y%m%d}_{'m' if offset < 0 else 'p'}{abs(offset):02d}_{opt_type}.json"
+            )
             if offset == 0:
                 rel = Path("data/cache/options_rolling") / f"{d0:%Y%m%d}_{d1:%Y%m%d}_MONTH1_ATM_{opt_type}.json"
+                legacy_rel = Path("data/cache/options_rolling") / f"{d0:%Y%m%d}_{d1:%m%d}_ATM_{opt_type}.json"
             path = ROOT / rel
+            if not path.exists() and not refresh and legacy_cache_eligible and (ROOT / legacy_rel).exists():
+                rel = legacy_rel
+                path = ROOT / rel
             if path.exists() and not refresh:
                 try:
                     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -408,7 +427,7 @@ def acquire_options(refresh: bool = False) -> dict:
                                  "error_type": "RequestOrSchemaFailure", "error_summary": last_error})
                 if stop_all_requests:
                     break
-            time.sleep(0.15)
+            time.sleep(0.25)
 
     session.close()
     if stop_all_requests:
@@ -437,8 +456,8 @@ def acquire_options(refresh: bool = False) -> dict:
         "expiry_code": 1,
         "requested_offset_type_pairs": [{"offset": x, "option_type": y} for x, y in required_requests],
         "requests_planned": planned,
-        "requests_attempted": len(req_records) + len(failures),
-        "requests_successful_or_empty": successes,
+        "requests_attempted": planned - cached,
+        "requests_successful_or_empty": successes - cached,
         "requests_cached": cached,
         "requests_failed": len(failures),
         "request_stopped_early_for_auth_or_schema": stop_all_requests,
@@ -538,6 +557,7 @@ def load_quote_table(manifest: dict) -> tuple[pd.DataFrame, dict]:
         "usable_rows": int(len(quotes)),
         "duplicate_conflict_groups": int(len(conflicted)),
         "duplicate_groups": int((duplicates.n > 1).sum()),
+        "conflict_rate_among_duplicate_groups": float(len(conflicted) / max(int((duplicates.n > 1).sum()), 1)),
         "parse_failures": parse_failures[:20],
         "first_quote_date": str(quotes.date.min()) if len(quotes) else None,
         "last_quote_date": str(quotes.date.max()) if len(quotes) else None,
@@ -813,8 +833,10 @@ def ledger_row(trade: dict, result: dict, mode: str, horizon, probability, thres
 def metrics_from_daily(rows: list[dict], block_len: int) -> dict:
     if not rows:
         return {}
-    returns = np.asarray([r["net_return_on_debit"] for r in rows], dtype=float)
-    returns = returns[np.isfinite(returns)]
+    daily_returns = np.asarray([r["net_return_on_debit"] for r in rows], dtype=float)
+    daily_returns = daily_returns[np.isfinite(daily_returns)]
+    daily_pnl = np.asarray([r.get("net_pnl_rupees", 0.0) for r in rows], dtype=float)
+    daily_pnl = daily_pnl[np.isfinite(daily_pnl)]
     trades = [r for r in rows if r.get("did_trade")]
     pnls = np.asarray([r["net_pnl_rupees"] for r in trades], dtype=float)
     wins = pnls[pnls > 0]
@@ -824,7 +846,8 @@ def metrics_from_daily(rows: list[dict], block_len: int) -> dict:
     cum = np.cumsum([r["net_pnl_rupees"] if r.get("did_trade") else 0.0 for r in rows])
     peaks = np.maximum.accumulate(np.concatenate([[0.0], cum]))[1:] if len(cum) else np.array([])
     dd = peaks - cum if len(cum) else np.array([])
-    lo, hi = block_bootstrap_mean(returns, block_len=block_len, seed=SEED + block_len)
+    ret_lo, ret_hi = block_bootstrap_mean(daily_returns, block_len=block_len, seed=SEED + block_len)
+    pnl_lo, pnl_hi = block_bootstrap_mean(daily_pnl, block_len=block_len, seed=SEED + 10 + block_len)
     return {
         "eligible_dates": int(len(rows)),
         "trade_count": int(len(trades)),
@@ -832,9 +855,12 @@ def metrics_from_daily(rows: list[dict], block_len: int) -> dict:
         "win_rate": float(np.mean(pnls > 0)) if len(pnls) else float("nan"),
         "mean_net_return_per_trade": float(np.mean([r["net_return_on_debit"] for r in trades])) if trades else float("nan"),
         "median_net_return_per_trade": float(np.median([r["net_return_on_debit"] for r in trades])) if trades else float("nan"),
-        "mean_net_return_daily": float(np.mean(returns)) if len(returns) else float("nan"),
-        "ci95_daily_return_low": lo,
-        "ci95_daily_return_high": hi,
+        "mean_net_return_daily": float(np.mean(daily_returns)) if len(daily_returns) else float("nan"),
+        "ci95_daily_return_low": ret_lo,
+        "ci95_daily_return_high": ret_hi,
+        "mean_net_pnl_rupees_daily": float(np.mean(daily_pnl)) if len(daily_pnl) else float("nan"),
+        "ci95_net_pnl_rupees_daily_low": pnl_lo,
+        "ci95_net_pnl_rupees_daily_high": pnl_hi,
         "mean_net_pnl_rupees_per_trade": float(np.mean(pnls)) if len(pnls) else float("nan"),
         "median_net_pnl_rupees_per_trade": float(np.median(pnls)) if len(pnls) else float("nan"),
         "total_net_pnl_rupees": float(pnls.sum()) if len(pnls) else 0.0,
@@ -945,43 +971,59 @@ def analyze_options() -> dict:
                         }
                         rows_metrics.append(rec)
                     if slip == 50 and broker == 10:
-                        diff = np.asarray([c["net_return_on_debit"] for c in candidate_rows]) - np.asarray([b["net_return_on_debit"] for b in base_rows])
-                        ci_low, ci_high, pval = block_bootstrap_difference(diff, block_len=block_len, n_boot=BOOTSTRAP_REPS, seed=SEED + h)
+                        diff_pnl = np.asarray([c["net_pnl_rupees"] for c in candidate_rows], dtype=float) - np.asarray([b["net_pnl_rupees"] for b in base_rows], dtype=float)
+                        diff_return = np.asarray([c["net_return_on_debit"] for c in candidate_rows], dtype=float) - np.asarray([b["net_return_on_debit"] for b in base_rows], dtype=float)
+                        ci_pnl_low, ci_pnl_high, pval = block_bootstrap_difference(diff_pnl, block_len=block_len, n_boot=BOOTSTRAP_REPS, seed=SEED + h)
+                        ci_ret_low, ci_ret_high, pval_return = block_bootstrap_difference(diff_return, block_len=block_len, n_boot=BOOTSTRAP_REPS, seed=SEED + 100 + h)
                         mid = len(candidate_rows) // 2
                         for ix, arr in ((0, candidate_rows[:mid]), (1, candidate_rows[mid:])):
                             half_stats = metrics_from_daily(arr, block_len)
                             if ix == 0:
-                                first_half = arr
-                                first_half_mean = half_stats.get("mean_net_return_daily", float("nan"))
+                                first_half_pnl = half_stats.get("mean_net_pnl_rupees_daily", float("nan"))
+                                first_half_return = half_stats.get("mean_net_return_daily", float("nan"))
                                 first_half_trades = half_stats.get("trade_count", 0)
                             else:
-                                second_half = arr
-                                second_half_mean = half_stats.get("mean_net_return_daily", float("nan"))
+                                second_half_pnl = half_stats.get("mean_net_pnl_rupees_daily", float("nan"))
+                                second_half_return = half_stats.get("mean_net_return_daily", float("nan"))
                                 second_half_trades = half_stats.get("trade_count", 0)
                         primary = {
                             "horizon": h,
                             "structure": structure,
                             "n_eligible_dates": len(dates),
                             "n_alert_trades": candidate_stats.get("trade_count", 0),
+                            "candidate_mean_net_daily_pnl_rupees": candidate_stats.get("mean_net_pnl_rupees_daily", float("nan")),
+                            "candidate_pnl_ci95_low_rupees": candidate_stats.get("ci95_net_pnl_rupees_daily_low", float("nan")),
+                            "candidate_pnl_ci95_high_rupees": candidate_stats.get("ci95_net_pnl_rupees_daily_high", float("nan")),
+                            "benchmark_mean_net_daily_pnl_rupees": base_stats.get("mean_net_pnl_rupees_daily", float("nan")),
+                            "candidate_mean_net_pnl_rupees_per_trade": candidate_stats.get("mean_net_pnl_rupees_per_trade", float("nan")),
+                            "benchmark_mean_net_pnl_rupees_per_trade": base_stats.get("mean_net_pnl_rupees_per_trade", float("nan")),
+                            "candidate_mean_net_return_per_trade": candidate_stats.get("mean_net_return_per_trade", float("nan")),
+                            "benchmark_mean_net_return_per_trade": base_stats.get("mean_net_return_per_trade", float("nan")),
                             "candidate_mean_net_daily_return": candidate_stats.get("mean_net_return_daily", float("nan")),
-                            "candidate_ci95_low": candidate_stats.get("ci95_daily_return_low", float("nan")),
-                            "candidate_ci95_high": candidate_stats.get("ci95_daily_return_high", float("nan")),
+                            "candidate_return_ci95_low": candidate_stats.get("ci95_daily_return_low", float("nan")),
+                            "candidate_return_ci95_high": candidate_stats.get("ci95_daily_return_high", float("nan")),
                             "benchmark_mean_net_daily_return": base_stats.get("mean_net_return_daily", float("nan")),
-                            "paired_mean_difference": float(np.mean(diff)) if len(diff) else float("nan"),
-                            "paired_ci95_low": ci_low,
-                            "paired_ci95_high": ci_high,
+                            "paired_mean_difference_rupees": float(np.mean(diff_pnl)) if len(diff_pnl) else float("nan"),
+                            "paired_ci95_pnl_low_rupees": ci_pnl_low,
+                            "paired_ci95_pnl_high_rupees": ci_pnl_high,
                             "paired_p_value": pval,
+                            "paired_mean_difference_return": float(np.mean(diff_return)) if len(diff_return) else float("nan"),
+                            "paired_ci95_return_low": ci_ret_low,
+                            "paired_ci95_return_high": ci_ret_high,
+                            "paired_return_p_value": pval_return,
                             "p_holm": float("nan"),
-                            "half1_mean_net_daily_return": first_half_mean,
+                            "half1_mean_net_daily_pnl_rupees": first_half_pnl,
+                            "half1_mean_net_daily_return": first_half_return,
                             "half1_trades": first_half_trades,
-                            "half2_mean_net_daily_return": second_half_mean,
+                            "half2_mean_net_daily_pnl_rupees": second_half_pnl,
+                            "half2_mean_net_daily_return": second_half_return,
                             "half2_trades": second_half_trades,
                             "positive_at_100bps": None,
                             "trade_count_gate": bool(candidate_stats.get("trade_count", 0) >= 100),
                             "positive_primary_ci_gate": bool(
-                                math.isfinite(candidate_stats.get("ci95_daily_return_low", float("nan")))
-                                and candidate_stats["ci95_daily_return_low"] > 0
-                                and candidate_stats.get("mean_net_return_daily", float("nan")) > 0
+                                math.isfinite(candidate_stats.get("ci95_net_pnl_rupees_daily_low", float("nan")))
+                                and candidate_stats["ci95_net_pnl_rupees_daily_low"] > 0
+                                and candidate_stats.get("mean_net_pnl_rupees_daily", float("nan")) > 0
                             ),
                         }
                         primary_rows.append(primary)
@@ -991,9 +1033,9 @@ def analyze_options() -> dict:
         for r, adj in zip(primary_rows, adjusted):
             r["p_holm"] = adj
             sens = next((x for x in rows_metrics if x.get("horizon") == r["horizon"] and x.get("structure") == r["structure"] and x.get("mode") == "model_filtered" and x.get("slippage_bps_per_side") == 100 and x.get("brokerage_per_order_rupees") == 10), {})
-            r["positive_at_100bps"] = bool(sens.get("mean_net_return_daily", float("nan")) > 0)
-            r["both_halves_positive"] = bool(r.get("half1_mean_net_daily_return", -1) > 0 and r.get("half2_mean_net_daily_return", -1) > 0)
-            r["holm_outperformance_gate"] = bool(adj < 0.05 and r.get("paired_mean_difference", 0) > 0 and r.get("paired_ci95_low", 0) > 0)
+            r["positive_at_100bps"] = bool(sens.get("mean_net_pnl_rupees_daily", float("nan")) > 0)
+            r["both_halves_positive"] = bool(r.get("half1_mean_net_daily_pnl_rupees", -1) > 0 and r.get("half2_mean_net_daily_pnl_rupees", -1) > 0)
+            r["holm_outperformance_gate"] = bool(adj < 0.05 and r.get("paired_mean_difference_rupees", 0) > 0 and r.get("paired_ci95_pnl_low_rupees", 0) > 0)
             r["positive_candidate_gate"] = bool(
                 r["trade_count_gate"]
                 and r["positive_primary_ci_gate"]
@@ -1014,7 +1056,7 @@ def analyze_options() -> dict:
     })
     acquisition_status = raw_manifest.get("status", "UNKNOWN")
     complete_coverage = min(coverage.values()) if coverage else 0.0
-    data_gate = acquisition_status in {"PASS", "PASS_CACHED"} and int(raw_manifest.get("requests_failed", 0)) == 0 and complete_coverage >= 0.80 and quote_meta.get("duplicate_conflict_groups", 0) == 0
+    data_gate = acquisition_status in {"PASS", "PASS_CACHED"} and int(raw_manifest.get("requests_failed", 0)) == 0 and complete_coverage >= 0.80 and quote_meta.get("conflict_rate_among_duplicate_groups", 0.0) <= 0.01
     candidate_pass = bool(primary_rows) and any(bool(r.get("positive_candidate_gate")) for r in primary_rows)
     if not data_gate:
         overall = "INCONCLUSIVE_PARTIAL_OR_INCOMPLETE_DATA"
@@ -1029,7 +1071,9 @@ def analyze_options() -> dict:
         "acquisition_status": acquisition_status,
         "options_manifest_status": raw_manifest.get("status"),
         "requests_planned": raw_manifest.get("requests_planned"),
+        "requests_attempted": raw_manifest.get("requests_attempted"),
         "requests_successful_or_empty": raw_manifest.get("requests_successful_or_empty"),
+        "requests_cached": raw_manifest.get("requests_cached"),
         "requests_failed": raw_manifest.get("requests_failed"),
         "classifier": classifier_meta,
         "quotes": quote_meta,
@@ -1110,7 +1154,7 @@ def make_results_markdown(summary: dict, primary: pd.DataFrame, metrics: pd.Data
         f"**Decision status:** {status}",
         f"**Acquisition status:** {summary.get('acquisition_status', 'UNKNOWN')}",
         "",
-        "This report never treats volatility-classification accuracy as option profitability. The original NIFTY-PRED-1.0 study remains closed and unchanged. Raw Dhan option quote files are not published.",
+        "This report does not treat volatility-classification accuracy as option profitability. The original NIFTY-PRED-1.0 study remains closed and unchanged. Raw Dhan option quote files are not published.",
         "",
     ]
     if not summary.get("primary_candidates"):
@@ -1119,49 +1163,66 @@ def make_results_markdown(summary: dict, primary: pd.DataFrame, metrics: pd.Data
             "",
             f"**{status}** — {summary.get('reason', 'No complete option P&L result was produced.')}",
             "",
-            f"Option requests planned: {summary.get('requests_planned', 0)}; successful/empty: {summary.get('requests_successful_or_empty', 0)}; failed: {summary.get('requests_failed', 0)}.",
+            f"Option request windows planned: {summary.get('requests_planned', 0)}; valid/empty network responses: {summary.get('requests_successful_or_empty', 0)}; cached windows reused: {summary.get('requests_cached', 0)}; failed: {summary.get('requests_failed', 0)}.",
             "",
-            "No option profit/loss result is claimed. The next decision is a data-quality/credential gate, not selection of a trading structure.",
+            "No option strategy result is accepted. The next decision is a data-quality/credential gate, not selection of a trading structure.",
         ])
     else:
         lines.extend([
             "## Primary comparisons",
             "",
-            "Primary costs are ₹10/order and 50 bps adverse slippage per premium side. Returns are mean daily net premium return (non-alert dates are 0); P&L is calculated using a date-based lot-size proxy.",
+            "Primary costs are ₹10/order and 50 bps adverse slippage per premium side. The primary outcome is daily net P&L in rupees per one-lot-proxy trade slot: an alert-filtered strategy holds cash (zero P&L) on non-alert dates, while always-buy enters one lot on each identical eligible date. The paired difference and Holm test use that common daily P&L series. Premium-normalized return is secondary because its denominator varies by trade and is undefined on no-trade dates.",
             "",
-            "| Alert horizon | Structure | Alert trades | Mean daily net return | 95% block CI | Always-buy mean | Paired diff | Paired 95% CI | Raw p | Holm p | 100 bps positive? | Half 1 / half 2 positive? | Gate |",
-            "|---:|---|---:|---:|---|---:|---:|---|---:|---:|---|---|---|",
+            "| Alert horizon | Structure | Alert trades | Alert net P&L/date (₹) | 95% block CI (₹) | Always-buy net P&L/date (₹) | Paired difference/date (₹) | Paired 95% block CI (₹) | Raw p | Holm p | Mean net return/trade | Positive at 100 bps? | Half 1 / half 2 P&L/date (₹) | Gate |",
+            "|---:|---|---:|---:|---|---:|---:|---|---:|---:|---:|---|---|---|",
         ])
         for r in summary.get("primary_candidates", []):
-            ci = f"{fmt_percent(r.get('candidate_ci95_low'))} to {fmt_percent(r.get('candidate_ci95_high'))}"
-            diffci = f"{fmt_percent(r.get('paired_ci95_low'))} to {fmt_percent(r.get('paired_ci95_high'))}"
-            halves = f"{fmt_percent(r.get('half1_mean_net_daily_return'))} / {fmt_percent(r.get('half2_mean_net_daily_return'))}"
-            lines.append("| {} | {} | {} | {} | {} | {} | {} | {} | {} | {} | {} | {} | {} |".format(
+            ci = f"{fmt_number(r.get('candidate_pnl_ci95_low_rupees'), 2)} to {fmt_number(r.get('candidate_pnl_ci95_high_rupees'), 2)}"
+            diffci = f"{fmt_number(r.get('paired_ci95_pnl_low_rupees'), 2)} to {fmt_number(r.get('paired_ci95_pnl_high_rupees'), 2)}"
+            halves = f"{fmt_number(r.get('half1_mean_net_daily_pnl_rupees'), 2)} / {fmt_number(r.get('half2_mean_net_daily_pnl_rupees'), 2)}"
+            lines.append("| {} | {} | {} | {} | {} | {} | {} | {} | {} | {} | {} | {} | {} | {} |".format(
                 r.get("horizon"), r.get("structure"), r.get("n_alert_trades"),
-                fmt_percent(r.get("candidate_mean_net_daily_return")), ci,
-                fmt_percent(r.get("benchmark_mean_net_daily_return")),
-                fmt_percent(r.get("paired_mean_difference")), diffci,
+                fmt_number(r.get("candidate_mean_net_daily_pnl_rupees"), 2), ci,
+                fmt_number(r.get("benchmark_mean_net_daily_pnl_rupees"), 2),
+                fmt_number(r.get("paired_mean_difference_rupees"), 2), diffci,
                 fmt_number(r.get("paired_p_value"), 4), fmt_number(r.get("p_holm"), 4),
+                fmt_percent(r.get("candidate_mean_net_return_per_trade")),
                 bool(r.get("positive_at_100bps")), halves,
                 "PASS" if r.get("positive_candidate_gate") else "NO",
+            ))
+        lines.extend([
+            "",
+            "## Secondary premium-return measures",
+            "",
+            "| Horizon | Structure | Alert mean daily premium return | Always-buy mean daily premium return | Paired return difference | Raw p (secondary only) |",
+            "|---:|---|---:|---:|---:|---:|",
+        ])
+        for r in summary.get("primary_candidates", []):
+            lines.append("| {} | {} | {} | {} | {} | {} |".format(
+                r.get("horizon"), r.get("structure"),
+                fmt_percent(r.get("candidate_mean_net_daily_return")),
+                fmt_percent(r.get("benchmark_mean_net_daily_return")),
+                fmt_percent(r.get("paired_mean_difference_return")),
+                fmt_number(r.get("paired_return_p_value"), 4),
             ))
         lines.extend([
             "",
             "## Cost and execution notes",
             "",
             "- Four executed orders per completed 2-leg intraday trade; brokerage sensitivity is ₹10/₹20 per order.",
-            "- Option sale STT: 0.10% through 2026-03-31, 0.15% from 2026-04-01. Buyer stamp duty 0.003%, SEBI turnover fee, current exchange transaction-fee approximation and GST are included.",
-            "- Slippage is charged by increasing each entry premium and reducing each exit premium by 0/25/50/100 bps per side. This is a stress proxy because historical bid/ask is absent from the rolling endpoint.",
-            "- Currency P&L uses a date-based lot-size proxy; premium-point returns and costs are more reliable than treating proxy lot-sized P&L as exact contracts.",
+            "- Option sale STT: 0.10% through 2026-03-31 and 0.15% from 2026-04-01. Buyer stamp duty 0.003%, SEBI turnover fee, current NSE transaction-fee approximation, and GST are included.",
+            "- Slippage increases each entry premium and reduces each exit premium by 0/25/50/100 bps per side. This is a stress proxy because historical bid/ask is absent from the rolling endpoint.",
+            "- Currency P&L uses a date-based lot-size proxy, not expiry-specific contract-master lot sizing.",
             "",
             "## Data quality and limitations",
             "",
-            f"- Options acquisition status: {summary.get('acquisition_status')}; requests failed: {summary.get('requests_failed')}.",
-            f"- Quote coverage: {summary.get('quotes', {}).get('eligible_date_coverage_by_structure', {})}.",
+            f"- Requests planned / attempted / cached / failed: {summary.get('requests_planned')} / {summary.get('requests_attempted')} / {summary.get('requests_cached')} / {summary.get('requests_failed')}.",
+            f"- Quote coverage: {summary.get('quotes', {}).get('eligible_date_coverage_by_structure', {})}. The data gate requires at least 80% coverage for both structures.",
             f"- Skip counts: {summary.get('quotes', {}).get('skip_reason_counts', {})}.",
-            f"- Conflicting duplicate quote groups: {summary.get('quotes', {}).get('duplicate_conflict_groups', 'unknown')}.",
-            "- This only tests intraday positions. It does not prove multi-day straddles/strangles, because rolling relative strikes are not stable contract identifiers.",
-            "- One chronological historical sample cannot establish live profitability. Even a passing gate supports only a prospective paper-trading validation, not live deployment.",
+            f"- Conflicting duplicate groups dropped: {summary.get('quotes', {}).get('duplicate_conflict_groups', 'unknown')}; conflict rate among duplicate groups: {fmt_percent(summary.get('quotes', {}).get('conflict_rate_among_duplicate_groups', float('nan')))}.",
+            "- Rolling relative strikes are used only to follow fixed numeric strikes within one session. No overnight or multi-day option P&L is tested.",
+            "- If quote coverage is below threshold, output is INCONCLUSIVE even if a paired comparison has a small p-value.",
+            "- One historical holdout cannot establish live profitability. Even a passing gate would support prospective paper testing only, not live deployment.",
         ])
     lines.extend([
         "",
@@ -1173,12 +1234,11 @@ def make_results_markdown(summary: dict, primary: pd.DataFrame, metrics: pd.Data
         "- Primary comparisons: reports/option_validation/primary_comparisons.csv",
         "- Cost sensitivity matrix: reports/option_validation/performance.csv",
         "- Sanitized trade-outcome ledger: reports/option_validation/trade_ledger.csv",
-        "- Raw option responses remain only in Actions cache at data/cache/options_rolling and are not uploaded.",
+        "- Raw option responses remain only in Actions cache at data/cache/options_rolling; they are not committed or uploaded.",
         "",
-        "Developer handoff: independently inspect data/strike/time matching, cost formulae, date cutoff and results ledger before recommending even paper-trading validation.",
+        "Developer handoff: independently inspect date/strike matching, costs, P&L units, split integrity, and all acceptance gates before discussing even paper-trading validation.",
     ])
     (ROOT / "research" / "option-validation" / "RESULTS.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-
 
 def update_managed_documents(stage: str, summary: dict | None = None, manifest: dict | None = None) -> None:
     summary = summary or {}

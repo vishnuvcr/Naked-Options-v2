@@ -110,3 +110,48 @@ def test_exit_price_lookup_uses_exact_date_time_type_and_strike():
     assert mod.match_exit_price(lookup, "2026-10-13", "CALL", 25000.0) == 105.0
     assert mod.match_exit_price(lookup, "2026-10-13", "CALL", 25025.0) is None
     assert mod.match_exit_price(lookup, "2026-10-14", "CALL", 25000.0) is None
+
+
+def test_primary_daily_pnl_uses_zero_for_non_alert_days():
+    rows = [
+        {
+            "net_return_on_debit": -0.10, "net_pnl_rupees": -100.0, "did_trade": True,
+            "entry_debit_points": 200.0, "total_cost_rupees": 20.0,
+        },
+        {
+            "net_return_on_debit": 0.0, "net_pnl_rupees": 0.0, "did_trade": False,
+            "entry_debit_points": 0.0, "total_cost_rupees": 0.0,
+        },
+    ]
+    metrics = mod.metrics_from_daily(rows, block_len=1)
+    assert metrics["mean_net_pnl_rupees_daily"] == -50.0
+    assert metrics["mean_net_pnl_rupees_per_trade"] == -100.0
+    assert metrics["total_net_pnl_rupees"] == -100.0
+
+
+def test_fixed_strike_trade_candidate_uses_indexed_exit_rows():
+    day = "2026-10-13"
+    rows = [
+        {"date": day, "time": "09:20", "option_type": "CALL", "strike": 25000.0, "open": 100.0, "close": 100.0, "spot": 25010.0},
+        {"date": day, "time": "09:20", "option_type": "PUT", "strike": 25000.0, "open": 105.0, "close": 105.0, "spot": 25010.0},
+        {"date": day, "time": "09:20", "option_type": "CALL", "strike": 25050.0, "open": 80.0, "close": 80.0, "spot": 25010.0},
+        {"date": day, "time": "09:20", "option_type": "PUT", "strike": 24950.0, "open": 80.0, "close": 80.0, "spot": 25010.0},
+        {"date": day, "time": "15:25", "option_type": "CALL", "strike": 25000.0, "open": 118.0, "close": 120.0, "spot": 25020.0},
+        {"date": day, "time": "15:25", "option_type": "PUT", "strike": 25000.0, "open": 82.0, "close": 80.0, "spot": 25020.0},
+        {"date": day, "time": "15:25", "option_type": "CALL", "strike": 25050.0, "open": 94.0, "close": 95.0, "spot": 25020.0},
+        {"date": day, "time": "15:25", "option_type": "PUT", "strike": 24950.0, "open": 48.0, "close": 50.0, "spot": 25020.0},
+    ]
+    frame = pd.DataFrame(rows)
+    exit_lookup = {
+        (day, "15:25", row["option_type"], row["strike"]): row["close"]
+        for row in rows if row["time"] == "15:25"
+    }
+    quote_days = {day: frame}
+    straddle, reason = mod.build_trade_candidate(frame, day, "straddle", quote_days, exit_lookup)
+    assert reason == "PASS"
+    assert straddle["entry_prices"] == [100.0, 105.0]
+    assert straddle["exit_prices"] == [120.0, 80.0]
+    strangle, reason = mod.build_trade_candidate(frame, day, "strangle", quote_days, exit_lookup)
+    assert reason == "PASS"
+    assert strangle["entry_prices"] == [80.0, 80.0]
+    assert strangle["exit_prices"] == [95.0, 50.0]
