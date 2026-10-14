@@ -45,3 +45,14 @@ A user-approved scope amendment on 2026-10-14 created OPT-BUY-1.0 as a separate,
 Acquisition succeeded from cache; the quote universe has 1,062,082 raw and 1,029,545 usable rows. The frozen data gate fails: strangle eligible-date coverage 69.18% (<80%) and conflicting duplicate groups 1.409% (>1%). All four filtered candidates have negative mean net daily P&L and negative 95% intervals; 100-bps and both-half profitability checks also fail. Significant paired improvement versus always-buy is loss reduction, not profitability.
 
 The developer accepted the independent tester's no-go. No strategy, paper-trading candidate or live deployment is approved. Do not relax the frozen gates or run further parameter loops.
+
+## OPT-BUY-2.0 — strike-selection grid
+
+| Phase | Status | Evidence / next gate |
+|---|---|---|
+| Protocol and branch setup | COMPLETE | [Frozen plan](STRIKE_SELECTION_PLAN.md); [research branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-strike-selection) |
+| Acquisition and regression | BLOCKED / RETRYING | Run #1: 13 tests passed; analysis reported no usable option quotes. [Run #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551789841) |
+| Diagnostic rerun and inference correction | IN PROGRESS | [Run #2](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551939491), [run #3](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552000337) |
+| Independent tester gate | BLOCKED | No performance claim until usable quotes, coverage and duplicate quality are verified. [Tester branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-strike-selection-independent-tester) |
+
+No strike-selection strategy is approved. Existing OPT-BUY-1.0 no-go remains unchanged.
