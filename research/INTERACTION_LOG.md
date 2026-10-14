@@ -65,3 +65,12 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 
 - Corrected run #9 passed the pre-acquisition unit-test gate and finished its expanded Dhan request step; its private market-data cache-save step succeeded. The P&L/statistical step is now active. The acquisition counts and quote-coverage outcome will be taken from the run manifest after the workflow writes it; step exit status alone is not treated as data-gate approval.
 - The narrow-grid pilot and exact one-step OTM selection issue remain logged. No strategy recommendation is made until exact-entry matching, coverage, costs, primary P&L statistics and independent review pass.
+
+
+## 2026-10-14 — final option-validation disposition
+
+- Separate [developer](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-developer) and [independent tester](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-independent-tester) branches were created from the completed result state.
+- Run #11 completed the corrected cached option acquisition, P&L analysis, manuscript/chart rendering and 13-test pre/post gates. Artifact SHA-256: 86e9d03c6c55c17d46348a8dc40b9a02f247f2f9bca38703110c74c030be889.
+- Independent tester audited 48,032 trade-ledger rows; net P&L = gross P&L minus total costs to <2e-12 rupees, fee components to <5e-13, and the four paired means/intervals/p-values and Holm adjustments reproduced.
+- Quality limits failed: strangle coverage 69.18%, duplicate-conflict rate 1.409%. All four filtered candidates have negative net daily P&L intervals, and every 100-bps/both-half profitability check fails.
+- Developer accepted tester no-go. OPT-BUY-1.0 is closed for this protocol. No strategy, paper trading or live deployment is approved; broader hypothesis remains inconclusive due data-quality limitations.
