@@ -88,3 +88,10 @@ The first pilot data gate failed because quote coverage was only 17.45% (<80% th
 - Primary-cost net daily P&L: −₹315.71, −₹349.35, −₹327.64 and −₹369.43 for 5-session straddle, 5-session strangle, 20-session straddle and 20-session strangle. All 95% intervals lie below zero; all 100-bps and both-half profitability gates fail.
 - Independent tester reproduced the 48,032-row ledger arithmetic and four primary means, bootstrap intervals, raw p-values and Holm adjustments. Positive paired differences vs always-buy are not proof of profitability.
 - Final disposition: close OPT-BUY-1.0 as NO-GO for tested implementations and INCONCLUSIVE for the broader hypothesis. No paper/live candidate approved. See research/option-validation/TESTER_REPORT.md and DEVELOPER_DISPOSITION.md.
+
+## OPT-BUY-2.0 — 2026-10-14 strike-grid implementation attempt
+
+- Frozen protocol: [research/STRIKE_SELECTION_PLAN.md](STRIKE_SELECTION_PLAN.md); code branch `research/option-strike-selection`.
+- Run #1: 13 pre-existing regression tests passed; acquisition step completed but strike grid exited with `BLOCKED: no usable option quote rows`. [Evidence](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551789841).
+- Developer correction: emit sanitized diagnostics and empty result tables on data block, and add the prespecified 16-candidate × 2-horizon block-bootstrap/Holm inference family. Follow-up runs #2 and #3 are pending/in progress at the time of this entry.
+- No result values are claimed. If data remain unavailable, close as data-blocked; do not loosen gates or rank candidates.
