@@ -36,10 +36,10 @@ The nine-phase work is closed for the bounded prediction-only scope with accepte
 
 ## Separate follow-on study (does not reopen NIFTY-PRED-1.0)
 
-A user-approved scope amendment initiated 2026-10-14 opens a distinct option-buying validation track on [research/option-buying-validation](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-validation). This is not a new phase of NIFTY-PRED-1.0 and does not change the original closed statuses.
+A user-approved scope amendment initiated 2026-10-14 opens a separate validation track. It does not reopen or change the closed nine-phase NIFTY-PRED-1.0 study.
 
 | Track | Branch | Status | Evidence / next gate |
 |---|---|---|---|
-| Intraday option-buying validation | research/option-buying-validation | DATA GATE IN PROGRESS — NO OPTION P&L | Runs [#4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38542434374) and [#5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38542754673) attempted Dhan historical options and both stopped on HTTP 400 before receiving any quotes. Corrected run [#6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923) is testing the documented MONTH/expiryCode=1 request and logging a redacted response detail. |
+| Intraday option-buying validation | research/option-buying-validation | PILOT GATE FAILED ON COVERAGE; CORRECTED RERUN RUNNING | Pilot [run #6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923) acquired 196/196 narrow-grid requests, but only 171/980 dates had valid fixed-strike entry/exit (17.45%; required ≥80%). No strategy inference is accepted. [Run #9](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38545503819) expands offsets and changes the primary comparison to daily net P&L. |
 
-The first WEEK/expiryCode=0 request was blocked by HTTP 400, so no option records or P&L exist from that run. The next request format change is a source-access repair, not a result-driven strategy change. A valid option source, at least 80% quote-date coverage, correct entry/exit strike identity, realistic cost accounting and passing independent review are still required. No option strategy is approved.
+The pilot found negative average premium-normalized returns for all four alert-filtered variants, but its quote coverage gate failed; its p-values are not treated as confirmatory evidence. The corrected run must pass data quality, cost and statistical gates, followed by separate developer/tester review. No strategy is approved.
