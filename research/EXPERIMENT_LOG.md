@@ -137,3 +137,12 @@ Run #56 reports 632 technical experiment cells and 244,839 out-of-sample predict
 | PDF-AUDIT-060 | `research/pdf-audit-developer` / `e93fe35d8bb11df65d1c466434d5401298c077ed` | [GitHub Actions #60](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38593936036) | `b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050` | WORKFLOW SUCCESS; RESULTS ACQUIRED; INDEPENDENT AUDIT NEXT | 1,097 merged metric rows; 485 OOS-evaluated rows; 130 compute-budget-blocked rows; empty technical/global model-error CSVs; corrected QLIKE score-difference export and three-epoch metadata. Artifact SHA-256 `b601320f64ab8ec0c62f0a07e458287cba781eca73107f1b2c38beda140a8151`. See [run #60 results](PDF_METHOD_AUDIT_RESULTS.md). |
 
 Result interpretation: return rows show no Holm-adjusted evidence of skill. Classification p-values are not evidence of improvement without the paired-loss sign; positive model-minus-baseline loss differences mean the model is worse. Volatility rankings differ between MAE/RMSE and QLIKE. The conclusion is “no robust return/direction winner established”; volatility-expansion is exploratory. The separate tester handoff is allowed now because result acquisition and developer documentation are complete.
+
+
+## Corrected expanded catalogue — run #60
+
+| Run | Branch / commit | Workflow | Data hash | Status | Outcome |
+|---|---|---|---|---|---|
+| PDF-AUDIT-060 | `research/pdf-audit-developer` / `e93fe35d8bb11df65d1c466434d5401298c077ed` | [GitHub Actions #60](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38593936036) | `b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050` | WORKFLOW SUCCESS; RESULTS ACQUIRED; INDEPENDENT AUDIT NEXT | 1,097 merged metric rows; 485 OOS-evaluated rows; 130 compute-budget-blocked rows; empty technical/global model-error CSVs; corrected QLIKE score-difference export and three-epoch metadata. Artifact SHA-256 `b601320f64ab8ec0c62f0a07e458287cba781eca73107f1b2c38beda140a8151`. See [run #60 results](PDF_METHOD_AUDIT_RESULTS.md). |
+
+Interpretation rule: negative mean paired loss difference (`model loss - baseline loss`) favors the model; positive favors baseline. Small p-values alone do not imply improvement. Return rows show no Holm-adjusted evidence of skill; volatility rankings differ by MAE/RMSE and QLIKE. No robust return/direction winner is established.
