@@ -39,3 +39,19 @@ No best model, final out-of-sample accuracy, statistical significance or calibra
 ## Compute-budget amendment
 
 The model grid has been bounded before accepting any out-of-sample result. Full algorithm comparisons are made for next-session return and direction; a core set covers remaining target/horizon cells. This choice is documented in RESEARCH_PLAN.md and all omitted family cells are explicitly blocked. It constrains the scope of conclusions: no cross-family winner is inferred for a target/horizon with only a core screen. No empirical performance figure is available from the superseded runs.
+
+## Observed outputs from Actions run #41 — provisional, merge gate failed
+
+GitHub Actions run #41 successfully completed data validation, feature construction, unit tests, technical model fitting, global-augmented model fitting, and ARIMA fitting. Its JSON run manifests report 278 technical experiment rows / 72,253 OOS prediction rows and 210 global-augmented experiment rows / 64,413 OOS prediction rows. However, the merge stage failed and per-model CSVs were not included in the run artifact. Therefore, no tabular/sequence model ranking from that run can be reported yet.
+
+The retained ARIMA CSV provides the following preliminary single-model results. Forecasts are cumulative log returns, compared against a zero-return forecast. Positive loss differential means ARIMA had higher squared loss than zero-return; CIs/p-values are raw and not yet Holm-adjusted.
+
+| Horizon | n | MAE | RMSE | OOS R² vs zero return | Skill vs training mean | Loss difference vs zero | 95% block CI | HAC p |
+|---:|---:|---:|---:|---:|---:|---:|---|---:|
+| 1 session | 980 | 0.005775 | 0.007957 | -0.003482 | -0.004050 | 2.197e-7 | [-3.097e-7, 8.047e-7] | 0.4917 |
+| 5 sessions | 976 | 0.013654 | 0.017518 | 0.001095 | -0.000965 | -3.365e-7 | [-7.705e-6, 8.115e-6] | 0.9351 |
+| 20 sessions | 961 | 0.025702 | 0.033486 | 0.010657 | -0.001352 | -1.208e-5 | [-1.284e-4, 1.027e-4] | 0.8420 |
+
+**Interpretation:** this preliminary ARIMA benchmark has no statistically significant predictive gain on the tested holdout: all p-values are large and the loss-difference confidence intervals cross zero. The slightly positive R² at 5 and 20 sessions does not override that uncertainty. These figures are transcribed from the machine-generated ARIMA artifact and remain provisional until run #45 reproduces and merges the outputs.
+
+No model winner is declared. The corrected merge run must return per-candidate metrics/predictions, corrected QLIKE scores, Holm adjustments and source/run manifests. Final results must distinguish level prediction from return/direction prediction and identify any blocked family.
