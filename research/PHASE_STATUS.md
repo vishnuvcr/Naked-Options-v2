@@ -71,3 +71,12 @@ The developer accepted the independent tester's no-go. No strategy, paper-tradin
 | Empirical summary | PROVISIONAL | [Run #56 results](PDF_METHOD_AUDIT_RESULTS.md); no model winner declared. Return gains are small and inspected return rows are not adjusted-significant. |
 | Independent statistical/code audit | OPEN | Verify QLIKE skill NaNs, sequence epoch mismatch, p-value/Holm families, horizon/target alignment, calendar flags and global timing. Create tester branch/report before final disposition. |
 | Strategy work | OUT OF SCOPE | Prediction-only request; no option strategy or trading recommendation is made from these metrics. |
+
+
+## Run #60 — 2026-10-14
+
+- Expanded execution/result acquisition: COMPLETE. [Workflow #60](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38593936036) succeeded; artifact SHA-256 `b601320f64ab8ec0c62f0a07e458287cba781eca73107f1b2c38beda140a8151`.
+- Results and manuscript consolidation: COMPLETE FOR BOUNDED SCREEN. See [results](PDF_METHOD_AUDIT_RESULTS.md), [manuscript](MANUSCRIPT.md), experiment log and error log.
+- Independent review: NEXT, permitted now that results are acquired and documented. Audit paired-loss signs, QLIKE, horizon alignment, calibration, calendar dates and global timing; submit actionable findings.
+- Scientific disposition pending review: no robust return/direction winner established; volatility-expansion remains exploratory.
+- Trading strategy: OUT OF SCOPE; no option strategy or execution claim.
