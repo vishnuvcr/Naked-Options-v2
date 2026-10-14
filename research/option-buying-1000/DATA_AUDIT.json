@@ -1,0 +1,24 @@
+{
+  "status": "AUDIT_ONLY",
+  "credentials_present": {
+    "DHAN_ACCESS_TOKEN": true,
+    "HF_TOKEN": true
+  },
+  "files": [
+    {
+      "path": "data/cache/nifty50_daily.csv",
+      "exists": false,
+      "bytes": 0
+    },
+    {
+      "path": "data/cache/nifty50_intraday.csv",
+      "exists": false,
+      "bytes": 0
+    },
+    {
+      "path": "data/cache/options_rolling/manifest.json",
+      "exists": false,
+      "bytes": 0
+    }
+  ]
+}

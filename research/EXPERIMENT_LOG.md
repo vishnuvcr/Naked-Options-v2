@@ -64,3 +64,5 @@ All experiment results remain unranked until a completed run emits machine-gener
 - OPT-BUY-3.0 Actions run 38621480232; branch research/option-entry-exit-developer; commit 6c4f94e28c2dd88744071e5c7156a2397e55f4c1. See research/option-entry-exit/RESULTS.md.
 
 - OPT-BUY-4.0 catalogue audit run 38636658709: failure at commit ff991bff40c544748cf1f3ddbd856f8e51559a7d. Catalogue count is distinct rule logic; execution variants are excluded. No empirical performance claim is implied.
+
+- OPT-BUY-4.0 catalogue audit run 38636895351: success at commit fb6dbafacceec2856f159dcaf38c771df3a3a87f. Catalogue count is distinct rule logic; execution variants are excluded. No empirical performance claim is implied.

@@ -58,3 +58,5 @@ Credentials/authorization headers are not logged. See reports/option_validation/
 
 
 | OPT-BUY-4.0-001 | 2026-10-14 | OPT-BUY-4.0 | MEDIUM | First catalogue workflow run #38636658709 failed before catalogue generation. | actions/setup-python pip cache was enabled without a requirements.txt or pyproject.toml cache dependency file. | Removed pip cache configuration; subsequent push triggered run #38636831601. Verification is pending. | OPEN pending rerun |
+
+- OPT-BUY-4.0 catalogue audit run 38636895351 status: success; inspect Actions logs for failures. Secrets are not recorded.
