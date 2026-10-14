@@ -13,7 +13,7 @@ from forecast_metrics import regmetrics, clsmetrics, hac_test, block_ci, holm
 ROOT=Path(__file__).resolve().parents[1]
 CACHE=ROOT/"data"/"cache"; REPORT=ROOT/"reports"
 SEED=20261014
-FEATURE_PREFIX=("ret_","mom_","vol_","absret_")
+FEATURE_PREFIX=("ret_","mom_","vol_","absret_","ext_")
 BASE_FEATURES={"log_close","intraday_return","range","gap","log_volume","rsi_14"}
 
 def baseline(task,h,rows,base_rate):
