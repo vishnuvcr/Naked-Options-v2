@@ -36,10 +36,10 @@ The nine-phase work is closed for the bounded prediction-only scope with accepte
 
 ## Separate follow-on study (does not reopen NIFTY-PRED-1.0)
 
-A user-approved scope amendment initiated 2026-10-14 opens a distinct option-buying validation track on [research/option-buying-validation](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-validation). This is not a new phase of the original nine-phase prediction-only study and does not change its closed statuses.
+A user-approved scope amendment initiated 2026-10-14 opens a distinct option-buying validation track on [research/option-buying-validation](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-validation). This is not a new phase of NIFTY-PRED-1.0 and does not change the original closed statuses.
 
 | Track | Branch | Status | Evidence / next gate |
 |---|---|---|---|
-| Intraday option-buying validation | research/option-buying-validation | INITIALIZED — NO EMPIRICAL RESULTS YET | Build source adapter and leakage-safe classifier reconstruction; validate fixed-strike same-session long straddles/strangles; cost/slippage stress tests; only after result acquisition create developer/tester branches. |
+| Intraday option-buying validation | research/option-buying-validation | DATA GATE IN PROGRESS — NO OPTION P&L | Runs [#4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38542434374) and [#5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38542754673) attempted Dhan historical options and both stopped on HTTP 400 before receiving any quotes. Corrected run [#6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923) is testing the documented MONTH/expiryCode=1 request and logging a redacted response detail. |
 
-No option strategy is approved at initialization. Dhan rolling options data use strike-relative series; a trade is valid only when actual strike is matched at entry and exit on the same session. Missing quotes must be skipped and counted, never forward-filled. If authentication/data-quality gates fail, report the blocker without fabricating output.
+The first WEEK/expiryCode=0 request was blocked by HTTP 400, so no option records or P&L exist from that run. The next request format change is a source-access repair, not a result-driven strategy change. A valid option source, at least 80% quote-date coverage, correct entry/exit strike identity, realistic cost accounting and passing independent review are still required. No option strategy is approved.
