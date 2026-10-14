@@ -37,7 +37,7 @@ def append_error(label,exc):
     with p.open("a",encoding="utf-8") as f: f.write(row)
 
 def cv_score(model,X,y,origin,h,kind):
-    splitter=TimeSeriesSplit(n_splits=4)
+    splitter=TimeSeriesSplit(n_splits=2 if getattr(model,"arch",None) is not None else 4)
     scores=[]
     for tr,va in splitter.split(X):
         train=tr[origin[tr]+h<=origin[va[0]]]
@@ -76,6 +76,7 @@ def main():
     seqstatus={"status":"NOT_REQUESTED","reason":"Sequence estimators are run only in the technical-only ablation"}
     if args.features=="technical":
         sr,sc=sequence_models()
+        for model in list(sr.values())+list(sc.values()): model.set_params(epochs=3)
         if len(df)<1000:
             seqstatus={"status":"BLOCKED_SAMPLE_SIZE","rows":len(df),"minimum_rows":1000}
         elif not sr:
@@ -117,6 +118,10 @@ def main():
         scored=[]
         for name,proto in registry.items():
             row={"task":task,"horizon":h,"model":name,"n_dev":len(dev),"n_test":len(test),"status":"PENDING"}
+            if name.startswith("seq_") and not ((task=="return" and h==1) or (task=="direction" and h==1)):
+                row.update({"status":"BLOCKED_COMPUTE_BUDGET","reason":"Sequence models restricted to next-session return/direction; other target/horizon combinations are not run under the preset compute budget."})
+                metric_rows.append(row)
+                continue
             try:
                 is_seq=name.startswith("seq_")
                 Xfit,Xeval=(Xds,Xts) if is_seq else (Xd,Xt)
