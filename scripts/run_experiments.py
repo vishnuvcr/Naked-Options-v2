@@ -130,8 +130,12 @@ def main():
             metric_rows.append(row)
         if not scored: continue
         winner=min(scored,key=lambda z:z[0])[1]
+        # Rebuild the feature tensor for each estimator: sequence candidates take 3-D
+        # windows, while sklearn tabular models must always receive 2-D matrices.
         for score,name,proto in scored:
             try:
+                is_seq=name.startswith("seq_")
+                Xfit,Xeval=(Xds,Xts) if is_seq else (Xd,Xt)
                 est=clone(proto)
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore"); est.fit(Xfit,yd)
