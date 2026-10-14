@@ -49,10 +49,13 @@ All experiment results remain unranked until a completed run emits machine-gener
 | #49 | 2026-10-14 | 5/7 | 9b655da8d72667a6d2f15e4dad5df55a1bec2e84 | 97858125f14344520f77dd503d2c0441005e6da4cfa12fc23fe7427680f932e7 | SUCCESS | Tests, target validation, feature matrix, technical/global catalogues, ARIMA, merge and report generation passed. Zero null target dates in OOS predictions. Independent skill metrics and block-CI checks reproduced; final statistical tester gate remains open. |
 
 <!-- OPTION_VALIDATION_EXPERIMENT_START -->
-## Follow-on option-buying validation — OPT-BUY-1.0
+## Follow-on option-buying validation — OPT-BUY-1.0 (closed)
 
-- Last stage: ANALYSIS; decision: INCONCLUSIVE_PARTIAL_OR_INCOMPLETE_DATA; workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384; commit: 0d33e2e046a26e017f0100f75e28243753177cb7.
-- Options requests planned: 686; completed/empty: 0; failed: 0.
-- Primary comparisons written: 4; result file: research/option-validation/RESULTS.md.
-- Raw data were not committed or uploaded. Missing/failed requests remain visible in the sanitized acquisition summary/error log.
+- Final workflow: [run #11](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384), commit `0d33e2e046a26e017f0100f75e28243753177cb7`; workflow completed successfully; 13 tests passed before and after analysis.
+- Data: 686 option-request windows reused from verified cache, 0 newly attempted, 0 failed; 1,062,082 parsed quote rows, 1,029,545 usable rows.
+- Quality gates: straddle coverage 83.98% (pass); strangle coverage 69.18% (fail against ≥80%); conflicting duplicate groups 452/32,085=1.409% (fail against ≤1%).
+- Primary cost setting: ₹10/order, 50 bps adverse slippage per premium side. Alert-filtered net daily P&L was −₹315.71 (5-session straddle), −₹349.35 (5-session strangle), −₹327.64 (20-session straddle) and −₹369.43 (20-session strangle) per one-lot-proxy eligible-day slot. All 95% daily-P&L intervals lie below zero; all candidates fail 100-bps and both-half profitability gates.
+- The paired differences versus always-buy were positive and Holm-adjusted p=0.0020, but this is reduction of losses against a worse benchmark, not profitable option buying. No candidate gate passed.
+- Independent tester report: [TESTER_REPORT.md](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-independent-tester/research/option-validation/TESTER_REPORT.md). Artifact SHA-256: `86e9d03c6c55c17d46348a8dc40b9a02f247f2f9bca38703110c74c030be889`.
+- Decision: close OPT-BUY-1.0 as NO-GO for the tested implementations. The general hypothesis remains inconclusive due to failed data quality; no strategy or live/paper-trading recommendation is approved.
 <!-- OPTION_VALIDATION_EXPERIMENT_END -->

@@ -2,7 +2,7 @@
 
 **Created:** 2026-10-14  
 **Branch:** research/option-buying-validation  
-**Status:** protocol frozen before option-P&L inspection; data acquisition and empirical analysis pending  
+**Status:** execution complete for the frozen protocol; strategy approval NO-GO; quote-quality gate failed  
 **Relationship to NIFTY-PRED-1.0:** separate, user-approved scope amendment. The original nine-phase prediction-only study remains closed and unchanged.
 
 ## 1. Research question
@@ -124,7 +124,7 @@ These changes address data coverage and the denominator used in the first succes
 3. Duplicate handling: the parser drops each conflicting date/time/type/strike key from usable quotes. The data gate allows a conflict rate up to 1% of duplicate groups after conflicting keys are dropped, rather than rejecting any detected-and-removed conflict. The 80% minimum quote-date coverage remains mandatory.
 4. Runtime/cache: quote data are grouped by date and indexed by exact exit strike; bootstrap sampling is vectorized. The workflow saves private raw data to GitHub Actions cache immediately after acquisition; raw option quotes remain out of repository commits and uploaded artifacts.
 
-First-pilot numbers are retained as preliminary and are not accepted as final strategy evidence. The first run had only 17.45% valid date coverage, and all four model-filtered candidates had negative mean daily premium-normalized returns and fewer than 100 alert trades. Its paired percentage-return p-values do not count as primary evidence under the amended protocol. The next run must acquire the wider offset grid, pass data-quality gates, and be independently reviewed.
+First-pilot numbers are retained as preliminary and are not accepted as final strategy evidence. The first run had only 17.45% valid date coverage, and all four model-filtered candidates had negative mean daily premium-normalized returns and fewer than 100 alert trades. Its paired percentage-return p-values do not count as primary evidence under the amended protocol. The corrected run acquired the wider offset grid and was independently reviewed. The frozen data-quality gates still fail (strangle coverage 69.18%, conflicting duplicate rate 1.409%); the tested candidates also fail profitability gates. The bounded study is closed at this outcome; no criteria are relaxed.
 
 
 ## Exact-offset and manuscript amendment

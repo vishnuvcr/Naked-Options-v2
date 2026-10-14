@@ -85,14 +85,18 @@ The static research status page has been deployed successfully through [Pages pu
 <!-- OPTION_VALIDATION_README_START -->
 ## Follow-on study: option-buying validation — OPT-BUY-1.0
 
-The original nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged. This separate user-approved validation tests next-session intraday ATM straddles and one-step OTM strangles filtered by development-only 5/20-session technical Logistic volatility-expansion probabilities. It is not a live-trading workflow.
+The original nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged. The separate same-session monthly-option test is now closed for its frozen scope.
 
-**Latest status:** INCONCLUSIVE_PARTIAL_OR_INCOMPLETE_DATA. **Git SHA:** 0d33e2e046a26e017f0100f75e28243753177cb7. **Workflow:** https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384.
+**Final disposition:** NO-GO for the tested alert-filtered straddle/strangle implementations; broader inference remains inconclusive because the quality gate failed. Run [#11](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384) completed successfully with 13 tests passing before and after analysis.
 
-- [Validation plan](research/OPTION_BUYING_VALIDATION_PLAN.md)
-- [Option validation results](research/option-validation/RESULTS.md)
-- [Primary comparisons CSV](reports/option_validation/primary_comparisons.csv)
-- [Option validation workflow](.github/workflows/option-buying-validation.yml)
+- [Frozen validation plan](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-developer/research/OPTION_BUYING_VALIDATION_PLAN.md)
+- [Results and figures](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-developer/research/option-validation/RESULTS.md)
+- [Structured manuscript](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-developer/research/option-validation/MANUSCRIPT.md)
+- [Independent tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-independent-tester/research/option-validation/TESTER_REPORT.md)
+- [Developer disposition](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-developer/research/option-validation/DEVELOPER_DISPOSITION.md)
+- [Final workflow/artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384)
 
-Raw option quotes are kept out of the public repository/artifacts. Do not call a strategy validated unless the cost, statistical, robustness and independent-review gates pass.
+**Why no strategy is approved:** strangle quote coverage was 69.18% (<80%), duplicate-conflict rate was 1.409% (>1%), and all four candidates had negative mean net daily P&L with negative 95% intervals and failed the 100-bps/both-halves profitability gates. Significant improvement versus always-buy only reflects a reduction in a worse baseline's losses; it is not positive expected net P&L.
+
+No live or paper-trading candidate is approved. Do not relax frozen gates or continue optimization loops. The report is the bounded stopping conclusion.
 <!-- OPTION_VALIDATION_README_END -->
