@@ -116,10 +116,13 @@ def main():
         base_rate=float(np.mean(yd)) if kind=="cls" else 0.0
         b=baseline(task,h,test,base_rate)
         scored=[]
+        full_catalogue = (task=="return" and h==1) or (task=="direction" and h==1)
+        core_models = {"ridge","elastic_net","random_forest","hist_gradient"} if kind=="reg" else {"logistic","random_forest","hist_gradient"}
+        allowed_names = set(registry) if full_catalogue else (set(registry) & core_models)
         for name,proto in registry.items():
             row={"task":task,"horizon":h,"model":name,"n_dev":len(dev),"n_test":len(test),"status":"PENDING"}
-            if name.startswith("seq_") and not ((task=="return" and h==1) or (task=="direction" and h==1)):
-                row.update({"status":"BLOCKED_COMPUTE_BUDGET","reason":"Sequence models restricted to next-session return/direction; other target/horizon combinations are not run under the preset compute budget."})
+            if name not in allowed_names:
+                row.update({"status":"BLOCKED_COMPUTE_BUDGET","reason":"Bounded screening design: full catalogue is evaluated for next-session return and direction; other target/horizon cells use a preregistered core set of regularized linear and tree models. The omitted catalogue cells are recorded here."})
                 metric_rows.append(row)
                 continue
             try:
