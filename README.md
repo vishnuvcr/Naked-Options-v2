@@ -29,10 +29,13 @@ No model will be declared best from training fit, shuffled validation, price-lev
 
 ## Current summary
 
-- Repository bootstrap: in progress.
-- Data access: not yet verified.
-- Model experiments: not yet run.
-- Final independent review: not yet run.
-- No empirical result or best-performing model is claimed at this stage.
+- Repository bootstrap and protocol: complete for NIFTY-PRED-1.0; original repository was empty at audit.
+- Daily target data: Dhan cache verified with 4,901 rows (2007-01-02 to 2026-10-13), SHA-256 b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050. Weekend-dated bars are now warnings, not automatically removed.
+- Data-quality tests and feature matrix: passed on the latest inspected workflow steps; feature/test build is verified.
+- Model experiments: the technical-only model catalogue is running/re-running on main and `research/phase-5-models`; no final metric table has been verified yet. The initial unbounded run was cancelled/superseded and its metrics are not used.
+- Known defect correction: benchmark-relative out-of-sample R-squared has been fixed on the phase-5 branch; that branch's corrected run must be the canonical result.
+- Data breadth: official NSE source families and candidate Hugging Face options datasets are documented, but actual options, FII/DII, breadth and news/sentiment ingestion is not yet verified.
+- Final independent tester review: not started; must follow completed results.
+- No empirical winner or statistically significant predictive skill is claimed at this stage.
 
 See [phase status](research/PHASE_STATUS.md) for the authoritative gate state.
