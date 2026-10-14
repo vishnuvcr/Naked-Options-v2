@@ -58,3 +58,5 @@ All experiment results remain unranked until a completed run emits machine-gener
 <!-- OPTION_VALIDATION_EXPERIMENT_END -->
 
 - OPT-BUY-3.0 Actions run 38617943823; branch research/option-entry-exit-developer; commit 53029f81971b7adb395ac76a8b936830bbd6be7a. See research/option-entry-exit/RESULTS.md.
+
+- OPT-BUY-3.0 Actions run 38620992395; branch research/option-entry-exit-developer; commit aa379a8099a3146ae6cde79886606b765d1fda01. See research/option-entry-exit/RESULTS.md.
