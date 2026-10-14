@@ -1,0 +1,153 @@
+{
+  "plan_version": "OPT-BUY-1.0",
+  "data_rows": 4901,
+  "data_first_date": "2007-01-02",
+  "data_last_date": "2026-10-13",
+  "cut_index": 3920,
+  "cut_date": "2022-10-31",
+  "features": [
+    "log_close",
+    "intraday_return",
+    "range",
+    "gap",
+    "log_volume",
+    "ret_0",
+    "ret_1",
+    "ret_2",
+    "ret_3",
+    "ret_4",
+    "ret_5",
+    "ret_6",
+    "ret_7",
+    "ret_8",
+    "ret_9",
+    "ret_10",
+    "ret_11",
+    "ret_12",
+    "ret_13",
+    "ret_14",
+    "ret_15",
+    "ret_16",
+    "ret_17",
+    "ret_18",
+    "ret_19",
+    "ret_20",
+    "ret_21",
+    "ret_22",
+    "ret_23",
+    "ret_24",
+    "ret_25",
+    "ret_26",
+    "ret_27",
+    "ret_28",
+    "ret_29",
+    "ret_30",
+    "ret_31",
+    "ret_32",
+    "ret_33",
+    "ret_34",
+    "ret_35",
+    "ret_36",
+    "ret_37",
+    "ret_38",
+    "ret_39",
+    "ret_40",
+    "ret_41",
+    "ret_42",
+    "ret_43",
+    "ret_44",
+    "ret_45",
+    "ret_46",
+    "ret_47",
+    "ret_48",
+    "ret_49",
+    "ret_50",
+    "ret_51",
+    "ret_52",
+    "ret_53",
+    "ret_54",
+    "ret_55",
+    "ret_56",
+    "ret_57",
+    "ret_58",
+    "ret_59",
+    "ret_60",
+    "mom_5",
+    "vol_5",
+    "absret_5",
+    "mom_10",
+    "vol_10",
+    "absret_10",
+    "mom_14",
+    "vol_14",
+    "absret_14",
+    "mom_20",
+    "vol_20",
+    "absret_20",
+    "mom_40",
+    "vol_40",
+    "absret_40",
+    "mom_60",
+    "vol_60",
+    "absret_60",
+    "rsi_14"
+  ],
+  "model": "SimpleImputer(median) + StandardScaler + LogisticRegression(C=0.1,class_weight=balanced,max_iter=1500,seed=20261014)",
+  "threshold_rule": "75th percentile of purged development-only 4-fold TimeSeriesSplit out-of-fold probabilities",
+  "horizons": {
+    "5": {
+      "n_development": 3895,
+      "n_test_origins": 980,
+      "n_oof_probabilities": 3116,
+      "threshold": 0.5347163139038658,
+      "oof_alert_fraction": 0.25,
+      "test_alert_fraction": 0.2795918367346939,
+      "folds": [
+        {
+          "n_train_after_purge": 775,
+          "n_valid": 779
+        },
+        {
+          "n_train_after_purge": 1554,
+          "n_valid": 779
+        },
+        {
+          "n_train_after_purge": 2333,
+          "n_valid": 779
+        },
+        {
+          "n_train_after_purge": 3112,
+          "n_valid": 779
+        }
+      ]
+    },
+    "20": {
+      "n_development": 3880,
+      "n_test_origins": 980,
+      "n_oof_probabilities": 3104,
+      "threshold": 0.6046664997016447,
+      "oof_alert_fraction": 0.25,
+      "test_alert_fraction": 0.3081632653061224,
+      "folds": [
+        {
+          "n_train_after_purge": 757,
+          "n_valid": 776
+        },
+        {
+          "n_train_after_purge": 1533,
+          "n_valid": 776
+        },
+        {
+          "n_train_after_purge": 2309,
+          "n_valid": 776
+        },
+        {
+          "n_train_after_purge": 3085,
+          "n_valid": 776
+        }
+      ]
+    }
+  },
+  "signals_rows": 1960,
+  "daily_data_sha256": "b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050"
+}

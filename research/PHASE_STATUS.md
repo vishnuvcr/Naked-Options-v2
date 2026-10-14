@@ -34,13 +34,11 @@ The independent tester branch reports PASS WITH SCOPE LIMITATIONS for the bounde
 The nine-phase work is closed for the bounded prediction-only scope with accepted limitations. Phases 2 and 6 are partial by design/scope, not falsely marked complete. The final conclusion is that this model/data set did not establish a robust return/direction edge. No options strategy was tested or approved.
 
 <!-- OPTION_VALIDATION_PHASE_START -->
-## Separate follow-on study (does not reopen NIFTY-PRED-1.0)
+## Separate follow-on study — option-buying validation (does not reopen NIFTY-PRED-1.0)
 
-A user-approved scope amendment initiated 2026-10-14 opens a distinct option-buying validation track on [research/option-buying-validation](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-validation). This is not a new phase of the original nine-phase prediction-only study and does not change its closed statuses.
-
-| Track | Branch | Status | Evidence / next gate |
+| Track | Branch | Status | Evidence / gate |
 |---|---|---|---|
-| Intraday option-buying validation | research/option-buying-validation | INITIALIZED — NO EMPIRICAL RESULTS YET | Build source adapter and leakage-safe classifier reconstruction; validate fixed-strike same-session long straddles/strangles; cost/slippage stress tests; only after result acquisition create developer/tester branches. |
+| Intraday option-buying validation | research/option-buying-validation | BLOCKED_REQUEST_AUTH_OR_SCHEMA | Workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38542434374; commit: 944ec84c8047d31dce66165bd8db0a094133dc23; acquisition: BLOCKED_REQUEST_AUTH_OR_SCHEMA; requests failed: 1. Independent post-result developer/tester gate required. |
 
-No option strategy is approved at initialization. Dhan rolling options data use strike-relative series; a trade is valid only when actual strike is matched at entry and exit on the same session. Missing quotes must be skipped and counted, never forward-filled. If authentication/data-quality gates fail, report the blocker without fabricating output.
+No live strategy is approved. The first experiment is intraday-only because rolling strike-relative option series do not establish stable multi-day contract identity.
 <!-- OPTION_VALIDATION_PHASE_END -->

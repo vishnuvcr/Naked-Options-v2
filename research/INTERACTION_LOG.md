@@ -27,12 +27,10 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - At the last check, run 30 on main, run 31 on research/phase-5-models, and the corrected run 32 were respectively active/active/queued. No completed model metrics have yet been accepted.
 
 <!-- OPTION_VALIDATION_INTERACTION_START -->
-## 2026-10-14 — separate option-buying validation initialized
+## 2026-10-14 — option-buying validation workflow stage
 
-- User approved extending the closed prediction-only study with a separate, bounded option-buying validation phase. The original NIFTY-PRED-1.0 plan/results remain unchanged.
-- Audited README, the frozen plan, data catalog, execution policy, phase status, results register, error log, experiment log, original workflow, feature-construction code, classifier/model-selection implementation and source availability before initiating this track.
-- DhanHQ v2 expired-options documentation describes historical rolling-option intraday OHLC/IV/OI/spot data, up to 30 calendar days per request and a rolling five-year window. The current option-chain endpoint is real-time, so it cannot substitute for historical option quotes.
-- Scope chosen: same-session intraday entry/exit only. Rolling relative strikes/expiry data do not prove a stable contract can be tracked across multiple days; multi-day P&L is excluded unless contract identity and expiry are available and verified.
-- Cost plan includes Paytm Money ₹10/order baseline, ₹20/order sensitivity, option-sale STT, stamp duty, SEBI/exchange charges and adverse 0/25/50/100 bps-per-side slippage sensitivity. Since the rolling OHLC source lacks historical bid/ask, this is a sensitivity analysis, not an observed-spread simulation.
-- No historical option data has yet been downloaded and no option P&L has been computed at this point. The log records auditable actions and decisions, not hidden reasoning or verbatim internal chain-of-thought.
+- Stage: BLOCKED; status: BLOCKED_REQUEST_AUTH_OR_SCHEMA; run: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38542434374; commit SHA: 944ec84c8047d31dce66165bd8db0a094133dc23.
+- Dhan option data requests planned/successful-or-empty/failed: 196/0/1.
+- Result file: research/option-validation/RESULTS.md; sanitized summary: reports/option_validation/results_summary.json.
+- Raw option prices remain in Actions cache only; no credentials or raw quote file is intentionally staged.
 <!-- OPTION_VALIDATION_INTERACTION_END -->

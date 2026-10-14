@@ -83,13 +83,16 @@ Conclusion: no robust return/direction edge is demonstrated. Volatility-expansio
 The static research status page has been deployed successfully through [Pages publish workflow #2](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38535940026). Future updates to the README, results, phase status, manuscript, figure or docs trigger the lightweight publishing workflow without rerunning the model catalogue.
 
 <!-- OPTION_VALIDATION_README_START -->
-## Follow-on study: option-buying validation — 2026-10-14
+## Follow-on study: option-buying validation — OPT-BUY-1.0
 
-The nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged. Following user approval, a separate bounded validation track is being initialized on [research/option-buying-validation](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-validation). It will test whether the earlier volatility-expansion classifier adds value for next-session intraday long-option structures after transaction costs and adverse-slippage sensitivity. Classification accuracy alone is not treated as proof of option profitability.
+The original nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged. This separate user-approved validation tests next-session intraday ATM straddles and one-step OTM strangles filtered by development-only 5/20-session technical Logistic volatility-expansion probabilities. It is not a live-trading workflow.
 
-- [Option-buying validation plan](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-validation/research/OPTION_BUYING_VALIDATION_PLAN.md)
-- [Option-validation results and status](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-validation/research/option-validation)
-- [Option validation workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-validation/.github/workflows/option-buying-validation.yml)
+**Latest status:** BLOCKED_REQUEST_AUTH_OR_SCHEMA. **Git SHA:** 944ec84c8047d31dce66165bd8db0a094133dc23. **Workflow:** https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38542434374.
 
-Status at initialization: no option P&L result exists yet. Any strategy conclusion is blocked until data quality, cost accounting, robustness checks and the independent post-results tester gate pass.
+- [Validation plan](research/OPTION_BUYING_VALIDATION_PLAN.md)
+- [Option validation results](research/option-validation/RESULTS.md)
+- [Primary comparisons CSV](reports/option_validation/primary_comparisons.csv)
+- [Option validation workflow](.github/workflows/option-buying-validation.yml)
+
+Raw option quotes are kept out of the public repository/artifacts. Do not call a strategy validated unless the cost, statistical, robustness and independent-review gates pass.
 <!-- OPTION_VALIDATION_README_END -->

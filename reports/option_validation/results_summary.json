@@ -1,0 +1,14 @@
+{
+  "plan_version": "OPT-BUY-1.0",
+  "created_at_utc": "2026-10-14T09:29:18.472712+00:00",
+  "overall_status": "BLOCKED_REQUEST_AUTH_OR_SCHEMA",
+  "reason": "Dhan historical option acquisition was blocked; no option P&L is claimed.",
+  "acquisition_status": "BLOCKED_REQUEST_AUTH_OR_SCHEMA",
+  "requests_planned": 196,
+  "requests_successful_or_empty": 0,
+  "requests_failed": 1,
+  "quotes": {},
+  "primary_candidates": [],
+  "data_gate_pass": false,
+  "strategy_approved": false
+}

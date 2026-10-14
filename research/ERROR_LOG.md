@@ -31,6 +31,14 @@ HTTP 200 returning HTML instead of the required payload is a source failure. Emp
 <!-- OPTION_VALIDATION_ERRORS_START -->
 ## Option-validation acquisition error log — OPT-BUY-1.0
 
-Initialization is recorded on the follow-on research branch. Actual source failures will be added after the acquisition attempt; no failure is inferred before the workflow runs.
+Stage: BLOCKED; workflow: https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38542434374; commit: 944ec84c8047d31dce66165bd8db0a094133dc23.
 
+Request failure summaries (individual redacted request windows are preserved in the Actions cache manifest):
+- RequestOrSchemaFailure:REQUEST_SCHEMA_HTTP_400: 1
+
+Credentials/authorization headers are not logged. See reports/option_validation/acquisition_summary.json for the sanitized status summary.
 <!-- OPTION_VALIDATION_ERRORS_END -->
+| ERR-DATA | 2026-10-14 | 3 | MEDIUM | nse_official: ValueError: NSE response contains no recognized data rows | Source access/schema/data quality issue | Appended by acquisition workflow; inspect reports/data_manifest.json | OPEN |
+| ERR-DATA | 2026-10-14 | 3 | MEDIUM | yahoo:INR=X: ValueError: invalid OHLC range in 237 rows | Source access/schema/data quality issue | Appended by acquisition workflow; inspect reports/data_manifest.json | OPEN |
+| ERR-DATA | 2026-10-14 | 3 | MEDIUM | yahoo:GC=F: ValueError: invalid OHLC range in 149 rows | Source access/schema/data quality issue | Appended by acquisition workflow; inspect reports/data_manifest.json | OPEN |
+| ERR-DATA | 2026-10-14 | 3 | MEDIUM | yahoo:CL=F: ValueError: non-positive OHLC | Source access/schema/data quality issue | Appended by acquisition workflow; inspect reports/data_manifest.json | OPEN |
