@@ -22,6 +22,11 @@ The repository was empty at project start: no readable README, files, branches, 
 - [Independent tester report](research/TESTER_REPORT.md)
 - [Scientific manuscript](research/MANUSCRIPT.md)
 - [Reproducibility guide](research/REPRODUCIBILITY.md)
+- [Execution policy and phase-branch rules](research/EXECUTION_POLICY.md)
+
+## Phase branches
+
+Historical checkpoint branches for completed setup phases and the active model branch are available: [Phase 1](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/phase-1-audit), [Phase 2](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/phase-2-literature), [Phase 3](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/phase-3-data), [Phase 4](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/phase-4-baselines), and [Phase 5](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/phase-5-models). Future phase branches will be created only after their predecessor gate passes.
 
 ## Scientific integrity
 
