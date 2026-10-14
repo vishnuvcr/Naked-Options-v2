@@ -136,3 +136,10 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Identified single-leg backtest passing through a legacy two-leg-only cost helper. Replaced that path with explicit single-leg fee/slippage calculation and expanded tests.
 - Expanded finite screen to seeded random direction/time, fixed-time CALL/PUT controls, causal spot-momentum/range-breakout entries; EOD, fixed-hold, premium TP/SL and trailing exits; 0/25/50/100 bps per-side and ₹10/₹20 per-order sensitivities. New run triggered; empirical results pending.
 - No independent tester branch or review gate was created. Operational notes only; hidden reasoning is not logged.
+
+
+## 2026-10-15 — Data acquisition dependency fix
+
+- Run #6 completed successfully as a workflow, with the automated tests passing, but the output remained blocked. The sanitized option manifest showed BLOCKED_NO_VALID_DAILY_DATA, zero request records, and specifically `FileNotFoundError: Validated daily NIFTY cache is missing: data/cache/nifty50_daily.csv`.
+- Added a workflow pre-step to acquire the daily target cache using the repository's existing Dhan/NSE/Yahoo fallback adapter if it is absent, then require a non-empty target file before rolling-option acquisition. Commit `0d9eb96d36316bf009f88e828d37812b2cd286cd`; run #7 queued.
+- No strategy results are inferred from blocked runs. No independent review process is used.
