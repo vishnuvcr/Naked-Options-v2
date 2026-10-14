@@ -78,3 +78,13 @@ The earlier attempts are retained as failed runs. The protocol is not considered
 | [#9](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38545503819) | RUNNING | Fixes cache filename and test fixture; expands request grid to monthly ATM−3…ATM+3 for calls and puts. Primary comparison is daily net rupee P&L; premium returns are secondary. |
 
 The first pilot data gate failed because quote coverage was only 17.45% (<80% threshold). Its paired percentage-return p-values do not qualify as evidence under this protocol; the wider-strike corrected run is required.
+
+
+## OPT-BUY-1.0 final gate and independent review — 2026-10-14
+
+- Final workflow: [run #11](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384), commit `0d33e2e046a26e017f0100f75e28243753177cb7`; 13 tests passed pre- and post-analysis. Artifact SHA-256 `86e9d03c6c55c17d46348a8dc40b9a02f247f2f9bca38703110c74c030be889`.
+- Final cached request status: 686 cached windows, 0 new requests, 0 failed windows. Quote data: 1,062,082 raw rows, 1,029,545 usable rows.
+- Data gate: straddle coverage 83.98% (pass); strangle coverage 69.18% (fail against ≥80%); conflicting quote groups 452/32,085=1.409% (fail against ≤1%).
+- Primary-cost net daily P&L: −₹315.71, −₹349.35, −₹327.64 and −₹369.43 for 5-session straddle, 5-session strangle, 20-session straddle and 20-session strangle. All 95% intervals lie below zero; all 100-bps and both-half profitability gates fail.
+- Independent tester reproduced the 48,032-row ledger arithmetic and four primary means, bootstrap intervals, raw p-values and Holm adjustments. Positive paired differences vs always-buy are not proof of profitability.
+- Final disposition: close OPT-BUY-1.0 as NO-GO for tested implementations and INCONCLUSIVE for the broader hypothesis. No paper/live candidate approved. See research/option-validation/TESTER_REPORT.md and DEVELOPER_DISPOSITION.md.
