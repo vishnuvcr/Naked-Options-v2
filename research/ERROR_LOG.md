@@ -82,3 +82,10 @@ Run #2 confirmed the actual blocker was upstream of options acquisition: `BLOCKE
 
 | ERR-019 | 2026-10-14 | PDF audit / phase 7 | HIGH | QLIKE skill ratio was defined as `1 - model_mean / baseline_mean` but QLIKE means were negative, making the ratio uninterpretable and triggering null values. | A score ratio is not appropriate for an unshifted QLIKE scoring rule that may be negative. | Added `qlike_improvement_vs_baseline = mean(baseline_score - model_score)` in `scripts/forecast_metrics.py`, wired it into the experiment runner, and added sign/negative-score/empty-overlap unit tests. See [developer submission](PDF_METHOD_AUDIT_DEVELOPER_SUBMISSION.md). | FIX COMMITTED; bounded workflow/tester verification pending |
 | ERR-020 | 2026-10-14 | PDF audit / phase 5 | LOW | Sequence run metadata reported eight epochs although each sequence estimator is configured and fit for three epochs. | Status JSON contained a hard-coded value inconsistent with the actual estimator configuration. | Changed metadata to three; included in the same bounded retest. | FIX COMMITTED; workflow/tester verification pending |
+
+
+## Run #60 additional risks
+
+- **ERR-021 — HIGH, open for independent audit:** The paired-loss test is two-sided for `mean(model loss - baseline loss)=0`; a small p-value alone does not establish improvement. Negative mean loss difference favors the model; positive favors baseline. Tester must reproduce signs and p-values from predictions.
+- **ERR-022 — MEDIUM, documented:** Classification accuracy and minimum regression error do not define a universal winner across objectives. Class prevalence, thresholding and calibration affect classification metrics. Tester should check balanced accuracy, Brier/log loss and benchmark skill alongside accuracy.
+- **ERR-023 — MEDIUM, data limitation:** Twenty weekend-dated observations and global-market timestamp alignment remain unresolved risks. Preserve the source rows with warnings; do not infer verified point-in-time availability from daily data alone.
