@@ -21,10 +21,12 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 concurrency:
   group: nifty-prediction-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   research:
@@ -48,6 +50,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip && pip install -r requirements-research.txt
       - name: Acquire data (cache hit is reused unless refresh requested)
+        continue-on-error: true
         env:
           DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -63,12 +66,28 @@ jobs:
         run: python scripts/validate_data.py
       - name: Test target construction
         run: python -m pytest -q
+      - name: Enforce data gate
+        if: steps.validate.outcome != 'success'
+        run: |
+          echo "No validated target series. Phase 3 is blocked; no model result will be claimed."
+          exit 2
       - name: Build feature matrix
+        id: features
         if: steps.validate.outcome == 'success'
         run: python scripts/build_feature_matrix.py
-      - name: Run fixed experiment catalogue
-        if: steps.validate.outcome == 'success'
-        run: python scripts/run_experiments.py
+      - name: Run technical-only model catalogue
+        if: always() && steps.validate.outcome == 'success' && steps.features.outcome == 'success'
+        run: python scripts/run_experiments.py --features technical
+      - name: Run global-augmented model catalogue
+        if: always() && steps.validate.outcome == 'success' && steps.features.outcome == 'success'
+        run: python scripts/run_experiments.py --features global
+      - name: Run ARIMA return benchmark
+        if: always() && steps.validate.outcome == 'success' && steps.features.outcome == 'success'
+        continue-on-error: true
+        run: python scripts/run_arima_baseline.py
+      - name: Merge model, feature and benchmark results
+        if: always() && steps.validate.outcome == 'success' && steps.features.outcome == 'success'
+        run: python scripts/merge_results.py
       - name: Summarize data / run outcomes
         if: always()
         run: |
@@ -88,9 +107,18 @@ jobs:
               "sha": "${{ github.sha }}",
               "data_manifest": read("reports/data_manifest.json"),
               "data_quality": read("reports/data_quality.json"),
-              "experiment_run": read("reports/experiment_run.json"),
+              "experiment_run": read("reports/feature_ablation.json"),
           }, indent=2))
           PY
+      - name: Generate research status page
+        if: always()
+        continue-on-error: true
+        run: python scripts/build_site.py
+      - name: Upload Pages artifact
+        if: always() && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
       - name: Upload reproducible reports (raw/licensed market data excluded)
         if: always()
         uses: actions/upload-artifact@v4
@@ -101,5 +129,22 @@ jobs:
             reports/metrics.csv
             reports/experiment_errors.csv
             reports/predictions.csv
+            reports/arima_metrics.csv
+            reports/arima_predictions.csv
           if-no-files-found: warn
           retention-days: 90
+
+  publish-pages:
+    if: always() && github.ref == 'refs/heads/main'
+    needs: research
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy research status page
+        id: deployment
+        uses: actions/deploy-pages@v4
