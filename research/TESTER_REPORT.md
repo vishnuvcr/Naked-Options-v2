@@ -72,3 +72,9 @@ Phase 9: manuscript remains provisional.**
 3. Correct the partial forward-volatility window defect and rerun. Independently recompute candidate/baseline metrics from predictions, including paired losses, block confidence intervals, HAC tests and Holm correction.
 4. Check global feature availability timing, overlapping target-date dependence and classification baselines.
 5. Run tests and regenerate artifacts; update RESULTS.md, ERROR_LOG.md, PHASE_STATUS.md and README.md. Resubmit for tester review; do not progress to publication gate before passing.
+
+## Independent arithmetic check update — 2026-10-14
+
+I independently recalculated benchmark-relative MSE skill for return and level predictions and variance-scale QLIKE skill from the saved merged predictions. Across 91 regression model/target/horizon/feature-set entries, the largest absolute discrepancy versus the artifact metrics was approximately 2.04e-9 after applying the same 1e-12 variance floor. This confirms the core reported loss-skill arithmetic for those entries, but does not validate p-values, confidence intervals, or model selection.
+
+The confirmed tail-window defect remains: the artifact contains missing target_date values for horizon-5 and horizon-20 volatility/volatility-expansion observations while the labels themselves are present. This is consistent with the old feature builder's partial-window standard deviation. The developer branch now corrects the construction and tests the boundary; a successful CI run and regenerated artifact are still required before approving the gate.
