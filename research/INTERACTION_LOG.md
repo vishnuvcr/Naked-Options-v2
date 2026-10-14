@@ -74,3 +74,10 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Independent tester audited 48,032 trade-ledger rows; net P&L = gross P&L minus total costs to <2e-12 rupees, fee components to <5e-13, and the four paired means/intervals/p-values and Holm adjustments reproduced.
 - Quality limits failed: strangle coverage 69.18%, duplicate-conflict rate 1.409%. All four filtered candidates have negative net daily P&L intervals, and every 100-bps/both-half profitability check fails.
 - Developer accepted tester no-go. OPT-BUY-1.0 is closed for this protocol. No strategy, paper trading or live deployment is approved; broader hypothesis remains inconclusive due data-quality limitations.
+
+## 2026-10-14 — OPT-BUY-2.0 continuation
+
+- User instructed “Proceed”; initiated bounded strike-selection grid with fixed classifier, 16 prespecified call/put relative-offset pairs and 5/20-session horizons.
+- Run #1: regression tests passed (13/13); strike grid blocked because no usable option quote rows were loaded. [Run #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551789841).
+- Corrected blocked-run diagnostics and added the prespecified block-bootstrap/Holm inference family. Follow-up [run #2](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551939491) and [run #3](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552000337) were in progress/pending when logged.
+- Developer branch: `research/option-strike-selection-developer`; independent tester branch: `research/option-strike-selection-independent-tester`. Tester disposition is blocked pending usable quotes. No strategy approval or fabricated P&L.
