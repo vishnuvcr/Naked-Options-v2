@@ -124,3 +124,12 @@ Frozen gates failed: strangle quote coverage 69.18% (minimum 80%) and conflictin
 ### Latest status
 
 Corrective [run #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562114651) is in progress on commit a543eed8059de79dbcc6b2dc53a3dd31f14298a9 to fix missing primary p-values. The run #4 result remains exploratory and no strategy is approved.
+
+
+## Latest expanded PDF-method audit — 2026-10-14
+
+- Corrected [workflow run #56](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38585954777) completed successfully on `research/pdf-method-audit` after a bounded fix for empty CSV merging.
+- [Method inventory](research/PDF_METHOD_AUDIT.md) and [run 56 results](research/PDF_METHOD_AUDIT_RESULTS.md) document the expanded screening of uploaded-paper method families. Data: 4,901 Dhan daily rows through 2026-10-13; seven external market series passed the configured validator; USD/INR, gold and WTI were rejected, and the NSE endpoint returned no recognized rows.
+- **No best model is approved yet.** Return-model differences are small and the inspected return rows do not survive Holm correction. Some direction/volatility-expansion p-values are below .05 but require independent verification of hypothesis families and test calculations.
+- Two explicit audit issues remain open: (1) exported `qlike_skill_vs_baseline` is NaN with finite QLIKE values; (2) sequence metadata says eight epochs despite the documented three-epoch budget. See [error log](research/ERROR_LOG.md) and [phase status](research/PHASE_STATUS.md).
+- The expanded audit remains prediction-only. It does not include option P&L, Paytm Money costs, slippage, or an approved trading strategy. Blocked/unreplicated PDF methods and missing data families are documented, not silently treated as tested.
