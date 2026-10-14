@@ -54,3 +54,8 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - The corrected source queries monthly ATM−3…ATM+3 series for both option types, reuses only verified MONTH/expiryCode=1 cache files, indexes exact-strike exits and vectorizes bootstrap draws.
 - The primary comparison now tests daily net rupee P&L per one-lot-proxy slot on identical eligible dates, using zero on no-alert dates; premium-normalized returns are secondary due to the variable/undefined denominator when filtering trades.
 - Current corrected Actions run: #9. No option-buying strategy is approved and no live order was placed.
+
+## One-step OTM verification follow-up — 2026-10-14
+
+- Static review of the active corrected-rerun code found that the strangle builder currently selects the nearest available call strike above ATM and put strike below ATM. If the exact adjacent quote is missing, it could accept a farther OTM strike while the plan describes a one-step OTM strangle.
+- This was logged as ERR-OPT-004. The active run #9 is allowed to finish as a coverage pilot; its strangle results are preliminary until the next cached rerun enforces exact ATM+1 CALL and ATM−1 PUT relative offsets at entry, and exact numeric strike matching at exit. If either required entry series is absent, that date must be skipped rather than substituted.
