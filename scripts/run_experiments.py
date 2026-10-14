@@ -10,6 +10,7 @@ from sklearn.metrics import mean_absolute_error, log_loss
 from models import regression_models, classification_models
 from sequence_models import sequence_models
 from forecast_metrics import regmetrics, clsmetrics, hac_test, block_ci, holm
+from experiment_budget import allowed_candidates, exclusion_reason
 
 ROOT=Path(__file__).resolve().parents[1]
 CACHE=ROOT/"data"/"cache"; REPORT=ROOT/"reports"
@@ -116,13 +117,11 @@ def main():
         base_rate=float(np.mean(yd)) if kind=="cls" else 0.0
         b=baseline(task,h,test,base_rate)
         scored=[]
-        full_catalogue = (task=="return" and h==1) or (task=="direction" and h==1)
-        core_models = {"ridge","elastic_net","random_forest","hist_gradient"} if kind=="reg" else {"logistic","random_forest","hist_gradient"}
-        allowed_names = set(registry) if full_catalogue else (set(registry) & core_models)
+        allowed_names, budget_mode = allowed_candidates(task,h,kind,registry.keys())
         for name,proto in registry.items():
             row={"task":task,"horizon":h,"model":name,"n_dev":len(dev),"n_test":len(test),"status":"PENDING"}
             if name not in allowed_names:
-                row.update({"status":"BLOCKED_COMPUTE_BUDGET","reason":"Bounded screening design: full catalogue is evaluated for next-session return and direction; other target/horizon cells use a preregistered core set of regularized linear and tree models. The omitted catalogue cells are recorded here."})
+                row.update({"status":"BLOCKED_COMPUTE_BUDGET","budget_mode":budget_mode,"reason":exclusion_reason(task,h,kind)})
                 metric_rows.append(row)
                 continue
             try:
@@ -210,7 +209,7 @@ def main():
     metadata={"research_version":"NIFTY-PRED-1.0","seed":SEED,"models_regression":list(regmodels),
       "models_classification":list(clsmodels),"sequence_status":seqstatus,"features":cols,"experiments":len(metric_rows),
       "oos_predictions":len(pred_rows),"status":"COMPLETE" if pred_rows else "BLOCKED_NO_OOS_OUTPUT",
-      "selection_rule":"validation CV loss only; final holdout used for one-time evaluation and no hyperparameter tuning"}
+      "selection_rule":"validation CV loss only; final holdout used for one-time evaluation and no hyperparameter tuning","compute_budget":{"cv_folds":2,"primary_full_catalogue":[["return",1],["direction",1]],"core_screens":"all other target/horizon pairs","core_regression":["ridge","elastic_net","random_forest","hist_gradient"],"core_classification":["logistic","random_forest","hist_gradient"],"sequence_epochs":3}}
     (REPORT/f"experiment_run_{args.features}.json").write_text(json.dumps(metadata,indent=2))
     print(json.dumps(metadata,indent=2))
     return 0 if pred_rows else 3
