@@ -66,3 +66,11 @@ Run #2 confirmed the actual blocker was upstream of options acquisition: `BLOCKE
 - At primary costs, every model-filtered candidate/horizon had negative mean net P&L and a 95% block interval wholly below zero. These outcomes are exploratory because the frozen data-quality gate failed.
 - **High-severity inference defect:** all 32 raw and Holm-adjusted p-values in `primary_tests_holm.csv` were blank/NaN although the ledger contained observations. Root cause was not conclusively isolated in the prior run; a self-contained null-centered circular block-bootstrap p-value implementation has been committed as a543eed8059de79dbcc6b2dc53a3dd31f14298a9. Corrective [run #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562114651) is in progress; require finite p-values and test output before closing.
 - Common-date sensitivity promised in the frozen plan is absent from the artifact. Log as not completed; no cross-candidate superiority claims.
+
+
+## OPT-BUY-3.0 initial implementation audit — 2026-10-15
+
+- HIGH until verified: the executable currently covers only fixed-time CALL/PUT entries and fixed-duration/EOD exits, not the full frozen random/rule-based catalogue. Treat as partial, not a completed strategy search.
+- Cost audit required: inherited cost helper charges brokerage per executed order. Any straddle implementation must charge four orders per round trip; the initial screen does not yet include straddle candidates.
+- Sensitivity audit required: 100-bps results must recompute slippage consistently with full cost arithmetic; do not rely on an unverified generic add-on.
+- No workflow result was observed at this checkpoint. No strategy or profitability conclusion is claimed. Preserve this log item until tester review or a documented correction resolves it.
