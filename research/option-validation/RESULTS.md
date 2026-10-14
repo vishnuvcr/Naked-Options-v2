@@ -1,6 +1,6 @@
 # Option-buying validation results — OPT-BUY-1.0
 
-**Last updated UTC:** 2026-10-14T09:29:18.472712+00:00
+**Last updated UTC:** 2026-10-14T09:30:23.318170+00:00
 **Decision status:** BLOCKED_REQUEST_AUTH_OR_SCHEMA
 **Acquisition status:** BLOCKED_REQUEST_AUTH_OR_SCHEMA
 
