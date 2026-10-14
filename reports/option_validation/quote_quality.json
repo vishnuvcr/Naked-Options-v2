@@ -1,0 +1,23 @@
+{
+  "raw_rows": 303548,
+  "usable_rows": 294419,
+  "duplicate_conflict_groups": 45,
+  "duplicate_groups": 9084,
+  "parse_failures": [],
+  "first_quote_date": "2022-11-01",
+  "last_quote_date": "2026-10-14",
+  "entry_time_rows": 3909,
+  "exit_time_rows": 3908,
+  "candidate_dates": 980,
+  "eligible_date_coverage_by_structure": {
+    "straddle": 0.17448979591836736,
+    "strangle": 0.17448979591836736
+  },
+  "skip_reason_counts": {
+    "MISSING_SAME_STRIKE_EXIT": 1607,
+    "MISSING_ENTRY_BAR": 6,
+    "MISSING_EXIT_BAR": 2,
+    "NO_COMMON_CALL_PUT_STRIKES": 2,
+    "NO_ONE_STEP_OTM_STRIKES": 1
+  }
+}
