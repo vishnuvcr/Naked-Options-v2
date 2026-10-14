@@ -118,3 +118,12 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Added partial time-entry screen, helper tests and a manual/push-triggered workflow in commits `17bbf88c26734782af3fa4f0e3d1bbb166f8819d`, `9c3fedfecad60d9e24f5672a2c138fd120cb8a23`, `53029f81971b7adb395ac76a8b936830bbd6be7a`.
 - The executable is not yet the full frozen catalogue. No Actions result was verified during this log update; no candidate is approved. Independent tester branch/report must wait until results are acquired.
 - Log operational actions and outcomes, not hidden chain-of-thought or verbatim internal reasoning.
+
+
+## 2026-10-15 — User removes independent reviews
+
+- User explicitly instructed: “I don't want any independent reviews!”
+- Confirmed no independent tester role, separate tester branch, or tester-report dependency will be used.
+- Updated the OPT-BUY-3.0 protocol on research/option-entry-exit-developer (commit aa379a8099a3146ae6cde79886606b765d1fda01). Automated quality checks remain mandatory; this changes governance only, not data gates or statistical acceptance criteria.
+- Current implementation is partial and latest saved results are blocked for lack of valid quotes. This is not a positive or negative strategy result. The repository status explicitly lists the outstanding full-catalogue, cost sensitivity, session accounting and exit-matching work.
+- Only operational decisions and actions are logged; private hidden reasoning is not copied into repository files.
