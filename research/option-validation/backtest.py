@@ -804,7 +804,7 @@ def analyze_options() -> dict:
     if not raw_manifest_path.exists():
         return write_blocked("BLOCKED_NO_OPTIONS_MANIFEST", "No Dhan option acquisition manifest exists; no option result computed.")
     raw_manifest = json.loads(raw_manifest_path.read_text(encoding="utf-8"))
-    if raw_manifest.get("status") in {"BLOCKED_NO_TOKEN", "BLOCKED_NO_VALID_DAILY_DATA", "BLOCKED_NO_VALID_OPTION_DATA"}:
+    if raw_manifest.get("status") in {"BLOCKED_NO_TOKEN", "BLOCKED_NO_VALID_DAILY_DATA", "BLOCKED_NO_VALID_OPTION_DATA", "BLOCKED_REQUEST_AUTH_OR_SCHEMA"}:
         return write_blocked(raw_manifest.get("status"), "Dhan historical option acquisition was blocked; no option P&L is claimed.", raw_manifest)
     frame = read_daily_and_build_matrix()
     signals, classifier_meta = build_signals(frame)
@@ -955,7 +955,7 @@ def analyze_options() -> dict:
     })
     acquisition_status = raw_manifest.get("status", "UNKNOWN")
     complete_coverage = min(coverage.values()) if coverage else 0.0
-    data_gate = acquisition_status == "PASS" and complete_coverage >= 0.80 and quote_meta.get("duplicate_conflict_groups", 0) == 0
+    data_gate = acquisition_status in {"PASS", "PASS_CACHED"} and int(raw_manifest.get("requests_failed", 0)) == 0 and complete_coverage >= 0.80 and quote_meta.get("duplicate_conflict_groups", 0) == 0
     candidate_pass = bool(primary_rows) and any(bool(r.get("positive_candidate_gate")) for r in primary_rows)
     if not data_gate:
         overall = "INCONCLUSIVE_PARTIAL_OR_INCOMPLETE_DATA"

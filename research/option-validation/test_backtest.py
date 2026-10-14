@@ -77,3 +77,12 @@ def test_holm_preserves_order_and_bounds():
     assert adjusted[0] >= p[0]
     assert all(0 <= x <= 1 for x in adjusted[:3])
     assert math.isnan(adjusted[3])
+
+
+def test_nifty_lot_size_proxy_includes_december_2025_revision():
+    assert mod.lot_size_proxy("2024-04-25") == 50
+    assert mod.lot_size_proxy("2024-04-26") == 25
+    assert mod.lot_size_proxy("2024-11-20") == 75
+    assert mod.lot_size_proxy("2025-12-30") == 75
+    assert mod.lot_size_proxy("2025-12-31") == 65
+    assert mod.lot_size_proxy("2026-10-13") == 65
