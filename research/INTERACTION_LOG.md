@@ -35,3 +35,13 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Scope chosen: same-session intraday entry/exit only. Rolling relative strikes/expiry data do not prove a stable contract can be tracked across multiple days; multi-day P&L is excluded unless contract identity and expiry are available and verified.
 - Cost plan includes Paytm Money ₹10/order baseline, ₹20/order sensitivity, option-sale STT, stamp duty, SEBI/exchange charges and adverse 0/25/50/100 bps-per-side slippage sensitivity. Since the rolling OHLC source lacks historical bid/ask, this is a sensitivity analysis, not an observed-spread simulation.
 - No historical option data has yet been downloaded and no option P&L has been computed at this point. The log records auditable actions and decisions, not hidden reasoning or verbatim internal chain-of-thought.
+
+
+## 2026-10-14 — option source diagnostic update
+
+- Verified official DhanHQ expired-options documentation and official DhanHQ-Py request construction. Dhan documents POST /charts/rollingoption, NSE_FNO, NIFTY securityId 13, instrument OPTIDX, intervals 1/5/15/25/60, MONTH/WEEK, and a maximum 30-day range; the published example uses MONTH and expiryCode=1. Sources: https://dhanhq.co/docs/v2/expired-options-data/ and https://github.com/dhan-oss/DhanHQ-py/blob/main/src/dhanhq/_historical_data.py
+- Runs #4 and #5 failed at the first request with HTTP 400 and zero acquired option records. No option strategy result is claimed.
+- Updated the adapter to use the published MONTH/1 example and capture a short redacted error detail. Run #6 is the retest for that request format.
+- Verified official NSE costs: option-sale STT was 0.10% through 2026-03-31 and is 0.15% from 2026-04-01; option stamp duty is 0.003% on buyer turnover; SEBI turnover fee is ₹10/crore; NSE Circular 1 dated 2026-02-27 gives a combined equity-options charge outflow of approximately ₹3,553/crore from 2026-03-01. Sources: https://www.nseindia.in/static/products-services/equity-derivatives-securities-transaction-tax, https://www.nseindia.com/static/invest/first-time-investor-sebi-turnover-fees-stt-other-levies, https://nsearchives.nseindia.com/content/circulars/FA73061.pdf
+- Paytm Money's current public F&O FAQ lists ₹10 brokerage per executed unique order: https://www.paytmmoney.com/stocks/customer/fno-faq/onboarding-and-kyc/account-segment-activation/how-to-activate-fo-from-mobile-app-web. ₹20/order remains the sensitivity case.
+- No live order will be placed. The test is intraday-only and stays blocked until options quotes, cost accounting, statistics and independent review pass.
