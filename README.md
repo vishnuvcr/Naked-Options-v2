@@ -40,7 +40,11 @@ No model will be declared best from training fit, shuffled validation, price-lev
 - Model experiments: Actions run [#41](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38526229786) completed technical and global model fitting (278 technical and 210 global experiment records) but failed while merging because an empty error CSV was parsed. Per-run CSVs were not included in its artifact, so no model ranking is accepted. The corrected run [#45](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38527508857) includes safe empty-file handling, per-run artifact uploads, and a QLIKE correction; it is pending.
 - Known defect correction: benchmark-relative out-of-sample R-squared has been fixed on the phase-5 branch; that branch's corrected run must be the canonical result.
 - External inputs: seven public daily series were validated in run #41 (S&P 500, Nasdaq, Nikkei 225, Hang Seng, CBOE VIX, India VIX proxy, U.S. 10-year yield proxy). USD/INR, gold and WTI failed OHLC checks and were not used. Historical options, FII/DII, breadth, point-in-time constituents and news/sentiment data are not verified as acquired.
-- Final independent tester review: not started; must follow completed results.
+- Independent tester report is available on `research/independent-tester`; it identified the partial-forward-window volatility-label defect. Phase 5/7 remain open until the developer fix passes CI and a corrected model run is independently rechecked.
 - Provisional ARIMA(1,0,0) metrics did not show statistically significant improvement over zero-return forecasts at 1/5/20 sessions (raw p = 0.492/0.935/0.842; loss-difference intervals include zero). These are not final until the corrected merge rerun reproduces the outputs and Holm-adjusted comparisons are available. No best model is declared yet.
 
 See [phase status](research/PHASE_STATUS.md) for the authoritative gate state.
+
+- [Run 45 results and evidence register](research/RESULTS.md)
+- [Independent tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/independent-tester/research/TESTER_REPORT.md)
+- [Developer correction branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/developer-review)
