@@ -44,3 +44,19 @@ Each concrete run should record: experiment ID; timestamp; git commit; workflow 
 | #32 | 470d7444a95af0fe3c3fbdc319bbe55ee874de14 | Cancelled | Added benchmark-relative OOS-R² formula; rerun was superseded before result acquisition. |
 | #33 | 09a92967d9a6634a96b8bfccab14ce2b3e9066c5 | Cancelled | Added unit test for benchmark-relative OOS-R²; queued run was superseded to apply the final two-fold compute bound. |
 | #34 | d654d8f825ba19dc8dfc08f9f2e7b8f26779e7d3 | In progress | Canonical bounded run candidate: two chronological development folds; sequence models limited to three epochs and next-session return/direction; latest 20% remains untouched. Accept results only after the workflow completes and artifacts/tests are inspected. |
+
+## Resource-bounded screening update — 2026-10-14
+
+The dated amendment in RESEARCH_PLAN.md is now part of the branch history. It preserves all five targets, 1/5/20-session horizons, two chronological folds, and the locked latest 20% holdout, but restricts the full algorithm catalogue to 1-session return/direction. Other target/horizon combinations use a fixed core set; all excluded model cells must be emitted as BLOCKED_COMPUTE_BUDGET.
+
+| Run | Commit | Workflow status at last check | Result / disposition |
+|---|---|---|---|
+| #34 | d654d8f825ba19dc8dfc08f9f2e7b8f26779e7d3 | Stayed in progress at technical-only model catalogue; no artifact observed | Superseded operationally by the bounded candidate grid. No result retained. |
+| #35 | cafb2d56c523cde020ebc9bc7d7d0c57c2f30b51 | Cancelled by later push | Added explicit per-task core budget and exclusion rows. |
+| #36 | 4e1b872f2a415499192e2ed19d70c096deed0247 | Cancelled by later push | Lowered tree/MLP iteration caps. |
+| #37 | 41df4ac5f14b750d7c8e01b621b0e6f1ea289a61 | Cancelled by later push | Added testable budget selector. |
+| #38 | 11bb7c107907c110d2d62ecabd3f0f7b43c502e4 | Cancelled by later push | Wired the budget selector into experiment runner and wrote explicit BLOCKED_COMPUTE_BUDGET statuses. |
+| #39 | 7799b070975dfbe7d3f3bb50888ecc38fc8c0e18 | Pending at last check | Added unit tests proving full catalogue vs core-screen selection. |
+| #40+ | 2ea446b3afa42e4283ab7e26964c08d2e2659821 | Expected after plan amendment; must be verified | Candidate canonical run using final policy. No final model metric is accepted until tests, completed job, artifact output and code SHA are verified. |
+
+The model pool and estimator caps are configuration choices fixed before inspecting out-of-sample performance. The locked holdout remains a one-time comparison source and is not used for selection.
