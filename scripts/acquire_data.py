@@ -48,6 +48,14 @@ def normalise(frame, source):
     out = out.dropna(subset=["date","open","high","low","close"]).sort_values("date")
     if out.empty:
         raise ValueError("source returned no valid OHLC rows")
+    # Index trading bars on weekends are invalid for the normal daily session series.
+    # Exclude explicitly; the source manifest records the exclusion count.
+    weekdays = pd.to_datetime(out["date"], errors="coerce").dt.dayofweek
+    weekend_rows = int((weekdays >= 5).sum())
+    out = out.loc[weekdays < 5].copy()
+    if out.empty:
+        raise ValueError("no valid weekday OHLC rows after weekend exclusion")
+    out.attrs["weekend_rows_excluded"] = weekend_rows
     if out.date.duplicated().any():
         raise ValueError("duplicate session dates")
     if (out[["open","high","low","close"]] <= 0).any().any():
