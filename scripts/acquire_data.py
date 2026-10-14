@@ -21,7 +21,7 @@ def digest(path):
 
 def log_error(src, exc):
     p = ROOT / "research" / "ERROR_LOG.md"
-    line = f"| {now()} | 3 | {src} | {type(exc).__name__}: {str(exc).replace('|','/').replace(chr(10),' ')[:250]} |\n"
+    line = f"| ERR-DATA | {now()[:10]} | 3 | MEDIUM | {src}: {type(exc).__name__}: {str(exc).replace('|','/').replace(chr(10),' ')[:220]} | Source access/schema/data quality issue | Appended by acquisition workflow; inspect reports/data_manifest.json | OPEN |\n"
     if not p.exists():
         p.write_text("# Error log\n\n| Time UTC | Phase | Source | Error |\n|---|---|---|---|\n", encoding="utf-8")
     with p.open("a", encoding="utf-8") as f:
