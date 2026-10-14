@@ -45,3 +45,5 @@ Each concrete run should record: experiment ID; timestamp; git commit; workflow 
 | RUN-32+ | 2026-10-14 | 5 | Phase-5 branch after correction commit 470d7444a95af0fe3c3fbdc319bbe55ee874de14 | Expected same hash unless source refresh changes it | QUEUED / NOT YET VERIFIED | Re-run must verify tests, full experiment run, ARIMA, merge and artifacts before any result is adopted. |
 
 All experiment results remain unranked until a completed run emits machine-generated predictions and metrics. Do not treat a pending workflow as a completed experiment.
+
+| #49 | 2026-10-14 | 5/7 | 9b655da8d72667a6d2f15e4dad5df55a1bec2e84 | 97858125f14344520f77dd503d2c0441005e6da4cfa12fc23fe7427680f932e7 | SUCCESS | Tests, target validation, feature matrix, technical/global catalogues, ARIMA, merge and report generation passed. Zero null target dates in OOS predictions. Independent skill metrics and block-CI checks reproduced; final statistical tester gate remains open. |
