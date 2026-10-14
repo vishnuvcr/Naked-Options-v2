@@ -40,3 +40,16 @@ def test_feature_values_do_not_depend_on_future_rows():
     cols=["ret_0","ret_1","mom_20","vol_20","range","gap"]
     for col in cols:
         assert np.allclose(full.loc[:69,col],prefix.loc[:69,col],equal_nan=True)
+
+
+def test_future_volatility_requires_full_horizon_and_target_date():
+    out=build(sample())
+    for h in (1, 5, 20):
+        label=out[f"target_future_vol_{h}"].notna()
+        assert out.loc[label, f"target_date_{h}"].notna().all()
+        assert (out.loc[label, f"target_date_{h}"] > out.loc[label, "date"].dt.strftime("%Y-%m-%d")).all()
+    # Partial future windows must not be mistaken for full-horizon volatility labels.
+    assert pd.isna(out.iloc[-1]["target_future_vol_5"])
+    assert pd.isna(out.iloc[-1]["target_future_vol_20"])
+    assert pd.isna(out.iloc[-5]["target_future_vol_5"])
+    assert pd.isna(out.iloc[-20]["target_future_vol_20"])
