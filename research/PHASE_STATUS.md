@@ -51,10 +51,12 @@ The developer accepted the independent tester's no-go. No strategy, paper-tradin
 | Phase | Status | Evidence / next gate |
 |---|---|---|
 | Protocol and branch setup | COMPLETE | [Frozen plan](STRIKE_SELECTION_PLAN.md); [research branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-strike-selection) |
-| Daily target acquisition/validation and regression tests | PASS IN RUN #4 | Daily-target acquisition/validation completed; pre-analysis regression suite passed (13 tests). [Run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097) |
-| Historical options-cache acquisition | STEP COMPLETE; DATA GATE UNVERIFIED | Step concluded successfully at workflow level, but acquisition is configured with `continue-on-error`; must inspect manifest/diagnostics before treating quotes as usable. |
-| Frozen strike grid | IN PROGRESS | Current live job has advanced to this step. No artifacts uploaded yet. |
-| Sanitized artifact upload and final tests | NOT STARTED | Await grid step and inspect summary, quote coverage, duplicates/conflicts, execution-cost assumptions and block-bootstrap/Holm output. |
-| Independent tester gate | WAIVED BY USER FOR THIS RUN | User waived separate tester sign-off. The waiver does not waive data-quality, statistical or execution-cost gates. |
+| Daily target acquisition/validation and regression tests | PASS IN RUN #4 | Daily target validated; 13 pre-analysis and 13 final regression tests passed. [Run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097) |
+| Options data quality | FAIL FOR CONFIRMATORY USE | 1,023,541 usable rows; 452 conflict groups / 31,706 duplicate groups = 1.4256%, above the 1% gate. No parse failures. |
+| Coverage | FAIL FOR GRID-WIDE CONFIRMATORY USE | Only ATM/ATM coverage clears 80%; coverage ranges from 83.27% to 16.94% over 980 dates. |
+| Frozen grid outcomes | COMPLETE — EXPLORATORY ONLY | At primary costs (50 bps/side, ₹10/order), all 32 model-filtered candidate × horizon means are negative and their 95% block-bootstrap upper bounds are below zero. No candidate approved. |
+| Primary p-values / Holm family | CORRECTIVE RETEST | Run #4 emitted NaN for all 32 p-values despite a nonempty ledger. Fixed with explicit null-centered circular block bootstrap in commit a543eed8059de79dbcc6b2dc53a3dd31f14298a9; [run #5](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38562114651) is in progress. |
+| Common-date sensitivity | NOT COMPLETED | Not present in run #4 artifact. Do not claim cross-candidate superiority; the failed quality gate already precludes confirmatory ranking. |
+| Independent tester sign-off | WAIVED BY USER | User explicitly waived separate tester sign-off; data-quality and inference gates remain mandatory. |
 
-No strike-selection strategy is approved. Existing OPT-BUY-1.0 no-go remains unchanged.
+**Disposition:** NO-GO for any strike-selection candidate. Keep OPT-BUY-1.0 no-go unchanged. The one bounded corrective rerun must confirm valid p-values; do not start further parameter loops or approve paper/live deployment.
