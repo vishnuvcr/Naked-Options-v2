@@ -128,3 +128,12 @@ The first pilot data gate failed because quote coverage was only 17.45% (<80% th
 | PDF-AUDIT-056 | `research/pdf-method-audit` / `cdf8bab26d9234a6312b1ae00a3f35370574c792` | [GitHub Actions #56](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38585954777) | `b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050` | WORKFLOW SUCCESS; TESTER GATE OPEN | Data validation, feature matrix, technical/global catalogues, ARIMA, merge and artifact upload completed. Artifact SHA-256 `02a222453c7ac4e21e82253f407893e1943da0d5e6fec874750a350ba11aceb2`. See [expanded results](PDF_METHOD_AUDIT_RESULTS.md). QLIKE skill export and sequence epoch metadata require review; rejected USD/INR, gold, WTI and NSE sources are logged. No best model declared. |
 
 Run #56 reports 632 technical experiment cells and 244,839 out-of-sample prediction rows in its run metadata. Descriptive one-session return RMSE values are tightly grouped around 0.00794, with no adjusted-significant evidence in the inspected top return rows. Direction and volatility-expansion metrics vary by horizon and need independent statistical review. Some Holm-adjusted p-values are below .05, so exact families and loss definitions must be independently checked before confirmatory claims.
+
+
+## Corrected expanded catalogue — run #60
+
+| Run | Branch / commit | Workflow | Data hash | Status | Outcome |
+|---|---|---|---|---|---|
+| PDF-AUDIT-060 | `research/pdf-audit-developer` / `e93fe35d8bb11df65d1c466434d5401298c077ed` | [GitHub Actions #60](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38593936036) | `b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050` | WORKFLOW SUCCESS; RESULTS ACQUIRED; INDEPENDENT AUDIT NEXT | 1,097 merged metric rows; 485 OOS-evaluated rows; 130 compute-budget-blocked rows; empty technical/global model-error CSVs; corrected QLIKE score-difference export and three-epoch metadata. Artifact SHA-256 `b601320f64ab8ec0c62f0a07e458287cba781eca73107f1b2c38beda140a8151`. See [run #60 results](PDF_METHOD_AUDIT_RESULTS.md). |
+
+Result interpretation: return rows show no Holm-adjusted evidence of skill. Classification p-values are not evidence of improvement without the paired-loss sign; positive model-minus-baseline loss differences mean the model is worse. Volatility rankings differ between MAE/RMSE and QLIKE. The conclusion is “no robust return/direction winner established”; volatility-expansion is exploratory. The separate tester handoff is allowed now because result acquisition and developer documentation are complete.
