@@ -127,6 +127,32 @@ def main():
                "win_rate":float(win_count/trade_count) if trade_count else float("nan"),
                "first_half_mean_pnl":float(np.mean(pnl_by_date[:half])) if half else float("nan"),
                "second_half_mean_pnl":float(np.mean(pnl_by_date[half:])) if len(pnl_by_date)-half else float("nan")})
+    # Prespecified primary-family inference: 16 strike pairs x 2 horizons, model-filtered,
+    # at 50 bps/side and ₹10/order. Two-sided circular block-bootstrap test and Holm correction.
+    for rec in rows:
+        rec["pvalue_raw"] = float("nan")
+        rec["pvalue_holm"] = float("nan")
+    primary_tests = []
+    ledger_frame = pd.DataFrame(ledger)
+    for co in CALL_OFFSETS:
+      for po in PUT_OFFSETS:
+       label=f"C{co}_P{po}"
+       for h in HORIZONS:
+        sub=ledger_frame[(ledger_frame.candidate==label)&(ledger_frame.horizon==h)&
+          (ledger_frame.mode=="model_filtered")&(ledger_frame.slippage_bps_per_side==PRIMARY_SLIP)&
+          (ledger_frame.brokerage_per_order==PRIMARY_BROKER)].sort_values("date")
+        p=float("nan")
+        if len(sub)>=3:
+          _,_,p=bt.block_bootstrap_difference(sub.net_pnl_rupees.to_numpy(float),block_len=h,n_boot=2000,seed=bt.SEED+h+co*13+abs(po)*29)
+        primary_tests.append({"candidate":label,"horizon":h,"pvalue_raw":p})
+    adjusted=bt.holm_adjust([x["pvalue_raw"] for x in primary_tests])
+    for item,padj in zip(primary_tests,adjusted):
+        item["pvalue_holm"]=float(padj)
+        for rec in rows:
+            if (rec["candidate"],rec["horizon"],rec["mode"],rec["slippage_bps_per_side"],rec["brokerage_per_order_rupees"]) == (item["candidate"],item["horizon"],"model_filtered",PRIMARY_SLIP,PRIMARY_BROKER):
+                rec["pvalue_raw"]=item["pvalue_raw"]
+                rec["pvalue_holm"]=float(padj)
+    pd.DataFrame(primary_tests).to_csv(OUT/"primary_tests_holm.csv",index=False)
     pd.DataFrame(coverage).to_csv(OUT/"coverage.csv",index=False)
     pd.DataFrame(rows).to_csv(OUT/"candidate_metrics.csv",index=False)
     pd.DataFrame(ledger).to_csv(OUT/"primary_ledger.csv",index=False)
