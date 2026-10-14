@@ -115,3 +115,13 @@ No trading strategy is recommended. No option-chain backtest, Paytm Money fee/sl
 2. Audit auxiliary-series timestamp availability and holiday alignment; keep unavailable data families explicitly marked as not acquired.
 3. Update README, RESULTS.md, PHASE_STATUS.md and ERROR_LOG.md on main with corrected run #49 evidence.
 4. Do not call the study complete or design a live options strategy until Phase 7 passes. If remaining data families cannot be acquired within the bounded plan, record the limitation and finalize a prediction-only conclusion.
+
+
+## Supplemental independent checks — 2026-10-14
+
+- Independently recomputed the saved Holm adjustments within each task/horizon family: maximum absolute difference was below 1e-16.
+- Independently recomputed ARIMA(1,0,0) return benchmark skill, HAC p-values and moving-block CIs from `reports/arima_predictions.csv`. Skill differences were below 5e-16; p-value differences below 3e-14; CI endpoint differences below 5e-16.
+- Confirmed auxiliary features are joined with `merge_asof(..., direction="backward", allow_exact_matches=False)`, so same-date global closes are not used as if available at the NIFTY origin.
+- Rechecked selected models' HAC p-values from the merged predictions; differences are effectively zero for selected models except technical Transformer 1-session direction, where the difference is about 4.2e-7 and does not affect its non-significant conclusion. A larger discrepancy observed among unselected sequence-model probabilities is small in absolute terms but should remain recorded.
+
+Updated gate decision: ARIMA, Holm and selected-model HAC checks pass. Phase 5 execution/target-window gate passes. Phase 7 remains **CONDITIONAL** pending explicit reviewer agreement on scope and probability-calibration limitations; overall manuscript is not yet approved as a trading study.
