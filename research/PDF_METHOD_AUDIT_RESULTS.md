@@ -96,3 +96,45 @@ Timestamped news/BERT sentiment, historical options chains/PCR, FII/DII, market 
 ## Independent tester handoff checklist
 
 The separate tester branch is created only after this completed result acquisition and documentation. Tester: independently recompute a stratified sample and the headline rows from the downloaded artifact; verify metric units and signs, `mean_loss_diff`, HAC lag choice, Holm family definitions, confidence intervals, target-date alignment, QLIKE calculations, class prevalence and probability calibration; inspect data calendar/global close timing; check manuscript claims against the run #60 artifact. Report PASS / PASS WITH LIMITATIONS / FAIL and return concrete defects to the developer branch. Do not expand the model universe or begin strategy work.
+
+
+## Corrected bounded run — run #60
+
+**Workflow:** [run #60](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38593936036)  
+**Branch/commit:** `research/pdf-audit-developer` / `e93fe35d8bb11df65d1c466434d5401298c077ed`  
+**Artifact:** `nifty-prediction-reports-38593936036.zip`; SHA-256 `b601320f64ab8ec0c62f0a07e458287cba781eca73107f1b2c38beda140a8151`.  
+**Workflow disposition:** all research and artifact steps succeeded. Independent audit has not yet occurred.
+
+### Run-level accounting
+
+- Validated Dhan NIFTY series: 4,901 rows (2007-01-02–2026-10-13), SHA-256 `b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050`; 20 weekend-dated observations remain flagged for exchange-calendar/source verification.
+- Merged metric table: 1,097 rows, including 485 OOS-evaluated rows, 482 selection/status rows and 130 `BLOCKED_COMPUTE_BUDGET` rows. Technical/global model-error CSVs were empty. Catalogue metadata reports 632 technical and 462 global cells. Sequence models ran for one-session return/direction under the three-epoch budget; other sequence cells were explicitly blocked.
+- QLIKE improvement is now exported as baseline mean score minus model mean score, not as a ratio of potentially negative score means.
+
+### Representative results
+
+| Target / horizon | Descriptive row | Inference |
+|---|---|---|
+| Return, 1 session | CNN sequence, technical: MAE 0.005770; RMSE 0.007940; MSE skill +0.0875% | p=.7901; Holm p=1.0. No evidence of useful return skill. |
+| Return, 5 sessions | XGBoost, technical: MAE 0.013527; RMSE 0.017352; MSE skill +2.0023% | p=.0967; Holm p=1.0. Not statistically supported. |
+| Return, 20 sessions | Gradient boosting, global: MAE 0.026134; RMSE 0.033100; MSE skill +3.3303% | p=.4452; Holm p=1.0. Not statistically supported. |
+| Volatility, 1 session | Ridge technical MAE 0.003627; XGBoost global RMSE 0.005280, QLIKE -8.7674 vs -8.4312 baseline | Error rankings differ by score; the XGBoost QLIKE improvement is +0.3362 descriptively. Needs independent formula/alignment review. |
+| Volatility, 5 sessions | ElasticNet global MAE 0.002381; RMSE 0.003724 | Some descriptive MSE/QLIKE improvements, not uniformly significant after correction. |
+| Volatility, 20 sessions | KNN technical MAE 0.001967; RMSE 0.002892 | Best MAE need not be best QLIKE; no universal volatility winner is declared. |
+| Direction / volatility expansion | Accuracy varies with class prevalence and threshold; several rows have weak balanced accuracy or proper scores | Exploratory only; accuracy alone does not establish predictive skill. |
+
+### Statistical interpretation
+
+The paired-loss convention is `model loss - baseline loss`: negative mean loss difference favors the model; positive favors the baseline. A two-sided p-value tests whether the loss difference is zero, not whether the model is better. Some highly significant rows can therefore be significantly worse than baseline. Interpret p-values with the sign of `mean_loss_diff`, benchmark-relative skill, confidence intervals and proper scores. This is a broad screening on one chronological holdout, not proof of generalization.
+
+### Data and method limitations
+
+Timestamped news/BERT sentiment, historical options/PCR, FII/DII, breadth, verified USD/INR/gold/WTI, point-in-time corporate actions and several PDF-specific methods remain unavailable, rejected or unimplemented. Global-market release-time/holiday alignment has not been independently established. No trading strategy, option P&L, Paytm Money brokerage, slippage, spread, taxes, margin or live execution was evaluated.
+
+### Conclusion before independent audit
+
+**No robust NIFTY 50 return or direction forecasting winner is established.** Some volatility metrics improve descriptively, but rankings differ by score and require independent reproduction. Volatility-expansion results remain exploratory. Do not turn these results into trading recommendations.
+
+## Independent tester handoff
+
+Tester: recompute headline metrics from the run #60 artifact; verify metric units/signs, `mean_loss_diff`, HAC lag choice, Holm families, confidence intervals, target-date alignment, QLIKE, class prevalence and probability calibration; inspect weekend dates and global close timing; compare manuscript claims to artifact. Return PASS / PASS WITH LIMITATIONS / FAIL with concrete defects. Do not expand the model universe or begin strategy work.
