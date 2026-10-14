@@ -338,7 +338,7 @@ def acquire_options(refresh: bool = False) -> dict:
             )
             if offset == 0:
                 rel = Path("data/cache/options_rolling") / f"{d0:%Y%m%d}_{d1:%Y%m%d}_MONTH1_ATM_{opt_type}.json"
-                legacy_rel = Path("data/cache/options_rolling") / f"{d0:%Y%m%d}_{d1:%m%d}_ATM_{opt_type}.json"
+                legacy_rel = Path("data/cache/options_rolling") / f"{d0:%Y%m%d}_{d1:%Y%m%d}_ATM_{opt_type}.json"
             path = ROOT / rel
             if not path.exists() and not refresh and legacy_cache_eligible and (ROOT / legacy_rel).exists():
                 rel = legacy_rel

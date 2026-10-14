@@ -93,6 +93,8 @@ def test_safe_response_detail_redacts_access_token_and_jwt():
         text = ""
         def json(self):
             return {
+                "errorCode": "BAD_REQUEST",
+                "errorMessage": "bad schema",
                 "debug": "access-token=secret-token eyJabcdefghijklmno.abcdefghijk.abcdefghijk"
             }
     detail = mod.safe_response_detail(FakeResponse(), secret="secret-token")

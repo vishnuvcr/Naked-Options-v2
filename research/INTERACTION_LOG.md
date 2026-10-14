@@ -43,3 +43,9 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Data/method review found the initial source query requested only ATM calls/puts plus one call and one put relative offset. Fixed numeric strikes could move beyond that restricted set by exit. The source query is being expanded to the documented monthly ATM−3…ATM+3 grid for both option types; strategy entry/exit selection is unchanged.
 - Review also found that the percentage-return paired difference compared varying premium-debit denominators and assigned zero on non-alert dates. The primary comparison is now daily net P&L in rupees per one-lot-proxy slot, with premium-normalized return secondary. This correction is disclosed and is not used to select a different model or trade structure.
 - Code improvements: vectorized block bootstrap, grouped date quote tables, exact-strike exit lookup, and private-cache persistence before statistical analysis. New tests cover same-strike matching and daily P&L when the alert skips a date.
+
+## Run #7 test-fixture correction — 2026-10-14
+
+- Actions run #7 failed before its data acquisition step because one response-redaction test expected errorCode and errorMessage in a fake provider response that no longer contained those fields. The implementation itself redacted the bearer token correctly, but the fixture/assertions disagreed.
+- Code review also caught a legacy ATM cache fallback date format that omitted the year in the second date; this would have missed existing ATM cache files and unnecessarily repeated two monthly-option requests per date window.
+- Corrected the fake response and full-date filename. The complete suite will be rerun by the next automatic Actions workflow.
