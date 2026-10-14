@@ -80,3 +80,8 @@ The developer accepted the independent tester's no-go. No strategy, paper-tradin
 - Independent review: NEXT, permitted now that results are acquired and documented. Audit paired-loss signs, QLIKE, horizon alignment, calibration, calendar dates and global timing; submit actionable findings.
 - Scientific disposition pending review: no robust return/direction winner established; volatility-expansion remains exploratory.
 - Trading strategy: OUT OF SCOPE; no option strategy or execution claim.
+
+
+## Independent review of run #60 — gate did not pass
+
+Tester report: [PDF method audit tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md). Disposition: FAIL FOR FINAL SCIENTIFIC SIGN-OFF, while workflow execution itself passed. Main blocker: 1,260 missing target dates caused by partial future windows for volatility labels. Developer fix committed to `scripts/build_feature_matrix.py` with a new assertion test. Workflow #61 is testing the code correction and #62 is queued with the test addition. Do not close the independent-review gate until the corrected artifact is checked and the tester submits an updated disposition.
