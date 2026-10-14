@@ -95,3 +95,10 @@ The first pilot data gate failed because quote coverage was only 17.45% (<80% th
 - Run #1: 13 pre-existing regression tests passed; acquisition step completed but strike grid exited with `BLOCKED: no usable option quote rows`. [Evidence](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38551789841).
 - Developer correction: emit sanitized diagnostics and empty result tables on data block, and add the prespecified 16-candidate × 2-horizon block-bootstrap/Holm inference family. Follow-up runs #2 and #3 are pending/in progress at the time of this entry.
 - No result values are claimed. If data remain unavailable, close as data-blocked; do not loosen gates or rank candidates.
+
+
+## OPT-BUY-2.0 — run #4 live checkpoint (2026-10-14 17:34 IST)
+
+- Workflow: [run #4](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38552144097), branch `research/option-strike-selection`, commit `29182fbf7e49fed42d4271c4bb41ad4f7dadd4e4`.
+- Status at check: running. Daily-target acquisition and validation completed, and the existing regression suite passed (13 tests). “Acquire/reuse options cache” remains in progress; strike grid, sanitized result upload and final tests remain pending.
+- No result artifact is currently available. This checkpoint is operational only; there are no strike ranks, candidate P&Ls, p-values, or strategy conclusions to report. User waived independent tester sign-off for this run, but the frozen data-quality and inference gates remain in force.
