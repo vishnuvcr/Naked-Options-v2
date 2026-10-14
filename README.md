@@ -85,14 +85,23 @@ The static research status page has been deployed successfully through [Pages pu
 
 ## Follow-on study: option-buying validation — OPT-BUY-1.0
 
-The original nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged. A separate follow-on tests whether volatility-expansion alerts add value for same-session intraday long straddles/strangles after Paytm Money brokerage, statutory fees and adverse-slippage sensitivity.
+The original nine-phase NIFTY-PRED-1.0 prediction-only study remains closed and unchanged. The separate test of next-session intraday monthly-option straddles/strangles is now closed for its frozen scope.
 
-- [Validation plan](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-validation/research/OPTION_BUYING_VALIDATION_PLAN.md)
-- [Current results record](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/option-buying-validation/research/option-validation/RESULTS.md)
-- [Option validation workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/workflows/option-buying-validation.yml)
-- [Run #6 pilot artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38543046923)
-- [Corrected wider-strike run #9](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38545503819)
+**Final disposition: NO-GO for the tested implementations; broader hypothesis INCONCLUSIVE because the data-quality gate failed.** Final workflow [run #11](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384) completed successfully; 13 unit tests passed before and after analysis.
 
-**Pilot status:** run #6 successfully received 196/196 monthly-option responses, but only 171/980 (17.45%) dates had valid fixed-strike entry/exit prices for either structure. All four model-filtered candidates lost on average. Because coverage was below the predeclared 80% gate, those p-values are **not accepted as primary strategy evidence**. Corrected run #9 has completed acquisition of the wider monthly ATM−3…ATM+3 grid and saved the private cache; the P&L/statistical step is now running. Its main comparison uses paired daily net rupee P&L, assigning zero to non-alert dates. After this run, an additional cached rerun will enforce exact ATM+1 CALL / ATM−1 PUT entry legs for the strangle; no result is accepted until that correction and independent review pass.
+- [Frozen validation plan](research/OPTION_BUYING_VALIDATION_PLAN.md)
+- [Results](research/option-validation/RESULTS.md)
+- [Structured manuscript](research/option-validation/MANUSCRIPT.md)
+- [Net P&L comparison chart](research/option-validation/figures/net_pnl_comparison.svg)
+- [Slippage sensitivity chart](research/option-validation/figures/slippage_sensitivity.svg)
+- [Primary comparisons CSV](reports/option_validation/primary_comparisons.csv)
+- [Results summary JSON](reports/option_validation/results_summary.json)
+- [Independent tester report](research/option-validation/TESTER_REPORT.md)
+- [Developer disposition](research/option-validation/DEVELOPER_DISPOSITION.md)
+- [Workflow run/artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384)
+- [Developer branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-developer)
+- [Independent tester branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/option-buying-independent-tester)
 
-No option-buying strategy is approved. Continue only if quote matching, cost tests, robustness checks and independent review pass; otherwise report an inconclusive or negative conclusion. No live orders are placed.
+At ₹10 brokerage/order and 50 bps adverse slippage per premium side, all four alert-filtered candidates had mean net daily P&L between −₹315.71 and −₹369.43 per one-lot-proxy eligible-day slot; all 95% intervals were negative. Positive paired differences versus always-buy (Holm-adjusted p=0.002) only show loss reduction relative to a worse baseline.
+
+Frozen gates failed: strangle quote coverage 69.18% (minimum 80%) and conflicting duplicate groups 1.409% (maximum 1%). All candidates failed the 100-bps and both-half profitability gates. No paper-trading or live deployment is approved. Do not relax gates or continue optimization loops.
