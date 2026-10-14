@@ -18,3 +18,12 @@ Research version: NIFTY-PRED-1.0
 ## Gate rule
 
 A phase is not PASS merely because files or workflows exist. Gates require execution artifacts and review evidence. A phase can complete with a negative result if the protocol ran and evidence is saved. If credentials or external permissions are missing, record BLOCKED and use free-source alternatives where possible. The final phase must record limitations and future directions.
+
+## Phase 5 branch checkpoint — 2026-10-14
+
+- Phases 1–4 have separate historical checkpoint branches; the working model pipeline is on research/phase-5-models.
+- Daily target: 4,901 observations from 2007-01-02 through 2026-10-13; SHA-256 b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050. The 20 weekend-dated observations are preserved and flagged for special-session/calendar cross-check; validation now passes with a warning, not deletion.
+- Unit tests passed 8/8 on an earlier run; the corrected branch adds a specific benchmark-relative OOS-R-squared arithmetic test.
+- Current canonical compute-bounded candidate: Actions run #34, commit d654d8f825ba19dc8dfc08f9f2e7b8f26779e7d3. At last check it was running validation/tests; model outputs not yet available.
+- The candidate selection uses two chronological folds for all model families; sequence families have three epochs and are restricted to next-session return and direction. All other sequence target/horizon cells must be reported BLOCKED_COMPUTE_BUDGET.
+- Final Phase 5 gate remains OPEN until Actions #34 completes and metrics/predictions plus independent checks are available.
