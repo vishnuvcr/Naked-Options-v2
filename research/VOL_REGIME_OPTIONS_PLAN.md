@@ -96,6 +96,15 @@ No repeated parameter searches. One bounded corrective run is allowed only for a
 
 ## 8. Current status and initial known risks
 
+## 9. Resume checkpoint — 2026-10-15
+
+- A bounded correction was made to the source-probe matrix in commit `8755f4b2739762982595571ab95937cc7da67bd0`, adding `WEEK expiryCode=3` to the already bounded candidate set; it does not alter strategy hypotheses or thresholds.
+- The last persisted sanitized source audit (2026-10-15 03:27 UTC) reports structurally valid 5-minute CALL and PUT arrays for `WEEK` codes 1 and 2 (375 rows per side in the five-day probe), with monotonic timestamps. `WEEK` code 0 returned the explicit error `expiryCode is required`; the monthly control passed. This establishes schema availability for candidate codes, not actual expiry mapping, stable contract identity, historical coverage, or profitability.
+- **Current gate:** Phase 2 partial PASS (weekly schema candidates found); exact expiry/contract identity and coverage are still NOT VERIFIED. Phase 3–9 remain NOT STARTED. No P&L computation or strategy conclusion is permitted until expiry mapping and contract identity pass.
+- Next bounded action: inspect the newly triggered workflow and sanitized artifact for code 3; then map each returned series to verified expiry dates and confirm same numeric strike/expiry across entry and exit. If the endpoint cannot establish this without guessing, stop as BLOCKED and do not use monthly data as a substitute.
+
+
+
 - **Phase 1:** in progress; plan frozen on developer branch.
 - **Phase 2:** pending API/contract source check.
 - **Phase 3–9:** not started.
