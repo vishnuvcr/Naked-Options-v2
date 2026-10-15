@@ -196,3 +196,11 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Created branch `research/vol-regime-options-continuation` from `research/vol-regime-options-developer` and committed a finite continuation plan at `research/VOL_REGIME_OPTIONS_CONTINUATION.md` (commit `2ff34f3d72aa84dd7188da440687f417d9ae1da9`).
 - Current next gate remains exact weekly expiry-code/date mapping and fixed-contract continuity. No new data acquisition, workflow execution, P&L, or strategy performance is claimed by this documentation step.
 - Operational activity only; private hidden reasoning is not logged.
+
+
+## 2026-10-16 — bounded source-audit retry
+
+- Re-read the continuation plan, source audit, phase status, error log, interaction log, Dhan probe code, HF dataset probe, and current workflow definition before resuming.
+- Confirmed the previous run's Dhan probe succeeded but the HF fallback was canceled during runner shutdown; cache-save and sanitized artifact steps did not execute.
+- Triggered a retry of the failed GitHub Actions job for [run #38676451667](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38676451667). At the latest poll, retry attempt 2 was in progress. Its outcome is pending; no HF data/license/coverage pass or P&L is claimed.
+- Source/contract gate remains blocking until expiry mapping and exact contract continuity are demonstrated. No hidden reasoning or secrets are logged.
