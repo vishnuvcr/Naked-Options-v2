@@ -186,3 +186,17 @@ The first automated probe [run #38676211935](https://github.com/vishnuvcr/Naked-
 | 4–9. Signals, costs, statistical inference, developer validation, tester, manuscript | NOT STARTED | No profitability result or strategy approval. |
 
 Developer instruction: do not start P&L unless expiry mapping and fixed-contract identity are verifiable. Tester instruction: make one bounded independent source/provenance check; if unresolved, recommend BLOCKED closure without weakening gates.
+
+
+## VOL-REGIME-OPT-1.0 latest source-gate checkpoint — 2026-10-15
+
+| Gate | Latest status | Evidence / decision |
+|---|---|---|
+| Dhan weekly schema | PASS, bounded sample only | Workflow [#10](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38676451667) log confirms WEEK codes 1/2/3 return valid CALL/PUT arrays; code 3 returned 357 CALL and 349 PUT rows. Code 0 fails with DH-905. |
+| Workflow completion / HF fallback | FAILED / NOT VERIFIED | Runner shutdown canceled the Hugging Face fallback probe; audit commit and artifact steps were skipped. The Dhan results were separately persisted in the developer branch's sanitized audit. No license/coverage pass is claimed for the HF dataset. |
+| Expiry-code to actual-date mapping | BLOCKED | No verified mapping across historical holiday/weekday changes. |
+| Exact numeric strike + expiry continuity | BLOCKED | Rolling schema does not itself prove a fixed-contract entry-to-expiry exit series. |
+| Full coverage, costs, P&L, statistics | NOT RUN | No P&L or strategy conclusion permitted. |
+| Independent tester | BLOCKED | Tester report confirms the source gate is insufficient; code 3 schema success does not remove the identity blocker. |
+
+**Disposition:** close VOL-REGIME-OPT-1.0 as BLOCKED for the frozen protocol. This is a data-feasibility result, not evidence the hypothesis is profitable or unprofitable. A future attempt needs a verifiable expiry/contract source and a new versioned protocol; do not weaken gates or substitute monthly options.
