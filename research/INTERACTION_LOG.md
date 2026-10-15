@@ -4,6 +4,14 @@ Record user-facing decisions, concrete operations, results and links. This is no
 
 ## 2026-10-14 — initialization
 
+## 2026-10-15 — resumed VOL-REGIME-OPT-1.0
+
+- Re-read README, plan, phase status, error log, interaction log, prior option results and the source-gate files before resuming.
+- Inspected Dhan source audit: WEEK code 0 fails; candidate WEEK codes 1 and 2 pass basic CALL/PUT array schema checks in a five-day January 2025 sample (375 rows per side). This does not establish expiry mapping, contract continuity, or full coverage.
+- Extended the bounded probe matrix to include WEEK code 3 in developer commit `8755f4b2739762982595571ab95937cc7da67bd0`. Updated developer plan, error log and README; the newest workflow result still must be checked before treating the correction as executed.
+- No P&L was computed and no strategy is approved. The next gate is exact expiry/contract identity; stop if unverifiable.
+
+
 - User requested fresh NIFTY 50 prediction research; no trading-strategy development; nine fixed phases; broad model comparison; robust statistics; separate developer/tester branches; manuscript; automated workflows and logs.
 - Checked GitHub metadata for vishnuvcr/Naked-Options-v2. Repository is public, default branch main, initially reported size 0. README retrieval returned not found. Branch search returned no branches.
 - Initialized README.md; first commit SHA returned by GitHub was e0b634fdb98da9a2ed136320a24afb7fdda8afb9.
