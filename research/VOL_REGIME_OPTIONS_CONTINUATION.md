@@ -50,7 +50,7 @@ Continue the option-buying research toward identifying the strongest evidence-su
 
 ### C6 — Automated quality checks and disposition
 - Unit/regression tests cover contract identity, expiry mapping, sign conventions, lot-size application, fees/taxes, slippage, missing data, P&L arithmetic, and bootstrap/Holm calculations.
-- Record every failure and correction. Existing user instruction waives a separate independent tester role for the option-entry/exit track; therefore use reproducible automated checks and explicitly label absence of independent review rather than inventing a tester sign-off.
+- Record every failure and correction. User explicitly requires **no tester role, no tester branch, and no developer–tester handoff**. Use reproducible automated checks within the single-researcher workflow; do not create a tester report or wait for tester sign-off.
 - If at least one candidate passes all frozen gates and demonstrates positive net expectancy with uncertainty/stability support, label it the best *within this tested universe*, not universally optimal. If none pass, state no validated best strategy found and explain the limiting gate.
 
 ### C7 — Manuscript and closure
