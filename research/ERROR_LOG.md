@@ -87,3 +87,6 @@ Run #2 confirmed the actual blocker was upstream of options acquisition: `BLOCKE
 
 
 | ERR-OPT3-007 | 2026-10-15 | OPT-BUY-3.0 data acquisition | HIGH | Run #6 still produced no option rows after the stale-manifest retry fix. | Acquisition manifest was BLOCKED_NO_VALID_DAILY_DATA because the ephemeral runner had no validated daily target cache; option acquisition consequently planned zero requests. | Added an explicit pre-step to acquire daily NIFTY data from Dhan, NSE official data, and Yahoo fallback when cache is absent, then require the daily CSV before option acquisition. Commit `0d9eb96d36316bf009f88e828d37812b2cd286cd`; verify run #7. | IN PROGRESS |
+
+
+| ERR-018 | 2026-10-15 | 8/9 | HIGH | Main README/result narrative claims the expanded prediction study passed independent review after run #62, but the currently accessible tester report still describes run #60 and says FAIL FOR FINAL SCIENTIFIC SIGN-OFF. | Tester report was not visibly reconciled to the newer workflow/result checkpoint in the inspected branch/path. | Created research/FRESH_PREDICTION_CONTINUATION_AUDIT.md on main and research/fresh-prediction-audit. Require an independent run #62 artifact review and manuscript reconciliation before treating sign-off as current. | OPEN |
