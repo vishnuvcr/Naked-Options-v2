@@ -188,3 +188,11 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - The workflow run as a whole failed because the runner received a shutdown signal during the HF fallback probe; cache-save, audit commit and artifact upload were skipped. No HF fallback result is claimed.
 - Recovered and persisted the available sanitized Dhan results. The code-3 PUT content hash was not captured in the recovered log excerpt and is deliberately left null rather than invented.
 - Rechecked independent tester report: expiry-code/date mapping and fixed-contract entry/exit continuity remain unproven. No P&L, profitability analysis or strategy recommendation is permitted. Disposition remains BLOCKED.
+
+## 2026-10-16 — user requested continued option-buying research
+
+- Re-read main README, VOL-REGIME-OPT-1.0 protocol, phase status, error log, and interaction log before acting.
+- Confirmed prior prediction study and OPT-BUY-1.0/2.0 remain closed; existing no-go results and quality gates are not to be weakened.
+- Created branch `research/vol-regime-options-continuation` from `research/vol-regime-options-developer` and committed a finite continuation plan at `research/VOL_REGIME_OPTIONS_CONTINUATION.md` (commit `2ff34f3d72aa84dd7188da440687f417d9ae1da9`).
+- Current next gate remains exact weekly expiry-code/date mapping and fixed-contract continuity. No new data acquisition, workflow execution, P&L, or strategy performance is claimed by this documentation step.
+- Operational activity only; private hidden reasoning is not logged.
