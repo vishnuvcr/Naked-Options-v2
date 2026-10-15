@@ -174,3 +174,15 @@ The prior OPT-BUY-1.0/2.0 data and profitability failures remain relevant risk w
 ### Phase 2 source-probe checkpoint — 2026-10-15
 
 The first automated probe [run #38676211935](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38676211935) failed at the weekly source gate: Dhan returned HTTP 400 / DH-905 “expiryCode is required” for WEEK with expiryCode=0; MONTH with expiryCode=1 returned valid call and put series (375 rows each). This does **not** establish that weekly data are unavailable because the provider docs enumerate WEEK and codes 0–2. One bounded correction now probes WEEK codes 0, 1 and 2. No monthly data are substituted for weekly data, and no strategy P&L has been computed.
+
+## VOL-REGIME-OPT-1.0 update — 2026-10-15
+
+| Phase | Status | Evidence / next action |
+|---|---|---|
+| 1. Protocol freeze | COMPLETE | Frozen plan on developer branch; unchanged. |
+| 2. Weekly schema probe | PARTIAL PASS | Persisted Dhan audit shows candidate codes 1/2 structurally valid in a five-day window; code 0 rejected. Saved audit predates code-3 probe edit. |
+| 2b. Expiry mapping and contract identity | BLOCKED — TESTER CHECK PENDING | [Source-gate disposition](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/vol-regime-options-developer/reports/vol_regime_options/SOURCE_GATE_DISPOSITION.md). No P&L permitted until actual expiry dates and exact-strike continuity are verified. |
+| 3. Full coverage/data quality | NOT STARTED | Do not begin before Phase 2b passes. |
+| 4–9. Signals, costs, statistical inference, developer validation, tester, manuscript | NOT STARTED | No profitability result or strategy approval. |
+
+Developer instruction: do not start P&L unless expiry mapping and fixed-contract identity are verifiable. Tester instruction: make one bounded independent source/provenance check; if unresolved, recommend BLOCKED closure without weakening gates.
