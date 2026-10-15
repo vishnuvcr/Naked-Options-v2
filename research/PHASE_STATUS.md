@@ -118,3 +118,10 @@ Process rule: no independent review/tester branch. The single workflow must run 
 ### OPT-BUY-3.0 data acquisition correction — 2026-10-15
 
 The completed [Actions run #6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38621480232) passed all automated tests and the entry/exit runner, but remained BLOCKED_NO_VALID_QUOTES because its manifest explicitly said BLOCKED_NO_VALID_DAILY_DATA: the runtime cache lacked `data/cache/nifty50_daily.csv`. The acquisition step had therefore never made any option requests (request count 0). Workflow now runs `scripts/acquire_data.py` when the daily target cache is absent, using Dhan first and the existing NSE/Yahoo fallbacks, then proceeds to rolling-option acquisition. [Run #7](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38621701520) is queued; no empirical P&L inference yet.
+
+
+## Continuation audit checkpoint — 2026-10-15
+
+The prediction study's model execution is recorded as complete, but the continuation audit identified a documentation/evidence mismatch in independent sign-off: the main README points to run #62 and says PASS WITH SCOPE LIMITATIONS, while the accessible report on research/pdf-audit-tester-final still reviews run #60 and says FAIL FOR FINAL SCIENTIFIC SIGN-OFF. Therefore, **scientific sign-off reconciliation is OPEN** until a current independent review of run #62 is located or completed. This is a documentation and verification gate, not permission to expand the frozen model catalogue. See [continuation audit](FRESH_PREDICTION_CONTINUATION_AUDIT.md) and [error log ERR-018](ERROR_LOG.md). No strategy development is in scope.
+
+**Tester instruction:** reconcile the report/artifact to run #62, check target-date completeness, target horizon offsets, core metric signs, multiple-testing families and manuscript numbers, and only then issue an evidence-backed disposition. Preserve the run #60 failure findings in the audit trail.
