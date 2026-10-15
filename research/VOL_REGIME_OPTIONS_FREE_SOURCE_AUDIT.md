@@ -29,3 +29,8 @@
 **C3–C7 — signal, P&L, costs, inference, checks, manuscript: NOT STARTED.**
 
 No strategy has passed the required gates; no profitability conclusion is supported.
+
+
+## Official expiry-rule reconciliation note (2026-10-16)
+
+NSE's own circulars demonstrate why a weekday rule alone is insufficient for historical contract mapping: the NIFTY weekly/monthly expiry schedule was revised effective April 2025, and revised again during June 2025 for contracts from September 2025 onward. See [NSE circular 33/2025 (4 March 2025)](https://nsearchives.nseindia.com/content/circulars/FAOP66938.pdf), [NSE circular 108/2025 (23 June 2025)](https://nsearchives.nseindia.com/content/circulars/FAOP68685.pdf), and [NSE circular 111/2025 (25 June 2025)](https://nsearchives.nseindia.com/content/circulars/FAOP68747.pdf). The official [NSE NIFTY 50 F&O contract information](https://www.nseindia.com/static/products-services/equity-derivatives-nifty50) describes contract identity using underlying, expiry date, option type, and strike. Therefore expiry reconciliation must use dated contract-file evidence and applicable circulars, not a hard-coded weekday heuristic. This is a documented design constraint, not evidence that the HF files have passed reconciliation.
