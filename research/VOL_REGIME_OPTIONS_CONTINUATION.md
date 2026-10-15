@@ -12,17 +12,18 @@ Continue the option-buying research toward identifying the strongest evidence-su
 - NIFTY-PRED-1.0 found no robust return/direction winner.
 - OPT-BUY-1.0 and OPT-BUY-2.0 are closed no-go for tested implementations; their frozen quality gates must not be weakened.
 - VOL-REGIME-OPT-1.0 proposes buying an ATM weekly straddle in a high predicted volatility-expansion regime and selling a delta-targeted weekly strangle in a low regime. The latest saved Dhan probe returned structurally valid weekly CALL/PUT arrays for candidate codes 1, 2, and 3 over a short sample, but did not prove expiry-date mapping, exact-contract continuity, broad coverage, or P&L.
-- The source-gate workflow was interrupted during the Hugging Face fallback; that fallback is not considered verified.
+- The original Dhan/HF source-gate workflow was interrupted during the Hugging Face fallback; that fallback is not considered verified. The related `vishnuvcr/Nifty` repository independently identifies `thetrademarkk/india-index-options-1m` and caches `options/NIFTY/*.parquet` with expiry-specific filenames. A new bounded audit workflow now reuses this same dataset source in the continuation branch, downloads only NIFTY options into the Actions cache, and records sanitized schema/expiry/duplicate/quality metadata. The dataset is labelled CC-BY-NC-4.0, so the work is restricted to non-commercial research with attribution.
 - These prior results are constraints/context, not new performance evidence.
 
 ## Finite phases and gates
 
 ### C1 — Reconcile source audit and contract identity
 1. Inspect current Dhan endpoint documentation and persisted sanitized probe evidence.
-2. Establish the mapping from weekly expiry codes to actual expiry dates using dated records and an independent expiry calendar/contract master.
-3. Prove stable instrument identity across entry and exit for the same expiry and numeric strike. Do not substitute rolling ATM-relative offsets for exact contracts.
-4. Check free alternatives before any paid source: NSE historical derivatives/contract files and public licensed datasets. Record terms, retrieval dates, schemas, gaps, and hashes.
-5. If no source proves expiry mapping and continuity within this bounded source phase, record BLOCKED and do not compute synthetic P&L.
+2. Reuse the exact HF dataset source already used in `vishnuvcr/Nifty`: `thetrademarkk/india-index-options-1m`, `options/NIFTY/*.parquet`. Its files are expiry-specific and contain explicit `expiry`, `strike`, `option_type`, `timestamp`, and OHLCV/OI fields according to its dataset card. Run the new cached audit before any P&L work. The dataset is CC-BY-NC-4.0; use only for non-commercial research with attribution.
+3. Establish expiry-date validity using explicit dataset expiry fields and an independent official NSE expiry calendar/contract record; compare filename date to row expiry.
+4. Prove stable instrument identity across entry and exit for the same expiry, numeric strike, and option type. Do not substitute rolling ATM-relative offsets for exact contracts.
+5. Check free alternatives before any paid source: NSE historical derivatives/contract files and public licensed datasets. Record terms, retrieval dates, schemas, gaps, and hashes.
+6. If the HF source fails schema, coverage, identity, or license gates, compare with official NSE contract files and Dhan data only as permitted; if no source proves expiry mapping and continuity within this bounded source phase, record BLOCKED and do not compute synthetic P&L.
 
 ### C2 — Full data quality and coverage
 - Build cached point-in-time option records; preserve source provenance and license conditions.
