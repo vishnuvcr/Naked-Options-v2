@@ -125,3 +125,12 @@ The completed [Actions run #6](https://github.com/vishnuvcr/Naked-Options-v2/act
 The prediction study's model execution is recorded as complete, but the continuation audit identified a documentation/evidence mismatch in independent sign-off: the main README points to run #62 and says PASS WITH SCOPE LIMITATIONS, while the accessible report on research/pdf-audit-tester-final still reviews run #60 and says FAIL FOR FINAL SCIENTIFIC SIGN-OFF. Therefore, **scientific sign-off reconciliation is OPEN** until a current independent review of run #62 is located or completed. This is a documentation and verification gate, not permission to expand the frozen model catalogue. See [continuation audit](FRESH_PREDICTION_CONTINUATION_AUDIT.md) and [error log ERR-018](ERROR_LOG.md). No strategy development is in scope.
 
 **Tester instruction:** reconcile the report/artifact to run #62, check target-date completeness, target horizon offsets, core metric signs, multiple-testing families and manuscript numbers, and only then issue an evidence-backed disposition. Preserve the run #60 failure findings in the audit trail.
+
+
+## Run #62 independent artifact review — 2026-10-15
+
+The tester directly inspected artifact [run #62](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38604064792). The earlier run #60 null-target-date defect is resolved in run #62: all 471,735 prediction rows have target dates, and exported target offsets align exactly to the recorded 1/5/20-session horizons. The tester independently reproduced MAE/RMSE for all 485 OOS metric rows (maximum absolute discrepancies 4.66e-10 and 7.45e-9) and reproduced Holm adjustments (maximum discrepancy 1.11e-16).
+
+**Gate status: target integrity and core arithmetic PASS; final statistical sign-off WITHHELD.** Some volatility rows have pathological QLIKE values (elastic-net h=5 approximately 1.31e9) and 34 zero actual volatility labels. QLIKE edge-case handling and full HAC/block-bootstrap inference remain to be independently verified. See the updated [tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md), [error log ERR-019](ERROR_LOG.md), and [continuation audit](FRESH_PREDICTION_CONTINUATION_AUDIT.md).
+
+**Developer instruction:** fix and test the bounded QLIKE edge case, recompute scores and the relevant inference, then resubmit the artifact for tester review. Do not expand the model catalogue or claim a universal winner.
