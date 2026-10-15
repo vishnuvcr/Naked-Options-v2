@@ -137,3 +137,8 @@ Uncovered method families are explicit: BERT/news fusion (requires timestamped n
 A separate user-approved study was opened for a weekly volatility-regime switch. Frozen protocol: 5-session volatility-expansion classifier is primary; 20-session signal is secondary; high regime buys ATM weekly straddle; low regime sells OTM weekly call/put near absolute delta 0.07; middle probability band is no-trade. Positions are held to the same week's expiry close. Costs, slippage, exact contract identity, expiry calendar, lot size, coverage and tail risk are hard gates.
 
 The first automated step is a Dhan weekly/monthly schema control probe on a fixed five-day historical window. Do not infer P&L from source-schema success. The prior option studies had failing data-quality/profitability gates and do not validate this new strategy. No threshold tuning or live deployment.
+
+
+### VOL-REGIME-OPT-1.0 source-gate correction — 2026-10-15
+
+Initial workflow failure was an infrastructure configuration error (setup-python pip cache path); fixed by explicitly naming requirements-research.txt. The subsequent Dhan probe passed the MONTH schema control (375 rows per option type in 2025-01-06 through 2025-01-10) but WEEK / expiryCode=0 returned HTTP 400 / DH-905 “expiryCode is required”. A single bounded correction now tests weekly codes 0, 1 and 2. No option P&L has been calculated and monthly rows are not treated as weekly contracts.
