@@ -129,3 +129,8 @@ The first automated request using documented WEEK / expiryCode=0 returned HTTP 4
 ## 2026-10-15 bounded source-gate checkpoint
 
 Phase 2b is **BLOCKED** pending verified mapping of Dhan weekly expiry codes to actual expiry dates and proof of exact contract continuity. See [source-gate disposition](../reports/vol_regime_options/SOURCE_GATE_DISPOSITION.md). The persisted code-1/code-2 schema probe is insufficient to establish expiry dates or a fixed-contract entry/exit series; the persisted audit predates the code-3 probe edit. The HF fallback audit file was not present on the developer branch and its dataset license is marked `other`, so it is not accepted as confirmatory evidence. No P&L phase has run. Hypothesis/parameters remain frozen; do not substitute monthly options or weaken gates. Independent tester to make one bounded check, then either identify verifiable provenance or close BLOCKED.
+
+
+## Final bounded source-gate disposition — 2026-10-15
+
+The workflow log confirms candidate WEEK codes 1, 2 and 3 return structurally valid CALL/PUT arrays in the five-day probe. Code 3 returned 357 CALL and 349 PUT rows. The workflow was canceled during the Hugging Face fallback probe by a runner shutdown signal; no HF audit result is available. The available Dhan fields still do not map the rolling expiry code to actual expiry dates or prove exact contract continuity across entry and expiry exit. The independent tester's disposition is BLOCKED. This frozen study stops here: no full data acquisition, P&L, statistical comparison, or strategy approval. Any renewed effort must begin as a new version after a verifiable contract-level source is identified.
