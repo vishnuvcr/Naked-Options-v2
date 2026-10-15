@@ -130,3 +130,10 @@ The first pilot data gate failed because quote coverage was only 17.45% (<80% th
 Changes: added Linear Regression, Lasso, SGD, KNN, Decision Tree, Gradient Boosting and AdaBoost to classical registries; added vanilla RNN, CNN and LSTM+GRU, CNN+RNN, CNN+TCN, LSTM+TCN compact sequence candidates. The frozen runner uses chronological splits and existing scoring/uncertainty routines; sequence models are restricted to one-session return/direction for a bounded CPU budget.
 
 Uncovered method families are explicit: BERT/news fusion (requires timestamped news), self-organizing fuzzy neural networks, DBN, wavelet preprocessing, Granger feature screening and backward-elimination LSTM are not yet empirically tested. Three options-strategy PDFs remain outside the prediction-only question. The final artifact must classify each family as tested, failed, blocked or not implemented.
+
+
+## VOL-REGIME-OPT-1.0 — protocol freeze and source-gate probe (2026-10-15)
+
+A separate user-approved study was opened for a weekly volatility-regime switch. Frozen protocol: 5-session volatility-expansion classifier is primary; 20-session signal is secondary; high regime buys ATM weekly straddle; low regime sells OTM weekly call/put near absolute delta 0.07; middle probability band is no-trade. Positions are held to the same week's expiry close. Costs, slippage, exact contract identity, expiry calendar, lot size, coverage and tail risk are hard gates.
+
+The first automated step is a Dhan weekly/monthly schema control probe on a fixed five-day historical window. Do not infer P&L from source-schema success. The prior option studies had failing data-quality/profitability gates and do not validate this new strategy. No threshold tuning or live deployment.
