@@ -9,6 +9,7 @@ on:
       - .github/workflows/vol-regime-options.yml
       - research/VOL_REGIME_OPTIONS_PLAN.md
       - research/vol-regime-options/source_probe.py
+      - research/vol-regime-options/hf_dataset_probe.py
 
 permissions:
   contents: write
@@ -34,7 +35,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: data/cache
-          key: vol-regime-options-${{ runner.os }}-${{ hashFiles('research/vol-regime-options/source_probe.py') }}
+          key: vol-regime-options-${{ runner.os }}-${{ hashFiles('research/vol-regime-options/source_probe.py', 'research/vol-regime-options/hf_dataset_probe.py') }}
           restore-keys: |
             vol-regime-options-${{ runner.os }}-
             nifty-option-validation-Linux-
@@ -47,6 +48,15 @@ jobs:
         env:
           DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
         run: python research/vol-regime-options/source_probe.py
+      - name: Install HF dataset audit dependencies
+        continue-on-error: true
+        run: python -m pip install huggingface_hub pandas pyarrow
+      - name: Probe free HF NIFTY options dataset
+        id: hf-probe
+        continue-on-error: true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python research/vol-regime-options/hf_dataset_probe.py
       - name: Save private response cache
         if: always()
         uses: actions/cache/save@v4
