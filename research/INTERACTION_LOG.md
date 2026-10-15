@@ -143,3 +143,12 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Run #6 completed successfully as a workflow, with the automated tests passing, but the output remained blocked. The sanitized option manifest showed BLOCKED_NO_VALID_DAILY_DATA, zero request records, and specifically `FileNotFoundError: Validated daily NIFTY cache is missing: data/cache/nifty50_daily.csv`.
 - Added a workflow pre-step to acquire the daily target cache using the repository's existing Dhan/NSE/Yahoo fallback adapter if it is absent, then require a non-empty target file before rolling-option acquisition. Commit `0d9eb96d36316bf009f88e828d37812b2cd286cd`; run #7 queued.
 - No strategy results are inferred from blocked runs. No independent review process is used.
+
+
+## 2026-10-15 — continuation and independent run #62 audit
+
+- Re-read main README, frozen research plan, phase status, error log, interaction log, expanded model results/manuscript, and existing tester reports before proceeding.
+- Downloaded GitHub Actions artifact for run #62 (`nifty-prediction-reports-38604064792.zip`, GitHub SHA-256 `14c9d6fc1bcb0f00ff28e708cb10c6cab9b378e5e60ff31f6e66aaa5e977172b`) and independently analyzed `predictions.csv`, `metrics.csv`, and metadata.
+- Verified 471,735 predictions, zero missing target dates, and exact target offsets for horizons 1/5/20 by session-index mapping. Recomputed MAE/RMSE for 485 OOS metric rows; maximum absolute discrepancies were 4.66e-10 and 7.45e-9. Recomputed HAC p-values and circular block-bootstrap confidence intervals using the repository's frozen formulas/seeds; max absolute p-value difference 3.17e-5, relative CI-bound differences below 3.67e-6. Recomputed Holm adjustments (max difference 1.11e-16) and all 102 QLIKE rows (model-score/improvement max difference 3.06e-5; baseline score 2.14e-14).
+- Clarified that extreme QLIKE scores are expected penalties from near-floor predictions under the implemented variance-form score, not a confirmed arithmetic defect. Logged ERR-019 as resolved with interpretation caveat; ERR-020 records the stale tester report reconciliation.
+- Updated the tester report on `research/pdf-audit-tester-final`, the expanded results and manuscript addenda on `research/pdf-audit-developer`, and main README / phase status / error log / continuation audit. Final disposition: PASS WITH SCOPE LIMITATIONS; no robust return/direction winner established. Missing data families and global timing/weekend-date verification remain limitations. No strategy development performed.
