@@ -1,0 +1,93 @@
+name: VOL regime HF exact-contract source audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/vol-regime-options-continuation
+    paths:
+      - .github/workflows/vol-regime-hf-source-audit.yml
+      - research/vol-regime-options/hf_nifty_options_audit.py
+      - research/VOL_REGIME_OPTIONS_CONTINUATION.md
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vol-regime-hf-source-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Restore HF option data cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/cache/hf_nifty_options
+          key: hf-nifty-options-${{ runner.os }}-${{ hashFiles('research/vol-regime-options/hf_nifty_options_audit.py') }}
+          restore-keys: |
+            hf-nifty-options-${{ runner.os }}-
+      - name: Install audit dependencies
+        run: python -m pip install pandas pyarrow huggingface_hub
+      - name: Download/reuse NIFTY historical options dataset
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from huggingface_hub import snapshot_download
+          root=Path("data/cache/hf_nifty_options")
+          expected=root/"options"/"NIFTY"
+          if not expected.exists() or not list(expected.glob("*.parquet")):
+              root.parent.mkdir(parents=True, exist_ok=True)
+              snapshot_download(
+                  repo_id="thetrademarkk/india-index-options-1m",
+                  repo_type="dataset",
+                  token=os.getenv("HF_TOKEN") or None,
+                  local_dir=str(root),
+                  allow_patterns=["options/NIFTY/*.parquet"],
+              )
+          assert list(expected.glob("*.parquet")), "No NIFTY option parquet files downloaded"
+          print("NIFTY expiry files:", len(list(expected.glob("*.parquet"))))
+          PY
+      - name: Audit exact expiry/strike/type fields
+        run: python research/vol-regime-options/hf_nifty_options_audit.py
+      - name: Save private market-data cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/cache/hf_nifty_options
+          key: hf-nifty-options-${{ runner.os }}-${{ hashFiles('research/vol-regime-options/hf_nifty_options_audit.py') }}-${{ github.run_id }}
+      - name: Commit sanitized audit report
+        if: always()
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin research/vol-regime-options-continuation
+          git reset --mixed origin/research/vol-regime-options-continuation
+          if [ -f reports/vol_regime_options/hf_nifty_options_audit.json ]; then
+            git add reports/vol_regime_options/hf_nifty_options_audit.json
+            if ! git diff --cached --quiet; then
+              git commit -m "research: record HF exact-contract source audit run $RUN_ID"
+              git push origin HEAD:research/vol-regime-options-continuation
+            fi
+          fi
+      - name: Upload sanitized audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hf-nifty-exact-contract-audit-${{ github.run_id }}
+          path: reports/vol_regime_options/hf_nifty_options_audit.json
+          if-no-files-found: warn
+          retention-days: 90
