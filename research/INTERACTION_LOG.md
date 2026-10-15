@@ -174,3 +174,10 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Independent tester report created on `research/vol-regime-options-tester`.
 - Tester disposition: BLOCKED; no P&L, no profitability claim, and no strategy approval. The report independently confirms that the saved schema probe does not establish expiry dates or fixed-contract continuity.
 - Main README now records the blocked status. Research will not proceed into P&L without a verifiable contract identity source.
+
+
+## 2026-10-15 — final bounded source-gate check
+
+- Checked workflow #10's final status and job logs. Dhan weekly codes 1/2/3 passed the basic short-window CALL/PUT schema checks; code 3 returned 357 CALL and 349 PUT rows. Code 0 failed as before.
+- Workflow #10 failed overall when the runner received a shutdown signal during the HF fallback probe; later cache-save, audit-commit and artifact-upload steps were skipped. Recovered the Dhan evidence and persisted the sanitized audit. Did not invent the unavailable code-3 PUT hash.
+- Tester report remains BLOCKED because neither actual expiry-date mapping nor fixed-contract entry-to-exit continuity is demonstrated. No P&L or strategy result exists. Study stopped at the frozen source gate.
