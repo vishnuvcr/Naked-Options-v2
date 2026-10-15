@@ -63,7 +63,7 @@ def main():
         for flag,code in (("WEEK",0),("WEEK",1),("WEEK",2),("WEEK",3),("MONTH",1)):
             for typ in ("CALL","PUT"):
                 body={"exchangeSegment":"NSE_FNO","interval":5,"securityId":13,"instrument":"OPTIDX",
-                      "expiryFlag":flag,"expiryCode":code,"strike":"ATM","drvOptionType":typ,
+                      "expiryFlag":flag,"expiryCode":("0" if code=="0-string" else code),"strike":"ATM","drvOptionType":typ,
                       "requiredData":["open","high","low","close","iv","volume","strike","oi","spot"],
                       "fromDate":START,"toDate":END}
                 rec={"expiry_flag":flag,"expiry_code":code,"option_type":typ}
