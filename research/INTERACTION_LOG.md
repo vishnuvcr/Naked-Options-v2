@@ -4,6 +4,14 @@ Record user-facing decisions, concrete operations, results and links. This is no
 
 ## 2026-10-14 — initialization
 
+## 2026-10-15 — resume VOL-REGIME-OPT-1.0
+
+- Re-read the repository README, frozen VOL-REGIME-OPT plan, phase status, error log, interaction log, option-validation results, and source-probe workflow before continuing.
+- Inspected `reports/vol_regime_options/source_audit.json`: initial WEEK `expiryCode=0` requests returned HTTP 400; monthly control returned structurally valid data. A later persisted audit recorded WEEK codes 1 and 2 as schema PASS for CALL and PUT (375 rows per side, five-day probe), while noting actual expiry mapping/contract identity must be verified before P&L.
+- Committed bounded probe-matrix extension adding WEEK code 3 in commit `8755f4b2739762982595571ab95937cc7da67bd0`; no strategy parameters or hypotheses changed. The workflow is configured to run on a push to the developer branch when the probe script changes. The next persisted audit must be checked before assuming that run completed.
+- Current conclusion: source schema is partly resolved, but exact expiry mapping, same-contract strike identity, data coverage, costs and independent test have not passed. No strategy result or approval is claimed.
+
+
 - User requested fresh NIFTY 50 prediction research; no trading-strategy development; nine fixed phases; broad model comparison; robust statistics; separate developer/tester branches; manuscript; automated workflows and logs.
 - Checked GitHub metadata for vishnuvcr/Naked-Options-v2. Repository is public, default branch main, initially reported size 0. README retrieval returned not found. Branch search returned no branches.
 - Initialized README.md; first commit SHA returned by GitHub was e0b634fdb98da9a2ed136320a24afb7fdda8afb9.
