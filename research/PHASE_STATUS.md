@@ -139,3 +139,20 @@ The tester directly inspected artifact [run #62](https://github.com/vishnuvcr/Na
 ## Final tester gate — run #62 (2026-10-15)
 
 **Phase 8 disposition: PASS WITH SCOPE LIMITATIONS. Phase 9: COMPLETE WITH SCOPE LIMITATIONS for the frozen prediction-only screen.** The updated independent tester report on `research/pdf-audit-tester-final` verifies all 471,735 target dates and exact 1/5/20-session offsets, independently recomputes MAE/RMSE for 485 OOS rows, HAC p-values and block-bootstrap intervals, Holm adjustment, and 102 volatility QLIKE rows. The earlier run #60 target-date issue is resolved in run #62. Extreme QLIKE values are explained by near-floor predictions and the documented variance-form scoring rule. Remaining limitations: weekend-date source/calendar verification, strict global close-time availability, missing options/PCR, FII/DII, breadth, point-in-time news/corporate actions and unreplicated literature methods. Final conclusion: no robust return/direction winner established. See the [current tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md). No strategy conclusion is authorized by this study.
+
+
+## VOL-REGIME-OPT-1.0 — weekly volatility-regime options switch (opened 2026-10-15)
+
+| Phase | Status | Gate / evidence |
+|---|---|---|
+| 1. Protocol and repository audit | COMPLETE — protocol frozen | [Plan](VOL_REGIME_OPTIONS_PLAN.md); developer branch research/vol-regime-options-developer. |
+| 2. Weekly data / expiry / contract source audit | IN PROGRESS | Source probe tests Dhan WEEK and MONTH response schemas in a five-day historical window; [workflow](../.github/workflows/vol-regime-options.yml). No strategy P&L may be computed until weekly schema and contract identity are verified. |
+| 3. Data acquisition and cache | NOT STARTED | Requires successful weekly source gate, private cached records and a sanitized manifest. |
+| 4. Regime signal reconstruction | NOT STARTED | 5-session classifier primary; 20-session secondary. Thresholds from development-only OOF probabilities. |
+| 5. Contract selection and backtest | NOT STARTED | Exact same-expiry, same-numeric-strike entry/exit; ATM long straddle in high regime; near-|delta| 0.07 short strangle in low regime. |
+| 6. Costs, risk and statistical analysis | NOT STARTED | Historical applicable fees, slippage scenarios, drawdown/tail-risk, block bootstrap and Holm correction. |
+| 7. Developer quality gate | NOT STARTED | Automated math/data/look-ahead/contract tests. |
+| 8. Independent tester | NOT STARTED | Separate branch, independent reproduction and gate decision required before manuscript closure. |
+| 9. Manuscript and closure | NOT STARTED | Structured report and final GO/NO-GO; stop after bounded gates. |
+
+The prior OPT-BUY-1.0/2.0 data and profitability failures remain relevant risk warnings, but they are not results for this different weekly-to-expiry hypothesis. No trading strategy is approved.
