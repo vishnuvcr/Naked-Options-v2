@@ -200,3 +200,15 @@ Developer instruction: do not start P&L unless expiry mapping and fixed-contract
 | Independent tester | BLOCKED | Tester report confirms the source gate is insufficient; code 3 schema success does not remove the identity blocker. |
 
 **Disposition:** close VOL-REGIME-OPT-1.0 as BLOCKED for the frozen protocol. This is a data-feasibility result, not evidence the hypothesis is profitable or unprofitable. A future attempt needs a verifiable expiry/contract source and a new versioned protocol; do not weaken gates or substitute monthly options.
+
+## VOL-REGIME-OPT continuation — HF dataset reuse checkpoint (2026-10-16)
+
+| Gate | Status | Evidence / next action |
+|---|---|---|
+| Reuse existing HF dataset | SOURCE IDENTIFIED | `vishnuvcr/Nifty` uses `thetrademarkk/india-index-options-1m`; dataset card documents expiry-specific NIFTY parquet files and explicit expiry/strike/type fields. License CC-BY-NC-4.0 restricts this to non-commercial research with attribution. |
+| Automated schema/data-quality audit | RUNNING / PENDING | New workflow [#38807375042](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38807375042); inspect sanitized artifact/report after completion. |
+| Expiry/contract identity | NOT YET VERIFIED | Check filename-expiry agreement and exact `(timestamp, expiry, strike, option_type)` keys; reconcile sample dates/contracts against official NSE evidence. |
+| Coverage and duplicate gates | NOT YET VERIFIED | Required >=80% eligible-date coverage and <=1% conflicting duplicate groups remain unchanged. |
+| Costs, P&L, statistical validation | NOT STARTED | Do not compute or claim profitability until source, coverage, contract identity, and license gates pass. |
+
+**Developer instruction:** verify workflow output and official-source reconciliation before moving to backtesting. **Automated quality instruction:** reject schema drift, expiry mismatches, conflicting duplicates, missing/invalid OHLC, and any contract substitution; never treat OHLC as bid/ask fills.
