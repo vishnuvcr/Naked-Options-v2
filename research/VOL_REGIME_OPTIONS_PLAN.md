@@ -2,7 +2,7 @@
 
 **Created:** 2026-10-15  
 **Developer branch:** `research/vol-regime-options-developer`  
-**Status:** Phase 1 protocol freeze; empirical work pending  
+**Status:** CLOSED - BLOCKED at Phase 2b source/contract-identity gate (2026-10-15)  
 **Parent studies:** NIFTY-PRED-1.0 (closed prediction-only) and OPT-BUY-1.0 / OPT-BUY-2.0 (closed, not approved). This is a new, separate hypothesis; no prior strategy result is reused as proof of profitability.
 
 ## 1. Research question
