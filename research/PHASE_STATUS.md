@@ -31,6 +31,19 @@ The independent tester branch reports PASS WITH SCOPE LIMITATIONS for the bounde
 
 ## Closure
 
+## VOL-REGIME-OPT-1.0 follow-on checkpoint — 2026-10-15
+
+| Phase | Status | Evidence / next gate |
+|---|---|---|
+| 1. Protocol freeze | COMPLETE ON DEVELOPER BRANCH | Frozen plan at `research/VOL_REGIME_OPTIONS_PLAN.md`; separate from closed prediction study. |
+| 2. Weekly source schema | PARTIAL PASS | Dhan weekly codes 1 and 2 returned structurally valid CALL/PUT arrays (375 rows per side) in a five-day probe. Code 0 failed with `DH-905: expiryCode is required`. Candidate code 3 was added to the bounded probe matrix; its latest run must be verified. |
+| 2b. Expiry mapping / contract identity | NOT VERIFIED | Must establish actual expiry dates and exact numeric strike/expiry continuity before any P&L. |
+| 3. Full historical coverage / data quality | NOT STARTED | No full-window coverage gate passed. |
+| 4–9. Signal, P&L, costs, risk, developer tests, independent tester, manuscript | NOT STARTED | No profitability or deployment claim permitted. |
+
+**Developer instruction:** check the latest workflow audit, map weekly expiry codes to verified actual expiry dates and contract identity; if this cannot be established within the bounded correction, stop as BLOCKED rather than substituting monthly data. **Tester instruction:** independently verify source timestamps, contract mapping, cost signs, lot sizes, missing-data handling and all later metrics; do not sign off before artifacts exist.
+
+
 The nine-phase work is closed for the bounded prediction-only scope with accepted limitations. Phases 2 and 6 are partial by design/scope, not falsely marked complete. The final conclusion is that this model/data set did not establish a robust return/direction edge. No options strategy was tested or approved.
 
 
