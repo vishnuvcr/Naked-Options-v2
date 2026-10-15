@@ -60,7 +60,7 @@ def main():
     else:
         session=requests.Session()
         session.headers.update({"Accept":"application/json","Content-Type":"application/json","access-token":TOKEN})
-        for flag,code in (("WEEK",0),("MONTH",1)):
+        for flag,code in (("WEEK",0),("WEEK",1),("WEEK",2),("MONTH",1)):
             for typ in ("CALL","PUT"):
                 body={"exchangeSegment":"NSE_FNO","interval":5,"securityId":13,"instrument":"OPTIDX",
                       "expiryFlag":flag,"expiryCode":code,"strike":"ATM","drvOptionType":typ,
@@ -74,7 +74,7 @@ def main():
                         rec.update(status="FAIL",error=safe_detail(resp))
                     else:
                         payload=resp.json(); rec.update(validate(payload,typ))
-                        raw=CACHE/f"{START}_{END}_{flag}_{typ}.json"
+                        raw=CACHE/f"{START}_{END}_{flag}{code}_{typ}.json"
                         raw.write_text(json.dumps(payload,separators=(",",":")),encoding="utf-8")
                         rec["cache_file"]=str(raw.relative_to(ROOT)); rec["sha256"]=sha256(raw)
                 except Exception as e:
@@ -86,7 +86,7 @@ def main():
         report["weekly_schema_pass"]=bool(len(weekly)==2 and all(r.get("status")=="PASS" for r in weekly))
         report["monthly_control_pass"]=bool(len(monthly)==2 and all(r.get("status")=="PASS" for r in monthly))
         report["status"]="PASS_WEEKLY_SCHEMA" if report["weekly_schema_pass"] else ("BLOCKED_WEEKLY_SCHEMA" if report["monthly_control_pass"] else "BLOCKED_SOURCE_OR_AUTH")
-        report["decision"]=("Weekly endpoint returned structurally valid data; proceed to expiry/contract identity and coverage audit." if report["weekly_schema_pass"] else
+        report["decision"]=("Weekly endpoint returned structurally valid data for candidate expiryCode(s); these codes must be mapped to actual expiry dates before backtesting." if report["weekly_schema_pass"] else
             "Do not substitute monthly data. Diagnose the recorded sanitized weekly request failure and stop the weekly strategy if the source gate cannot be resolved in one bounded correction.")
     p=OUT/"source_audit.json"; p.write_text(json.dumps(report,indent=2),encoding="utf-8")
     print(json.dumps(report,indent=2))
