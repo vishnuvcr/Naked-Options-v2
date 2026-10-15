@@ -180,3 +180,11 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Independent tester report is recorded on the separate `research/vol-regime-options-tester` branch.
 - Tester disposition is BLOCKED: no P&L or profitability claim, and no strategy approval. The saved schema probe does not establish expiry dates or fixed-contract continuity.
 - README and phase status record that the study is blocked pending verifiable contract identity.
+
+
+## 2026-10-15 — latest VOL-REGIME-OPT-1.0 source gate
+
+- Checked workflow run [#10](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38676451667) and job logs. Dhan probe itself completed: WEEK code 3 returned 357 CALL rows and 349 PUT rows with the expected basic fields; WEEK codes 1/2 also passed the short-window schema check, while code 0 failed.
+- The workflow run as a whole failed because the runner received a shutdown signal during the HF fallback probe; cache-save, audit commit and artifact upload were skipped. No HF fallback result is claimed.
+- Recovered and persisted the available sanitized Dhan results. The code-3 PUT content hash was not captured in the recovered log excerpt and is deliberately left null rather than invented.
+- Rechecked independent tester report: expiry-code/date mapping and fixed-contract entry/exit continuity remain unproven. No P&L, profitability analysis or strategy recommendation is permitted. Disposition remains BLOCKED.
