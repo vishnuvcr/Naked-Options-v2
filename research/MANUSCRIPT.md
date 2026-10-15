@@ -137,3 +137,10 @@ The tester independently recomputed the headline regression metrics, 482 non-ARI
 ### Limitations and closure
 
 The study remains bounded by one chronological holdout, unresolved calendar verification for twenty weekend-dated NIFTY observations, incomplete point-in-time global close alignment, and unavailable/unverified historical options/PCR, FII/DII, breadth, timestamped news and corporate-action features. Several PDF-specific methods were not exact reproductions. No strategy, options P&L, brokerage, slippage, spread, taxes, margin or live execution was tested. **Final disposition: PASS WITH SCOPE LIMITATIONS; close prediction-only research.** Do not expand the model catalogue or infer an options strategy from these results.
+
+
+## Expanded model-catalogue audit addendum (run #62)
+
+The expanded PDF-method/model catalogue is reported separately in [PDF_METHOD_AUDIT_RESULTS.md](PDF_METHOD_AUDIT_RESULTS.md). Independent tester review of run #62 confirms that all 471,735 saved predictions have non-null target dates and exact recorded 1/5/20-session offsets. MAE/RMSE, paired-loss HAC p-values, block-bootstrap intervals, Holm corrections and volatility QLIKE scores were independently reproduced from the uploaded artifact within numerical precision. The tester disposition is PASS WITH SCOPE LIMITATIONS; see [PDF_METHOD_AUDIT_TESTER_REPORT.md](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md).
+
+The result does not establish a robust return/direction winner. A favourable global XGBoost one-session volatility QLIKE score is specific to that target, horizon, metric and correction family. It is not a trading signal. Unverified weekend source dates, strict point-in-time global close alignment, missing options/PCR, FII/DII, breadth, point-in-time news/corporate actions and methods not empirically replicated remain limitations. The frozen prediction-only model screen is closed; no strategy is recommended.
