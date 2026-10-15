@@ -204,3 +204,12 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Confirmed the previous run's Dhan probe succeeded but the HF fallback was canceled during runner shutdown; cache-save and sanitized artifact steps did not execute.
 - Triggered a retry of the failed GitHub Actions job for [run #38676451667](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38676451667). At the latest poll, retry attempt 2 was in progress. Its outcome is pending; no HF data/license/coverage pass or P&L is claimed.
 - Source/contract gate remains blocking until expiry mapping and exact contract continuity are demonstrated. No hidden reasoning or secrets are logged.
+
+
+## 2026-10-16 — reuse HF dataset from vishnuvcr/Nifty
+
+- User asked whether the historical options dataset already used by the `vishnuvcr/Nifty` repository could be reused. Inspected that repository's README, workflow and tree; confirmed it downloads/caches `thetrademarkk/india-index-options-1m`, including `options/NIFTY/*.parquet`.
+- Verified the public dataset card identifies minute OHLCV/OI, explicit expiry/strike/option-type columns, partial coverage for illiquid/far strikes, and CC-BY-NC-4.0 licensing. Use is restricted to non-commercial research with attribution; this does not provide executable bid/ask quotes.
+- Added `research/vol-regime-options/hf_nifty_options_audit.py` and `.github/workflows/vol-regime-hf-source-audit.yml` on `research/vol-regime-options-continuation`. Workflow downloads/reuses only NIFTY option parquet files in Actions cache and emits a sanitized report (schema, expiry consistency, duplicates, missingness, OHLC integrity, coverage dates); raw data are not committed.
+- Updated the continuation plan and free-source audit. Workflow [run #38807375042](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38807375042) was in progress at the last poll. Exact-contract/expiry validation and P&L remain pending.
+- Operational actions and evidence only; no hidden reasoning or credentials are logged.
