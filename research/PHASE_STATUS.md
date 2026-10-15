@@ -212,3 +212,10 @@ Developer instruction: do not start P&L unless expiry mapping and fixed-contract
 | Costs, P&L, statistical validation | NOT STARTED | Do not compute or claim profitability until source, coverage, contract identity, and license gates pass. |
 
 **Developer instruction:** verify workflow output and official-source reconciliation before moving to backtesting. **Automated quality instruction:** reject schema drift, expiry mismatches, conflicting duplicates, missing/invalid OHLC, and any contract substitution; never treat OHLC as bid/ask fills.
+
+
+## HF source audit update — 2026-10-16
+- Download/reuse step: **completed** in GitHub Actions run [#38807375042](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38807375042).
+- Parquet quality audit: **in progress** at latest status check; no report/artifact yet.
+- Official NSE circular review: confirms expiry schedule revisions during 2025; dated contract-file evidence is required, not a weekday-only heuristic. See [free-source audit](VOL_REGIME_OPTIONS_FREE_SOURCE_AUDIT.md).
+- C1 contract identity: **BLOCKED / OPEN** until the audit report and official sample contract reconciliation are complete. C2–C7 remain not started. No P&L or strategy claim.
