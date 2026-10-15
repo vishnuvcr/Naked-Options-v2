@@ -168,3 +168,9 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - The HF fallback script is present, but its expected audit file was not found on the developer branch. The script itself flags an unrecognized `other` license and provider terms, so it cannot be treated as confirmatory evidence without further verification.
 - Created [source-gate disposition](../reports/vol_regime_options/SOURCE_GATE_DISPOSITION.md): blocked at expiry mapping/contract identity; no P&L was run and no strategy outcome is claimed.
 - Created separate `research/vol-regime-options-tester` branch from the developer checkpoint for independent bounded review.
+
+## 2026-10-15 — independent tester checkpoint
+
+- Independent tester report created on `research/vol-regime-options-tester`.
+- Tester disposition: BLOCKED; no P&L, no profitability claim, and no strategy approval. The report independently confirms that the saved schema probe does not establish expiry dates or fixed-contract continuity.
+- Main README now records the blocked status. Research will not proceed into P&L without a verifiable contract identity source.
