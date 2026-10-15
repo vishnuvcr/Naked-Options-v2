@@ -26,3 +26,10 @@ The main README and result narrative refer to run #62 and say the independent te
 ## Tester instructions
 
 Independently locate the actual tester report and artifact for run #62 (or document that none exists), verify target-date completeness and correct horizon alignment, recompute key metric/sign conventions and Holm families from saved predictions, and reconcile every manuscript headline to the artifact. Do not mark PASS unless these checks are evidenced. If the report on the tester branch is stale, update it only after the independent checks are complete; preserve run #60 findings in the error/history log.
+
+
+## Resolution — 2026-10-15
+
+The independent tester completed the run #62 audit and updated `research/PDF_METHOD_AUDIT_TESTER_REPORT.md` on `research/pdf-audit-tester-final` to **PASS WITH SCOPE LIMITATIONS**. The tester independently verified 471,735 prediction rows, zero missing target dates, exact 1/5/20-session offsets, 485 metric rows, HAC p-values, circular block-bootstrap intervals, Holm corrections and 102 QLIKE rows. The stale-report mismatch is resolved. See [current tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md), [developer results addendum](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-developer/research/PDF_METHOD_AUDIT_RESULTS.md), [main error log](ERROR_LOG.md), and [phase status](PHASE_STATUS.md).
+
+**Final disposition:** NIFTY-PRED-1.0 expanded model screen is closed with accepted scope limitations. No robust return/direction winner established. The one-session global XGBoost volatility QLIKE result is narrow and not a trading signal. Do not reopen model search under this frozen plan. No strategy development is in scope.
