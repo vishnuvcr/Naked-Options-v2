@@ -10,6 +10,9 @@ Append every observed error, unsuccessful source, unexpected value, failed test,
 
 ## Handling policy
 
+| ERR-021 | 2026-10-15 | VOL-REGIME-OPT Phase 2 | MEDIUM | Dhan weekly rolling-option requests using `expiryCode=0` returned HTTP 400 (`DH-905: expiryCode is required`). | Initial weekly probe used a value rejected by endpoint; monthly control was not evidence of weekly availability. | Added bounded candidate-code probe; persisted audit shows WEEK codes 1 and 2 structurally valid for CALL/PUT in the five-day probe. Exact expiry mapping and contract identity remain unverified. | OPEN — partial source resolution |
+
+
 HTTP 200 returning HTML instead of the required payload is a source failure. Empty response, missing token, invalid instrument ID, schema drift, duplicate dates, invalid OHLC, target NaNs, model runtime, NaN metrics, statistical-test issues and workflow errors are separate classes. Record source ID, redacted request metadata, status/content type, traceback summary, commit and retest outcome. Never log API tokens, authorization headers or secrets.
 
 | ERR-004 | 2026-10-14 | 3 | MEDIUM | Validator rejected 20 weekend-dated NIFTY observations, even though weekend dates can represent exchange special sessions. | Weekends were treated as invalid by default instead of being reported as a source/calendar warning. | Changed validation to preserve these rows, list exact dates and show a warning; later workflow run passed the data gate and feature matrix. SHA and source manifest are checked. | Verified by run 30/31 step summaries. | RESOLVED |
