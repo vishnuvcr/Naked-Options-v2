@@ -152,3 +152,13 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Verified 471,735 predictions, zero missing target dates, and exact target offsets for horizons 1/5/20 by session-index mapping. Recomputed MAE/RMSE for 485 OOS metric rows; maximum absolute discrepancies were 4.66e-10 and 7.45e-9. Recomputed HAC p-values and circular block-bootstrap confidence intervals using the repository's frozen formulas/seeds; max absolute p-value difference 3.17e-5, relative CI-bound differences below 3.67e-6. Recomputed Holm adjustments (max difference 1.11e-16) and all 102 QLIKE rows (model-score/improvement max difference 3.06e-5; baseline score 2.14e-14).
 - Clarified that extreme QLIKE scores are expected penalties from near-floor predictions under the implemented variance-form score, not a confirmed arithmetic defect. Logged ERR-019 as resolved with interpretation caveat; ERR-020 records the stale tester report reconciliation.
 - Updated the tester report on `research/pdf-audit-tester-final`, the expanded results and manuscript addenda on `research/pdf-audit-developer`, and main README / phase status / error log / continuation audit. Final disposition: PASS WITH SCOPE LIMITATIONS; no robust return/direction winner established. Missing data families and global timing/weekend-date verification remain limitations. No strategy development performed.
+
+
+## 2026-10-15 — VOL-REGIME-OPT-1.0 initiated
+
+- User approved a new bounded hypothesis: buy an ATM weekly call+put when predicted volatility is high; sell an OTM call+put near absolute delta 0.07 when predicted volatility is low.
+- Re-read current README, phase status, error log, interaction/experiment logs, data catalog, frozen option-buying plan, option-buying tester report, and existing option acquisition/backtest code before initiating the new branch.
+- Preserved NIFTY-PRED-1.0 and OPT-BUY-1.0/2.0 as closed prior studies; did not carry their results forward as strategy evidence.
+- Created research/vol-regime-options-developer, froze research/VOL_REGIME_OPTIONS_PLAN.md, and registered the plan on main.
+- Implemented a minimal source-gate probe for Dhan expiryFlag=WEEK and expiryFlag=MONTH using a fixed historical window; the workflow stores only sanitized source audit results in Git and keeps raw API responses in the private Actions cache. Credentials are redacted and never written to reports.
+- Current phase: protocol complete; weekly source/contract gate pending. No strategy P&L or profitability claim has been made.
