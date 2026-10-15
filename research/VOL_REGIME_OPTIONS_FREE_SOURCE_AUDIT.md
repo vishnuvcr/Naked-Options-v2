@@ -19,12 +19,12 @@
 1. A legitimate Dhan expired-options endpoint exists and documents up to five years of rolling minute-level data. This supports continuing the source investigation, but it does not resolve the specific weekly expiry-code mapping defect.
 2. NSE publishes official derivatives reports and contract files, including UDiFF bhavcopy. These are a free-source avenue for daily contract/expiry cross-checks, not proof of full intraday quote coverage.
 3. Community repositories and vendor pages are leads only. No external dataset has been downloaded, licensed, or validated by this web/source audit.
-4. No API calls were made in this audit, no repository secret was read, and no option P&L was calculated.
+4. No option P&L was calculated in the initial audit. On 2026-10-16, repository inspection of `vishnuvcr/Nifty` identified the existing HF dataset source and a new cached audit workflow was added to this continuation branch. The workflow run is being checked before any source/coverage conclusion is made.
 5. Required next technical step: inspect the actual persisted Dhan source-audit artifact and the exact request/response metadata, then compare returned dated strike/timestamps to official NSE contract/expiry evidence. If stable exact contracts cannot be reconstructed, do not backtest that data as fixed-expiry positions.
 
 ## Gate status
 
-**C1 — expiry mapping and fixed-contract continuity: OPEN / BLOCKING.**  
+**C1 — expiry mapping and fixed-contract continuity: OPEN / BLOCKING pending workflow audit and official-source reconciliation.**  
 **C2 — full historical coverage and quality: NOT STARTED.**  
 **C3–C7 — signal, P&L, costs, inference, checks, manuscript: NOT STARTED.**
 
