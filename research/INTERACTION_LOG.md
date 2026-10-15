@@ -213,3 +213,10 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Added `research/vol-regime-options/hf_nifty_options_audit.py` and `.github/workflows/vol-regime-hf-source-audit.yml` on `research/vol-regime-options-continuation`. Workflow downloads/reuses only NIFTY option parquet files in Actions cache and emits a sanitized report (schema, expiry consistency, duplicates, missingness, OHLC integrity, coverage dates); raw data are not committed.
 - Updated the continuation plan and free-source audit. Workflow [run #38807375042](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38807375042) was in progress at the last poll. Exact-contract/expiry validation and P&L remain pending.
 - Operational actions and evidence only; no hidden reasoning or credentials are logged.
+
+
+## 2026-10-16 — Continue HF source audit
+- User instruction: “Ok proceed”.
+- Checked GitHub Actions run #38807375042: download/reuse of the NIFTY parquet dataset completed; audit step remains in progress, no report/artifact available yet.
+- Reviewed official NSE expiry circulars: FAOP66938 (2025-03-04), FAOP68685 (2025-06-23), FAOP68747 (2025-06-25). Historical expiry mapping must use dated contract evidence.
+- Updated continuation free-source audit and main README. No strategy P&L was computed or inferred.
