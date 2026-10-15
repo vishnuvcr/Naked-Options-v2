@@ -1,7 +1,7 @@
 {
   "study": "VOL-REGIME-OPT-1.0",
   "phase": "2-source-audit",
-  "checked_at_utc": "2026-10-15T03:25:55.438088+00:00",
+  "checked_at_utc": "2026-10-15T03:27:02.729215+00:00",
   "probe_window": {
     "from": "2025-01-06",
     "to_exclusive": "2025-01-11"
@@ -25,6 +25,122 @@
       "http_status": 400,
       "status": "FAIL",
       "error": "errorCode=DH-905 errorType=Input_Exception errorMessage=expiryCode is required"
+    },
+    {
+      "expiry_flag": "WEEK",
+      "expiry_code": 1,
+      "option_type": "CALL",
+      "http_status": 200,
+      "status": "PASS",
+      "rows": 375,
+      "fields": [
+        "timestamp",
+        "open",
+        "close",
+        "strike",
+        "spot",
+        "iv"
+      ],
+      "timestamps_monotonic": true,
+      "sample_strikes": [
+        23350.0,
+        23400.0,
+        23450.0,
+        23500.0,
+        23550.0,
+        23600.0,
+        23650.0,
+        23700.0
+      ],
+      "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_WEEK1_CALL.json",
+      "sha256": "2a5e6693003dbc58aba4bba4ac2f359325d414c28d0978fdf7e3676ad44276d0"
+    },
+    {
+      "expiry_flag": "WEEK",
+      "expiry_code": 1,
+      "option_type": "PUT",
+      "http_status": 200,
+      "status": "PASS",
+      "rows": 375,
+      "fields": [
+        "timestamp",
+        "open",
+        "close",
+        "strike",
+        "spot",
+        "iv"
+      ],
+      "timestamps_monotonic": true,
+      "sample_strikes": [
+        23350.0,
+        23400.0,
+        23450.0,
+        23500.0,
+        23550.0,
+        23600.0,
+        23650.0,
+        23700.0
+      ],
+      "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_WEEK1_PUT.json",
+      "sha256": "3e59fd3005c9a3912c87f5ec45993fb15eabae142d0cf731d94120c4a663f1e7"
+    },
+    {
+      "expiry_flag": "WEEK",
+      "expiry_code": 2,
+      "option_type": "CALL",
+      "http_status": 200,
+      "status": "PASS",
+      "rows": 375,
+      "fields": [
+        "timestamp",
+        "open",
+        "close",
+        "strike",
+        "spot",
+        "iv"
+      ],
+      "timestamps_monotonic": true,
+      "sample_strikes": [
+        23350.0,
+        23400.0,
+        23450.0,
+        23500.0,
+        23550.0,
+        23600.0,
+        23650.0,
+        23700.0
+      ],
+      "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_WEEK2_CALL.json",
+      "sha256": "817e43a843e098ab85aa31fff81742c7deadbca65ceab2b0bd33a588547f1861"
+    },
+    {
+      "expiry_flag": "WEEK",
+      "expiry_code": 2,
+      "option_type": "PUT",
+      "http_status": 200,
+      "status": "PASS",
+      "rows": 375,
+      "fields": [
+        "timestamp",
+        "open",
+        "close",
+        "strike",
+        "spot",
+        "iv"
+      ],
+      "timestamps_monotonic": true,
+      "sample_strikes": [
+        23350.0,
+        23400.0,
+        23450.0,
+        23500.0,
+        23550.0,
+        23600.0,
+        23650.0,
+        23700.0
+      ],
+      "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_WEEK2_PUT.json",
+      "sha256": "4ea8328482e2023913b75e90236d17e080767663aa1d36a11aa4d596c2185698"
     },
     {
       "expiry_flag": "MONTH",
@@ -52,7 +168,7 @@
         23650.0,
         23700.0
       ],
-      "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_MONTH_CALL.json",
+      "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_MONTH1_CALL.json",
       "sha256": "728112032c2d873bdb5513f7a4d00cebe47f50ea89beb63c750469dbf91a9b1b"
     },
     {
@@ -81,12 +197,16 @@
         23650.0,
         23700.0
       ],
-      "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_MONTH_PUT.json",
+      "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_MONTH1_PUT.json",
       "sha256": "8b6615886573168d363eae4f9cfc32b31a5f2838baf34cfdecb69adddb7ac367"
     }
   ],
-  "weekly_schema_pass": false,
+  "weekly_candidate_codes": [
+    1,
+    2
+  ],
+  "weekly_schema_pass": true,
   "monthly_control_pass": true,
-  "status": "BLOCKED_WEEKLY_SCHEMA",
-  "decision": "Do not substitute monthly data. Diagnose the recorded sanitized weekly request failure and stop the weekly strategy if the source gate cannot be resolved in one bounded correction."
+  "status": "PASS_WEEKLY_SCHEMA",
+  "decision": "Weekly endpoint returned structurally valid data for candidate expiryCode(s); map each code to actual expiry dates and validate exact contract identity before any P&L work."
 }
