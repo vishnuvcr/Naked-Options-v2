@@ -178,3 +178,16 @@ The independent tester's final disposition is **PASS WITH SCOPE LIMITATIONS**. T
 ## Final handoff
 
 Developer: close this bounded prediction-only phase; update README, phase status and logs; preserve all limitations; do not launch additional model loops or trading-strategy work under this request. Tester: archive this final PASS WITH SCOPE LIMITATIONS disposition and do not request further work unless a reproducible defect is found.
+
+
+## Independent run #62 artifact audit — 2026-10-15
+
+The independent tester directly reviewed artifact [run #62](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38604064792), SHA-256 `14c9d6fc1bcb0f00ff28e708cb10c6cab9b378e5e60ff31f6e66aaa5e977172b`.
+
+- 471,735 prediction rows; zero missing target dates. Every target date has a session-index offset equal to its recorded 1-, 5-, or 20-session horizon.
+- 485 OOS metric rows independently checked. MAE/RMSE max absolute differences: `4.66e-10` / `7.45e-9`.
+- HAC p-values and circular block-bootstrap confidence intervals independently reproduced from raw prediction rows using the recorded loss definitions, seeds, block sizes and 300 replicates. Max absolute p-value difference `3.17e-5`; max relative CI bound differences `3.67e-6` (lower) and `5.85e-7` (upper).
+- Holm adjustment independently reproduced; maximum absolute difference `1.11e-16`.
+- All 102 volatility QLIKE rows independently reproduced. Maximum absolute difference for model score/improvement `3.06e-5`; baseline score `2.14e-14`. Large elastic-net horizon-5 QLIKE is the expected penalty for a near-floor prediction, not a confirmed formula error.
+
+**Tester disposition: PASS WITH SCOPE LIMITATIONS.** No robust return/direction winner is established. The global XGBoost one-session volatility QLIKE result is a narrow metric-specific finding. Weekend-dated observations, strict global timing, and missing options/PCR, FII/DII, breadth, news/corporate-action inputs remain limitations. No trading strategy is inferred.
