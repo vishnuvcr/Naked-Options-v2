@@ -99,3 +99,6 @@ Run #2 confirmed the actual blocker was upstream of options acquisition: `BLOCKE
 
 
 | ERR-021 | 2026-10-15 | VOL-REGIME-OPT-1.0 phase 2 | HIGH | Weekly-strategy hypothesis requires historical weekly expiry contracts, but prior option studies used monthly rolling data and same-session exits. | Reusing monthly rolling rows or a changing ATM-relative series as if it were a stable weekly contract would misstate performance and could introduce look-ahead/contract-identity errors. | Added a separate frozen protocol and Dhan WEEK-vs-MONTH schema probe. Require exact expiry/strike mapping and historical expiry calendar; if not available, stop without strategy P&L. | OPEN — source gate pending |
+
+
+| ERR-022 | 2026-10-15 | VOL-REGIME-OPT-1.0 phase 2 | MEDIUM | First Dhan WEEK / expiryCode=0 requests returned HTTP 400: DH-905 “expiryCode is required”; MONTH / expiryCode=1 control returned valid 375-row call and put series. | The endpoint may have a provider-side validation issue for enum value 0, or the weekly parameter combination may differ from the docs. Monthly success does not prove weekly support. | Added one bounded diagnostic probe for WEEK codes 0, 1 and 2 with monthly control. No weekly P&L will be calculated unless a code passes and actual expiry mapping is verified. | OPEN — corrective source probe running |
