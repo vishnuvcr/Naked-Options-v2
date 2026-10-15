@@ -162,3 +162,7 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Created research/vol-regime-options-developer, froze research/VOL_REGIME_OPTIONS_PLAN.md, and registered the plan on main.
 - Implemented a minimal source-gate probe for Dhan expiryFlag=WEEK and expiryFlag=MONTH using a fixed historical window; the workflow stores only sanitized source audit results in Git and keeps raw API responses in the private Actions cache. Credentials are redacted and never written to reports.
 - Current phase: protocol complete; weekly source/contract gate pending. No strategy P&L or profitability claim has been made.
+
+
+- First source workflow [run #38676211935](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38676211935) exposed an automation defect: setup-python pip caching failed because no requirements file was declared. Corrected workflow to set requirements-research.txt as cache dependency.
+- Corrected source run then showed MONTH control succeeds (375 rows each for CALL/PUT) but WEEK / expiryCode=0 returns DH-905 “expiryCode is required”. Added one bounded probe of WEEK codes 0, 1 and 2; amended only the source-diagnostic record in the protocol. Weekly contract identity and expiry remain unverified; no P&L calculated.
