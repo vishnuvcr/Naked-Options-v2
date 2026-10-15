@@ -160,3 +160,11 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Verified 471,735 predictions, zero missing target dates, and exact target offsets for horizons 1/5/20 by session-index mapping. Recomputed MAE/RMSE for 485 OOS metric rows; maximum absolute discrepancies were 4.66e-10 and 7.45e-9. Recomputed HAC p-values and circular block-bootstrap confidence intervals using the repository's frozen formulas/seeds; max absolute p-value difference 3.17e-5, relative CI-bound differences below 3.67e-6. Recomputed Holm adjustments (max difference 1.11e-16) and all 102 QLIKE rows (model-score/improvement max difference 3.06e-5; baseline score 2.14e-14).
 - Clarified that extreme QLIKE scores are expected penalties from near-floor predictions under the implemented variance-form score, not a confirmed arithmetic defect. Logged ERR-019 as resolved with interpretation caveat; ERR-020 records the stale tester report reconciliation.
 - Updated the tester report on `research/pdf-audit-tester-final`, the expanded results and manuscript addenda on `research/pdf-audit-developer`, and main README / phase status / error log / continuation audit. Final disposition: PASS WITH SCOPE LIMITATIONS; no robust return/direction winner established. Missing data families and global timing/weekend-date verification remain limitations. No strategy development performed.
+
+## 2026-10-15 — VOL-REGIME-OPT-1.0 bounded gate disposition
+
+- Rechecked frozen plan, source probe, workflow, saved Dhan audit, phase status and error/activity logs.
+- Saved audit still shows WEEK codes 1/2 schema-pass (375 rows per side in the five-day sample), WEEK code 0 fails with `DH-905`; audit timestamp predates the code-3 edit. No fresh code-3 result was verified.
+- The HF fallback script is present, but its expected audit file was not found on the developer branch. The script itself flags an unrecognized `other` license and provider terms, so it cannot be treated as confirmatory evidence without further verification.
+- Created [source-gate disposition](../reports/vol_regime_options/SOURCE_GATE_DISPOSITION.md): blocked at expiry mapping/contract identity; no P&L was run and no strategy outcome is claimed.
+- Created separate `research/vol-regime-options-tester` branch from the developer checkpoint for independent bounded review.
