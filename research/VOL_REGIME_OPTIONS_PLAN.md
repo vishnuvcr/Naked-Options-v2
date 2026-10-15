@@ -111,3 +111,8 @@ At the end, independently verify expiry/strike identity, delta selection, look-a
 ## Tester-to-developer instructions
 
 Return a line-item reproducibility report with exact paths, independently recalculated figures and blockers. If any hard gate fails, request only the smallest frozen-protocol correction; never tune strategy parameters to rescue performance.
+
+
+## Protocol amendment log — 2026-10-15 (source gate only)
+
+The first automated request using documented WEEK / expiryCode=0 returned HTTP 400 with sanitized provider message “expiryCode is required”, while MONTH / expiryCode=1 passed schema validation. This is consistent with a provider validation issue for code 0, not proof that weekly data are unavailable. One bounded diagnostic correction tests WEEK codes 0, 1 and 2 against the monthly control. The strategy rules, thresholds, costs and acceptance gates are unchanged. Any successful WEEK code must still be mapped to actual expiry dates; a schema pass alone does not clear contract identity.
