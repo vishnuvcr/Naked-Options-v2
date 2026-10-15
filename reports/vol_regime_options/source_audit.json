@@ -1,7 +1,7 @@
 {
   "study": "VOL-REGIME-OPT-1.0",
   "phase": "2-source-audit",
-  "checked_at_utc": "2026-10-15T03:27:02.729215+00:00",
+  "checked_at_utc": "2026-10-15T03:29:09Z",
   "probe_window": {
     "from": "2025-01-06",
     "to_exclusive": "2025-01-11"
@@ -43,14 +43,14 @@
       ],
       "timestamps_monotonic": true,
       "sample_strikes": [
-        23350.0,
-        23400.0,
-        23450.0,
-        23500.0,
-        23550.0,
-        23600.0,
-        23650.0,
-        23700.0
+        23350,
+        23400,
+        23450,
+        23500,
+        23550,
+        23600,
+        23650,
+        23700
       ],
       "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_WEEK1_CALL.json",
       "sha256": "2a5e6693003dbc58aba4bba4ac2f359325d414c28d0978fdf7e3676ad44276d0"
@@ -72,14 +72,14 @@
       ],
       "timestamps_monotonic": true,
       "sample_strikes": [
-        23350.0,
-        23400.0,
-        23450.0,
-        23500.0,
-        23550.0,
-        23600.0,
-        23650.0,
-        23700.0
+        23350,
+        23400,
+        23450,
+        23500,
+        23550,
+        23600,
+        23650,
+        23700
       ],
       "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_WEEK1_PUT.json",
       "sha256": "3e59fd3005c9a3912c87f5ec45993fb15eabae142d0cf731d94120c4a663f1e7"
@@ -101,14 +101,14 @@
       ],
       "timestamps_monotonic": true,
       "sample_strikes": [
-        23350.0,
-        23400.0,
-        23450.0,
-        23500.0,
-        23550.0,
-        23600.0,
-        23650.0,
-        23700.0
+        23350,
+        23400,
+        23450,
+        23500,
+        23550,
+        23600,
+        23650,
+        23700
       ],
       "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_WEEK2_CALL.json",
       "sha256": "817e43a843e098ab85aa31fff81742c7deadbca65ceab2b0bd33a588547f1861"
@@ -130,14 +130,14 @@
       ],
       "timestamps_monotonic": true,
       "sample_strikes": [
-        23350.0,
-        23400.0,
-        23450.0,
-        23500.0,
-        23550.0,
-        23600.0,
-        23650.0,
-        23700.0
+        23350,
+        23400,
+        23450,
+        23500,
+        23550,
+        23600,
+        23650,
+        23700
       ],
       "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_WEEK2_PUT.json",
       "sha256": "4ea8328482e2023913b75e90236d17e080767663aa1d36a11aa4d596c2185698"
@@ -159,14 +159,14 @@
       ],
       "timestamps_monotonic": true,
       "sample_strikes": [
-        23350.0,
-        23400.0,
-        23450.0,
-        23500.0,
-        23550.0,
-        23600.0,
-        23650.0,
-        23700.0
+        23350,
+        23400,
+        23450,
+        23500,
+        23550,
+        23600,
+        23650,
+        23700
       ],
       "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_MONTH1_CALL.json",
       "sha256": "728112032c2d873bdb5513f7a4d00cebe47f50ea89beb63c750469dbf91a9b1b"
@@ -188,25 +188,103 @@
       ],
       "timestamps_monotonic": true,
       "sample_strikes": [
-        23350.0,
-        23400.0,
-        23450.0,
-        23500.0,
-        23550.0,
-        23600.0,
-        23650.0,
-        23700.0
+        23350,
+        23400,
+        23450,
+        23500,
+        23550,
+        23600,
+        23650,
+        23700
       ],
       "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_MONTH1_PUT.json",
       "sha256": "8b6615886573168d363eae4f9cfc32b31a5f2838baf34cfdecb69adddb7ac367"
+    },
+    {
+      "expiry_flag": "WEEK",
+      "expiry_code": 3,
+      "option_type": "CALL",
+      "http_status": 200,
+      "status": "PASS",
+      "rows": 357,
+      "fields": [
+        "timestamp",
+        "open",
+        "close",
+        "strike",
+        "spot",
+        "iv"
+      ],
+      "timestamps_monotonic": true,
+      "sample_strikes": [
+        23350,
+        23400,
+        23450,
+        23500,
+        23550,
+        23600,
+        23650,
+        23700
+      ],
+      "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_WEEK3_CALL.json",
+      "sha256": "e1fb8f9cca348391ad75eed8d15c4c77d4ad746413ac892b0b182abea765cf36"
+    },
+    {
+      "expiry_flag": "WEEK",
+      "expiry_code": 3,
+      "option_type": "PUT",
+      "http_status": 200,
+      "status": "PASS",
+      "rows": 349,
+      "fields": [
+        "timestamp",
+        "open",
+        "close",
+        "strike",
+        "spot",
+        "iv"
+      ],
+      "timestamps_monotonic": true,
+      "sample_strikes": [
+        23350,
+        23400,
+        23450,
+        23500,
+        23550,
+        23600,
+        23650,
+        23700
+      ],
+      "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_WEEK3_PUT.json",
+      "sha256": "[hash not captured in summarized log]"
     }
   ],
   "weekly_candidate_codes": [
     1,
-    2
+    2,
+    3
   ],
   "weekly_schema_pass": true,
   "monthly_control_pass": true,
   "status": "PASS_WEEKLY_SCHEMA",
-  "decision": "Weekly endpoint returned structurally valid data for candidate expiryCode(s); map each code to actual expiry dates and validate exact contract identity before any P&L work."
+  "decision": "Codes 1, 2 and 3 returned structurally valid weekly candidate data in a five-day probe. This does not map expiry codes to actual dates or establish fixed contract identity. No P&L permitted; fallback probe was canceled and has no audit result.",
+  "workflow_run": {
+    "run_id": 38676451667,
+    "url": "https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38676451667",
+    "conclusion": "failure",
+    "reason": "Runner shutdown signal canceled the HF fallback probe after the Dhan source probe completed; later cache/commit/artifact steps were skipped."
+  },
+  "code3_result": {
+    "CALL": {
+      "status": "PASS",
+      "rows": 357,
+      "sha256": "e1fb8f9cca348391ad75eed8d15c4c77d4ad746413ac892b0b182abea765cf36"
+    },
+    "PUT": {
+      "status": "PASS",
+      "rows": 349,
+      "sha256": null,
+      "note": "Exact PUT SHA not captured in workflow-log excerpt; do not infer it."
+    }
+  }
 }
