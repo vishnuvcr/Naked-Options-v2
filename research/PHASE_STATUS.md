@@ -156,3 +156,8 @@ The tester directly inspected artifact [run #62](https://github.com/vishnuvcr/Na
 | 9. Manuscript and closure | NOT STARTED | Structured report and final GO/NO-GO; stop after bounded gates. |
 
 The prior OPT-BUY-1.0/2.0 data and profitability failures remain relevant risk warnings, but they are not results for this different weekly-to-expiry hypothesis. No trading strategy is approved.
+
+
+### Phase 2 source-probe checkpoint — 2026-10-15
+
+The first automated probe [run #38676211935](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38676211935) failed at the weekly source gate: Dhan returned HTTP 400 / DH-905 “expiryCode is required” for WEEK with expiryCode=0; MONTH with expiryCode=1 returned valid call and put series (375 rows each). This does **not** establish that weekly data are unavailable because the provider docs enumerate WEEK and codes 0–2. One bounded correction now probes WEEK codes 0, 1 and 2. No monthly data are substituted for weekly data, and no strategy P&L has been computed.
