@@ -70,6 +70,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # A queued workflow can start from an older event SHA after a prior run has committed its report.
+          git fetch origin research/vol-regime-options-developer
+          git reset --mixed origin/research/vol-regime-options-developer
           if [ -f reports/vol_regime_options/source_audit.json ]; then
             git add reports/vol_regime_options/source_audit.json
             if ! git diff --cached --quiet; then
