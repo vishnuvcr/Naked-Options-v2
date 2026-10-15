@@ -100,3 +100,5 @@ Run #2 confirmed the actual blocker was upstream of options acquisition: `BLOCKE
 
 
 | ERR-020 | 2026-10-15 | 8/9 | LOW | Tester sign-off was initially stale at run #60 despite the newer run #62 result artifact. | The tester report path had not been updated after the expanded run. | Tester independently inspected run #62, reproduced target offsets, 485 metric rows, HAC/block-bootstrap outputs, Holm adjustment, and 102 QLIKE rows; updated [tester report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/pdf-audit-tester-final/research/PDF_METHOD_AUDIT_TESTER_REPORT.md). | RESOLVED — PASS WITH SCOPE LIMITATIONS |
+
+| ERR-022 | 2026-10-15 | VOL-REGIME-OPT Phase 2b | HIGH | Expiry date mapping and fixed-contract continuity are not verified. | Persisted rolling data schema lacks an explicit expiry date; code-3 audit is not verified; fallback audit absent. | Source-gate disposition recorded and independent tester created a blocked report. No P&L run. | BLOCKED pending any future verifiable source |
