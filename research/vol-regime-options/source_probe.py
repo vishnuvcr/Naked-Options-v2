@@ -83,11 +83,22 @@ def main():
                 time.sleep(0.35)
         weekly=[r for r in report["requests"] if r["expiry_flag"]=="WEEK"]
         monthly=[r for r in report["requests"] if r["expiry_flag"]=="MONTH"]
-        report["weekly_schema_pass"]=bool(len(weekly)==2 and all(r.get("status")=="PASS" for r in weekly))
+        # Code 0 can be rejected by the endpoint despite appearing in the annexure.
+        # The bounded probe checks codes 0/1/2; require both call and put to pass
+        # for at least one identical weekly expiry code, rather than requiring all
+        # candidate codes to succeed or incorrectly expecting only two requests.
+        weekly_codes=sorted({r["expiry_code"] for r in weekly})
+        valid_weekly_codes=[
+            code for code in weekly_codes
+            if all(any(r["expiry_code"]==code and r["option_type"]==typ and r.get("status")=="PASS"
+                       for r in weekly) for typ in ("CALL","PUT"))
+        ]
+        report["weekly_candidate_codes"]=valid_weekly_codes
+        report["weekly_schema_pass"]=bool(valid_weekly_codes)
         report["monthly_control_pass"]=bool(len(monthly)==2 and all(r.get("status")=="PASS" for r in monthly))
         report["status"]="PASS_WEEKLY_SCHEMA" if report["weekly_schema_pass"] else ("BLOCKED_WEEKLY_SCHEMA" if report["monthly_control_pass"] else "BLOCKED_SOURCE_OR_AUTH")
-        report["decision"]=("Weekly endpoint returned structurally valid data for candidate expiryCode(s); these codes must be mapped to actual expiry dates before backtesting." if report["weekly_schema_pass"] else
-            "Do not substitute monthly data. Diagnose the recorded sanitized weekly request failure and stop the weekly strategy if the source gate cannot be resolved in one bounded correction.")
+        report["decision"]=("Weekly endpoint returned structurally valid data for candidate expiryCode(s); map each code to actual expiry dates and validate exact contract identity before any P&L work." if report["weekly_schema_pass"] else
+            "Do not substitute monthly data. The bounded expiryCode probe did not find a valid weekly call/put pair; stop the weekly strategy and report the source gate as blocked.")
     p=OUT/"source_audit.json"; p.write_text(json.dumps(report,indent=2),encoding="utf-8")
     print(json.dumps(report,indent=2))
     if report["status"] not in ("PASS_WEEKLY_SCHEMA",): sys.exit(2)
