@@ -174,3 +174,9 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 
 - First source workflow [run #38676211935](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38676211935) exposed an automation defect: setup-python pip caching failed because no requirements file was declared. Corrected workflow to set requirements-research.txt as cache dependency.
 - Corrected source run then showed MONTH control succeeds (375 rows each for CALL/PUT) but WEEK / expiryCode=0 returns DH-905 “expiryCode is required”. Added one bounded probe of WEEK codes 0, 1 and 2; amended only the source-diagnostic record in the protocol. Weekly contract identity and expiry remain unverified; no P&L calculated.
+
+## 2026-10-15 — independent tester checkpoint
+
+- Independent tester report is recorded on the separate `research/vol-regime-options-tester` branch.
+- Tester disposition is BLOCKED: no P&L or profitability claim, and no strategy approval. The saved schema probe does not establish expiry dates or fixed-contract continuity.
+- README and phase status record that the study is blocked pending verifiable contract identity.
