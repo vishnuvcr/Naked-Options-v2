@@ -1,0 +1,92 @@
+{
+  "study": "VOL-REGIME-OPT-1.0",
+  "phase": "2-source-audit",
+  "checked_at_utc": "2026-10-15T03:25:55.438088+00:00",
+  "probe_window": {
+    "from": "2025-01-06",
+    "to_exclusive": "2025-01-11"
+  },
+  "endpoint": "https://api.dhan.co/v2/charts/rollingoption",
+  "credential_present": true,
+  "source_documentation": "https://dhanhq.co/docs/v2/expired-options-data/",
+  "requests": [
+    {
+      "expiry_flag": "WEEK",
+      "expiry_code": 0,
+      "option_type": "CALL",
+      "http_status": 400,
+      "status": "FAIL",
+      "error": "errorCode=DH-905 errorType=Input_Exception errorMessage=expiryCode is required"
+    },
+    {
+      "expiry_flag": "WEEK",
+      "expiry_code": 0,
+      "option_type": "PUT",
+      "http_status": 400,
+      "status": "FAIL",
+      "error": "errorCode=DH-905 errorType=Input_Exception errorMessage=expiryCode is required"
+    },
+    {
+      "expiry_flag": "MONTH",
+      "expiry_code": 1,
+      "option_type": "CALL",
+      "http_status": 200,
+      "status": "PASS",
+      "rows": 375,
+      "fields": [
+        "timestamp",
+        "open",
+        "close",
+        "strike",
+        "spot",
+        "iv"
+      ],
+      "timestamps_monotonic": true,
+      "sample_strikes": [
+        23350.0,
+        23400.0,
+        23450.0,
+        23500.0,
+        23550.0,
+        23600.0,
+        23650.0,
+        23700.0
+      ],
+      "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_MONTH_CALL.json",
+      "sha256": "728112032c2d873bdb5513f7a4d00cebe47f50ea89beb63c750469dbf91a9b1b"
+    },
+    {
+      "expiry_flag": "MONTH",
+      "expiry_code": 1,
+      "option_type": "PUT",
+      "http_status": 200,
+      "status": "PASS",
+      "rows": 375,
+      "fields": [
+        "timestamp",
+        "open",
+        "close",
+        "strike",
+        "spot",
+        "iv"
+      ],
+      "timestamps_monotonic": true,
+      "sample_strikes": [
+        23350.0,
+        23400.0,
+        23450.0,
+        23500.0,
+        23550.0,
+        23600.0,
+        23650.0,
+        23700.0
+      ],
+      "cache_file": "data/cache/vol_regime_weekly_probe/2025-01-06_2025-01-11_MONTH_PUT.json",
+      "sha256": "8b6615886573168d363eae4f9cfc32b31a5f2838baf34cfdecb69adddb7ac367"
+    }
+  ],
+  "weekly_schema_pass": false,
+  "monthly_control_pass": true,
+  "status": "BLOCKED_WEEKLY_SCHEMA",
+  "decision": "Do not substitute monthly data. Diagnose the recorded sanitized weekly request failure and stop the weekly strategy if the source gate cannot be resolved in one bounded correction."
+}
