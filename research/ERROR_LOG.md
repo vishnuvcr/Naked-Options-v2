@@ -115,3 +115,6 @@ Run #2 confirmed the actual blocker was upstream of options acquisition: `BLOCKE
 
 
 | ERR-VOL-023 | 2026-10-16 | VOL-REGIME-OPT C1 | MEDIUM | Previous source-gate run ended with runner shutdown while probing the Hugging Face fallback; cache save and artifact publication were skipped. | Runner interruption prevented the fallback audit from completing. | Re-ran failed GitHub Actions job for [run #38676451667](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38676451667), attempt 2. Verify completed logs/artifacts before treating the fallback as evidence. | OPEN — RETRY IN PROGRESS |
+
+
+| ERR-VOL-024 | 2026-10-16 | VOL-REGIME-OPT C1 | MEDIUM | Earlier Dhan rolling-option response did not establish historical expiry-code mapping or fixed-contract continuity, while the HF fallback was interrupted. | The Dhan endpoint is rolling-relative strike data and the prior workflow did not finish its HF probe. | Located the already-used `thetrademarkk/india-index-options-1m` source in `vishnuvcr/Nifty`; added a cached exact-expiry/strike/type audit workflow on the continuation branch. Verify run #38807375042 and reconcile against official NSE evidence before P&L. | OPEN — WORKFLOW RUNNING / AUDIT PENDING |
