@@ -60,7 +60,7 @@ def main():
     else:
         session=requests.Session()
         session.headers.update({"Accept":"application/json","Content-Type":"application/json","access-token":TOKEN})
-        for flag,code in (("WEEK",0),("WEEK",1),("WEEK",2),("MONTH",1)):
+        for flag,code in (("WEEK",0),("WEEK",1),("WEEK",2),("WEEK",3),("MONTH",1)):
             for typ in ("CALL","PUT"):
                 body={"exchangeSegment":"NSE_FNO","interval":5,"securityId":13,"instrument":"OPTIDX",
                       "expiryFlag":flag,"expiryCode":code,"strike":"ATM","drvOptionType":typ,
