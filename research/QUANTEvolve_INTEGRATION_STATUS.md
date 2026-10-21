@@ -150,3 +150,7 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 - No valid QuantEvolve prediction holdout result is claimed.
 
 Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
+
+
+## QE-STEP-013 — options source audit publication correction
+Run [39669708490](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669708490) completed the bounded HF source-audit step, but its report was omitted by the publication allowlist. Publisher is corrected to include only the sanitized `options_source_audit.json`; raw CC-BY-NC parquet stays cached and is never published. One bounded rerun will persist the report. The options P&L gate remains blocked.
