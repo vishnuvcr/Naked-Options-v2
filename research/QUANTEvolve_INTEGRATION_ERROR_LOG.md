@@ -263,3 +263,11 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-020 — options source run was mislabeled by publisher
+- Date: 2026-10-22. Severity: LOW (status classification).
+- Workflows: [39669708490](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669708490) and [39670001128](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39670001128).
+- Observation: options-source workflows have no prediction run manifest; the publisher therefore logged NO_RUN_MANIFEST and used prediction-oriented wording even though the options audit step ran.
+- Correction: options track now writes an explicit options run manifest, and publisher generates options-specific status summaries using the sanitized source report. Publisher allowlist includes options_source_audit.json.
+- Status: corrected in workflow/publisher; source audit report now committed at reports/quantevolve/options_source_audit.json.
