@@ -1,0 +1,11 @@
+{
+  "performance_claim": null,
+  "pnl_permitted": false,
+  "protocol": "QE-NIFTY-1.0",
+  "run_id": "39675422599",
+  "sample_files": 3,
+  "sample_rows": 986041,
+  "source_report": "reports/quantevolve/options_source_audit.json",
+  "status": "BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED",
+  "track": "options"
+}

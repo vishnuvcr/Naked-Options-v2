@@ -728,3 +728,15 @@ The free options-source audit sampled three expiry partitions (986,041 rows tota
 - [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
 - [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
 - [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+
+## QuantEvolve automated run — 39675422599
+
+### QE-DELIVERY-39675422599 — 2026-10-21T21:02:57.742297+00:00
+- Options source audit status: **BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED**; sampled files=3; sample rows=986041.
+- License: CC-BY-NC-4.0; lot-size field present in all samples=False.
+- Options P&L permitted=False. Official expiry reconciliation, historical lot size, full coverage and executable pricing remain mandatory gates.
+- Published source report: reports/quantevolve/options_source_audit.json.
+
+- [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
+- [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
+- [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
