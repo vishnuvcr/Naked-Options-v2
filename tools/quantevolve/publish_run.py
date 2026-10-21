@@ -92,7 +92,20 @@ def main() -> int:
     gate = read_json(reports_root / "options_data_gate.json")
     run_marker = f"QE-DELIVERY-{args.run_id}"
     stamp = datetime.now(timezone.utc).isoformat()
-    if status == "PREDICTION_HOLDOUT_EVALUATED" and holdout.get("status") == "PREDICTION_HOLDOUT_EVALUATED":
+    track = manifest.get("track", "prediction")
+    options_audit = read_json(reports_root / "options_source_audit.json")
+    if track == "options":
+        sample = options_audit.get("sample", {})
+        source = options_audit.get("source", {})
+        summary = (
+            f"### {run_marker} — {stamp}\n"
+            f"- Options source audit status: **{status}**; sampled files={int(manifest.get('sample_files', sample.get('file_count', 0)))}; "
+            f"sample rows={int(manifest.get('sample_rows', sample.get('total_rows', 0)))}.\n"
+            f"- License: {source.get('license', 'not reported')}; lot-size field present in all samples={sample.get('lot_size_column_present_in_all_samples', False)}.\n"
+            f"- Options P&L permitted=False. Official expiry reconciliation, historical lot size, full coverage and executable pricing remain mandatory gates.\n"
+            f"- Published source report: {'reports/quantevolve/options_source_audit.json' if (reports_root / 'options_source_audit.json').is_file() else 'not found in artifact'}."
+        )
+    elif status == "PREDICTION_HOLDOUT_EVALUATED" and holdout.get("status") == "PREDICTION_HOLDOUT_EVALUATED":
         summary = (
             f"### {run_marker} — {stamp}\n"
             f"- Prediction run status: **{status}**. Candidate source was never executed; only a validated declarative spec was retained.\n"
