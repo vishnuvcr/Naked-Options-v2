@@ -8,7 +8,7 @@ Branch: `research/quantevolve-integration`
 | P0 Repository/upstream audit | COMPLETE — source audit and governance tests passed | Upstream assumptions and incompatible Binance evaluator documented; pinned revision and Apache-2.0 source license recorded. Latest source-audit workflow [39669940816](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669940816) passed. |
 | P1 Reproducible integration shell | COMPLETE — automated gates passed | Pinned upstream, restricted declarative candidate grammar, causal evaluator, sanitized telemetry, offline-by-default run request, bounded workflow and sanitized publisher are committed. |
 | P2 NIFTY prediction adapter | INCONCLUSIVE — LLM generation blocked; no predictive edge demonstrated | Two saved all-zero specifications matched the zero-return baseline on n=981 holdout observations (MAE 0.00580346; skill 0; CI for MAE improvement [0,0]); provider telemetry absent for those runs. Telemetry-enabled run [39668183031](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39668183031) had 4 failed calls; fallback [39669107291](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669107291) had 1 failed call. No verified candidate was scored in those diagnostics. |
-| P3 Options evaluator/data gate | BLOCKED — official expiry and historical lot size unverified | [Options source audit](../reports/quantevolve/options_source_audit.json) sampled 3 files/986,041 rows; schema lacks lot_size and OHLC is not bid/ask. Gate remains BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L forbidden. |
+| P3 Options evaluator/data gate | BLOCKED — full fixed-contract ledger and official MII contract-master matching remain unverified | [HF audit](../reports/quantevolve/options_source_audit.json) sampled 3 files/986,041 rows; circular-backed lot sizes 75/50/65 and row-level structural checks pass for those cohorts only. [Dhan probe](../reports/quantevolve/dhan_options_api_probe.json) retrieved 1,155 aligned bars but no explicit expiry/lot-size identity. Gate remains BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L forbidden. |
 | P4 Bounded options search | BLOCKED ON P3 | No options candidate search or P&L until official contract/expiry/lot-size mapping, coverage, duplicate and execution-cost gates pass. |
 | P5 Final validation | NOT STARTED — no valid candidate/ledger | No confirmatory model-family comparison, trading metrics, or profitability inference is possible from current blocked runs. |
 | P6 Manuscript/closure | COMPLETE — study closed as INCONCLUSIVE/BLOCKED | [Full manuscript](manuscripts/QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md) records aims, sources, methods, results, statistics, discussion, limitations, conclusion and future work. Further work is defect-driven and finite; no automatic API retries. |
@@ -172,11 +172,12 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
 
 
-## Final disposition — QE-NIFTY-1.0 (2026-10-22)
+## Final disposition — QE-NIFTY-1.0 (updated 2026-10-22)
 
 - Prediction holdout evidence is limited to two saved all-zero specifications, each matching the zero-return baseline exactly; this does not establish successful evolutionary mutation or general model failure.
 - Five telemetry-counted Gemini requests failed (4 on gemini-3.8-flash, 1 on gemini-3.6-flash); zero successful generation responses. API retries are stopped; run request is offline by default.
-- Options audit sampled 3 public CC-BY-NC-4.0 expiry files (986,041 rows; 8,822,294 bytes). All sampled schemas omit lot_size; official expiry reconciliation, historical lot-size mapping and executable pricing remain unverified.
+- The HF source audit sampled 3 public CC-BY-NC-4.0 expiry files (986,041 rows; 8,822,294 bytes). Row-level expiry/strike/type/symbol checks pass within the files; NSE circulars map sampled expiry-cohort lots to 75, 50, and 65. This is not a full historical MII contract-master match or a full-history lot-size map.
+- Dhan returned 1,155 aligned minute bars for an ATM-relative weekly CALL query, but the response lacks explicit expiry and lot-size fields; multiple strike values were returned. It does not constitute a fixed-contract ledger.
 - No options P&L or strategy was run. The research closes INCONCLUSIVE/BLOCKED, not as a profitable strategy result.
 - Complete manuscript: [QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md](manuscripts/QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md).
 - Machine-readable source evidence: [options_source_audit.json](../reports/quantevolve/options_source_audit.json).
@@ -414,3 +415,10 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 - No valid QuantEvolve prediction holdout result is claimed.
 
 Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
+
+
+## QE-STEP-015 — current free-source options-data evidence (2026-10-22)
+
+- HF sample checks pass for three expiry partitions (986,041 rows total). NSE circulars support sample lot sizes of 75 (2021-05-27), 50 (2024-01-04), and 65 (2026-08-04); this evidence is scoped to those expiry cohorts only.
+- The Dhan rolling-options probe [report](../reports/quantevolve/dhan_options_api_probe.json) contains one successful request: HTTP 200, 1,155 aligned minute observations, timestamps 2026-08-03 09:15 to 2026-08-05 15:39 IST. It uses expiryCode=1 (Next Expiry), omits explicit expiry/lot-size fields, and returns six strike values. P&L remains prohibited.
+- Current gate: [options_data_gate.json](../reports/quantevolve/options_data_gate.json). It must continue to show BLOCKED_NO_VERIFIED_CONTRACT_DATA until full official MII contract-master mapping, eligible-date coverage (>=80%), duplicate conflict rate (<=1%), and executable-price assumptions are validated.
