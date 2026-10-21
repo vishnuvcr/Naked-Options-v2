@@ -530,3 +530,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-030 — options gate artifact stale after successful Dhan request
+- Date: 2026-10-22. Severity: MEDIUM (status/evidence freshness).
+- Observation: the top-level dhan_options_api_probe.json has been restored from the verified successful run artifact (HTTP 200, 1,155 bars, expiryCode=1), but the committed options_data_gate.json still contains supplemental evidence from the earlier HTTP 400 probe. The data gate therefore needs one refresh from the current checked-in source reports.
+- Correction: the publisher now preserves root-level source reports on prediction/offline runs; the next bounded offline workflow refresh should read the restored Dhan report and regenerate gate supplemental evidence without making another Dhan request.
+- Status: corrected source and successful probe report are committed; final gate-refresh run pending.
