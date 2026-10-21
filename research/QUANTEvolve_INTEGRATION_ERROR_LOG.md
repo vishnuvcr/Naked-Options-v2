@@ -308,3 +308,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Observation: the new row-level reconciliation raised `NameError` for each sampled file because the audit code used Pandas conversions without importing `pandas as pd`. The report therefore did not verify file expiry consistency, strikes, option type, or symbols.
 - Correction: add the missing import and a regression assertion. Keep all source/contract and P&L gates blocked until a new run verifies the sample checks; no metrics or P&L were produced by the failed checks.
 - Status: corrected in source; one bounded validation rerun pending.
+
+## QE-DELIVERY-39672382046 — automated run record
+- Date: 2026-10-21T20:41:43.644443+00:00
+- Run status: BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED
+- Reason/error classification: No runtime error reported in the sanitized manifest.
+- Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
+- No API key or credential value is persisted.

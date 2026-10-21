@@ -261,3 +261,9 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 - The bounded HF sample acquisition completed (3 files, 986,041 rows), and source/schema metadata was published.
 - Official circular lot mappings were recorded for the three expiry cohorts, but all row-level reconciliation checks failed with `NameError` because the source audit omitted `import pandas as pd`.
 - Do not treat sample expiry identity as verified from this run; correction and one bounded validation retry pending. Options P&L remains forbidden.
+
+### QE-DELIVERY-39672382046 — 2026-10-21T20:41:43.644443+00:00
+- Options source audit status: **BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED**; sampled files=3; sample rows=986041.
+- License: CC-BY-NC-4.0; lot-size field present in all samples=False.
+- Options P&L permitted=False. Official expiry reconciliation, historical lot size, full coverage and executable pricing remain mandatory gates.
+- Published source report: reports/quantevolve/options_source_audit.json.
