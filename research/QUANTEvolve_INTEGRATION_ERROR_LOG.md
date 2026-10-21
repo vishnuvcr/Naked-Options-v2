@@ -227,3 +227,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Observation: run 39669107291's sanitized telemetry correctly reported `gemini-3.6-flash`, but the top-level manifest model label retained the default `gemini-3.8-flash`.
 - Correction: runner now reads the model name from the pinned YAML config when constructing the manifest. The default config is restored to `gemini-3.8-flash`; the fallback diagnostic remains recorded as `gemini-3.6-flash` in the original telemetry.
 - Status: corrected in code; source audit pending.
+
+## QE-DELIVERY-39669633087 — automated run record
+- Date: 2026-10-21T20:22:22.795946+00:00
+- Run status: LLM_EVOLUTION_NOT_REQUESTED
+- Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
+- Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
+- No API key or credential value is persisted.
