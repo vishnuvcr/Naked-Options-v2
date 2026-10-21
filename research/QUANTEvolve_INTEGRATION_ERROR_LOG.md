@@ -444,3 +444,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-027 — initial Dhan error sanitizer discarded hyphenated error codes
+- Date: 2026-10-22. Severity: LOW (diagnostic observability).
+- Observation: the first error sanitizer accepted only alphanumeric API error codes; codes containing punctuation such as `DH-905` would be lost. The message class also did not record which known request parameter names appeared.
+- Correction: allowlist safe code characters `[A-Za-z0-9_.:-]` and record only names of known request fields mentioned by the provider message, never the raw message itself.
+- Status: corrected in commit ad4ac98 with regression test f40c4d9; one final single-call diagnostic pending.
