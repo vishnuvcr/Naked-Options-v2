@@ -279,6 +279,7 @@ def test_dhan_options_probe_sanitizes_rows_and_never_opens_pnl_gate():
     assert "response.text" not in source
     assert 'NIFTY_SECURITY_ID = "13"' in source
     assert '"interval": 1' in source
+    assert '"expiryCode": 1' in source
     safe_error = namespace["inspect_response"](
         {"errorCode": "DH-905", "errorType": "InvalidRequest", "errorMessage": "expiryCode is invalid for the selected segment"},
         400,
