@@ -241,3 +241,11 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: No runtime error reported in the sanitized manifest.
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-019 — options source audit ran but publisher omitted its report
+- Date: 2026-10-22. Severity: MEDIUM (evidence publication).
+- Workflow: [options-source run 39669708490](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669708490).
+- Observation: the bounded source audit and options gate steps both completed successfully, but the sanitized report was not committed because the publisher allowlist only copied files adjacent to a run manifest and did not include the top-level `options_source_audit.json`.
+- Correction: publisher now explicitly allowlists and copies the sanitized options source audit report. Raw parquet remains in the cache and is not copied.
+- Status: corrected; one bounded options-source audit rerun is required to persist the evidence.
