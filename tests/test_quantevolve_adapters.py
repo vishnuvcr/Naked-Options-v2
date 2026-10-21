@@ -240,3 +240,33 @@ def test_official_nifty_sample_lot_mapping_is_expiry_specific_and_cited():
     for cohort in mapping.values():
         assert cohort["circulars"]
         assert all(url.startswith("https://nsearchives.nseindia.com/content/circulars/") for url in cohort["circulars"])
+
+
+def test_dhan_options_probe_sanitizes_rows_and_never_opens_pnl_gate():
+    import ast
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    source_path = Path("tools/quantevolve/dhan_options_api_audit.py")
+    source = source_path.read_text(encoding="utf-8")
+    tree = ast.parse(source)
+    function = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "inspect_response")
+    namespace = {"datetime": datetime, "ZoneInfo": ZoneInfo}
+    exec(compile(ast.Module(body=[function], type_ignores=[]), str(source_path), "exec"), namespace)
+
+    sample_payload = {"data": {"ce": {
+        "timestamp": [1785753000, 1785753060],
+        "open": [100.0, 101.0], "high": [102.0, 103.0], "low": [99.0, 100.0],
+        "close": [101.0, 102.0], "volume": [50, 60], "iv": [12.0, 13.0],
+        "strike": [25000, 25000], "oi": [300, 310], "spot": [24980, 24990],
+    }, "pe": None}}
+    report = namespace["inspect_response"](sample_payload, 200)
+    assert report["status"] == "PASS_SAMPLE_DATA_RETRIEVED_IDENTITY_GATE_STILL_BLOCKED"
+    assert report["rows"] == 2
+    assert report["explicit_expiry_metadata_present"] is False
+    assert report["pnl_permitted"] is False
+    assert "close" not in report
+    assert "data" not in report
+    assert "access-token" not in source.lower()
+    assert "DHAN_ACCESS_TOKEN" in source
+    assert "response.text" not in source
