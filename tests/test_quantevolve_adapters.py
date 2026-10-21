@@ -163,20 +163,26 @@ def test_gemini_telemetry_records_counters_only_and_runner_requires_success():
 
 
 def test_gemini_telemetry_json_persists_cumulative_counters(tmp_path, monkeypatch):
-    import importlib.util
+    import ast
+    import os
+    import threading
+    from typing import Optional
 
-    path = Path("tools/quantevolve/modern_gemini_provider.py")
-    spec = importlib.util.spec_from_file_location("qe_gemini_provider_test", path)
-    module = importlib.util.module_from_spec(spec)
-    import sys
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
+    provider_path = Path("tools/quantevolve/modern_gemini_provider.py")
+    tree = ast.parse(provider_path.read_text(encoding="utf-8"))
+    function = next(node for node in tree.body
+                    if isinstance(node, ast.FunctionDef) and node.name == "_record_llm_event")
+    namespace = {
+        "os": os, "json": json, "threading": threading, "Path": Path,
+        "Optional": Optional, "_AUDIT_LOCK": threading.Lock(),
+    }
+    exec(compile(ast.Module(body=[function], type_ignores=[]), str(provider_path), "exec"), namespace)
 
     audit_path = tmp_path / "audit.json"
     monkeypatch.setenv("QE_LLM_AUDIT_PATH", str(audit_path))
-    module._record_llm_event("attempt", "test-model")
-    module._record_llm_event("success", "test-model")
-    module._record_llm_event("failure", "test-model", "TimeoutError")
+    namespace["_record_llm_event"]("attempt", "test-model")
+    namespace["_record_llm_event"]("success", "test-model")
+    namespace["_record_llm_event"]("failure", "test-model", "TimeoutError")
     audit = json.loads(audit_path.read_text(encoding="utf-8"))
     assert audit["requests_attempted"] == 1
     assert audit["requests_succeeded"] == 1
