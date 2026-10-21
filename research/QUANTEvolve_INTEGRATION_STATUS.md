@@ -5,13 +5,13 @@ Branch: `research/quantevolve-integration`
 
 | Phase | Status | Evidence / next gate |
 |---|---|---|
-| P0 Repository/upstream audit | SOURCE AUDIT PASSED; governance-test wording mismatch identified | The source-only audit succeeded. Workflow [39662185936](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39662185936) ran 3 tests: 2 passed and 1 failed because an assertion demanded exact wording rather than the plan's equivalent holdout safeguard. The assertion is corrected; verify on the next run. No candidate evolution occurred in the failing run. |
-| P1 Reproducible integration shell | IMPLEMENTED IN BRANCH; test run pending | Upstream revision pinned; modern Google Gen AI adapter, literal-only candidate schema, causal NIFTY predictor adapter, bounded workflow, options source-quality gate, safe-report publisher and regression tests added. Gate: automated tests and observed run manifest/artifacts. |
-| P2 NIFTY prediction adapter | READY TO RUN; performance NOT YET VERIFIED | Uses only validated daily CSV/manifest/hash; development folds use first 80% and final 20% is assessed once after selection. Need to verify hosted run status, artifact and metrics before any inference. |
-| P3 Options evaluator/data gate | BLOCKED — source/contract map not yet verified | Existing HF exact-contract run [38807375042](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38807375042) was cancelled before the audit step completed; no artifact was produced. New gate explicitly blocks P&L unless expiry, lot-size, license, coverage and duplicate checks pass. |
-| P4 Bounded options search | BLOCKED ON P3 | Must not run strategy P&L until P3 passes. |
-| P5 Final validation | NOT STARTED | Sealed holdout, multiplicity control, costs, robustness. |
-| P6 Manuscript/closure | NOT STARTED | Full structured manuscript and repository status updates after results. |
+| P0 Repository/upstream audit | COMPLETE — source audit and governance tests passed | Upstream assumptions and incompatible Binance evaluator documented; pinned revision and Apache-2.0 source license recorded. Latest source-audit workflow [39669940816](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669940816) passed. |
+| P1 Reproducible integration shell | COMPLETE — automated gates passed | Pinned upstream, restricted declarative candidate grammar, causal evaluator, sanitized telemetry, offline-by-default run request, bounded workflow and sanitized publisher are committed. |
+| P2 NIFTY prediction adapter | INCONCLUSIVE — LLM generation blocked; no predictive edge demonstrated | Two saved all-zero specifications matched the zero-return baseline on n=981 holdout observations (MAE 0.00580346; skill 0; CI for MAE improvement [0,0]); provider telemetry absent for those runs. Telemetry-enabled run [39668183031](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39668183031) had 4 failed calls; fallback [39669107291](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669107291) had 1 failed call. No verified candidate was scored in those diagnostics. |
+| P3 Options evaluator/data gate | BLOCKED — official expiry and historical lot size unverified | [Options source audit](../reports/quantevolve/options_source_audit.json) sampled 3 files/986,041 rows; schema lacks lot_size and OHLC is not bid/ask. Gate remains BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L forbidden. |
+| P4 Bounded options search | BLOCKED ON P3 | No options candidate search or P&L until official contract/expiry/lot-size mapping, coverage, duplicate and execution-cost gates pass. |
+| P5 Final validation | NOT STARTED — no valid candidate/ledger | No confirmatory model-family comparison, trading metrics, or profitability inference is possible from current blocked runs. |
+| P6 Manuscript/closure | COMPLETE — study closed as INCONCLUSIVE/BLOCKED | [Full manuscript](manuscripts/QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md) records aims, sources, methods, results, statistics, discussion, limitations, conclusion and future work. Further work is defect-driven and finite; no automatic API retries. |
 
 ## Credential and review policy
 - The user reports that `GOOGLE_API_KEY` is configured as a GitHub Actions secret. The value has not been read or verified by this tool; use only in the restricted generation step when implemented.
@@ -170,3 +170,13 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 - No valid QuantEvolve prediction holdout result is claimed.
 
 Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
+
+
+## Final disposition — QE-NIFTY-1.0 (2026-10-22)
+
+- Prediction holdout evidence is limited to two saved all-zero specifications, each matching the zero-return baseline exactly; this does not establish successful evolutionary mutation or general model failure.
+- Five telemetry-counted Gemini requests failed (4 on gemini-3.8-flash, 1 on gemini-3.6-flash); zero successful generation responses. API retries are stopped; run request is offline by default.
+- Options audit sampled 3 public CC-BY-NC-4.0 expiry files (986,041 rows; 8,822,294 bytes). All sampled schemas omit lot_size; official expiry reconciliation, historical lot-size mapping and executable pricing remain unverified.
+- No options P&L or strategy was run. The research closes INCONCLUSIVE/BLOCKED, not as a profitable strategy result.
+- Complete manuscript: [QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md](manuscripts/QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md).
+- Machine-readable source evidence: [options_source_audit.json](../reports/quantevolve/options_source_audit.json).
