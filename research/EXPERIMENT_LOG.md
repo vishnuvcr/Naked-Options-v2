@@ -185,3 +185,7 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 - Holdout was 981 targets from 2022-11-04 to 2026-10-19; final holdout was not used for selection. Directional accuracy is undefined and coverage is 0 for the zero forecast.
 - Provider-call telemetry was absent, so do not imply that the LLM returned a successful mutation. Sanitized attempt/success/failure counters and a success gate are added now. Future expensive runs must be explicitly requested via manual workflow_dispatch; automatic request is false.
 - Options P&L remains blocked pending source/contract mapping and lot-size provenance.
+
+### QE-DELIVERY-39667767456 — 2026-10-21T20:09:34.577276+00:00
+- Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
+- No valid QuantEvolve prediction holdout result is claimed.
