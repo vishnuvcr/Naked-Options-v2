@@ -267,6 +267,6 @@ def test_dhan_options_probe_sanitizes_rows_and_never_opens_pnl_gate():
     assert report["pnl_permitted"] is False
     assert "close" not in report
     assert "data" not in report
-    assert "access-token" not in source.lower()
+    assert '"access-token": token' in source
     assert "DHAN_ACCESS_TOKEN" in source
     assert "response.text" not in source
