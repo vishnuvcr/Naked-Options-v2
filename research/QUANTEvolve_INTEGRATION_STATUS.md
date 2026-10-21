@@ -58,3 +58,14 @@ Options status is still BLOCKED_NO_VERIFIED_CONTRACT_DATA: the workflow lacks a 
 - No valid QuantEvolve prediction holdout result is claimed.
 
 Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
+
+## QE-DELIVERY-39667156299
+
+### QE-DELIVERY-39667156299 — 2026-10-21T20:07:02.694500+00:00
+- Prediction run status: **PREDICTION_HOLDOUT_EVALUATED**. Candidate source was never executed; only a validated declarative spec was retained.
+- Final chronological holdout: n=981; target dates 2022-11-04 to 2026-10-19.
+- MAE skill vs zero-return baseline: 0.000000; directional accuracy: not available; MAE-improvement 95% circular block-bootstrap interval: [0.000000, 0.000000].
+- Interpretation: one selected candidate evaluated once against a zero-return forecast; not proof of a profitable trading strategy or universal superiority.
+- Published reports: reports/quantevolve/prediction/run-39667156299/best_strategy_spec.json, reports/quantevolve/prediction/run-39667156299/run_manifest.json, reports/quantevolve/prediction/run-39667156299/development_metrics.json, reports/quantevolve/prediction/run-39667156299/holdout_metrics.json
+
+Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.

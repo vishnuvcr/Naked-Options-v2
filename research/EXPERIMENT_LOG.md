@@ -170,3 +170,10 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 ### QE-DELIVERY-39666799180 — 2026-10-21T20:03:03.004060+00:00
 - Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
 - No valid QuantEvolve prediction holdout result is claimed.
+
+### QE-DELIVERY-39667156299 — 2026-10-21T20:07:02.694500+00:00
+- Prediction run status: **PREDICTION_HOLDOUT_EVALUATED**. Candidate source was never executed; only a validated declarative spec was retained.
+- Final chronological holdout: n=981; target dates 2022-11-04 to 2026-10-19.
+- MAE skill vs zero-return baseline: 0.000000; directional accuracy: not available; MAE-improvement 95% circular block-bootstrap interval: [0.000000, 0.000000].
+- Interpretation: one selected candidate evaluated once against a zero-return forecast; not proof of a profitable trading strategy or universal superiority.
+- Published reports: reports/quantevolve/prediction/run-39667156299/best_strategy_spec.json, reports/quantevolve/prediction/run-39667156299/run_manifest.json, reports/quantevolve/prediction/run-39667156299/development_metrics.json, reports/quantevolve/prediction/run-39667156299/holdout_metrics.json
