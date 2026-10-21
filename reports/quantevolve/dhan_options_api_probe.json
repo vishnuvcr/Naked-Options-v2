@@ -1,5 +1,7 @@
 {
   "api_error_code": null,
+  "api_error_message_class": "REQUEST_PARAMETER_OR_CONTRACT",
+  "api_error_type": "Input_Exception",
   "api_url": "https://api.dhan.co/v2/charts/rollingoption",
   "audit_type": "single_call_dhan_expired_options_api_probe",
   "claim": null,

@@ -401,3 +401,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+## QE-DELIVERY-39674271641 — automated run record
+- Date: 2026-10-21T20:54:50.087688+00:00
+- Run status: BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED
+- Reason/error classification: No runtime error reported in the sanitized manifest.
+- Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
+- No API key or credential value is persisted.
