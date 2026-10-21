@@ -1,59 +1,23 @@
 {
-  "api_error_code": null,
-  "api_error_message_class": "EMPTY",
-  "api_error_type": null,
+  "api_error_code": "DH-905",
+  "api_error_message_class": "REQUEST_PARAMETER_OR_CONTRACT",
+  "api_error_type": "Input_Exception",
   "api_url": "https://api.dhan.co/v2/charts/rollingoption",
   "audit_type": "single_call_dhan_expired_options_api_probe",
-  "call_series_keys": [
-    "close",
-    "high",
-    "iv",
-    "low",
-    "oi",
-    "open",
-    "spot",
-    "strike",
-    "timestamp",
-    "volume"
-  ],
   "claim": null,
-  "close_max": 192.5,
-  "close_min": 9.7,
-  "data_received": true,
-  "data_top_level_keys": [
-    "ce",
-    "pe"
-  ],
+  "data_received": false,
   "documentation_url": "https://dhanhq.co/docs/v2/expired-options-data/",
-  "error_field_hints": [],
-  "explicit_expiry_metadata_present": false,
-  "field_value_counts": {
-    "close": 1155,
-    "high": 1155,
-    "iv": 1155,
-    "low": 1155,
-    "oi": 1155,
-    "open": 1155,
-    "spot": 1155,
-    "strike": 1155,
-    "volume": 1155
-  },
-  "first_timestamp_ist": "2026-08-03T09:15:00+05:30",
-  "http_status": 200,
-  "last_timestamp_ist": "2026-08-05T15:39:00+05:30",
-  "limitations": [
-    "This request probes only one near-expiry ATM call series over a two-day window.",
-    "The endpoint documents rolling options data relative to ATM; a rolling strike/expiry class is not a fixed contract ledger.",
-    "The published response example does not include a row-level expiry field; verify exact expiry identity before any fixed-contract backtest.",
-    "OHLC candles are not historical bid/ask quotes and cannot prove executable fills.",
-    "This report contains only sanitized aggregate counts/ranges; raw candles and credentials are never written."
+  "error_field_hints": [
+    "expiryCode"
   ],
+  "explicit_expiry_metadata_present": false,
+  "http_status": 400,
   "pnl_permitted": false,
   "protocol": "QE-NIFTY-1.0",
   "request": {
     "drvOptionType": "CALL",
     "exchangeSegment": "NSE_FNO",
-    "expiryCode": 1,
+    "expiryCode": 0,
     "expiryFlag": "WEEK",
     "fromDate": "2026-08-03",
     "instrument": "OPTIDX",
@@ -75,21 +39,15 @@
     "strike": "ATM",
     "toDate_exclusive": "2026-08-05"
   },
-  "request_body_sha256": "1d03d6120d1e4596354908b210d44769f1a40349f893e30d04b7b6951c6921bd",
-  "required_fields_aligned": true,
+  "request_body_sha256": "53e2e822dd30360d637de9e1c3720982ec179a67d8c17174768e0c6524785232",
   "response_top_level_keys": [
-    "data"
+    "errorCode",
+    "errorMessage",
+    "errorType"
   ],
   "row_level_lot_size_present": false,
-  "rows": 1155,
+  "rows": 0,
   "source": "DhanHQ v2 rolling expired-options endpoint",
-  "status": "PASS_SAMPLE_DATA_RETRIEVED_IDENTITY_GATE_STILL_BLOCKED",
-  "strike_max": 24750.0,
-  "strike_min": 24450.0,
-  "timestamp_max_epoch": 1785924540,
-  "timestamp_min_epoch": 1785728700,
-  "timestamps_monotonic_non_decreasing": true,
-  "token_value_logged": false,
-  "unique_strike_count": 6,
-  "valid_close_count": 1155
+  "status": "API_RESPONSE_HAS_NO_DATA_OBJECT",
+  "token_value_logged": false
 }
