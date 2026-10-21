@@ -1,5 +1,5 @@
 {
-  "block_reason": "options data file or provenance/source manifest is absent",
+  "block_reason": "fixed-contract options dataset or provenance/source manifest is absent; HF audit covers only a bounded expiry sample; full-history coverage and official contract-master reconciliation are not proven",
   "claim": null,
   "conflicting_duplicate_group_rate_gate": 0.01,
   "coverage_gate": 0.8,
@@ -19,5 +19,20 @@
     "volume"
   ],
   "source_manifest_path": "data/cache/options_source_manifest.json",
-  "status": "BLOCKED_NO_VERIFIED_CONTRACT_DATA"
+  "status": "BLOCKED_NO_VERIFIED_CONTRACT_DATA",
+  "supplemental_source_evidence": {
+    "dhan_explicit_expiry_metadata_present": false,
+    "dhan_http_status": 400,
+    "dhan_pnl_permitted": false,
+    "dhan_probe_status": "API_RESPONSE_HAS_NO_DATA_OBJECT",
+    "dhan_required_fields_aligned": false,
+    "dhan_row_level_lot_size_present": false,
+    "dhan_rows": 0,
+    "hf_sample_expiry_lot_reconciliation": "PASS_ALL_THREE_SAMPLED_COHORTS",
+    "hf_sample_file_count": 3,
+    "hf_sample_lot_sizes_mapped": true,
+    "hf_sample_rows": 986041,
+    "hf_source_audit_status": "BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED",
+    "hf_source_license": "CC-BY-NC-4.0"
+  }
 }
