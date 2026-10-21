@@ -348,9 +348,9 @@ This log records visible technical findings and corrective actions. It does not 
 ## QE-ERR-024 — Dhan API probe unit test omitted constant namespace
 - Date: 2026-10-22. Severity: LOW (unit-test fixture defect).
 - Workflow: [audit run 39672923582](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39672923582).
-- Observation: the sanitized unit test extracted `inspect_response` via AST but omitted module constants `API_URL` and `NIFTY_SECURITY_ID`, causing a `NameError`; 15 other tests passed.
-- Correction: provide these non-secret constants in the test namespace. No network/API call was made by the test and no Dhan credential was involved.
-- Status: corrected in commit dfd5b29; automated verification pending.
+- Observation: the sanitized unit test extracted `inspect_response` via AST but initially omitted module constants (`API_URL`, `NIFTY_SECURITY_ID`, `FROM_DATE`, `TO_DATE`), causing a `NameError`; 15 other tests passed.
+- Correction: provide all four non-secret constants in the test namespace. No network/API call was made by the test and no Dhan credential was involved.
+- Status: expanded in commit a2a8f34; automated verification pending.
 
 ## QE-DELIVERY-39673276814 — automated run record
 - Date: 2026-10-21T20:47:45.092701+00:00
