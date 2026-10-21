@@ -256,6 +256,8 @@ def test_dhan_options_probe_sanitizes_rows_and_never_opens_pnl_gate():
         "ZoneInfo": ZoneInfo,
         "API_URL": "https://api.dhan.co/v2/charts/rollingoption",
         "NIFTY_SECURITY_ID": 13,
+        "FROM_DATE": "2026-08-03",
+        "TO_DATE": "2026-08-05",
     }
     exec(compile(ast.Module(body=[function], type_ignores=[]), str(source_path), "exec"), namespace)
 
