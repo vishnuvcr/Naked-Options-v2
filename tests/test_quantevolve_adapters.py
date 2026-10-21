@@ -188,3 +188,32 @@ def test_gemini_telemetry_json_persists_cumulative_counters(tmp_path, monkeypatc
     assert audit["requests_succeeded"] == 1
     assert audit["requests_failed"] == 1
     assert audit["failure_types"] == {"TimeoutError": 1}
+
+
+def test_options_source_audit_sample_selection_is_bounded_and_deterministic():
+    import ast
+    from datetime import date
+    import inspect
+
+    source_path = Path("tools/quantevolve/options_source_audit.py")
+    tree = ast.parse(source_path.read_text(encoding="utf-8"))
+    wanted = {"expiry_from_path", "select_sample_files"}
+    functions = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name in wanted]
+    namespace = {"date": date, "Path": Path}
+    exec(compile(ast.Module(body=functions, type_ignores=[]), str(source_path), "exec"), namespace)
+    paths = [
+        "options/NIFTY/2021-05-27.parquet",
+        "options/NIFTY/2023-12-28.parquet",
+        "options/NIFTY/2024-01-04.parquet",
+        "options/NIFTY/2025-06-26.parquet",
+        "options/NIFTY/2026-08-04.parquet",
+    ]
+    selected = namespace["select_sample_files"](paths, limit=99)
+    assert len(selected) == 3
+    assert selected[0] == paths[0]
+    assert selected[-1] == paths[-1]
+    assert namespace["select_sample_files"](paths, limit=3) == selected
+    source = source_path.read_text(encoding="utf-8")
+    assert '"pnl_permitted": False' in source
+    assert 'official_expiry_reconciled": False' in source
+    assert 'lot_size_history_verified": False' in source
