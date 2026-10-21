@@ -213,3 +213,17 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-017 — final bounded fallback generation also failed
+- Date: 2026-10-22. Severity: MEDIUM (candidate generation unavailable).
+- Workflow: [run 39669107291](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669107291).
+- Observation: a one-iteration diagnostic using the listed stable `gemini-3.6-flash` model produced one request, zero successes, and one `ServerError`. No candidate was selected or scored. This followed the four-attempt `gemini-3.8-flash` run (three timeouts, one server error).
+- Disposition: stop API retries for this research run to avoid unbounded spend. Keep LLM evolution disabled by default; continue offline integration tests and options-source acquisition. A future LLM run requires an explicit manual dispatch after API availability/quota is checked.
+- Status: bounded diagnostic complete; LLM evolution BLOCKED_NO_SUCCESSFUL_RESPONSES. No performance result is claimed.
+
+## QE-ERR-018 — fallback model label in run manifest was hard-coded
+- Date: 2026-10-22. Severity: LOW (provenance accuracy).
+- Observation: run 39669107291's sanitized telemetry correctly reported `gemini-3.6-flash`, but the top-level manifest model label retained the default `gemini-3.8-flash`.
+- Correction: runner now reads the model name from the pinned YAML config when constructing the manifest. The default config is restored to `gemini-3.8-flash`; the fallback diagnostic remains recorded as `gemini-3.6-flash` in the original telemetry.
+- Status: corrected in code; source audit pending.
