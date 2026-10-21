@@ -276,3 +276,18 @@ Repository inspection found that [`vishnuvcr/Nifty`](https://github.com/vishnuvc
 
 
 The free-source audit also records official NSE expiry-rule changes across 2025; see the [continuation source audit](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/vol-regime-options-continuation/research/VOL_REGIME_OPTIONS_FREE_SOURCE_AUDIT.md). These changes mean the research must use dated contract-file evidence rather than a weekday-only expiry heuristic. The HF audit run's download step completed, but its data-quality step remained in progress at the latest check; all strategy/P&L gates remain closed pending its report and official contract reconciliation.
+
+
+## QuantEvolve integration — QE-NIFTY-1.0 (2026-10-22)
+
+A separate integration branch `research/quantevolve-integration` is active. The user reports `GOOGLE_API_KEY` is configured as a GitHub Actions secret; the value is never read/logged. The source-audit workflow does not need the secret; a future bounded Gemini generation step may use it only within a restricted process. No independent tester/review gate is required for this integration, per user instruction, but automated tests and security/leakage gates remain mandatory.
+
+- [Core execution policy and QuantEvolve addendum](research/EXECUTION_POLICY.md)
+- [Finite integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
+- [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
+- [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+- [Static source-audit script](tools/quantevolve/audit_upstream.py)
+- [Scheduled/manual audit workflow](.github/workflows/quantevolve-integration-audit.yml)
+- [Audit workflow run](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39661711639)
+
+Status: integration setup only; no QuantEvolve-derived NIFTY prediction or options strategy out-of-sample result exists yet. Existing historical results and gates remain unchanged.
