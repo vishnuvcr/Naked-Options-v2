@@ -1,0 +1,48 @@
+{
+  "api_error_code": null,
+  "api_url": "https://api.dhan.co/v2/charts/rollingoption",
+  "audit_type": "single_call_dhan_expired_options_api_probe",
+  "claim": null,
+  "data_received": false,
+  "documentation_url": "https://dhanhq.co/docs/v2/expired-options-data/",
+  "explicit_expiry_metadata_present": false,
+  "http_status": 400,
+  "pnl_permitted": false,
+  "protocol": "QE-NIFTY-1.0",
+  "request": {
+    "drvOptionType": "CALL",
+    "exchangeSegment": "NSE_FNO",
+    "expiryCode": 0,
+    "expiryFlag": "WEEK",
+    "fromDate": "2026-08-03",
+    "instrument": "OPTIDX",
+    "interval": "1",
+    "request_count": 1,
+    "requiredData": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume",
+      "iv",
+      "strike",
+      "oi",
+      "spot"
+    ],
+    "retry_count": 0,
+    "securityId": 13,
+    "strike": "ATM",
+    "toDate_exclusive": "2026-08-05"
+  },
+  "request_body_sha256": "36c4da0c46b367e333967abe2b6c66d452f2543d06f5a8bfe2d8502e0b162314",
+  "response_top_level_keys": [
+    "errorCode",
+    "errorMessage",
+    "errorType"
+  ],
+  "row_level_lot_size_present": false,
+  "rows": 0,
+  "source": "DhanHQ v2 rolling expired-options endpoint",
+  "status": "API_RESPONSE_HAS_NO_DATA_OBJECT",
+  "token_value_logged": false
+}

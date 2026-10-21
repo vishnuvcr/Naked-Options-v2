@@ -260,3 +260,13 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 - No valid QuantEvolve prediction holdout result is claimed.
 
 Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
+
+## QE-DELIVERY-39673574590
+
+### QE-DELIVERY-39673574590 — 2026-10-21T20:49:48.425703+00:00
+- Options source audit status: **BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED**; sampled files=3; sample rows=986041.
+- License: CC-BY-NC-4.0; lot-size field present in all samples=False.
+- Options P&L permitted=False. Official expiry reconciliation, historical lot size, full coverage and executable pricing remain mandatory gates.
+- Published source report: reports/quantevolve/options_source_audit.json.
+
+Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
