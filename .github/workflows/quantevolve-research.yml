@@ -136,6 +136,17 @@ jobs:
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Bounded free-source NIFTY options schema audit
+        if: steps.request.outputs.track == 'options'
+        continue-on-error: true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          python -m pip install --disable-pip-version-check "huggingface_hub==0.35.3" "pyarrow==21.0.0"
+          python tools/quantevolve/options_source_audit.py \
+            --cache-dir data/cache/quantevolve-options-source-audit \
+            --output reports/quantevolve/options_source_audit.json \
+            --manifest data/cache/options_source_manifest.json
       - name: Run options source/contract quality gate only
         if: always()
         run: |
