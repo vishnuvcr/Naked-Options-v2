@@ -251,7 +251,12 @@ def test_dhan_options_probe_sanitizes_rows_and_never_opens_pnl_gate():
     source = source_path.read_text(encoding="utf-8")
     tree = ast.parse(source)
     function = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "inspect_response")
-    namespace = {"datetime": datetime, "ZoneInfo": ZoneInfo}
+    namespace = {
+        "datetime": datetime,
+        "ZoneInfo": ZoneInfo,
+        "API_URL": "https://api.dhan.co/v2/charts/rollingoption",
+        "NIFTY_SECURITY_ID": 13,
+    }
     exec(compile(ast.Module(body=[function], type_ignores=[]), str(source_path), "exec"), namespace)
 
     sample_payload = {"data": {"ce": {
