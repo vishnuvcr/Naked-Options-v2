@@ -791,3 +791,13 @@ The free options-source audit sampled three expiry partitions (986,041 rows tota
 - The sanitized report excludes raw candles and credentials: [Dhan probe](reports/quantevolve/dhan_options_api_probe.json). The [options gate](reports/quantevolve/options_data_gate.json) remains closed until official contract-master/expiry mapping, full-history eligible-date coverage (>=80%), duplicate conflict rate (<=1%), and executable-price evidence pass.
 - The HF source is **CC-BY-NC-4.0**; its raw data remain out of the public repository. No options P&L or strategy result is claimed.
 - [Full manuscript](research/manuscripts/QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md) · [phase status](research/QUANTEvolve_INTEGRATION_STATUS.md) · [error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+
+## QuantEvolve automated run — 39676907604
+
+### QE-DELIVERY-39676907604 — 2026-10-21T21:14:46.559363+00:00
+- Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
+- No valid QuantEvolve prediction holdout result is claimed.
+
+- [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
+- [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
+- [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)

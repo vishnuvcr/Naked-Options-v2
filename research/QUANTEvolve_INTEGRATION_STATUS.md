@@ -422,3 +422,11 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 - HF sample checks pass for three expiry partitions (986,041 rows total). NSE circulars support sample lot sizes of 75 (2021-05-27), 50 (2024-01-04), and 65 (2026-08-04); this evidence is scoped to those expiry cohorts only.
 - The Dhan rolling-options probe [report](../reports/quantevolve/dhan_options_api_probe.json) contains one successful request: HTTP 200, 1,155 aligned minute observations, timestamps 2026-08-03 09:15 to 2026-08-05 15:39 IST. It uses expiryCode=1 (Next Expiry), omits explicit expiry/lot-size fields, and returns six strike values. P&L remains prohibited.
 - Current gate: [options_data_gate.json](../reports/quantevolve/options_data_gate.json). It must continue to show BLOCKED_NO_VERIFIED_CONTRACT_DATA until full official MII contract-master mapping, eligible-date coverage (>=80%), duplicate conflict rate (<=1%), and executable-price assumptions are validated.
+
+## QE-DELIVERY-39676907604
+
+### QE-DELIVERY-39676907604 — 2026-10-21T21:14:46.559363+00:00
+- Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
+- No valid QuantEvolve prediction holdout result is claimed.
+
+Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.

@@ -1,0 +1,9 @@
+{
+  "protocol": "QE-NIFTY-1.0",
+  "track": "prediction",
+  "run_id": "39676907604",
+  "status": "LLM_EVOLUTION_NOT_REQUESTED",
+  "block_reason": "automatic workflow ran offline gate only; no model-generation API call was requested",
+  "candidate_source_executed": false,
+  "performance_claim": null
+}

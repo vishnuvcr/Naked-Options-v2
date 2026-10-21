@@ -32,7 +32,7 @@
     "hf_sample_file_count": 3,
     "hf_sample_lot_sizes_mapped": true,
     "hf_sample_rows": 986041,
-    "hf_source_audit_status": "BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED",
+    "hf_source_audit_status": "BLOCKED_FULL_HISTORY_AND_OFFICIAL_CONTRACT_MASTER_RECONCILIATION",
     "hf_source_license": "CC-BY-NC-4.0"
   }
 }
