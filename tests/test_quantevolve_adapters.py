@@ -217,3 +217,25 @@ def test_options_source_audit_sample_selection_is_bounded_and_deterministic():
     assert '"pnl_permitted": False' in source
     assert 'official_expiry_reconciled": False' in source
     assert 'lot_size_history_verified": False' in source
+
+
+def test_official_nifty_sample_lot_mapping_is_expiry_specific_and_cited():
+    import ast
+
+    source_path = Path("tools/quantevolve/options_source_audit.py")
+    tree = ast.parse(source_path.read_text(encoding="utf-8"))
+    node = next(
+        item for item in tree.body
+        if isinstance(item, ast.Assign)
+        and any(isinstance(target, ast.Name) and target.id == "OFFICIAL_SAMPLE_MAP" for target in item.targets)
+    )
+    mapping = ast.literal_eval(node.value)
+    assert mapping["2021-05-27"]["lot_size"] == 75
+    assert mapping["2024-01-04"]["lot_size"] == 50
+    assert mapping["2026-08-04"]["lot_size"] == 65
+    assert mapping["2021-05-27"]["expected_expiry_weekday"] == "Thursday"
+    assert mapping["2024-01-04"]["expected_expiry_weekday"] == "Thursday"
+    assert mapping["2026-08-04"]["expected_expiry_weekday"] == "Tuesday"
+    for cohort in mapping.values():
+        assert cohort["circulars"]
+        assert all(url.startswith("https://nsearchives.nseindia.com/content/circulars/") for url in cohort["circulars"])
