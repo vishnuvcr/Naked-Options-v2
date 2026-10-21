@@ -13,6 +13,10 @@ Branch: `research/quantevolve-integration`
 | P5 Final validation | NOT STARTED | Sealed holdout, multiplicity control, costs, robustness. |
 | P6 Manuscript/closure | NOT STARTED | Full structured manuscript and repository status updates after results. |
 
+## Credential and review policy
+- The user reports that `GOOGLE_API_KEY` is configured as a GitHub Actions secret. The value has not been read or verified by this tool; use only in the restricted generation step when implemented.
+- User directive: no independent review/tester branch/report is needed for QE-NIFTY-1.0. Keep automated test and security gates; no review handoff is a phase dependency.
+
 ## Current verified facts
 - Existing main README records NIFTY prediction as closed with scope limitations and previous option-buying candidates as no-go/inconclusive for their stated frozen scopes. This integration does not reopen or overwrite those results.
 - Existing main has workflows for NIFTY research and Pages publishing; integration will be isolated to its own branch and workflow.
