@@ -1,0 +1,63 @@
+name: QuantEvolve integration audit
+
+on:
+  push:
+    branches: [research/quantevolve-integration]
+    paths:
+      - "research/QUANTEvolve_INTEGRATION_*.md"
+      - "tools/quantevolve/**"
+      - ".github/workflows/quantevolve-integration-audit.yml"
+  pull_request:
+    paths:
+      - "research/QUANTEvolve_INTEGRATION_*.md"
+      - "tools/quantevolve/**"
+      - ".github/workflows/quantevolve-integration-audit.yml"
+  schedule:
+    - cron: "23 5 * * 1"
+  workflow_dispatch:
+    inputs:
+      audit_only:
+        description: "Run source audit only (safe default; no strategy evolution)"
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quantevolve-audit-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout integration branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Fetch upstream source for inspection only
+        run: |
+          git clone --filter=blob:none --no-checkout https://github.com/tarsyang/quantevolve.git /tmp/quantevolve
+          git -C /tmp/quantevolve checkout --detach origin/main
+          git -C /tmp/quantevolve status --short
+      - name: Run static compatibility audit
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          python tools/quantevolve/audit_upstream.py \
+            --upstream /tmp/quantevolve \
+            --output reports/quantevolve/upstream_audit.json
+      - name: Upload sanitized audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: quantevolve-source-audit-${{ github.run_id }}
+          path: reports/quantevolve/upstream_audit.json
+          if-no-files-found: error
+          retention-days: 90
