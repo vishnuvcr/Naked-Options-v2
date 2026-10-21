@@ -14,6 +14,7 @@ import os
 from datetime import date
 from pathlib import Path
 
+import pandas as pd
 from huggingface_hub import HfApi, hf_hub_download
 import pyarrow.parquet as pq
 
