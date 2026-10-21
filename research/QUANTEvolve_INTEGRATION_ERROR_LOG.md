@@ -47,7 +47,7 @@ This log records visible technical findings and corrective actions. It does not 
 - **Date:** 2026-10-22
 - **Branch:** `research/quantevolve-integration`
 - **Files added:** integration plan, phase status, error log, static upstream audit script, GitHub Actions audit workflow, governance tests.
-- **Execution result:** Files are committed. The first hosted workflow run/artifact has not yet been verified in this conversation; do not report CI success until checked.
+- **Execution result:** Source-audit workflow runs succeeded; [run 39662117061](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39662117061) completed successfully for the committed source-audit/policy state. A later workflow edit added pytest governance checks; that revised version still requires its own verified run.
 - **Research status:** no NIFTY prediction experiment, options backtest, or out-of-sample performance run has been performed.
 
 
@@ -64,3 +64,10 @@ This log records visible technical findings and corrective actions. It does not 
 - **Change:** Added QuantEvolve-specific credential isolation, bounded-cost, sealed-holdout and no-independent-review instructions to `research/EXECUTION_POLICY.md`; reconciled plan/status/error-log text.
 - **User governance instruction:** no review needed; do not create a tester handoff for this integration.
 - **Performance status:** no QuantEvolve prediction or options performance has been run or claimed.
+
+
+## QE-STEP-007 — automated test gate added to audit workflow
+- **Date:** 2026-10-22
+- **Change:** The workflow now installs pytest and runs `tests/test_quantevolve_integration_protocol.py` before fetching/auditing upstream. Trigger filters focus on source code, the protocol tests, and the workflow itself rather than every documentation-only edit.
+- **Verification:** Source audit succeeded in previous runs, but the revised workflow containing this test step has not yet been verified to pass. Record as pending rather than assuming success.
+- **Review policy:** No independent review/tester handoff will be created, per the user's instruction. Automated checks remain required.
