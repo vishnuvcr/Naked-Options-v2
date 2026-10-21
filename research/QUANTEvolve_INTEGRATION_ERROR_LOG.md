@@ -415,3 +415,11 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-026 — Dhan probe rejected request parameters
+- Date: 2026-10-22. Severity: MEDIUM (historical-options source diagnostic).
+- Workflow: [single-call probe run 39674271641](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39674271641).
+- Observation: one request returned HTTP 400 with sanitized `errorType=Input_Exception` and a coarse `REQUEST_PARAMETER_OR_CONTRACT` class. The raw error message was intentionally not persisted, so the precise rejected field is not established.
+- Correction: align payload types to the documented schema (string security ID, integer interval) and add a regression assertion. One final bounded request will verify whether this resolves the input rejection; if not, stop API retries.
+- Status: corrected in source commit 2f04284 and test commit 92f27cb; one request pending.
