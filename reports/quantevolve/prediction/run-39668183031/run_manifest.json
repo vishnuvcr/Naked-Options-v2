@@ -1,0 +1,35 @@
+{
+  "block_reason": "controller returned without a verified successful Gemini generation response",
+  "candidate_source_executed": false,
+  "config_sha256": "b72aa1f637d94eb9bcffb51ca017d707e170d296fe9823f6c884b18db5d7f70b",
+  "data_first_date": "2007-01-02",
+  "data_last_date": "2026-10-19",
+  "data_rows": 4905,
+  "data_sha256": "66e06c7fd4affcf8753e68046b311b8cfe27cb292af93691d2ee63787381629c",
+  "data_source_ids": [
+    "dhan_daily"
+  ],
+  "error_type": null,
+  "iterations_requested": 4,
+  "llm_call_audit": {
+    "failure_types": {
+      "ServerError": 1,
+      "TimeoutError": 3
+    },
+    "model": "gemini-3.8-flash",
+    "requests_attempted": 4,
+    "requests_failed": 4,
+    "requests_succeeded": 0
+  },
+  "model": "gemini-3.8-flash",
+  "performance_claim": null,
+  "protocol": "QE-NIFTY-1.0",
+  "python_version": "3.11.17",
+  "run_id": "39668183031",
+  "selected_target_source": "dhan_daily",
+  "started_at_utc": "2026-10-21T20:12:40.097520+00:00",
+  "status": "EVOLUTION_NO_SUCCESSFUL_LLM_RESPONSES",
+  "track": "prediction",
+  "upstream_revision_expected": "2df1e85758620e8ac0ca88ffc428b379d6cb9620",
+  "upstream_url": "https://github.com/tarsyang/quantevolve"
+}
