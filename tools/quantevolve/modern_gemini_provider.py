@@ -53,7 +53,7 @@ def _record_llm_event(event: str, model: str, error_type: Optional[str] = None) 
                 failures[error_type or "UnknownError"] = int(failures.get(error_type or "UnknownError", 0)) + 1
             path.parent.mkdir(parents=True, exist_ok=True)
             temp = path.with_suffix(path.suffix + ".tmp")
-            temp.write_text(json.dumps(data, sort_keys=True) + "\\n", encoding="utf-8")
+            temp.write_text(json.dumps(data, sort_keys=True) + "\n", encoding="utf-8")
             temp.replace(path)
     except Exception as exc:
         # Only the exception class is logged, never the provider error string.
