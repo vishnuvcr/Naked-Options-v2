@@ -206,3 +206,7 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 - Published source report: reports/quantevolve/options_source_audit.json.
 
 Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
+
+
+## QE-STEP-014 — row-level expiry and lot audit correction
+The first runtime attempt [39671900967](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39671900967) mapped official circular lot sizes (75, 50, 65 for the selected expiries) but did not execute row-level validation because of a missing Pandas import. This is logged as QE-ERR-022. A missing-import fix and regression assertion are committed; one bounded rerun will verify all rows in the three sampled parquet files. This does not change the overall P&L disposition, which remains blocked pending broader contract and coverage gates.
