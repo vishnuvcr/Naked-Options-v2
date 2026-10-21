@@ -1,6 +1,6 @@
 {
-  "track": "prediction",
+  "track": "options",
   "run_llm": false,
-  "iterations": 4,
+  "iterations": 1,
   "refresh_data": false
 }
