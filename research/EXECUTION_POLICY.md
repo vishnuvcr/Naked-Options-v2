@@ -64,3 +64,18 @@ The initial repository was empty, so the protocol, skeleton and early files were
 - The current GitHub Actions workflow writes reports as artifacts. An artifact upload does not itself mean those outputs have been committed to the repository or published to Pages.
 - Keep the manuscript complete: abstract, introduction, literature review, research questions/objectives, data, methods, model table, statistics, results, discussion, strengths/limitations, conclusion, references, future directions, appendices and supplementary materials.
 - Maintain an auditable action/decision log, not a raw conversation transcript. Private internal reasoning / hidden chain-of-thought is not stored; the factual actions, decisions, and evidence are.
+
+
+## QuantEvolve integration core-instruction addendum (QE-NIFTY-1.0)
+
+This scoped addendum applies to the QuantEvolve integration branch and its prediction/options experiments. It does not rewrite or reopen the historical findings for prior research versions.
+
+- The user reports that `GOOGLE_API_KEY` has been added as a GitHub Actions repository secret. Treat this as user-reported configuration; never attempt to read or print the secret value. The audit workflow does not require this key.
+- Use `secrets.GOOGLE_API_KEY` only in a bounded LLM-generation step that needs Gemini. Do not put the key in YAML/config files, source, shell traces, candidate prompts, artifacts, logs, reports, or commit messages. Never expose it to generated strategy/model execution, data-processing jobs, or untrusted candidate code.
+- Keep generation and execution separated: generated code is untrusted, and its run process must have no API secrets, broker credentials, write-capable GitHub token, or network access unless a future, specifically audited need justifies it. No broker order placement is permitted.
+- Set explicit maximum iterations, population, model-call count, timeout/wall-clock budget, spend/quota bounds, checkpoint cadence and fixed seed. Use manual opt-in for any expensive LLM evolution; do not run costly evolution on each push or schedule.
+- If the secret is absent, invalid, quota-limited, or the provider fails, record a sanitized blocked/failed status and continue only with offline checks where possible. Never infer that the key works solely because the secret name exists.
+- Keep NIFTY prediction and options strategy discovery as separate tracks. Preserve all predecessor results and gates. Do not unlock options P&L until expiry/strike/option-type identity, coverage, duplicate quality, lot size, fees and fill/slippage assumptions pass.
+- Evolution fitness may use development-only walk-forward results. A sealed chronological holdout must not be read by candidate generation, fitness selection, tuning, debugging prompts or repeated retries. Correct the final comparison family for search multiplicity.
+- For this QuantEvolve integration, the user has explicitly stated **no independent review/tester branch or review sign-off is required**. Do not create an independent-tester handoff or wait for it to advance. Automated unit/regression tests, security checks, leakage checks, artifact validation and recorded gate decisions are still mandatory. Do not falsely label automated checks as independent review.
+- Maintain the finite QE-NIFTY-1.0 phases in `research/QUANTEvolve_INTEGRATION_PLAN.md`; stop after the prescribed phases or a serious blocker. Record visible actions, decisions, workflow/commit IDs, errors and evidence—not hidden chain-of-thought.
