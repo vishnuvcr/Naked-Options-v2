@@ -52,6 +52,8 @@ def inspect_response(payload: dict, http_status: int) -> dict:
         "http_status": int(http_status),
         "response_top_level_keys": sorted(str(k) for k in payload.keys()),
         "api_error_code": None,
+        "api_error_type": None,
+        "api_error_message_class": None,
         "rows": 0,
         "data_received": False,
         "explicit_expiry_metadata_present": False,
@@ -64,6 +66,24 @@ def inspect_response(payload: dict, http_status: int) -> dict:
         if isinstance(value, (str, int)) and str(value)[:32].isalnum():
             base["api_error_code"] = str(value)[:32]
             break
+    err_type = payload.get("errorType", payload.get("error_type"))
+    if isinstance(err_type, str):
+        base["api_error_type"] = "".join(ch for ch in err_type if ch.isalnum() or ch in "_-")[:40]
+    err_msg = payload.get("errorMessage", payload.get("message", ""))
+    if isinstance(err_msg, str):
+        lower = err_msg.lower()
+        if any(word in lower for word in ("token", "unauthorized", "auth", "credential")):
+            base["api_error_message_class"] = "AUTHENTICATION_OR_PERMISSION"
+        elif any(word in lower for word in ("date", "range", "future", "historical")):
+            base["api_error_message_class"] = "DATE_RANGE_OR_HISTORY"
+        elif any(word in lower for word in ("expiry", "option", "strike", "segment", "securityid", "instrument", "interval", "parameter", "request", "invalid")):
+            base["api_error_message_class"] = "REQUEST_PARAMETER_OR_CONTRACT"
+        elif any(word in lower for word in ("limit", "quota", "rate")):
+            base["api_error_message_class"] = "RATE_LIMIT_OR_QUOTA"
+        elif err_msg.strip():
+            base["api_error_message_class"] = "OTHER_NONEMPTY_ERROR"
+        else:
+            base["api_error_message_class"] = "EMPTY"
     data = payload.get("data")
     if not isinstance(data, dict):
         base["status"] = "API_RESPONSE_HAS_NO_DATA_OBJECT"
