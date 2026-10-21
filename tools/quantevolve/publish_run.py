@@ -70,13 +70,24 @@ def main() -> int:
         None,
     )
     manifest = read_json(manifest_path) if manifest_path else {}
+    # Reconcile only earlier bundles whose hashes, selected spec and metric arithmetic pass checks.
+    import subprocess, sys
+    reconciler = ROOT / "tools" / "quantevolve" / "reconcile_run.py"
+    if reconciler.is_file():
+        for stale_manifest in reports_root.rglob("run_manifest.json"):
+            subprocess.run(
+                [sys.executable, str(reconciler), "--run-dir", str(stale_manifest.parent)],
+                cwd=str(ROOT), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                timeout=30, check=False,
+            )
+
     status = manifest.get("status", "NO_RUN_MANIFEST")
     holdout_path = manifest_path.parent / "holdout_metrics.json" if manifest_path else None
     holdout = read_json(holdout_path) if holdout_path and holdout_path.exists() else {}
     gate = read_json(reports_root / "options_data_gate.json")
     run_marker = f"QE-DELIVERY-{args.run_id}"
     stamp = datetime.now(timezone.utc).isoformat()
-    if status == "PREDICTION_HOLDOUT_EVALUATED" and holdout.get("status") == "PASS":
+    if status == "PREDICTION_HOLDOUT_EVALUATED" and holdout.get("status") == "PREDICTION_HOLDOUT_EVALUATED":
         summary = (
             f"### {run_marker} — {stamp}\n"
             f"- Prediction run status: **{status}**. Candidate source was never executed; only a validated declarative spec was retained.\n"

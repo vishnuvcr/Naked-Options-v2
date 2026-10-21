@@ -118,12 +118,15 @@ def main() -> int:
     env["QE_DATA_PATH"] = str(data_path)
     env["QE_EVAL_STAGE"] = "development"
     out_abs = out.resolve()
+    work_out = Path("/tmp") / ("quantevolve-work-" + str(args.run_id))
+    shutil.rmtree(work_out, ignore_errors=True)
+    work_out.mkdir(parents=True, exist_ok=True)
     cmd = [
         sys.executable, "-m", "quantevolve.cli",
         "--initial_strategy", str(INITIAL.resolve()),
         "--evaluator_file", str(EVALUATOR.resolve()),
         "--config", str(CONFIG.resolve()),
-        "--output", str(out_abs), "--iterations", str(iterations), "--log-level", "WARNING",
+        "--output", str(work_out), "--iterations", str(iterations), "--log-level", "WARNING",
     ]
     try:
         result = subprocess.run(
@@ -131,21 +134,25 @@ def main() -> int:
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=900, check=False,
         )
     except subprocess.TimeoutExpired:
+        shutil.rmtree(work_out, ignore_errors=True)
         write_manifest(out, {**base, "status": "EVOLUTION_TIMEOUT", "error_type": "TimeoutExpired"})
         return 0
     if result.returncode != 0:
+        shutil.rmtree(work_out, ignore_errors=True)
         write_manifest(out, {**base, "status": "EVOLUTION_FAILED", "return_code": int(result.returncode), "error_type": "QuantEvolveCLIError"})
         return 0
 
-    candidates = list(out_abs.rglob("best_strategy.py"))
+    candidates = list(work_out.rglob("best_strategy.py"))
     candidates.sort(key=lambda p: (0 if p.parent.name == "best" else 1, len(p.parts)))
     if not candidates:
+        shutil.rmtree(work_out, ignore_errors=True)
         write_manifest(out, {**base, "status": "EVOLUTION_NO_BEST_CANDIDATE", "error_type": "BestCandidateMissing"})
         return 0
     candidate = candidates[0]
     try:
         spec = parse_spec_file(candidate)
     except Exception as exc:
+        shutil.rmtree(work_out, ignore_errors=True)
         write_manifest(out, {**base, "status": "EVOLUTION_BEST_SPEC_INVALID", "error_type": type(exc).__name__})
         return 0
     (out_abs / "best_strategy_spec.json").write_text(
@@ -165,21 +172,18 @@ def main() -> int:
             text=True, timeout=120, check=False,
         )
         if check.returncode != 0:
+            shutil.rmtree(work_out, ignore_errors=True)
             write_manifest(out, {**base, "status": stage.upper() + "_METRICS_FAILED", "error_type": "MetricEvaluationError"})
             return 0
         reports[stage] = json.loads(metric_path.read_text(encoding="utf-8"))
-        if reports[stage].get("status") != "PASS":
+        expected_status = "PASS" if stage == "development" else "PREDICTION_HOLDOUT_EVALUATED"
+        if reports[stage].get("status") != expected_status:
+            shutil.rmtree(work_out, ignore_errors=True)
             write_manifest(out, {**base, "status": stage.upper() + "_REPORT_INVALID", "error_type": "MetricReportValidationError"})
             return 0
 
-    # Do not publish source code, checkpoints, raw logs, or upstream generated program files.
-    for path in list(out_abs.rglob("*")):
-        if path.is_file() and path.name not in {
-            "best_strategy_spec.json", "development_metrics.json", "holdout_metrics.json", "run_manifest.json"
-        }:
-            path.unlink(missing_ok=True)
-    for path in sorted([p for p in out_abs.rglob("*") if p.is_dir()], key=lambda p: len(p.parts), reverse=True):
-        shutil.rmtree(path, ignore_errors=True)
+    # Upstream source, checkpoints and logs were stored under /tmp and are never published.
+    shutil.rmtree(work_out, ignore_errors=True)
 
     holdout = reports["holdout"]
     final_manifest = {

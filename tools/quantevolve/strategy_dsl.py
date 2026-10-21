@@ -174,7 +174,7 @@ def compute_forecasts(features: pd.DataFrame, spec: dict[str, Any]) -> np.ndarra
     return forecasts
 
 
-def _metrics(y: np.ndarray, forecast: np.ndarray) -> dict[str, float]:
+def _metrics(y: np.ndarray, forecast: np.ndarray) -> dict[str, Any]:
     finite = np.isfinite(y) & np.isfinite(forecast)
     y, forecast = y[finite], forecast[finite]
     if len(y) < 30:
@@ -183,10 +183,16 @@ def _metrics(y: np.ndarray, forecast: np.ndarray) -> dict[str, float]:
     zero_mae = float(np.mean(np.abs(y)))
     skill = float(1.0 - mae / zero_mae) if zero_mae > 0 else 0.0
     rmse = float(np.sqrt(np.mean(np.square(y - forecast))))
-    direction = float(np.mean(np.sign(forecast) == np.sign(y)))
+    directional_mask = np.abs(forecast) > 1e-12
+    direction = (float(np.mean(np.sign(forecast[directional_mask]) == np.sign(y[directional_mask])))
+                 if directional_mask.any() else None)
+    directional_coverage = float(np.mean(directional_mask))
     return {
         "sample_count": float(len(y)), "mae": mae, "zero_baseline_mae": zero_mae,
         "mae_skill_vs_zero": skill, "rmse": rmse, "directional_accuracy": direction,
+        "directional_accuracy_defined": bool(directional_mask.any()),
+        "directional_prediction_count": float(directional_mask.sum()),
+        "directional_prediction_coverage": directional_coverage,
         "mean_mae_improvement": float(zero_mae - mae),
     }
 
@@ -244,7 +250,8 @@ def evaluate_spec(frame: pd.DataFrame, spec: dict[str, Any], stage: str) -> dict
             "mean_fold_mae_skill": float(np.mean(skills)), "fold_skill_std": float(np.std(skills)),
             "mean_fold_mae": float(np.mean([x["mae"] for x in fold_metrics])),
             "mean_fold_zero_baseline_mae": float(np.mean([x["zero_baseline_mae"] for x in fold_metrics])),
-            "mean_fold_directional_accuracy": float(np.mean([x["directional_accuracy"] for x in fold_metrics])),
+            "mean_fold_directional_accuracy": (float(np.mean([x["directional_accuracy"] for x in fold_metrics if x["directional_accuracy"] is not None])) if any(x["directional_accuracy"] is not None for x in fold_metrics) else None),
+            "mean_fold_directional_prediction_coverage": float(np.mean([x["directional_prediction_coverage"] for x in fold_metrics])),
             "sample_count": float(sum(x["sample_count"] for x in fold_metrics)),
             "fold_count": float(len(fold_metrics)), "active_features": float(complexity),
             "complexity_penalty": float(0.002 * complexity),

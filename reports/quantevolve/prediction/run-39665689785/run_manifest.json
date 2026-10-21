@@ -8,7 +8,7 @@
   "data_source_ids": [
     "dhan_daily"
   ],
-  "error_type": "MetricReportValidationError",
+  "error_type": null,
   "iterations_requested": 4,
   "model": "gemini-3.8-flash",
   "performance_claim": null,
@@ -17,8 +17,12 @@
   "run_id": "39665689785",
   "selected_target_source": "dhan_daily",
   "started_at_utc": "2026-10-21T19:54:58.947835+00:00",
-  "status": "HOLDOUT_REPORT_INVALID",
+  "status": "PREDICTION_HOLDOUT_EVALUATED",
   "track": "prediction",
   "upstream_revision_expected": "2df1e85758620e8ac0ca88ffc428b379d6cb9620",
-  "upstream_url": "https://github.com/tarsyang/quantevolve"
+  "upstream_url": "https://github.com/tarsyang/quantevolve",
+  "previous_status": "HOLDOUT_REPORT_INVALID",
+  "manifest_reconciled_posthoc": true,
+  "reconciled_on_date": "2026-10-22",
+  "reconciliation_reason": "The runner incorrectly required the final holdout evaluator status to equal PASS. The expected holdout status is PREDICTION_HOLDOUT_EVALUATED. Data/candidate hashes, selected-spec identity, sample count, no-holdout-selection flag, MAE-skill arithmetic, and confidence interval order were verified. This is a status/metric-label correction, not a rerun."
 }

@@ -132,3 +132,13 @@ def test_options_gate_accepts_test_fixture_only_when_all_gates_are_explicit(tmp_
     assert report["status"] == "PASS"
     assert report["pnl_permitted"] is True
     assert report["eligible_date_coverage"] == pytest.approx(1.0)
+
+
+def test_zero_forecast_has_undefined_direction_accuracy_not_fake_accuracy():
+    zero_spec_text = VALID.replace("'ret_1': 0.25", "'ret_1': 0.0")
+    frame = validate_daily_frame(daily_fixture())
+    metrics = evaluate_spec(frame, parse_spec_text(zero_spec_text), "holdout")["metrics"]
+    assert metrics["directional_accuracy"] is None
+    assert metrics["directional_accuracy_defined"] is False
+    assert metrics["directional_prediction_count"] == 0.0
+    assert metrics["directional_prediction_coverage"] == 0.0

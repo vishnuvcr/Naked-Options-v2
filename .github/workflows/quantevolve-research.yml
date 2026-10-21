@@ -165,6 +165,31 @@ jobs:
             --output "reports/quantevolve/prediction/run-${{ github.run_id }}" \
             --iterations "${{ steps.request.outputs.iterations }}" \
             --run-id "${{ github.run_id }}"
+      - name: Record prediction request when LLM evolution is not requested
+        if: always() && steps.request.outputs.track == 'prediction' && steps.request.outputs.run_llm != 'true'
+        env:
+          RUN_ID: ${{ github.run_id }}
+          TEST_RESULT: ${{ steps.tests.outcome }}
+          DATA_READY: ${{ steps.data_gate.outputs.ready }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          if os.environ.get("TEST_RESULT") != "success":
+              status, reason = "BLOCKED_AUTOMATED_TESTS", "integration test gate did not pass"
+          elif os.environ.get("DATA_READY") != "true":
+              status, reason = "BLOCKED_DATA_GATE", "no validated daily target after one bounded retry"
+          else:
+              status, reason = "LLM_EVOLUTION_NOT_REQUESTED", "automatic workflow ran offline gate only; no model-generation API call was requested"
+          path=Path("reports/quantevolve/prediction")/("run-"+os.environ["RUN_ID"])
+          path.mkdir(parents=True, exist_ok=True)
+          (path/"run_manifest.json").write_text(json.dumps({
+              "protocol":"QE-NIFTY-1.0","track":"prediction","run_id":os.environ["RUN_ID"],
+              "status":status,"block_reason":reason,"candidate_source_executed":False,
+              "performance_claim":None
+          }, indent=2)+"\n")
+          print(json.dumps({"status":status,"reason":reason}))
+          PY
       - name: Record blocked/skipped prediction run
         if: always() && steps.request.outputs.track == 'prediction' && steps.request.outputs.run_llm == 'true' && (steps.tests.outcome != 'success' || steps.data_gate.outputs.ready != 'true' || steps.upstream.outcome != 'success')
         env:
