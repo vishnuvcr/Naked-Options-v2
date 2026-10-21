@@ -177,3 +177,11 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 - MAE skill vs zero-return baseline: 0.000000; directional accuracy: not available; MAE-improvement 95% circular block-bootstrap interval: [0.000000, 0.000000].
 - Interpretation: one selected candidate evaluated once against a zero-return forecast; not proof of a profitable trading strategy or universal superiority.
 - Published reports: reports/quantevolve/prediction/run-39667156299/best_strategy_spec.json, reports/quantevolve/prediction/run-39667156299/run_manifest.json, reports/quantevolve/prediction/run-39667156299/development_metrics.json, reports/quantevolve/prediction/run-39667156299/holdout_metrics.json
+
+
+### QE-NIFTY-1.0 two-run bounded prediction outcome — 2026-10-22
+
+- Runs [39665689785](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39665689785) and [39667156299](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39667156299) completed bounded four-iteration controller workflows. Both selected the declarative zero-return forecast; both held-out MAE was 0.00580346256399, identical to the zero-return baseline, for MAE skill 0 and block-bootstrap MAE-improvement CI [0,0] (second run report verified directly).
+- Holdout was 981 targets from 2022-11-04 to 2026-10-19; final holdout was not used for selection. Directional accuracy is undefined and coverage is 0 for the zero forecast.
+- Provider-call telemetry was absent, so do not imply that the LLM returned a successful mutation. Sanitized attempt/success/failure counters and a success gate are added now. Future expensive runs must be explicitly requested via manual workflow_dispatch; automatic request is false.
+- Options P&L remains blocked pending source/contract mapping and lot-size provenance.

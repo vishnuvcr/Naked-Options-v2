@@ -141,3 +141,16 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: No runtime error reported in the sanitized manifest.
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-013 — bounded controller run lacked provider-call success telemetry
+- Date: 2026-10-22. Severity: MEDIUM (LLM run reproducibility).
+- Observation: Both bounded four-iteration controller runs selected the zero-return specification. Saved manifests did not record whether a successful Gemini response was received, so the controller run cannot be used as evidence that LLM mutations occurred.
+- Correction: provider records only model name, request attempts/successes/failures and exception-class counts to a run-local audit file; runner requires at least one successful generation response before labeling a run as LLM evolution. No prompts, responses, API key or raw provider error text are captured.
+- Status: code and a regression assertion committed; future manually enabled LLM run must verify call counters. Automatic request is reset to offline so code pushes will not spend API quota.
+
+## QE-ERR-014 — options source/contract acquisition remains unverified
+- Date: 2026-10-22. Severity: HIGH (options experiment blocked at source gate).
+- Observation: the current workflow workspace has no licensed options dataset file and source manifest at the required paths. Existing earlier HF contract audit run 38807375042 was cancelled before its audit stage; it cannot be treated as successful.
+- Correction: continue finite free-source checks using the publicly documented HF NIFTY options archive and NSE official UDiFF/contract files. Keep raw CC-BY-NC source data in the cache/acquisition runtime, not Git-tracked artifacts. Write a sanitized provenance/schema/expiry/lot-size report. Do not compute P&L or optimize candidates unless source and contract gates pass.
+- Status: OPEN — source acquisition and official reconciliation phase next.

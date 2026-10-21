@@ -69,3 +69,12 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 - Published reports: reports/quantevolve/prediction/run-39667156299/best_strategy_spec.json, reports/quantevolve/prediction/run-39667156299/run_manifest.json, reports/quantevolve/prediction/run-39667156299/development_metrics.json, reports/quantevolve/prediction/run-39667156299/holdout_metrics.json
 
 Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
+
+
+## QE-STEP-010 — two bounded prediction evaluations and API-telemetry decision
+
+Two four-iteration bounded controller runs completed successfully at the workflow level: [39665689785](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39665689785) and [39667156299](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39667156299). Both selected an all-zero forecast specification. On the same validated final holdout (n=981, 2022-11-04 to 2026-10-19), the second run had MAE 0.0058034626 exactly equal to the zero-return baseline, skill 0, and 95% block-bootstrap interval [0, 0]. Directional accuracy is undefined because directional prediction coverage is 0%. This is no predictive improvement for the selected specification, not proof the entire model class is exhausted.
+
+Because the two runs did not carry Gemini call counters, neither proves successful LLM candidate mutation occurred. Future runs now record sanitized calls and require at least one successful response. The repository run request is reset to `run_llm=false` so pushes do not incur further API usage; explicit manual workflow_dispatch remains available for a capped run.
+
+Options track is separate and remains BLOCKED at source/contract identity. The previous HF source run ended cancelled before audit output. Free-source follow-up must establish expiry/contract continuity and historically applicable lot size before any P&L work.

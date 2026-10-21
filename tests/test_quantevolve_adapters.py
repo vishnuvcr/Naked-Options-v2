@@ -142,3 +142,21 @@ def test_zero_forecast_has_undefined_direction_accuracy_not_fake_accuracy():
     assert metrics["directional_accuracy_defined"] is False
     assert metrics["directional_prediction_count"] == 0.0
     assert metrics["directional_prediction_coverage"] == 0.0
+
+
+def test_gemini_telemetry_records_counters_only_and_runner_requires_success():
+    provider = Path("tools/quantevolve/modern_gemini_provider.py").read_text()
+    runner = Path("tools/quantevolve/run_prediction.py").read_text()
+    assert "requests_attempted" in provider
+    assert "requests_succeeded" in provider
+    assert "requests_failed" in provider
+    assert "QE_LLM_AUDIT_PATH" in provider
+    assert '_record_llm_event("success"' in provider
+    assert '_record_llm_event("failure"' in provider
+    assert "str(exc)" not in provider
+    audit_helper = provider[provider.index("def _record_llm_event"):provider.index("class GeminiLLM")]
+    assert '"prompt":' not in audit_helper
+    assert '"response":' not in audit_helper
+    assert '"api_key":' not in audit_helper
+    assert "EVOLUTION_NO_SUCCESSFUL_LLM_RESPONSES" in runner
+    assert "QE_LLM_AUDIT_PATH" in runner

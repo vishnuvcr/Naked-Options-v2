@@ -32,6 +32,35 @@ def write_manifest(out: Path, payload: dict) -> None:
     )
 
 
+def load_llm_audit(path: Path) -> dict:
+    """Read only allowlisted provider counters; never copy prompts or response text."""
+    expected = {
+        "model": None,
+        "requests_attempted": 0,
+        "requests_succeeded": 0,
+        "requests_failed": 0,
+        "failure_types": {},
+    }
+    if not path.is_file():
+        return expected
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(value, dict) or value.get("schema_version") != 1:
+            return expected
+        expected["model"] = str(value.get("model") or "")[:100] or None
+        for field in ("requests_attempted", "requests_succeeded", "requests_failed"):
+            expected[field] = max(0, int(value.get(field, 0)))
+        raw_failures = value.get("failure_types")
+        if isinstance(raw_failures, dict):
+            expected["failure_types"] = {
+                str(k)[:80]: max(0, int(v)) for k, v in raw_failures.items()
+                if isinstance(k, str) and str(k) not in {"prompt", "response", "api_key"}
+            }
+        return expected
+    except Exception:
+        return expected
+
+
 def data_gate(data_path: Path) -> tuple[bool, str, dict]:
     manifest_path = ROOT / "reports" / "data_manifest.json"
     quality_path = ROOT / "reports" / "data_quality.json"
@@ -121,6 +150,8 @@ def main() -> int:
     work_out = Path("/tmp") / ("quantevolve-work-" + str(args.run_id))
     shutil.rmtree(work_out, ignore_errors=True)
     work_out.mkdir(parents=True, exist_ok=True)
+    llm_audit_path = work_out / "llm_call_audit.json"
+    env["QE_LLM_AUDIT_PATH"] = str(llm_audit_path)
     cmd = [
         sys.executable, "-m", "quantevolve.cli",
         "--initial_strategy", str(INITIAL.resolve()),
@@ -137,9 +168,21 @@ def main() -> int:
         shutil.rmtree(work_out, ignore_errors=True)
         write_manifest(out, {**base, "status": "EVOLUTION_TIMEOUT", "error_type": "TimeoutExpired"})
         return 0
+    llm_audit = load_llm_audit(llm_audit_path)
+    # Persist counters only. Never persist generated prompts, candidate source, response text or raw stderr.
+    base["llm_call_audit"] = llm_audit
     if result.returncode != 0:
         shutil.rmtree(work_out, ignore_errors=True)
         write_manifest(out, {**base, "status": "EVOLUTION_FAILED", "return_code": int(result.returncode), "error_type": "QuantEvolveCLIError"})
+        return 0
+    if llm_audit["requests_succeeded"] < 1:
+        shutil.rmtree(work_out, ignore_errors=True)
+        write_manifest(out, {
+            **base,
+            "status": "EVOLUTION_NO_SUCCESSFUL_LLM_RESPONSES",
+            "block_reason": "controller returned without a verified successful Gemini generation response",
+            "error_type": None,
+        })
         return 0
 
     candidates = list(work_out.rglob("best_strategy.py"))

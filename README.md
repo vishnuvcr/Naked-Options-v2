@@ -356,3 +356,12 @@ Options track remains blocked at the source/contract gate; no options P&L or str
 - [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
 - [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
 - [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+
+
+### QE-NIFTY-1.0 bounded prediction: current evidence and guardrail
+
+Two bounded four-iteration runs ([39665689785](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39665689785), [39667156299](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39667156299)) selected the zero-return forecast. On the final 20% holdout (n=981; 2022-11-04–2026-10-19), the second run's MAE equaled the zero-return baseline exactly (0.0058034626; skill 0; 95% block-bootstrap interval for MAE improvement [0,0]). Since predictions were all zero, directional accuracy is undefined and predicted-direction coverage is 0%. This gives no predictive improvement for the selected specification; it does not prove every possible model is ineffective.
+
+Both prior manifests lacked a Gemini-call success counter, so they do not establish that the LLM returned valid mutations. Sanitized provider-call audit telemetry is now implemented, including a gate that blocks an LLM-evolution result label when no successful generation response is observed. The automatic run request is set to offline; use the workflow's manual dispatch option for a capped LLM run.
+
+Options strategy work remains blocked at source/contract provenance. Do not claim options strategy profitability or compute options P&L until verified official expiry, fixed-contract continuity, historical lot size, coverage, duplicate, license and realistic cost gates pass.

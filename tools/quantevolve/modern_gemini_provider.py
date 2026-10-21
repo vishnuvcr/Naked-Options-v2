@@ -4,6 +4,9 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+import json
+import threading
+from pathlib import Path
 from typing import Dict, List, Optional
 
 from google import genai
@@ -13,6 +16,48 @@ from quantevolve.config import LLMConfig
 from quantevolve.llm.base import LLMInterface
 
 logger = logging.getLogger(__name__)
+_AUDIT_LOCK = threading.Lock()
+
+
+def _record_llm_event(event: str, model: str, error_type: Optional[str] = None) -> None:
+    """Persist counters only; never persist prompts, response text, API keys or error messages."""
+    audit_file = os.environ.get("QE_LLM_AUDIT_PATH")
+    if not audit_file:
+        return
+    path = Path(audit_file)
+    try:
+        with _AUDIT_LOCK:
+            data = {
+                "schema_version": 1,
+                "model": model,
+                "requests_attempted": 0,
+                "requests_succeeded": 0,
+                "requests_failed": 0,
+                "failure_types": {},
+            }
+            if path.is_file():
+                try:
+                    old = json.loads(path.read_text(encoding="utf-8"))
+                    if isinstance(old, dict) and old.get("schema_version") == 1:
+                        data.update({k: old.get(k, v) for k, v in data.items()})
+                except Exception:
+                    pass
+            data["model"] = model
+            if event == "attempt":
+                data["requests_attempted"] += 1
+            elif event == "success":
+                data["requests_succeeded"] += 1
+            elif event == "failure":
+                data["requests_failed"] += 1
+                failures = data.setdefault("failure_types", {})
+                failures[error_type or "UnknownError"] = int(failures.get(error_type or "UnknownError", 0)) + 1
+            path.parent.mkdir(parents=True, exist_ok=True)
+            temp = path.with_suffix(path.suffix + ".tmp")
+            temp.write_text(json.dumps(data, sort_keys=True) + "\\n", encoding="utf-8")
+            temp.replace(path)
+    except Exception as exc:
+        # Only the exception class is logged, never the provider error string.
+        logger.warning("LLM telemetry write failed (%s)", type(exc).__name__)
 
 
 class GeminiLLM(LLMInterface):
@@ -47,6 +92,7 @@ class GeminiLLM(LLMInterface):
             max_output_tokens=int(kwargs.get("max_tokens", self.config.max_tokens)),
         )
         timeout_seconds = float(kwargs.get("timeout", self.config.timeout))
+        _record_llm_event("attempt", self.model_name)
         try:
             response = await asyncio.wait_for(
                 asyncio.to_thread(
@@ -60,7 +106,9 @@ class GeminiLLM(LLMInterface):
             text = getattr(response, "text", None)
             if not isinstance(text, str) or not text.strip():
                 raise RuntimeError("empty response")
+            _record_llm_event("success", self.model_name)
             return text
         except Exception as exc:
+            _record_llm_event("failure", self.model_name, type(exc).__name__)
             logger.error("Google Gen AI request failed (%s)", type(exc).__name__)
             raise RuntimeError("Google Gen AI request failed; details redacted") from None
