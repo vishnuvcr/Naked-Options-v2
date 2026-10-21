@@ -23,12 +23,12 @@ Branch: `research/quantevolve-integration`
 - QuantEvolve upstream describes a Gemini-backed evolutionary strategy loop; its README/config default to Binance OHLCV and BTCUSDT 1h. Direct use is unsuitable for NIFTY/options without adapters.
 - The user reports `GOOGLE_API_KEY` is configured as an Actions secret. This has not been validated through a Gemini request; the source audit does not need it.
 - The workflow now includes automated governance tests; do not claim those tests passed until a run using the revised workflow is verified.
-- No QuantEvolve-derived NIFTY or options out-of-sample results have been produced by this branch. Performance status: NOT RUN.
+- At the initial audit checkpoint, no QuantEvolve-derived results had been produced. This checkpoint is superseded by the later run-level results and final disposition below; the current status is INCONCLUSIVE/BLOCKED.
 
 
 ## QE implementation checkpoint — 2026-10-22
 
-The prediction adapter, pinned dependency configuration, modern Google provider adapter, bounded workflow and machine-readable report publisher have been added on this branch. The source audit is separate from empirical research. The first expanded test workflow exposed a wording assertion defect (2 passed, 1 failed) before any candidate ran. The correction is committed in the same bounded implementation batch; next Actions evidence must decide whether P1 tests pass.
+The prediction adapter, pinned dependency configuration, modern Google provider adapter, bounded workflow and machine-readable report publisher have been added on this branch. The source audit is separate from empirical research. The first expanded test workflow exposed a wording assertion defect (2 passed, 1 failed) before any candidate ran. The correction is committed and subsequent integration governance audits passed, including [39669940816](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669940816) and [39670352181](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39670352181).
 
 The user explicitly declined an independent tester/review gate. No review branch/report/sign-off is planned for this integration. Automated test, secret-isolation, causal-feature, holdout-separation and artifact-quality checks remain mandatory. Options strategy discovery remains blocked from any P&L evaluation until P3 passes.
 
