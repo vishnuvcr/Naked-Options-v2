@@ -292,13 +292,25 @@ jobs:
           RUN_ID: ${{ github.run_id }}
         run: python tools/quantevolve/publish_run.py --artifact-root artifact-inbox --run-id "$RUN_ID"
       - name: Commit generated safe reports and progress logs
+        env:
+          RUN_ID: ${{ github.run_id }}
+          BRANCH_NAME: ${{ github.ref_name }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add README.md research/EXPERIMENT_LOG.md research/QUANTEvolve_INTEGRATION_STATUS.md research/QUANTEvolve_INTEGRATION_ERROR_LOG.md reports/quantevolve
-          if git diff --cached --quiet; then
-            echo "No report/status changes to commit."
-          else
-            git commit -m "Publish QuantEvolve run ${{ github.run_id }} results"
-            git push origin "HEAD:${{ github.ref_name }}"
-          fi
+          for attempt in 1 2 3; do
+            git add README.md research/EXPERIMENT_LOG.md research/QUANTEvolve_INTEGRATION_STATUS.md research/QUANTEvolve_INTEGRATION_ERROR_LOG.md reports/quantevolve
+            if ! git diff --cached --quiet; then
+              git commit -m "Publish QuantEvolve run ${RUN_ID} results (attempt ${attempt})"
+            fi
+            if git push origin "HEAD:${BRANCH_NAME}"; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              git fetch origin "${BRANCH_NAME}"
+              git reset --hard "origin/${BRANCH_NAME}"
+              python tools/quantevolve/publish_run.py --artifact-root artifact-inbox --run-id "${RUN_ID}"
+            fi
+          done
+          echo "Failed to publish after three fast-forward-safe attempts." >&2
+          exit 1
