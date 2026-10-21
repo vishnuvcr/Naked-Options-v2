@@ -34,3 +34,18 @@
 
 ## Scope and audit note
 This log records visible technical findings and corrective actions. It does not include private chain-of-thought or hidden reasoning.
+
+
+## QE-ERR-005 — audit job initially referenced LLM secret unnecessarily
+- **Date:** 2026-10-22
+- **Severity:** LOW
+- **Observation:** First workflow draft passed `GOOGLE_API_KEY` into a source-audit-only process even though no LLM call is needed.
+- **Correction:** Removed the secret environment mapping; the audit workflow has read-only repository permissions and checkout credentials disabled.
+- **Status:** RESOLVED — workflow source updated; verify in Actions run.
+
+## Step record — audit scaffold committed
+- **Date:** 2026-10-22
+- **Branch:** `research/quantevolve-integration`
+- **Files added:** integration plan, phase status, error log, static upstream audit script, GitHub Actions audit workflow, governance tests.
+- **Execution result:** Files are committed. The first hosted workflow run/artifact has not yet been verified in this conversation; do not report CI success until checked.
+- **Research status:** no NIFTY prediction experiment, options backtest, or out-of-sample performance run has been performed.
