@@ -190,3 +190,12 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: controller returned without a verified successful Gemini generation response
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-016 — Gemini generation requests did not succeed
+- Date: 2026-10-22. Severity: MEDIUM (LLM candidate generation unavailable).
+- Workflow: [run 39668183031](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39668183031).
+- Observation: data validation and integration tests passed, but all four bounded generation attempts failed: three `TimeoutError` and one `ServerError`; successful responses=0. The runner correctly emitted `EVOLUTION_NO_SUCCESSFUL_LLM_RESPONSES` and did not score a candidate or claim prediction performance.
+- Model availability check: the configured `gemini-3.8-flash` endpoint is listed as a stable Gemini API model in Google's current model documentation. This does not prove the API key has quota or that the service was available during the run.
+- Correction/next step: make one bounded one-iteration retry with the listed stable `gemini-3.6-flash` model to distinguish a transient model/service issue from a general credential/quota/network issue. If it fails, stop further API retries and keep offline gates active until an explicit configuration change.
+- Status: first attempt logged; fallback run pending. No prompts, response bodies, key, or raw provider errors stored.
