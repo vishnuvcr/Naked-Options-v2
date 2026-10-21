@@ -289,3 +289,40 @@ def test_dhan_options_probe_sanitizes_rows_and_never_opens_pnl_gate():
     assert safe_error["error_field_hints"] == ["expiryCode"]
     assert safe_error["api_error_message_class"] == "REQUEST_PARAMETER_OR_CONTRACT"
     assert "expiryCode is invalid" not in json.dumps(safe_error)
+
+
+def test_options_gate_reports_supplemental_source_limits_without_opening_pnl(tmp_path):
+    from tools.quantevolve.options_contract_gate import inspect_options
+
+    supplemental = tmp_path / "supplemental"
+    supplemental.mkdir()
+    (supplemental / "options_source_audit.json").write_text(json.dumps({
+        "status": "BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED",
+        "source": {"license": "CC-BY-NC-4.0"},
+        "sample": {
+            "file_count": 3, "total_rows": 986041,
+            "sample_expiry_and_lot_reconciliation_status": "PASS_ALL_THREE_SAMPLED_COHORTS",
+            "sample_lot_size_mapping_all_verified": True,
+        },
+    }), encoding="utf-8")
+    (supplemental / "dhan_options_api_probe.json").write_text(json.dumps({
+        "status": "PASS_SAMPLE_DATA_RETRIEVED_IDENTITY_GATE_STILL_BLOCKED",
+        "http_status": 200, "rows": 1155, "required_fields_aligned": True,
+        "explicit_expiry_metadata_present": False, "row_level_lot_size_present": False,
+        "pnl_permitted": False,
+    }), encoding="utf-8")
+    report = inspect_options(
+        tmp_path / "missing_contracts.csv",
+        tmp_path / "missing_manifest.json",
+        tmp_path / "missing_underlying.csv",
+        supplemental,
+    )
+    evidence = report["supplemental_source_evidence"]
+    assert report["status"] == "BLOCKED_NO_VERIFIED_CONTRACT_DATA"
+    assert report["pnl_permitted"] is False
+    assert evidence["hf_sample_lot_sizes_mapped"] is True
+    assert evidence["hf_sample_file_count"] == 3
+    assert evidence["dhan_rows"] == 1155
+    assert evidence["dhan_explicit_expiry_metadata_present"] is False
+    assert evidence["dhan_pnl_permitted"] is False
+    assert "no explicit expiry or lot-size identifiers" in report["block_reason"]
