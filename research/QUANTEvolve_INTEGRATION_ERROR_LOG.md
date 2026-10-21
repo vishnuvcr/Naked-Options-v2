@@ -168,3 +168,11 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: integration test gate did not pass
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-015 — telemetry unit test imported upstream-only package
+- Date: 2026-10-22. Severity: LOW (test isolation).
+- Workflow: [audit run 39667889731](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39667889731).
+- Observation: 12 tests passed and one new telemetry-counter test failed because the audit job intentionally does not install the upstream `quantevolve` package; importing the provider module pulled in `quantevolve.config`.
+- Correction: the test now AST-extracts only the telemetry function and runs it with explicit standard-library dependencies, testing cumulative JSON counters without requiring the upstream package or making network/API calls.
+- Status: corrected in commit f37ee37; subsequent automated test/audit result pending.
