@@ -49,3 +49,18 @@ This log records visible technical findings and corrective actions. It does not 
 - **Files added:** integration plan, phase status, error log, static upstream audit script, GitHub Actions audit workflow, governance tests.
 - **Execution result:** Files are committed. The first hosted workflow run/artifact has not yet been verified in this conversation; do not report CI success until checked.
 - **Research status:** no NIFTY prediction experiment, options backtest, or out-of-sample performance run has been performed.
+
+
+## QE-ERR-006 — LLM secret readiness is user-reported, not runtime-verified
+- **Date:** 2026-10-22
+- **Severity:** LOW
+- **Observation:** User reports adding `GOOGLE_API_KEY` as a repository Actions secret. The source-audit job deliberately does not use it, and this integration cannot read the secret value or prove that Gemini authentication/quota is valid.
+- **Action:** Record it as available by user report; test it only in the bounded generation step when that step is implemented. Keep values out of logs and artifacts; generation credentials must not be exposed to candidate execution.
+- **Status:** USER-REPORTED CONFIGURATION; runtime validation pending.
+
+## QE-STEP-006 — core instructions updated
+- **Date:** 2026-10-22
+- **Branch:** `research/quantevolve-integration`
+- **Change:** Added QuantEvolve-specific credential isolation, bounded-cost, sealed-holdout and no-independent-review instructions to `research/EXECUTION_POLICY.md`; reconciled plan/status/error-log text.
+- **User governance instruction:** no review needed; do not create a tester handoff for this integration.
+- **Performance status:** no QuantEvolve prediction or options performance has been run or claimed.
