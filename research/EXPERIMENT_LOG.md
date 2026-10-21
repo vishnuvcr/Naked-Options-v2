@@ -369,3 +369,11 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 ### QE-DELIVERY-39676590298 — 2026-10-21T21:11:01.507434+00:00
 - Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
 - No valid QuantEvolve prediction holdout result is claimed.
+
+
+### QE-NIFTY-1.0 updated options data evidence — 2026-10-22
+
+- Public HF sample: 3 expiry files, 986,041 rows, CC-BY-NC-4.0; per-file row checks pass for expiry consistency, strike, option type and NIFTY symbol.
+- NSE circular-backed sample lot sizes: 75 for 2021-05-27, 50 for 2024-01-04, 65 for 2026-08-04. This is only a sampled cohort mapping, not full official MII contract-master reconciliation.
+- Dhan [probe report](../reports/quantevolve/dhan_options_api_probe.json): HTTP 200, 1,155 aligned bars from 2026-08-03 to 2026-08-05 IST; expiryCode=1 (Next Expiry); explicit expiry and lot size absent, six distinct strikes returned. Not a fixed-contract stream.
+- No P&L was calculated; full-history contract map, eligible-date coverage, conflicting duplicates and executable prices still fail or remain unverified. Current options data gate remains blocked; refresh its supplemental evidence from the restored probe report before closure.
