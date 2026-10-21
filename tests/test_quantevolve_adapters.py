@@ -326,3 +326,29 @@ def test_options_gate_reports_supplemental_source_limits_without_opening_pnl(tmp
     assert evidence["dhan_explicit_expiry_metadata_present"] is False
     assert evidence["dhan_pnl_permitted"] is False
     assert "no explicit expiry or lot-size identifiers" in report["block_reason"]
+
+
+def test_publisher_only_overwrites_top_level_options_sources_for_options_run(tmp_path):
+    import ast
+    import shutil
+
+    source_path = Path("tools/quantevolve/publish_run.py")
+    tree = ast.parse(source_path.read_text(encoding="utf-8"))
+    wanted = {"read_json", "is_options_artifact"}
+    functions = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name in wanted]
+    namespace = {"json": json, "Path": Path}
+    exec(compile(ast.Module(body=functions, type_ignores=[]), str(source_path), "exec"), namespace)
+
+    options_dir = tmp_path / "options" / "run-123"
+    options_dir.mkdir(parents=True)
+    (options_dir / "run_manifest.json").write_text(json.dumps({
+        "run_id": "123", "track": "options"
+    }), encoding="utf-8")
+    prediction_dir = tmp_path / "prediction" / "run-456"
+    prediction_dir.mkdir(parents=True)
+    (prediction_dir / "run_manifest.json").write_text(json.dumps({
+        "run_id": "456", "track": "prediction"
+    }), encoding="utf-8")
+    assert namespace["is_options_artifact"](tmp_path, "123") is True
+    assert namespace["is_options_artifact"](tmp_path, "456") is False
+    assert namespace["is_options_artifact"](tmp_path, "no-such-run") is False
