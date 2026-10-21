@@ -7,3 +7,10 @@ undefined
 - Observation: 9 adapter/protocol tests passed and 1 protocol assertion failed because it looked for the no-independent-review instruction in the research plan, where it was not stated. The instruction exists in the core execution policy as required. Daily market data acquisition and target validation passed; the workflow correctly did not start Gemini evolution because the test gate failed.
 - Correction: assert the no-review directive in research/EXECUTION_POLICY.md rather than searching the plan. Add the QE test file glob to both relevant workflow triggers so test-only fixes automatically rerun the bounded workflow and audit.
 - Status: CORRECTED IN BRANCH; next run must verify.
+
+## QE-DELIVERY-39665689785 — automated run record
+- Date: 2026-10-21T19:55:13.399880+00:00
+- Run status: HOLDOUT_REPORT_INVALID
+- Reason/error classification: MetricReportValidationError
+- Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
+- No API key or credential value is persisted.

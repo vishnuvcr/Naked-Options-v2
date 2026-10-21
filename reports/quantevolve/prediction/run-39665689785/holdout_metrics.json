@@ -1,0 +1,45 @@
+{
+  "active_features": 0.0,
+  "block_length": 10.0,
+  "bootstrap_reps": 1000.0,
+  "candidate_source_sha256": "04679de5e45c167fe22ca6e6c372c00d86321c01e0e63a37c81035e9ba21fd7d",
+  "data_sha256": "66e06c7fd4affcf8753e68046b311b8cfe27cb292af93691d2ee63787381629c",
+  "directional_accuracy": 0.0010193679918450561,
+  "evaluation_stage": "holdout",
+  "final_holdout_used_for_candidate_selection": 0.0,
+  "holdout_end_date": "2026-10-19",
+  "holdout_start_date": "2022-11-04",
+  "mae": 0.005803462563991722,
+  "mae_improvement_ci95_high": 0.0,
+  "mae_improvement_ci95_low": 0.0,
+  "mae_skill_vs_zero": 0.0,
+  "mean_mae_improvement": 0.0,
+  "n_development_rows": 3924,
+  "n_total_rows": 4905,
+  "rmse": 0.007963864496866901,
+  "sample_count": 981.0,
+  "selected_spec": {
+    "clip": 0.02,
+    "features": [
+      "ret_1",
+      "ret_5",
+      "ret_20",
+      "vol_5",
+      "vol_20"
+    ],
+    "intercept": 0.0,
+    "model": "linear",
+    "track": "prediction",
+    "version": 1,
+    "weights": {
+      "ret_1": 0.0,
+      "ret_20": 0.0,
+      "ret_5": 0.0,
+      "vol_20": 0.0,
+      "vol_5": 0.0
+    }
+  },
+  "status": "PREDICTION_HOLDOUT_EVALUATED",
+  "upstream_candidate_executed": false,
+  "zero_baseline_mae": 0.005803462563991722
+}

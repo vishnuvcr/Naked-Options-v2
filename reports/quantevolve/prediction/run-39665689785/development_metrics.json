@@ -1,0 +1,78 @@
+{
+  "active_features": 0.0,
+  "candidate_source_sha256": "04679de5e45c167fe22ca6e6c372c00d86321c01e0e63a37c81035e9ba21fd7d",
+  "combined_score": 0.0,
+  "complexity_penalty": 0.0,
+  "data_sha256": "66e06c7fd4affcf8753e68046b311b8cfe27cb292af93691d2ee63787381629c",
+  "development_folds": [
+    {
+      "directional_accuracy": 0.003401360544217687,
+      "fold": 1.0,
+      "mae": 0.00577277625127432,
+      "mae_skill_vs_zero": 0.0,
+      "mean_mae_improvement": 0.0,
+      "rmse": 0.00779024773805102,
+      "sample_count": 588.0,
+      "target_end_index_exclusive": 2746.0,
+      "target_start_index": 2158.0,
+      "zero_baseline_mae": 0.00577277625127432
+    },
+    {
+      "directional_accuracy": 0.0,
+      "fold": 2.0,
+      "mae": 0.008641104942153156,
+      "mae_skill_vs_zero": 0.0,
+      "mean_mae_improvement": 0.0,
+      "rmse": 0.014333034657083204,
+      "sample_count": 589.0,
+      "target_end_index_exclusive": 3335.0,
+      "target_start_index": 2746.0,
+      "zero_baseline_mae": 0.008641104942153156
+    },
+    {
+      "directional_accuracy": 0.0,
+      "fold": 3.0,
+      "mae": 0.00798588396474287,
+      "mae_skill_vs_zero": 0.0,
+      "mean_mae_improvement": 0.0,
+      "rmse": 0.010499978540083109,
+      "sample_count": 589.0,
+      "target_end_index_exclusive": 3924.0,
+      "target_start_index": 3335.0,
+      "zero_baseline_mae": 0.00798588396474287
+    }
+  ],
+  "evaluation_stage": "development",
+  "fold_count": 3.0,
+  "fold_skill_std": 0.0,
+  "mean_fold_directional_accuracy": 0.0011337868480725624,
+  "mean_fold_mae": 0.007466588386056783,
+  "mean_fold_mae_skill": 0.0,
+  "mean_fold_zero_baseline_mae": 0.007466588386056783,
+  "n_development_rows": 3924,
+  "n_total_rows": 4905,
+  "sample_count": 1766.0,
+  "selected_spec": {
+    "clip": 0.02,
+    "features": [
+      "ret_1",
+      "ret_5",
+      "ret_20",
+      "vol_5",
+      "vol_20"
+    ],
+    "intercept": 0.0,
+    "model": "linear",
+    "track": "prediction",
+    "version": 1,
+    "weights": {
+      "ret_1": 0.0,
+      "ret_20": 0.0,
+      "ret_5": 0.0,
+      "vol_20": 0.0,
+      "vol_5": 0.0
+    }
+  },
+  "status": "PASS",
+  "upstream_candidate_executed": false
+}

@@ -1,0 +1,21 @@
+{
+  "clip": 0.02,
+  "features": [
+    "ret_1",
+    "ret_5",
+    "ret_20",
+    "vol_5",
+    "vol_20"
+  ],
+  "intercept": 0.0,
+  "model": "linear",
+  "track": "prediction",
+  "version": 1,
+  "weights": {
+    "ret_1": 0.0,
+    "ret_20": 0.0,
+    "ret_5": 0.0,
+    "vol_20": 0.0,
+    "vol_5": 0.0
+  }
+}
