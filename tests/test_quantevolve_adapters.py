@@ -277,3 +277,10 @@ def test_dhan_options_probe_sanitizes_rows_and_never_opens_pnl_gate():
     assert '"access-token": token' in source
     assert "DHAN_ACCESS_TOKEN" in source
     assert "response.text" not in source
+    safe_error = namespace["inspect_response"](
+        {"errorCode": "INVALID_INPUT", "errorType": "InvalidRequest", "errorMessage": "expiryCode is invalid for the selected segment"},
+        400,
+    )
+    assert safe_error["api_error_type"] == "InvalidRequest"
+    assert safe_error["api_error_message_class"] == "REQUEST_PARAMETER_OR_CONTRACT"
+    assert "expiryCode is invalid" not in json.dumps(safe_error)
