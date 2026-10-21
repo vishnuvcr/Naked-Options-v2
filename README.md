@@ -333,3 +333,13 @@ The selected forecast was zero for every observation. On the final 20% chronolog
 The initial run manifest was marked invalid because the validator expected the wrong holdout status string. A post-hoc integrity reconciliation checked the metric status/stage, data and candidate hashes, spec match, holdout lock flag, MAE formula and CI order before correcting the manifest. The runner was also changed so upstream generated source and checkpoints live under /tmp, not in the report artifact.
 
 Options track remains blocked at the source/contract gate; no options P&L or strategy is approved. See [integration status](research/QUANTEvolve_INTEGRATION_STATUS.md), [error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md), [manifest](reports/quantevolve/prediction/run-39665689785/run_manifest.json), and [holdout metrics](reports/quantevolve/prediction/run-39665689785/holdout_metrics.json).
+
+## QuantEvolve automated run — 39666799180
+
+### QE-DELIVERY-39666799180 — 2026-10-21T20:03:03.004060+00:00
+- Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
+- No valid QuantEvolve prediction holdout result is claimed.
+
+- [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
+- [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
+- [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)

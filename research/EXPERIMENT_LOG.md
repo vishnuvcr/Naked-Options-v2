@@ -166,3 +166,7 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 - Directional accuracy is undefined because the selected model issued only zero forecasts; directional coverage is 0%. This corrects the initial inaccurate direction metric label.
 - A runner validator defect rejected holdout status PREDICTION_HOLDOUT_EVALUATED because it expected PASS for every stage. The metrics were validated against saved spec/hash/arithmetic and the run manifest has been reconciled. The runner's expected status and artifact workspace are fixed for subsequent runs.
 - The options contract gate remains BLOCKED_NO_VERIFIED_CONTRACT_DATA; no options strategy P&L has been run.
+
+### QE-DELIVERY-39666799180 — 2026-10-21T20:03:03.004060+00:00
+- Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
+- No valid QuantEvolve prediction holdout result is claimed.
