@@ -175,7 +175,7 @@ This log records visible technical findings and corrective actions. It does not 
 - Workflow: [audit run 39667889731](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39667889731).
 - Observation: 12 tests passed and one new telemetry-counter test failed because the audit job intentionally does not install the upstream `quantevolve` package; importing the provider module pulled in `quantevolve.config`.
 - Correction: the test now AST-extracts only the telemetry function and runs it with explicit standard-library dependencies, testing cumulative JSON counters without requiring the upstream package or making network/API calls.
-- Status: corrected in commit f37ee37; subsequent automated test/audit result pending.
+- Status: corrected; tests passed in [39668092561](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39668092561) and later audits [39669940816](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669940816), [39670352181](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39670352181).
 
 ## QE-DELIVERY-39668093032 — automated run record
 - Date: 2026-10-21T20:12:02.681024+00:00
