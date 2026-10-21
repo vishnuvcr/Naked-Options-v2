@@ -110,3 +110,7 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 - No valid QuantEvolve prediction holdout result is claimed.
 
 Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
+
+
+## QE-STEP-011 — API fallback disposition
+The telemetry-verified run [39668183031](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39668183031) made four Gemini generation attempts (three timeouts, one server error, zero successes). The runner correctly blocked candidate scoring. The configured endpoint is listed in Google's current model documentation; no conclusion about key validity or quota is inferred from exception classes. One one-iteration fallback check using `gemini-3.6-flash` is planned as the final API diagnostic. Stop further API retries if that bounded check fails. Offline-by-default request remains the steady state.
