@@ -193,3 +193,7 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 ### QE-DELIVERY-39667889681 — 2026-10-21T20:10:29.755713+00:00
 - Prediction run status: **BLOCKED_AUTOMATED_TESTS**; sanitized reason: integration test gate did not pass.
 - No valid QuantEvolve prediction holdout result is claimed.
+
+### QE-DELIVERY-39668093032 — 2026-10-21T20:12:02.681024+00:00
+- Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
+- No valid QuantEvolve prediction holdout result is claimed.
