@@ -297,7 +297,7 @@ def test_options_gate_reports_supplemental_source_limits_without_opening_pnl(tmp
     supplemental = tmp_path / "supplemental"
     supplemental.mkdir()
     (supplemental / "options_source_audit.json").write_text(json.dumps({
-        "status": "BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED",
+        "status": "BLOCKED_FULL_HISTORY_AND_OFFICIAL_CONTRACT_MASTER_RECONCILIATION",
         "source": {"license": "CC-BY-NC-4.0"},
         "sample": {
             "file_count": 3, "total_rows": 986041,
