@@ -455,3 +455,8 @@ The bounded fallback run [39669107291](https://github.com/vishnuvcr/Naked-Option
 - [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
 - [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
 - [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+
+
+### Options source-audit publication correction
+
+The bounded source audit ran in [workflow 39669708490](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669708490), but the publisher initially omitted its sanitized report. The publisher allowlist is fixed and one bounded rerun will publish the source/schema evidence. Raw CC-BY-NC parquet remains out of the repository and report artifacts.
