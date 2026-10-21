@@ -445,3 +445,13 @@ The bounded fallback run [39669107291](https://github.com/vishnuvcr/Naked-Option
 - [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
 - [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
 - [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+
+## QuantEvolve automated run — 39669708490
+
+### QE-DELIVERY-39669708490 — 2026-10-21T20:23:18.221112+00:00
+- Prediction run status: **NO_RUN_MANIFEST**; sanitized reason: no successful holdout report.
+- No valid QuantEvolve prediction holdout result is claimed.
+
+- [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
+- [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
+- [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
