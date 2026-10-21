@@ -249,3 +249,9 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 ### QE-DELIVERY-39671741090 — 2026-10-21T20:36:59.137048+00:00
 - Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
 - No valid QuantEvolve prediction holdout result is claimed.
+
+### QE-DELIVERY-39671900967 — 2026-10-21T20:38:06.559428+00:00
+- Options source audit status: **BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED**; sampled files=3; sample rows=986041.
+- License: CC-BY-NC-4.0; lot-size field present in all samples=False.
+- Options P&L permitted=False. Official expiry reconciliation, historical lot size, full coverage and executable pricing remain mandatory gates.
+- Published source report: reports/quantevolve/options_source_audit.json.

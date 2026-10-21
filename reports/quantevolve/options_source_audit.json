@@ -2,13 +2,39 @@
   "audit_type": "bounded_public_source_schema_audit",
   "claim": null,
   "limitations": [
-    "A filename/expiry column is not independent official-exchange expiry reconciliation.",
-    "Historical lot-size mapping is not established by this dataset sample.",
+    "The circular reconciliation covers only the three sampled expiry cohorts, not every expiry/contract in the source history.",
+    "Full official MII contract-master row matching was not completed for the 2021 and January 2024 sample dates; circular-based lot size and expiry weekday corroboration is not a complete row-by-row master match.",
     "OHLC bars are not historical bid/ask quotes and cannot by themselves prove executable fills.",
     "Three expiry samples do not establish full-history coverage or contract continuity.",
     "The dataset is CC-BY-NC-4.0; raw files must not be redistributed in public reports or repository commits."
   ],
   "next_gate": "Reconcile exact expiry and historical lot size against official NSE contract files; measure full eligible-date coverage and conflicting duplicates before constructing a backtest ledger.",
+  "official_exchange_circulars_reviewed": [
+    {
+      "finding": "2021 NIFTY weekly/monthly lot-size transition: old 75 lot retained for May/June monthly contracts; 50 applies from later monthly/weekly cohorts.",
+      "url": "https://nsearchives.nseindia.com/content/circulars/FAOP47854.pdf"
+    },
+    {
+      "finding": "March 2023 NIFTY market lot remains 50.",
+      "url": "https://nsearchives.nseindia.com/content/circulars/FAOP56233.pdf"
+    },
+    {
+      "finding": "NIFTY lot changes 50 to 25 for contracts available from 26-Apr-2024 onward.",
+      "url": "https://nsearchives.nseindia.com/content/circulars/FAOP61415.pdf"
+    },
+    {
+      "finding": "NIFTY lot changes 25 to 75 for newly introduced contracts from 20-Nov-2024 with expiry-cohort transition dates.",
+      "url": "https://nsearchives.nseindia.com/content/circulars/FAOP64625.pdf"
+    },
+    {
+      "finding": "NIFTY lot changes 75 to 65; first revised weekly expiry 06-Jan-2026 and monthly expiry 27-Jan-2026.",
+      "url": "https://nsearchives.nseindia.com/content/circulars/FAOP70616.pdf"
+    },
+    {
+      "finding": "NIFTY expiry day transitions from Thursday to Tuesday for new expiries on/after 01-Sep-2025.",
+      "url": "https://nsearchives.nseindia.com/content/circulars/FAOP68589.pdf"
+    }
+  ],
   "pnl_permitted": false,
   "protocol": "QE-NIFTY-1.0",
   "sample": {
@@ -36,6 +62,25 @@
         "lot_size_column_present": false,
         "repo_path": "options/NIFTY/2021-05-27.parquet",
         "rows": 333365,
+        "sample_contract_reconciliation": {
+          "expected_expiry_weekday": "Thursday",
+          "file_expiry": "2021-05-27",
+          "file_expiry_matches_all_rows": false,
+          "lot_size_basis": "NSE FAOP47854: May/June 2021 monthly expiries retain old 75 lot; weekly switch starts Aug 2021. Expiry remained Thursday.",
+          "lot_size_source_circulars": [
+            "https://nsearchives.nseindia.com/content/circulars/FAOP47854.pdf",
+            "https://nsearchives.nseindia.com/content/circulars/FAOP68589.pdf"
+          ],
+          "nifty_symbol_rows": 0,
+          "observed_expiry_weekday": null,
+          "official_lot_size": 75,
+          "official_lot_size_mapping_status": "MAPPED_TO_OFFICIAL_NSE_CIRCULARS",
+          "sample_contract_checks_status": "CHECK_ERROR_NameError",
+          "unique_expiry_count": 0,
+          "unique_symbol_sample": [],
+          "valid_option_type_rows": 0,
+          "valid_strike_rows": 0
+        },
         "sha256": "46aef7e94628ea3c180e4deb4998a19fab2d1082fce0529cc5ba6bca7313e26e",
         "timestamp_type": "timestamp[ns, tz=+05:30]"
       },
@@ -60,6 +105,27 @@
         "lot_size_column_present": false,
         "repo_path": "options/NIFTY/2024-01-04.parquet",
         "rows": 650030,
+        "sample_contract_reconciliation": {
+          "expected_expiry_weekday": "Thursday",
+          "file_expiry": "2024-01-04",
+          "file_expiry_matches_all_rows": false,
+          "lot_size_basis": "NSE 2021 circular sets 50 for weekly contracts from Aug 2021 onward; March 2023 retains 50; April 2024 changes contracts available from Apr 26, 2024 onward to 25.",
+          "lot_size_source_circulars": [
+            "https://nsearchives.nseindia.com/content/circulars/FAOP47854.pdf",
+            "https://nsearchives.nseindia.com/content/circulars/FAOP56233.pdf",
+            "https://nsearchives.nseindia.com/content/circulars/FAOP61415.pdf",
+            "https://nsearchives.nseindia.com/content/circulars/FAOP68589.pdf"
+          ],
+          "nifty_symbol_rows": 0,
+          "observed_expiry_weekday": null,
+          "official_lot_size": 50,
+          "official_lot_size_mapping_status": "MAPPED_TO_OFFICIAL_NSE_CIRCULARS",
+          "sample_contract_checks_status": "CHECK_ERROR_NameError",
+          "unique_expiry_count": 0,
+          "unique_symbol_sample": [],
+          "valid_option_type_rows": 0,
+          "valid_strike_rows": 0
+        },
         "sha256": "c7e4da3130309c2695b134e3027e3ba40767f7b99359c0f9fe78fc0bc37f5dbf",
         "timestamp_type": "timestamp[ns, tz=+05:30]"
       },
@@ -84,13 +150,35 @@
         "lot_size_column_present": false,
         "repo_path": "options/NIFTY/2026-08-04.parquet",
         "rows": 2646,
+        "sample_contract_reconciliation": {
+          "expected_expiry_weekday": "Tuesday",
+          "file_expiry": "2026-08-04",
+          "file_expiry_matches_all_rows": false,
+          "lot_size_basis": "NSE FAOP70616: first revised NIFTY weekly lot expiry is 06-Jan-2026 at 65; weekly expiry day changed to Tuesday for expiries on/after 01-Sep-2025.",
+          "lot_size_source_circulars": [
+            "https://nsearchives.nseindia.com/content/circulars/FAOP70616.pdf",
+            "https://nsearchives.nseindia.com/content/circulars/FAOP68589.pdf",
+            "https://nsearchives.nseindia.com/content/circulars/FAOP68685.pdf"
+          ],
+          "nifty_symbol_rows": 0,
+          "observed_expiry_weekday": null,
+          "official_lot_size": 65,
+          "official_lot_size_mapping_status": "MAPPED_TO_OFFICIAL_NSE_CIRCULARS",
+          "sample_contract_checks_status": "CHECK_ERROR_NameError",
+          "unique_expiry_count": 0,
+          "unique_symbol_sample": [],
+          "valid_option_type_rows": 0,
+          "valid_strike_rows": 0
+        },
         "sha256": "8de2f08cef1456c448c4fc4be0d9d586a1b26af30bf67990171385361af92f9c",
         "timestamp_type": "timestamp[ns, tz=+05:30]"
       }
     ],
     "lot_size_column_present_in_all_samples": false,
     "required_identity_and_ohlcv_columns_present": true,
-    "sample_hash_manifest_sha256": "b8b433c5f76e62bbe262dfa39bed83d2a454f56a0152c411d8f0bd14bc1e0073",
+    "sample_expiry_and_lot_reconciliation_status": "PARTIAL_OR_BLOCKED",
+    "sample_hash_manifest_sha256": "a01e1db22a2f7f15ed7677d31797bb2e08b2cf4e534ef1fb746c9932c6ba8a14",
+    "sample_lot_size_mapping_all_verified": false,
     "schema_union": [
       "close",
       "expiry",
