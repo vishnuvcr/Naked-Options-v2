@@ -508,3 +508,11 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-029 — offline artifact publication overwrote newer Dhan probe evidence
+- Date: 2026-10-22. Severity: MEDIUM (source evidence integrity).
+- Workflows: successful probe [39675422599](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39675422599), later offline publisher run [39675904908](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39675904908).
+- Observation: the successful options artifact recorded 1,155 aligned bars from Dhan with HTTP 200 and `expiryCode=1`, but a subsequent prediction/offline artifact republished an older probe report with HTTP 400 / `expiryCode=0`. The publisher was copying top-level options-source reports from every run regardless of track.
+- Correction: publisher now calls `is_options_artifact(inbox, run_id)` and copies options-source audit/Dhan probe files only when the current artifact's run manifest says `track=options`. Successful sanitized probe metadata was restored from artifact 12382135748.
+- Status: publisher guard committed in b347607; regression test in cb3b5f8. Verification pending.
