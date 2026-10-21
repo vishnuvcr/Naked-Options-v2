@@ -214,6 +214,7 @@ def test_options_source_audit_sample_selection_is_bounded_and_deterministic():
     assert selected[-1] == paths[-1]
     assert namespace["select_sample_files"](paths, limit=3) == selected
     source = source_path.read_text(encoding="utf-8")
+    assert "import pandas as pd" in source
     assert '"pnl_permitted": False' in source
     assert 'official_expiry_reconciled": False' in source
     assert 'lot_size_history_verified": False' in source
