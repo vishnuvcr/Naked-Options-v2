@@ -8,6 +8,7 @@ import os
 import shutil
 import subprocess
 import sys
+import yaml
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -111,11 +112,13 @@ def main() -> int:
     out = args.output if args.output.is_absolute() else (ROOT / args.output)
     out.mkdir(parents=True, exist_ok=True)
     iterations = max(1, min(4, int(args.iterations)))
+    config_obj = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
+    model_name = str(config_obj["llm"]["primary_model"])
     base = {
         "protocol": "QE-NIFTY-1.0", "track": "prediction", "run_id": str(args.run_id),
         "started_at_utc": utc_now(), "upstream_url": "https://github.com/tarsyang/quantevolve",
         "upstream_revision_expected": UPSTREAM_PIN, "python_version": sys.version.split()[0],
-        "model": "gemini-3.8-flash", "iterations_requested": iterations,
+        "model": model_name, "iterations_requested": iterations,
         "config_sha256": sha256_file(CONFIG), "candidate_source_executed": False,
         "performance_claim": None,
     }
