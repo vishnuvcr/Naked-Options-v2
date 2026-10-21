@@ -780,3 +780,14 @@ The free options-source audit sampled three expiry partitions (986,041 rows tota
 - [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
 - [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
 - [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+
+
+## QuantEvolve options-data follow-up — updated 2026-10-22
+
+**Progress:** sample-level source verification improved; options P&L remains blocked.
+
+- The HF source audit has 3 expiry files / 986,041 rows. Sampled files pass row-level expiry consistency, positive-strike, option-type and NIFTY-symbol checks. NSE circulars support sample lot sizes **75 (2021-05-27), 50 (2024-01-04), 65 (2026-08-04)**. These checks do not substitute for complete official MII contract-master matching over the full history.
+- One Dhan rolling-options request succeeded: **HTTP 200 / 1,155 aligned minute observations** from 2026-08-03 09:15 to 2026-08-05 15:39 IST. It requested expiryCode=1 (Next Expiry), and the response contains no explicit expiry or lot-size field; six distinct strikes appear. This is not an exact-expiry fixed-contract ledger.
+- The sanitized report excludes raw candles and credentials: [Dhan probe](reports/quantevolve/dhan_options_api_probe.json). The [options gate](reports/quantevolve/options_data_gate.json) remains closed until official contract-master/expiry mapping, full-history eligible-date coverage (>=80%), duplicate conflict rate (<=1%), and executable-price evidence pass.
+- The HF source is **CC-BY-NC-4.0**; its raw data remain out of the public repository. No options P&L or strategy result is claimed.
+- [Full manuscript](research/manuscripts/QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md) · [phase status](research/QUANTEvolve_INTEGRATION_STATUS.md) · [error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
