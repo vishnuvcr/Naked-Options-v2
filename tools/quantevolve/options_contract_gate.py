@@ -21,7 +21,39 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def inspect_options(input_path: Path, manifest_path: Path, underlying_path: Path) -> dict[str, Any]:
+def _read_object(path: Path) -> dict[str, Any]:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+        return value if isinstance(value, dict) else {}
+    except Exception:
+        return {}
+
+
+def _supplemental_source_evidence(supplemental_dir: Path) -> dict[str, Any]:
+    hf = _read_object(supplemental_dir / "options_source_audit.json")
+    dhan = _read_object(supplemental_dir / "dhan_options_api_probe.json")
+    sample = hf.get("sample") if isinstance(hf.get("sample"), dict) else {}
+    return {
+        "hf_source_audit_status": hf.get("status"),
+        "hf_source_license": (hf.get("source") or {}).get("license") if isinstance(hf.get("source"), dict) else None,
+        "hf_sample_file_count": sample.get("file_count"),
+        "hf_sample_rows": sample.get("total_rows"),
+        "hf_sample_expiry_lot_reconciliation": sample.get("sample_expiry_and_lot_reconciliation_status"),
+        "hf_sample_lot_sizes_mapped": sample.get("sample_lot_size_mapping_all_verified", False),
+        "dhan_probe_status": dhan.get("status"),
+        "dhan_http_status": dhan.get("http_status"),
+        "dhan_rows": dhan.get("rows", 0),
+        "dhan_required_fields_aligned": dhan.get("required_fields_aligned", False),
+        "dhan_explicit_expiry_metadata_present": dhan.get("explicit_expiry_metadata_present", False),
+        "dhan_row_level_lot_size_present": dhan.get("row_level_lot_size_present", False),
+        "dhan_pnl_permitted": False,
+    }
+
+
+def inspect_options(
+    input_path: Path, manifest_path: Path, underlying_path: Path,
+    supplemental_dir: Path | None = None,
+) -> dict[str, Any]:
     report: dict[str, Any] = {
         "protocol": "QE-NIFTY-1.0",
         "status": "BLOCKED_NO_VERIFIED_CONTRACT_DATA",
@@ -33,8 +65,15 @@ def inspect_options(input_path: Path, manifest_path: Path, underlying_path: Path
         "conflicting_duplicate_group_rate_gate": 0.01,
         "claim": None,
     }
+    supplemental = _supplemental_source_evidence(supplemental_dir) if supplemental_dir else {}
+    report["supplemental_source_evidence"] = supplemental
     if not input_path.is_file() or not manifest_path.is_file():
-        report["block_reason"] = "options data file or provenance/source manifest is absent"
+        reasons = ["fixed-contract options dataset or provenance/source manifest is absent"]
+        if supplemental.get("dhan_rows", 0) and not supplemental.get("dhan_explicit_expiry_metadata_present"):
+            reasons.append("Dhan rolling ATM sample contains bars but no explicit expiry or lot-size identifiers")
+        if supplemental.get("hf_sample_file_count"):
+            reasons.append("HF audit covers only a bounded expiry sample; full-history coverage and official contract-master reconciliation are not proven")
+        report["block_reason"] = "; ".join(reasons)
         return report
     try:
         source = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -140,9 +179,12 @@ def main() -> int:
     parser.add_argument("--input", default="data/cache/nifty_options_contracts.csv")
     parser.add_argument("--source-manifest", default="data/cache/options_source_manifest.json")
     parser.add_argument("--underlying", default="data/cache/nifty50_daily.csv")
+    parser.add_argument("--supplemental-dir", type=Path, default=Path("reports/quantevolve"))
     parser.add_argument("--output", default="reports/quantevolve/options_data_gate.json")
     args = parser.parse_args()
-    report = inspect_options(Path(args.input), Path(args.source_manifest), Path(args.underlying))
+    report = inspect_options(
+        Path(args.input), Path(args.source_manifest), Path(args.underlying), args.supplemental_dir
+    )
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
