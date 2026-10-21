@@ -8,7 +8,7 @@
     "Three expiry samples do not establish full-history coverage or contract continuity.",
     "The dataset is CC-BY-NC-4.0; raw files must not be redistributed in public reports or repository commits."
   ],
-  "next_gate": "Reconcile exact expiry and historical lot size against official NSE contract files; measure full eligible-date coverage and conflicting duplicates before constructing a backtest ledger.",
+  "next_gate": "Reconcile every historical source contract to official NSE MII contract masters and expiry-cohort lot-size rules; measure full eligible-date coverage and conflicting duplicates before constructing a backtest ledger.",
   "official_exchange_circulars_reviewed": [
     {
       "finding": "2021 NIFTY weekly/monthly lot-size transition: old 75 lot retained for May/June monthly contracts; 50 applies from later monthly/weekly cohorts.",
@@ -211,7 +211,8 @@
     "raw_source_data_committed": false,
     "repo_id": "thetrademarkk/india-index-options-1m",
     "source_scope": "NIFTY option OHLCV bars sampled from files partitioned by expiry",
-    "url": "https://huggingface.co/datasets/thetrademarkk/india-index-options-1m"
+    "url": "https://huggingface.co/datasets/thetrademarkk/india-index-options-1m",
+    "official_lot_size_mapping_basis": "NSE circulars FAOP47854, FAOP56233, FAOP61415 and FAOP70616; expiry weekday is corroborated with FAOP68589 and FAOP68685."
   },
-  "status": "BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED"
+  "status": "BLOCKED_FULL_HISTORY_AND_OFFICIAL_CONTRACT_MASTER_RECONCILIATION"
 }
