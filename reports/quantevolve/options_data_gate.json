@@ -1,0 +1,23 @@
+{
+  "block_reason": "options data file or provenance/source manifest is absent",
+  "claim": null,
+  "conflicting_duplicate_group_rate_gate": 0.01,
+  "coverage_gate": 0.8,
+  "input_path": "data/cache/nifty_options_contracts.csv",
+  "pnl_permitted": false,
+  "protocol": "QE-NIFTY-1.0",
+  "required_contract_fields": [
+    "close",
+    "expiry",
+    "high",
+    "lot_size",
+    "low",
+    "open",
+    "option_type",
+    "strike",
+    "timestamp",
+    "volume"
+  ],
+  "source_manifest_path": "data/cache/options_source_manifest.json",
+  "status": "BLOCKED_NO_VERIFIED_CONTRACT_DATA"
+}

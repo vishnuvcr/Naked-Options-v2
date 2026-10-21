@@ -312,3 +312,13 @@ A guarded integration has been added on the separate branch [research/quantevolv
 The QuantEvolve source is pinned to revision 2df1e85758620e8ac0ca88ffc428b379d6cb9620. Generated candidate code is not executed: candidate source is constrained to a literal strategy specification and parsed only. Prediction fitness is calculated on development-only chronological folds; the final 20% is evaluated once after selection. The Google key is restricted to the generation process. Existing NIFTY/options results and gates have not been rewritten.
 
 The previous source-audit workflow succeeded, while the first expanded regression run found one wording-only test defect (two passed, one failed); the fix is included in this branch and the next workflow run must confirm it. No QuantEvolve prediction or options performance claim is established by the source audit itself. Options P&L remains blocked until expiry/contract identity, source licensing, lot size and data quality pass.
+
+## QuantEvolve automated run — 39665389015
+
+### QE-DELIVERY-39665389015 — 2026-10-21T19:53:08.803176+00:00
+- Prediction run status: **BLOCKED_AUTOMATED_TESTS**; sanitized reason: integration test gate did not pass.
+- No valid QuantEvolve prediction holdout result is claimed.
+
+- [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
+- [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
+- [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)

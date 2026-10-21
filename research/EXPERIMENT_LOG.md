@@ -153,3 +153,7 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 - Regression workflow [39662185936](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39662185936) exposed an exact-phrase assertion mismatch (2 pass, 1 fail), before any candidate ran. The correction is included in this implementation batch. Verify the next workflow run before considering the integration shell passed.
 - Options contract/quality status remains blocked by the previous cancelled HF contract audit [38807375042](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38807375042). No option P&L was run, and none is permitted until the new source gate passes.
 - No OOS performance finding exists at this implementation checkpoint.
+
+### QE-DELIVERY-39665389015 — 2026-10-21T19:53:08.803176+00:00
+- Prediction run status: **BLOCKED_AUTOMATED_TESTS**; sanitized reason: integration test gate did not pass.
+- No valid QuantEvolve prediction holdout result is claimed.

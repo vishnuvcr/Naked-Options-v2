@@ -87,3 +87,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Implemented: safe declarative candidate schema; trusted causal forecasting evaluator; modern Google Gen AI wrapper; maximum four evolution iterations; option-data provenance/contract quality gate; artifact allowlist publisher; automated/manual GitHub Actions research workflow.
 - Security: candidate source is parsed only and never executed/imported. The generation job receives GOOGLE_API_KEY; the evaluation and publication steps do not. Raw market data, generated source, logs and checkpoints are not copied into public artifacts or the repository.
 - Verification: this commit creates the implementation files, but its hosted test/evolution run is not yet verified. No QuantEvolve-derived performance claim is made.
+
+## QE-DELIVERY-39665389015 — automated run record
+- Date: 2026-10-21T19:53:08.803176+00:00
+- Run status: BLOCKED_AUTOMATED_TESTS
+- Reason/error classification: integration test gate did not pass
+- Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
+- No API key or credential value is persisted.
