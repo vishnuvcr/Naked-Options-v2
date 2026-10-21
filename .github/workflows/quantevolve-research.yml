@@ -6,6 +6,7 @@ on:
     paths:
       - "configs/quantevolve/run_request.json"
       - ".github/workflows/quantevolve-research.yml"
+      - "tests/test_quantevolve_*.py"
   workflow_dispatch:
     inputs:
       track:

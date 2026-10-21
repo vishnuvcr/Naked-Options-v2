@@ -27,4 +27,5 @@ def test_plan_separates_prediction_and_options_and_blocks_unverified_pnl():
     assert "final holdout" in plan and "before evolution" in plan
     assert "Never run LLM-generated code with repository write credentials" in plan
     assert "Do not use the upstream Binance BTC/USDT evaluator unchanged" in plan
-    assert "no tester branch" in plan
+    policy = Path("research/EXECUTION_POLICY.md").read_text().lower()
+    assert "independent tester/review branch or sign-off is required" in policy

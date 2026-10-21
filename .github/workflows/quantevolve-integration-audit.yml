@@ -6,6 +6,7 @@ on:
     paths:
       - "tools/quantevolve/**"
       - "tests/test_quantevolve_integration_protocol.py"
+      - "tests/test_quantevolve_adapters.py"
       - ".github/workflows/quantevolve-integration-audit.yml"
   pull_request:
     paths:
