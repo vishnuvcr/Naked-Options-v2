@@ -209,3 +209,10 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 ### QE-DELIVERY-39669141475 — 2026-10-21T20:19:45.272070+00:00
 - Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
 - No valid QuantEvolve prediction holdout result is claimed.
+
+
+### QE-NIFTY-1.0 API diagnostic disposition — 2026-10-22
+
+- [Run 39668183031](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39668183031): 4 Gemini attempts, 0 successful responses (3 TimeoutError, 1 ServerError); candidate generation gate correctly blocked scoring.
+- [Run 39669107291](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669107291): one fallback request to gemini-3.6-flash, 0 successful responses (1 ServerError). No forecast metrics exist for either failed-generation run.
+- API diagnostic closed under the finite protocol. No further automatic API retries; repository run request is offline by default. This is an integration/API availability outcome, not evidence about prediction skill.
