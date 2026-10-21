@@ -232,3 +232,12 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 ### QE-DELIVERY-39670041315 — 2026-10-21T20:25:42.699029+00:00
 - Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
 - No valid QuantEvolve prediction holdout result is claimed.
+
+
+### QE-NIFTY-1.0 options source audit and final disposition — 2026-10-22
+
+- Workflow [39670001128](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39670001128) sampled three public HF NIFTY expiry files: 986,041 rows, 8,822,294 bytes; each schema had timestamp/expiry/strike/type/OHLCV/OI but no lot_size field. Per-file hashes and license metadata are in [options_source_audit.json](../reports/quantevolve/options_source_audit.json).
+- Source license is CC-BY-NC-4.0; raw files remain in cache and are not committed. Timestamp type was timestamp[ns, tz=+05:30].
+- Official expiry reconciliation, historical lot-size mapping, full coverage, duplicate conflict rate and executable prices remain unverified. Options gate remains blocked; no P&L was run.
+- Prediction API diagnostic: [39668183031](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39668183031) recorded 4 failed Gemini requests; [39669107291](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669107291) recorded one failed fallback request. Zero successful generation responses, no candidate scored. Stop API retries under finite protocol.
+- Final manuscript: [QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md](manuscripts/QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md). Final disposition: INCONCLUSIVE/BLOCKED; no strategy approved.
