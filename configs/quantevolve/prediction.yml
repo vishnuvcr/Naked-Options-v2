@@ -5,7 +5,7 @@ random_seed: 20261022
 log_dir: null
 
 llm:
-  primary_model: "gemini-3.6-flash"
+  primary_model: "gemini-3.8-flash"
   primary_model_weight: 1.0
   secondary_model: ""
   secondary_model_weight: 0.0
