@@ -255,7 +255,7 @@ def test_dhan_options_probe_sanitizes_rows_and_never_opens_pnl_gate():
         "datetime": datetime,
         "ZoneInfo": ZoneInfo,
         "API_URL": "https://api.dhan.co/v2/charts/rollingoption",
-        "NIFTY_SECURITY_ID": 13,
+        "NIFTY_SECURITY_ID": "13",
         "FROM_DATE": "2026-08-03",
         "TO_DATE": "2026-08-05",
     }
@@ -277,6 +277,8 @@ def test_dhan_options_probe_sanitizes_rows_and_never_opens_pnl_gate():
     assert '"access-token": token' in source
     assert "DHAN_ACCESS_TOKEN" in source
     assert "response.text" not in source
+    assert 'NIFTY_SECURITY_ID = "13"' in source
+    assert '"interval": 1' in source
     safe_error = namespace["inspect_response"](
         {"errorCode": "INVALID_INPUT", "errorType": "InvalidRequest", "errorMessage": "expiryCode is invalid for the selected segment"},
         400,
