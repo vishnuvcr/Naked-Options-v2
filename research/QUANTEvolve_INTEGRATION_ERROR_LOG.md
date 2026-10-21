@@ -387,3 +387,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Observation: one request returned HTTP 400 and no `data` object. The first sanitizer retained top-level response keys but not the API's sanitized error type, so the cause could not be discriminated.
 - Correction: classifier now records only bounded error-code/type and a coarse error-message class (not raw provider message, response body, token, or market rows); regression test added. One further single-call diagnostic may use this classification; no retry loop is permitted.
 - Status: code and test committed; one bounded diagnostic pending.
+
+## QE-DELIVERY-39673809637 — automated run record
+- Date: 2026-10-21T20:51:31.557623+00:00
+- Run status: LLM_EVOLUTION_NOT_REQUESTED
+- Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
+- Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
+- No API key or credential value is persisted.
