@@ -2,7 +2,7 @@
 
 **Protocol:** QE-NIFTY-1.0  
 **Branch:** `research/quantevolve-integration`  
-**Status:** Phase 0 audit started; no strategy performance claim is permitted.  
+**Status:** Phase 0 audit scaffold committed; automated run status must be verified; no strategy performance claim is permitted.  
 **Scope:** NIFTY 50 prediction and NIFTY options strategy discovery as separate experimental tracks.  
 **Upstream:** [tarsyang/quantevolve](https://github.com/tarsyang/quantevolve), Apache-2.0 according to its upstream LICENSE.
 
@@ -23,7 +23,7 @@
 - Include Paytm Money brokerage and applicable statutory/exchange charges when verifiable, plus adverse slippage/spread sensitivity. OHLC bars are not bid/ask quotes.
 - Use finite search budgets, explicit seeds, checkpoints, cache keys, dependency pins, and maximum wall-clock/API budget.
 - Any downloaded source data must have a documented license, attribution, hash, and retention policy. The upstream QuantEvolve license does not grant rights to market datasets it consumes.
-- User may add `GOOGLE_API_KEY` as a GitHub Actions secret. Never put it in config files or logs. If absent, run offline compatibility/tests and mark LLM evolution blocked rather than failing silently.
+- User reports that `GOOGLE_API_KEY` has been added as a GitHub Actions repository secret. Treat this as user-reported configuration; the value is not read or logged. Use `secrets.GOOGLE_API_KEY` only in bounded LLM-generation steps, never in config files, artifacts, logs, or candidate execution. If absent/invalid/quota-limited, record a sanitized block and continue offline tests where possible.
 - Do not use Dhan/HF tokens in generated candidate code. Secrets are acquisition-only and must be isolated from candidate execution.
 
 ## Phases, gates, and finite stopping rule
@@ -62,7 +62,7 @@
 ### P5 — Final validation and disposition
 - Evaluate selected candidates once on untouched chronological holdout. Include block-bootstrap intervals, paired baseline comparisons, Holm correction, chronological subperiods, and cost sensitivities.
 - Reject any apparent winner that depends on one fold/regime, bad coverage, unverified contracts, or unmodeled costs.
-- Gate: tests and artifact audit pass; disposition is either validated within tested universe, no-go, or inconclusive/blocked.
+- Gate: automated tests, security/leakage assertions and artifact audit pass; disposition is either validated within tested universe, no-go, or inconclusive/blocked. The user explicitly requires no independent tester branch/report/sign-off; do not add a review handoff, while retaining automated quality gates.
 
 ### P6 — Manuscript and closure
 - Produce manuscript with abstract, questions, literature review, data sources/licenses, methods, statistical plan, results, charts/tables, discussion, strengths/limitations, conclusion, future work, reproducibility appendix, and machine-readable supplements.
