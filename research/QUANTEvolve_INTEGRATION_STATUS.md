@@ -130,3 +130,7 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 - No valid QuantEvolve prediction holdout result is claimed.
 
 Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
+
+
+## QE-STEP-012 — bounded Gemini API diagnostic closed
+Run [39668183031](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39668183031) had 4 requests, 0 successes (3 timeouts, 1 server error). The single fallback request [39669107291](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669107291) to `gemini-3.6-flash` also failed with one server error. Per the finite protocol, API retries are now stopped. No candidate was scored, so neither run supplies prediction evidence. LLM evolution remains blocked until a future explicitly authorized manual dispatch after API availability/quota is checked. Offline test/audit and free-source options data work can continue. The run request remains `run_llm=false`.
