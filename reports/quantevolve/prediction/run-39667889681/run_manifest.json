@@ -1,0 +1,9 @@
+{
+  "protocol": "QE-NIFTY-1.0",
+  "track": "prediction",
+  "run_id": "39667889681",
+  "status": "BLOCKED_AUTOMATED_TESTS",
+  "block_reason": "integration test gate did not pass",
+  "candidate_source_executed": false,
+  "performance_claim": null
+}

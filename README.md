@@ -375,3 +375,13 @@ Options strategy work remains blocked at source/contract provenance. Do not clai
 - [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
 - [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
 - [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+
+## QuantEvolve automated run — 39667889681
+
+### QE-DELIVERY-39667889681 — 2026-10-21T20:10:29.755713+00:00
+- Prediction run status: **BLOCKED_AUTOMATED_TESTS**; sanitized reason: integration test gate did not pass.
+- No valid QuantEvolve prediction holdout result is claimed.
+
+- [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
+- [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
+- [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)

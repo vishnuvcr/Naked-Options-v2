@@ -86,3 +86,11 @@ Options track is separate and remains BLOCKED at source/contract identity. The p
 - No valid QuantEvolve prediction holdout result is claimed.
 
 Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
+
+## QE-DELIVERY-39667889681
+
+### QE-DELIVERY-39667889681 — 2026-10-21T20:10:29.755713+00:00
+- Prediction run status: **BLOCKED_AUTOMATED_TESTS**; sanitized reason: integration test gate did not pass.
+- No valid QuantEvolve prediction holdout result is claimed.
+
+Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
