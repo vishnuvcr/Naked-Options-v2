@@ -228,3 +228,7 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 ### QE-DELIVERY-39670001128 — 2026-10-21T20:25:04.924319+00:00
 - Prediction run status: **NO_RUN_MANIFEST**; sanitized reason: no successful holdout report.
 - No valid QuantEvolve prediction holdout result is claimed.
+
+### QE-DELIVERY-39670041315 — 2026-10-21T20:25:42.699029+00:00
+- Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
+- No valid QuantEvolve prediction holdout result is claimed.
