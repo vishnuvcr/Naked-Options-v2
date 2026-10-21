@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ALLOWED = {
     "run_manifest.json", "development_metrics.json", "holdout_metrics.json",
-    "best_strategy_spec.json", "options_data_gate.json",
+    "best_strategy_spec.json", "options_data_gate.json", "options_source_audit.json",
 }
 
 
@@ -57,6 +57,11 @@ def main() -> int:
                 if child.is_file() and child.name in ALLOWED:
                     shutil.copy2(child, dest_dir / child.name)
                     copied.append(str((dest_dir / child.name).relative_to(ROOT)))
+        for audit_file in inbox.rglob("options_source_audit.json"):
+            dest = ROOT / "reports" / "quantevolve" / "options_source_audit.json"
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(audit_file, dest)
+            copied.append(str(dest.relative_to(ROOT)))
         for gate_file in inbox.rglob("options_data_gate.json"):
             dest = ROOT / "reports" / "quantevolve" / "options_data_gate.json"
             dest.parent.mkdir(parents=True, exist_ok=True)
