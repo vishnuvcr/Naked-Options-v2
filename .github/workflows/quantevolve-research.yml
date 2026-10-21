@@ -170,6 +170,14 @@ jobs:
           (path/"run_manifest.json").write_text(json.dumps(manifest,indent=2,sort_keys=True)+"\n")
           print(json.dumps(manifest,sort_keys=True))
           PY
+      - name: Bounded Dhan expired-options API probe
+        if: steps.request.outputs.track == 'options'
+        continue-on-error: true
+        env:
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+        run: |
+          python tools/quantevolve/dhan_options_api_audit.py \
+            --output reports/quantevolve/dhan_options_api_probe.json
       - name: Run options source/contract quality gate only
         if: always()
         run: |
