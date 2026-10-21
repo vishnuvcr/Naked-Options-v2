@@ -480,3 +480,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Observation: response was HTTP 400, error code `DH-905`, error type `Input_Exception`; sanitized field hints included only `expiryCode`. The raw message is not stored.
 - Correction: change the bounded query from `expiryCode=0` to `expiryCode=1`, consistent with Dhan's documented example using code 1, and assert this parameter in tests.
 - Status: code commit 239ee05 and test commit 43b0594; one final corrected request pending. If the request is still rejected, stop the Dhan API probe path and leave options P&L blocked.
+
+## QE-DELIVERY-39675217418 — automated run record
+- Date: 2026-10-21T21:01:38.477111+00:00
+- Run status: LLM_EVOLUTION_NOT_REQUESTED
+- Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
+- Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
+- No API key or credential value is persisted.
