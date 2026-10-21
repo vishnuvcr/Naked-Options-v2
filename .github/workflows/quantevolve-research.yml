@@ -147,6 +147,29 @@ jobs:
             --cache-dir data/cache/quantevolve-options-source-audit \
             --output reports/quantevolve/options_source_audit.json \
             --manifest data/cache/options_source_manifest.json
+      - name: Record options source audit run manifest
+        if: always() && steps.request.outputs.track == 'options'
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          audit_path=Path("reports/quantevolve/options_source_audit.json")
+          audit=json.loads(audit_path.read_text()) if audit_path.is_file() else {}
+          status=audit.get("status", "SOURCE_AUDIT_FAILED")
+          path=Path("reports/quantevolve/options")/("run-"+os.environ["RUN_ID"])
+          path.mkdir(parents=True, exist_ok=True)
+          manifest={
+              "protocol":"QE-NIFTY-1.0","track":"options","run_id":os.environ["RUN_ID"],
+              "status":status,"source_report":"reports/quantevolve/options_source_audit.json",
+              "sample_files":audit.get("sample",{}).get("file_count",0),
+              "sample_rows":audit.get("sample",{}).get("total_rows",0),
+              "pnl_permitted":False,"performance_claim":None,
+          }
+          (path/"run_manifest.json").write_text(json.dumps(manifest,indent=2,sort_keys=True)+"\n")
+          print(json.dumps(manifest,sort_keys=True))
+          PY
       - name: Run options source/contract quality gate only
         if: always()
         run: |
