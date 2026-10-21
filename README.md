@@ -570,3 +570,13 @@ The free options-source audit sampled three expiry partitions (986,041 rows tota
 - [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
 - [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
 - [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+
+## QuantEvolve automated run — 39673276814
+
+### QE-DELIVERY-39673276814 — 2026-10-21T20:47:45.092701+00:00
+- Prediction run status: **BLOCKED_AUTOMATED_TESTS**; sanitized reason: integration test gate did not pass.
+- No valid QuantEvolve prediction holdout result is claimed.
+
+- [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
+- [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
+- [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)

@@ -351,3 +351,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Observation: the sanitized unit test extracted `inspect_response` via AST but omitted module constants `API_URL` and `NIFTY_SECURITY_ID`, causing a `NameError`; 15 other tests passed.
 - Correction: provide these non-secret constants in the test namespace. No network/API call was made by the test and no Dhan credential was involved.
 - Status: corrected in commit dfd5b29; automated verification pending.
+
+## QE-DELIVERY-39673276814 — automated run record
+- Date: 2026-10-21T20:47:45.092701+00:00
+- Run status: BLOCKED_AUTOMATED_TESTS
+- Reason/error classification: integration test gate did not pass
+- Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
+- No API key or credential value is persisted.
