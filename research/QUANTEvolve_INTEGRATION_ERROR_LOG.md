@@ -343,3 +343,11 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: integration test gate did not pass
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-024 — Dhan API probe unit test omitted constant namespace
+- Date: 2026-10-22. Severity: LOW (unit-test fixture defect).
+- Workflow: [audit run 39672923582](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39672923582).
+- Observation: the sanitized unit test extracted `inspect_response` via AST but omitted module constants `API_URL` and `NIFTY_SECURITY_ID`, causing a `NameError`; 15 other tests passed.
+- Correction: provide these non-secret constants in the test namespace. No network/API call was made by the test and no Dhan credential was involved.
+- Status: corrected in commit dfd5b29; automated verification pending.
