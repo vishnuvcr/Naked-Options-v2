@@ -1,5 +1,5 @@
 {
-  "block_reason": "fixed-contract options dataset or provenance/source manifest is absent; HF audit covers only a bounded expiry sample; full-history coverage and official contract-master reconciliation are not proven",
+  "block_reason": "fixed-contract options dataset or provenance/source manifest is absent; Dhan rolling ATM sample contains bars but no explicit expiry or lot-size identifiers; HF audit covers only a bounded expiry sample; full-history coverage and official contract-master reconciliation are not proven",
   "claim": null,
   "conflicting_duplicate_group_rate_gate": 0.01,
   "coverage_gate": 0.8,
@@ -22,12 +22,12 @@
   "status": "BLOCKED_NO_VERIFIED_CONTRACT_DATA",
   "supplemental_source_evidence": {
     "dhan_explicit_expiry_metadata_present": false,
-    "dhan_http_status": 400,
+    "dhan_http_status": 200,
     "dhan_pnl_permitted": false,
-    "dhan_probe_status": "API_RESPONSE_HAS_NO_DATA_OBJECT",
-    "dhan_required_fields_aligned": false,
+    "dhan_probe_status": "PASS_SAMPLE_DATA_RETRIEVED_IDENTITY_GATE_STILL_BLOCKED",
+    "dhan_required_fields_aligned": true,
     "dhan_row_level_lot_size_present": false,
-    "dhan_rows": 0,
+    "dhan_rows": 1155,
     "hf_sample_expiry_lot_reconciliation": "PASS_ALL_THREE_SAMPLED_COHORTS",
     "hf_sample_file_count": 3,
     "hf_sample_lot_sizes_mapped": true,
