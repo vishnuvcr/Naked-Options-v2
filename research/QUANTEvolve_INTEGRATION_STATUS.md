@@ -5,7 +5,7 @@ Branch: `research/quantevolve-integration`
 
 | Phase | Status | Evidence / next gate |
 |---|---|---|
-| P0 Repository/upstream audit | IN PROGRESS | Main README, phase status, error log, branch list, continuation protocol, upstream README/config/license reviewed. Audit workflow and source-level checks to be committed. |
+| P0 Repository/upstream audit | IN PROGRESS — audit scaffold committed; CI result not yet verified | Main README, phase status, error log, branch list, continuation protocol, upstream README/config/license reviewed. Static audit script, bounded scheduled/manual GitHub Actions workflow, and protocol tests committed. Await the first Actions run and verify its artifact before closing P0. |
 | P1 Reproducible integration shell | NOT STARTED | Pin upstream commit/dependencies; safe candidate execution; offline smoke tests. |
 | P2 NIFTY prediction adapter | NOT STARTED | Validated cached inputs, frozen targets/baselines, chronological OOS tests. |
 | P3 Options evaluator/data gate | NOT STARTED | Exact contract/expiry identity, quality thresholds, fee/slippage tests. |
