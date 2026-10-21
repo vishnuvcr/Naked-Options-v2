@@ -480,3 +480,19 @@ The bounded source audit ran in [workflow 39669708490](https://github.com/vishnu
 - [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
 - [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
 - [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+
+
+## QuantEvolve integration — final bounded disposition (2026-10-22)
+
+**Status: INCONCLUSIVE / BLOCKED. No trading strategy approved.**
+
+- [Full research manuscript](research/manuscripts/QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md)
+- [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
+- [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+- [Options source audit](reports/quantevolve/options_source_audit.json)
+- [Options quality gate](reports/quantevolve/options_data_gate.json)
+- [Experiment log](research/EXPERIMENT_LOG.md)
+
+The two saved prediction specifications were all-zero forecasts with no improvement over the zero-return baseline on the 981-observation holdout. Later telemetry confirmed five failed Gemini requests and zero successful responses, so no candidate was scored in those diagnostics and the earlier outputs cannot be attributed confidently to successful LLM mutation. The repository run request is offline by default; further API retries are stopped under the finite protocol.
+
+The free options-source audit sampled three expiry partitions (986,041 rows total). The schema has no historical lot-size field, and official expiry mapping/full coverage/executable prices are not verified. The options P&L gate remains blocked. No options P&L was run. Prior NIFTY-PRED and options no-go results remain unchanged.
