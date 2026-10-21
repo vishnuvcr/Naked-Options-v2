@@ -410,3 +410,13 @@ Options strategy work remains blocked at source/contract provenance. Do not clai
 ### QuantEvolve API diagnostic — run 39668183031
 
 The telemetry-verified four-iteration run ended with `EVOLUTION_NO_SUCCESSFUL_LLM_RESPONSES`: 4 attempts, 0 successes, 3 timeouts, 1 server error. No candidate was selected or scored, so this is an API-integration failure, not a negative forecast result. The current Google model list includes the configured `gemini-3.8-flash` endpoint ([official model list](https://ai.google.dev/gemini-api/docs/models)); the exception types alone do not establish whether the cause was quota, network, or service availability. One bounded one-iteration fallback check is the last planned API diagnostic. The repository's default run request remains offline.
+
+## QuantEvolve automated run — 39669107291
+
+### QE-DELIVERY-39669107291 — 2026-10-21T20:19:04.095512+00:00
+- Prediction run status: **EVOLUTION_NO_SUCCESSFUL_LLM_RESPONSES**; sanitized reason: controller returned without a verified successful Gemini generation response.
+- No valid QuantEvolve prediction holdout result is claimed.
+
+- [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
+- [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
+- [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)

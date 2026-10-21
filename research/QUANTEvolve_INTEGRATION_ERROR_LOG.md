@@ -199,3 +199,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Model availability check: the configured `gemini-3.8-flash` endpoint is listed as a stable Gemini API model in Google's current model documentation. This does not prove the API key has quota or that the service was available during the run.
 - Correction/next step: make one bounded one-iteration retry with the listed stable `gemini-3.6-flash` model to distinguish a transient model/service issue from a general credential/quota/network issue. If it fails, stop further API retries and keep offline gates active until an explicit configuration change.
 - Status: first attempt logged; fallback run pending. No prompts, response bodies, key, or raw provider errors stored.
+
+## QE-DELIVERY-39669107291 — automated run record
+- Date: 2026-10-21T20:19:04.095512+00:00
+- Run status: EVOLUTION_NO_SUCCESSFUL_LLM_RESPONSES
+- Reason/error classification: controller returned without a verified successful Gemini generation response
+- Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
+- No API key or credential value is persisted.
