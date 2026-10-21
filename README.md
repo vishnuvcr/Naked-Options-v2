@@ -430,3 +430,8 @@ The telemetry-verified four-iteration run ended with `EVOLUTION_NO_SUCCESSFUL_LL
 - [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
 - [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
 - [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+
+
+### QuantEvolve API diagnostic closed
+
+The bounded fallback run [39669107291](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39669107291) used one request to `gemini-3.6-flash`; it failed with `ServerError`. Combined with the previous four failed requests (3 timeouts, 1 server error), there were five failed requests and zero successful LLM responses. No candidate was scored and no prediction conclusion is drawn from these API failures. Per the finite protocol, further API retries are stopped; the default remains offline. See the [error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md) and [phase status](research/QUANTEvolve_INTEGRATION_STATUS.md).
