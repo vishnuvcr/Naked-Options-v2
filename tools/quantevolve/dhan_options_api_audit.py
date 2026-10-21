@@ -63,16 +63,30 @@ def inspect_response(payload: dict, http_status: int) -> dict:
     }
     for key in ("errorCode", "error_code", "code"):
         value = payload.get(key)
-        if isinstance(value, (str, int)) and str(value)[:32].isalnum():
-            base["api_error_code"] = str(value)[:32]
-            break
+        if isinstance(value, (str, int)):
+            sanitized_code = "".join(ch for ch in str(value) if ch.isalnum() or ch in "_-.:")[:32]
+            if sanitized_code:
+                base["api_error_code"] = sanitized_code
+                break
     err_type = payload.get("errorType", payload.get("error_type"))
     if isinstance(err_type, str):
         base["api_error_type"] = "".join(ch for ch in err_type if ch.isalnum() or ch in "_-")[:40]
     err_msg = payload.get("errorMessage", payload.get("message", ""))
     if isinstance(err_msg, str):
         lower = err_msg.lower()
-        if any(word in lower for word in ("token", "unauthorized", "auth", "credential")):
+        parameter_names = [
+            "exchangeSegment", "securityId", "instrument", "expiryFlag", "expiryCode",
+            "strike", "drvOptionType", "requiredData", "fromDate", "toDate", "interval",
+        ]
+        base["error_field_hints"] = [
+            name for name in parameter_names if name.lower() in lower
+        ]
+        lower_code = str(base.get("api_error_code") or "").lower()
+        if any(word in lower_code for word in ("auth", "token", "permission")):
+            base["api_error_message_class"] = "AUTHENTICATION_OR_PERMISSION"
+        elif any(word in lower_code for word in ("rate", "quota", "limit")):
+            base["api_error_message_class"] = "RATE_LIMIT_OR_QUOTA"
+        elif any(word in lower for word in ("token", "unauthorized", "auth", "credential")):
             base["api_error_message_class"] = "AUTHENTICATION_OR_PERMISSION"
         elif any(word in lower for word in ("date", "range", "future", "historical")):
             base["api_error_message_class"] = "DATE_RANGE_OR_HISTORY"
