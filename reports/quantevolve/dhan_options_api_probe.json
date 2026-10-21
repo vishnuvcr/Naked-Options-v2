@@ -1,7 +1,5 @@
 {
   "api_error_code": null,
-  "api_error_message_class": "REQUEST_PARAMETER_OR_CONTRACT",
-  "api_error_type": "Input_Exception",
   "api_url": "https://api.dhan.co/v2/charts/rollingoption",
   "audit_type": "single_call_dhan_expired_options_api_probe",
   "claim": null,
@@ -18,7 +16,7 @@
     "expiryFlag": "WEEK",
     "fromDate": "2026-08-03",
     "instrument": "OPTIDX",
-    "interval": 1,
+    "interval": "1",
     "request_count": 1,
     "requiredData": [
       "open",
@@ -32,11 +30,11 @@
       "spot"
     ],
     "retry_count": 0,
-    "securityId": "13",
+    "securityId": 13,
     "strike": "ATM",
     "toDate_exclusive": "2026-08-05"
   },
-  "request_body_sha256": "53e2e822dd30360d637de9e1c3720982ec179a67d8c17174768e0c6524785232",
+  "request_body_sha256": "36c4da0c46b367e333967abe2b6c66d452f2543d06f5a8bfe2d8502e0b162314",
   "response_top_level_keys": [
     "errorCode",
     "errorMessage",
