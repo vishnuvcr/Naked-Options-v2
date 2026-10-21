@@ -279,3 +279,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Observation: the research job completed, but the publisher's push was rejected because the branch advanced while the job was preparing its report commit.
 - Correction: publisher now retries up to three times; on a non-fast-forward rejection it fetches the current branch, resets the workspace to that head, reruns the sanitized publisher from the downloaded artifact, and attempts a fresh commit. No force push is used.
 - Status: correction committed; audit passed at [39670352181](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39670352181). A subsequent workflow run will verify the push-retry path.
+
+## QE-DELIVERY-39670494972 — automated run record
+- Date: 2026-10-21T20:28:30.360971+00:00
+- Run status: LLM_EVOLUTION_NOT_REQUESTED
+- Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
+- Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
+- No API key or credential value is persisted.

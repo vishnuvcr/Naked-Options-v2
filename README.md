@@ -496,3 +496,13 @@ The bounded source audit ran in [workflow 39669708490](https://github.com/vishnu
 The two saved prediction specifications were all-zero forecasts with no improvement over the zero-return baseline on the 981-observation holdout. Later telemetry confirmed five failed Gemini requests and zero successful responses, so no candidate was scored in those diagnostics and the earlier outputs cannot be attributed confidently to successful LLM mutation. The repository run request is offline by default; further API retries are stopped under the finite protocol.
 
 The free options-source audit sampled three expiry partitions (986,041 rows total). The schema has no historical lot-size field, and official expiry mapping/full coverage/executable prices are not verified. The options P&L gate remains blocked. No options P&L was run. Prior NIFTY-PRED and options no-go results remain unchanged.
+
+## QuantEvolve automated run — 39670494972
+
+### QE-DELIVERY-39670494972 — 2026-10-21T20:28:30.360971+00:00
+- Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
+- No valid QuantEvolve prediction holdout result is claimed.
+
+- [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
+- [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
+- [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
