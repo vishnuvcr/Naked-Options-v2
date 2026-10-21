@@ -23,6 +23,15 @@ def read_json(path: Path) -> dict:
         return {}
 
 
+def is_options_artifact(inbox: Path, run_id: str) -> bool:
+    """Only allow options-specific source artifacts to overwrite reports on options-track runs."""
+    for manifest_path in inbox.rglob("run_manifest.json"):
+        manifest = read_json(manifest_path)
+        if str(manifest.get("run_id", "")) == str(run_id):
+            return manifest.get("track") == "options"
+    return False
+
+
 def safe_number(value, digits: int = 6) -> str:
     try:
         n = float(value)
@@ -46,6 +55,7 @@ def main() -> int:
     args = parser.parse_args()
     inbox = args.artifact_root.resolve()
     copied = []
+    is_options_run = is_options_artifact(inbox, args.run_id)
     if inbox.exists():
         for manifest_file in inbox.rglob("run_manifest.json"):
             relative = manifest_file.parent.relative_to(inbox)
@@ -57,16 +67,17 @@ def main() -> int:
                 if child.is_file() and child.name in ALLOWED:
                     shutil.copy2(child, dest_dir / child.name)
                     copied.append(str((dest_dir / child.name).relative_to(ROOT)))
-        for audit_file in inbox.rglob("options_source_audit.json"):
-            dest = ROOT / "reports" / "quantevolve" / "options_source_audit.json"
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(audit_file, dest)
-            copied.append(str(dest.relative_to(ROOT)))
-        for dhan_file in inbox.rglob("dhan_options_api_probe.json"):
-            dest = ROOT / "reports" / "quantevolve" / "dhan_options_api_probe.json"
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(dhan_file, dest)
-            copied.append(str(dest.relative_to(ROOT)))
+        if is_options_run:
+            for audit_file in inbox.rglob("options_source_audit.json"):
+                dest = ROOT / "reports" / "quantevolve" / "options_source_audit.json"
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(audit_file, dest)
+                copied.append(str(dest.relative_to(ROOT)))
+            for dhan_file in inbox.rglob("dhan_options_api_probe.json"):
+                dest = ROOT / "reports" / "quantevolve" / "dhan_options_api_probe.json"
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(dhan_file, dest)
+                copied.append(str(dest.relative_to(ROOT)))
         for gate_file in inbox.rglob("options_data_gate.json"):
             dest = ROOT / "reports" / "quantevolve" / "options_data_gate.json"
             dest.parent.mkdir(parents=True, exist_ok=True)
