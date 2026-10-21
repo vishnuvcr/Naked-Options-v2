@@ -336,3 +336,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Observation: a new test initially asserted that the source must not contain the literal HTTP header key `access-token`. That header name is required to send the credential to Dhan; the safety requirement is that the secret value is never printed, persisted, or included in artifacts.
 - Correction: assert the header value is passed from the token variable while retaining assertions that the response rows and raw text are not persisted.
 - Status: test corrected in commit 9269422; latest automated run pending.
+
+## QE-DELIVERY-39672923539 — automated run record
+- Date: 2026-10-21T20:45:29.129229+00:00
+- Run status: BLOCKED_AUTOMATED_TESTS
+- Reason/error classification: integration test gate did not pass
+- Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
+- No API key or credential value is persisted.
