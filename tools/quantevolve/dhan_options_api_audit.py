@@ -19,7 +19,7 @@ import requests
 API_URL = "https://api.dhan.co/v2/charts/rollingoption"
 FROM_DATE = "2026-08-03"
 TO_DATE = "2026-08-05"  # end date is non-inclusive, per Dhan documentation
-NIFTY_SECURITY_ID = 13
+NIFTY_SECURITY_ID = "13"
 
 
 def write_report(output: Path, report: dict) -> None:
@@ -38,7 +38,7 @@ def inspect_response(payload: dict, http_status: int) -> dict:
             "exchangeSegment": "NSE_FNO",
             "securityId": NIFTY_SECURITY_ID,
             "instrument": "OPTIDX",
-            "interval": "1",
+            "interval": 1,
             "expiryFlag": "WEEK",
             "expiryCode": 0,
             "strike": "ATM",
