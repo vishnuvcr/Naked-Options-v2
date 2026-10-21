@@ -23,6 +23,36 @@ LICENSE = "CC-BY-NC-4.0"
 ATTRIBUTION = "thetrademarkk, India Index & Options - 1-minute OHLC dataset"
 REQUIRED = {"timestamp", "open", "high", "low", "close", "volume", "strike", "option_type", "expiry"}
 
+OFFICIAL_SAMPLE_MAP = {
+    "2021-05-27": {
+        "lot_size": 75, "expected_expiry_weekday": "Thursday",
+        "circulars": [
+            "https://nsearchives.nseindia.com/content/circulars/FAOP47854.pdf",
+            "https://nsearchives.nseindia.com/content/circulars/FAOP68589.pdf",
+        ],
+        "basis": "NSE FAOP47854: May/June 2021 monthly expiries retain old 75 lot; weekly switch starts Aug 2021. Expiry remained Thursday.",
+    },
+    "2024-01-04": {
+        "lot_size": 50, "expected_expiry_weekday": "Thursday",
+        "circulars": [
+            "https://nsearchives.nseindia.com/content/circulars/FAOP47854.pdf",
+            "https://nsearchives.nseindia.com/content/circulars/FAOP56233.pdf",
+            "https://nsearchives.nseindia.com/content/circulars/FAOP61415.pdf",
+            "https://nsearchives.nseindia.com/content/circulars/FAOP68589.pdf",
+        ],
+        "basis": "NSE 2021 circular sets 50 for weekly contracts from Aug 2021 onward; March 2023 retains 50; April 2024 changes contracts available from Apr 26, 2024 onward to 25.",
+    },
+    "2026-08-04": {
+        "lot_size": 65, "expected_expiry_weekday": "Tuesday",
+        "circulars": [
+            "https://nsearchives.nseindia.com/content/circulars/FAOP70616.pdf",
+            "https://nsearchives.nseindia.com/content/circulars/FAOP68589.pdf",
+            "https://nsearchives.nseindia.com/content/circulars/FAOP68685.pdf",
+        ],
+        "basis": "NSE FAOP70616: first revised NIFTY weekly lot expiry is 06-Jan-2026 at 65; weekly expiry day changed to Tuesday for expiries on/after 01-Sep-2025.",
+    },
+}
+
 
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
@@ -105,9 +135,64 @@ def audit(cache_dir: Path, output_path: Path, manifest_path: Path, token: str | 
                 timezone_examples.append("Asia/Kolkata")
         except (KeyError, IndexError):
             item["timestamp_type"] = None
+        # Inspect selected identity fields across every row of each bounded file.
+        # Only counts and small categorical summaries are published, never market rows.
+        reconciliation = {
+            "file_expiry": remote_path.split("/")[-1].removesuffix(".parquet"),
+            "file_expiry_matches_all_rows": False,
+            "expected_expiry_weekday": None,
+            "observed_expiry_weekday": None,
+            "official_lot_size": None,
+            "lot_size_source_circulars": [],
+            "official_lot_size_mapping_status": "NOT_MAPPED",
+            "valid_strike_rows": 0,
+            "valid_option_type_rows": 0,
+            "nifty_symbol_rows": 0,
+            "unique_expiry_count": 0,
+            "unique_symbol_sample": [],
+        }
+        cohort = OFFICIAL_SAMPLE_MAP.get(reconciliation["file_expiry"])
+        if cohort:
+            reconciliation["expected_expiry_weekday"] = cohort["expected_expiry_weekday"]
+            reconciliation["official_lot_size"] = cohort["lot_size"]
+            reconciliation["lot_size_source_circulars"] = cohort["circulars"]
+            reconciliation["lot_size_basis"] = cohort["basis"]
+            reconciliation["official_lot_size_mapping_status"] = "MAPPED_TO_OFFICIAL_NSE_CIRCULARS"
+        try:
+            projected = parquet.read(columns=["expiry", "strike", "option_type", "symbol"])
+            expiries = pd.to_datetime(projected["expiry"].to_pandas(), errors="coerce").dt.date
+            file_expiry = expiry_from_path(remote_path)
+            reconciliation["unique_expiry_count"] = int(expiries.dropna().nunique())
+            reconciliation["file_expiry_matches_all_rows"] = bool(
+                len(expiries) > 0 and expiries.notna().all() and (expiries == file_expiry).all()
+            )
+            reconciliation["observed_expiry_weekday"] = file_expiry.strftime("%A") if file_expiry else None
+            strikes = pd.to_numeric(projected["strike"].to_pandas(), errors="coerce")
+            reconciliation["valid_strike_rows"] = int((strikes.gt(0) & strikes.notna()).sum())
+            option_types = projected["option_type"].to_pandas().astype(str).str.upper().str.strip()
+            reconciliation["valid_option_type_rows"] = int(option_types.isin({"CE", "PE", "CALL", "PUT"}).sum())
+            symbols = projected["symbol"].to_pandas().astype(str).str.upper().str.strip()
+            reconciliation["nifty_symbol_rows"] = int(symbols.str.contains("NIFTY", regex=False).sum())
+            reconciliation["unique_symbol_sample"] = sorted(symbols.dropna().unique().tolist())[:5]
+            if cohort and reconciliation["file_expiry_matches_all_rows"] and (
+                reconciliation["observed_expiry_weekday"] == cohort["expected_expiry_weekday"]
+            ) and reconciliation["valid_strike_rows"] == rows and (
+                reconciliation["valid_option_type_rows"] == rows
+            ) and reconciliation["nifty_symbol_rows"] == rows:
+                reconciliation["sample_contract_checks_status"] = "PASS"
+            else:
+                reconciliation["sample_contract_checks_status"] = "FAIL_OR_UNVERIFIED"
+        except Exception as exc:
+            reconciliation["sample_contract_checks_status"] = "CHECK_ERROR_" + type(exc).__name__
+        item["sample_contract_reconciliation"] = reconciliation
         file_reports.append(item)
 
     has_identity_columns = REQUIRED.issubset(schema_union)
+    sample_reconciliations = [item.get("sample_contract_reconciliation", {}) for item in file_reports]
+    sample_reconciliation_pass = bool(
+        len(sample_reconciliations) == len(file_reports) and file_reports and
+        all(x.get("sample_contract_checks_status") == "PASS" for x in sample_reconciliations)
+    )
     report = {
         "protocol": "QE-NIFTY-1.0",
         "audit_type": "bounded_public_source_schema_audit",
@@ -125,6 +210,13 @@ def audit(cache_dir: Path, output_path: Path, manifest_path: Path, token: str | 
         "sample": {
             "file_count": len(file_reports),
             "total_rows": total_rows,
+            "sample_expiry_and_lot_reconciliation_status": (
+                "PASS_ALL_THREE_SAMPLED_COHORTS" if sample_reconciliation_pass else "PARTIAL_OR_BLOCKED"
+            ),
+            "sample_lot_size_mapping_all_verified": bool(sample_reconciliation_pass and all(
+                x.get("official_lot_size_mapping_status") == "MAPPED_TO_OFFICIAL_NSE_CIRCULARS"
+                for x in sample_reconciliations
+            )),
             "total_download_bytes": total_bytes,
             "schema_union": sorted(schema_union),
             "required_identity_and_ohlcv_columns_present": has_identity_columns,
@@ -133,9 +225,17 @@ def audit(cache_dir: Path, output_path: Path, manifest_path: Path, token: str | 
             "timezone_metadata_examples": sorted(set(timezone_examples)),
             "files": file_reports,
         },
+        "official_exchange_circulars_reviewed": [
+            {"url": "https://nsearchives.nseindia.com/content/circulars/FAOP47854.pdf", "finding": "2021 NIFTY weekly/monthly lot-size transition: old 75 lot retained for May/June monthly contracts; 50 applies from later monthly/weekly cohorts."},
+            {"url": "https://nsearchives.nseindia.com/content/circulars/FAOP56233.pdf", "finding": "March 2023 NIFTY market lot remains 50."},
+            {"url": "https://nsearchives.nseindia.com/content/circulars/FAOP61415.pdf", "finding": "NIFTY lot changes 50 to 25 for contracts available from 26-Apr-2024 onward."},
+            {"url": "https://nsearchives.nseindia.com/content/circulars/FAOP64625.pdf", "finding": "NIFTY lot changes 25 to 75 for newly introduced contracts from 20-Nov-2024 with expiry-cohort transition dates."},
+            {"url": "https://nsearchives.nseindia.com/content/circulars/FAOP70616.pdf", "finding": "NIFTY lot changes 75 to 65; first revised weekly expiry 06-Jan-2026 and monthly expiry 27-Jan-2026."},
+            {"url": "https://nsearchives.nseindia.com/content/circulars/FAOP68589.pdf", "finding": "NIFTY expiry day transitions from Thursday to Tuesday for new expiries on/after 01-Sep-2025."}
+        ],
         "limitations": [
-            "A filename/expiry column is not independent official-exchange expiry reconciliation.",
-            "Historical lot-size mapping is not established by this dataset sample.",
+            "The circular reconciliation covers only the three sampled expiry cohorts, not every expiry/contract in the source history.",
+            "Full official MII contract-master row matching was not completed for the 2021 and January 2024 sample dates; circular-based lot size and expiry weekday corroboration is not a complete row-by-row master match.",
             "OHLC bars are not historical bid/ask quotes and cannot by themselves prove executable fills.",
             "Three expiry samples do not establish full-history coverage or contract continuity.",
             "The dataset is CC-BY-NC-4.0; raw files must not be redistributed in public reports or repository commits.",
@@ -157,6 +257,7 @@ def audit(cache_dir: Path, output_path: Path, manifest_path: Path, token: str | 
         "sample_hash_manifest_sha256": report["sample"]["sample_hash_manifest_sha256"],
         "official_expiry_reconciled": False,
         "lot_size_history_verified": False,
+        "sampled_expiry_cohorts_lot_size_mapped": report["sample"]["sample_lot_size_mapping_all_verified"],
         "license_review_status": "REVIEW_REQUIRED_CC_BY_NC_4.0",
         "timestamp_timezone": "Asia/Kolkata" if timezone_examples else "UNVERIFIED",
         "executable_price_policy": "OHLC_ADVERSE_PROXY",
