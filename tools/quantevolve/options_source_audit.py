@@ -2,8 +2,8 @@
 """Bounded, non-P&L audit of public NIFTY option parquet samples on Hugging Face.
 
 Downloads at most three expiry files. Raw licensed data stays in the cache and is never
-published. The report deliberately remains blocked unless official expiry and historical
-lot-size reconciliation can be established independently.
+published. Circulars map lot sizes for these sampled expiry cohorts, but the options gate
+remains blocked until full-history coverage and official contract-master reconciliation pass.
 """
 from __future__ import annotations
 
@@ -197,7 +197,7 @@ def audit(cache_dir: Path, output_path: Path, manifest_path: Path, token: str | 
     report = {
         "protocol": "QE-NIFTY-1.0",
         "audit_type": "bounded_public_source_schema_audit",
-        "status": "BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED",
+        "status": "BLOCKED_FULL_HISTORY_AND_OFFICIAL_CONTRACT_MASTER_RECONCILIATION",
         "pnl_permitted": False,
         "claim": None,
         "source": {
@@ -241,7 +241,7 @@ def audit(cache_dir: Path, output_path: Path, manifest_path: Path, token: str | 
             "Three expiry samples do not establish full-history coverage or contract continuity.",
             "The dataset is CC-BY-NC-4.0; raw files must not be redistributed in public reports or repository commits.",
         ],
-        "next_gate": "Reconcile exact expiry and historical lot size against official NSE contract files; measure full eligible-date coverage and conflicting duplicates before constructing a backtest ledger.",
+        "next_gate": "Reconcile every historical source contract to official NSE MII contract masters and expiry-cohort lot-size rules; measure full eligible-date coverage and conflicting duplicates before constructing a backtest ledger.",
     }
     report["sample"]["sample_hash_manifest_sha256"] = hashlib.sha256(
         json.dumps(file_reports, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -262,7 +262,7 @@ def audit(cache_dir: Path, output_path: Path, manifest_path: Path, token: str | 
         "license_review_status": "REVIEW_REQUIRED_CC_BY_NC_4.0",
         "timestamp_timezone": "Asia/Kolkata" if timezone_examples else "UNVERIFIED",
         "executable_price_policy": "OHLC_ADVERSE_PROXY",
-        "block_reason": "bounded schema audit only; official expiry, historical lot size, full coverage and executable quotes are not verified",
+        "block_reason": "lot sizes are circular-mapped only for three sampled expiry cohorts; full-history coverage and official MII contract-master reconciliation are not verified",
         "raw_source_data_committed": False,
     }
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
