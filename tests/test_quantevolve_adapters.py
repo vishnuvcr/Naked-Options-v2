@@ -352,3 +352,15 @@ def test_publisher_only_overwrites_top_level_options_sources_for_options_run(tmp
     assert namespace["is_options_artifact"](tmp_path, "123") is True
     assert namespace["is_options_artifact"](tmp_path, "456") is False
     assert namespace["is_options_artifact"](tmp_path, "no-such-run") is False
+
+
+def test_published_options_audit_distinguishes_sample_lot_mapping_from_full_history_gate():
+    audit_path = Path("reports/quantevolve/options_source_audit.json")
+    audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    assert audit["status"] == "BLOCKED_FULL_HISTORY_AND_OFFICIAL_CONTRACT_MASTER_RECONCILIATION"
+    sample = audit["sample"]
+    assert sample["sample_expiry_and_lot_reconciliation_status"] == "PASS_ALL_THREE_SAMPLED_COHORTS"
+    assert sample["sample_lot_size_mapping_all_verified"] is True
+    assert [item["sample_contract_reconciliation"]["official_lot_size"] for item in sample["files"]] == [75, 50, 65]
+    assert all(item["sample_contract_reconciliation"]["sample_contract_checks_status"] == "PASS"
+               for item in sample["files"])
