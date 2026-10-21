@@ -379,3 +379,11 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-025 — Dhan expired-options endpoint returned HTTP 400 with opaque first report
+- Date: 2026-10-22. Severity: MEDIUM (source acquisition diagnostic).
+- Workflow: [bounded Dhan probe run 39673574590](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39673574590).
+- Observation: one request returned HTTP 400 and no `data` object. The first sanitizer retained top-level response keys but not the API's sanitized error type, so the cause could not be discriminated.
+- Correction: classifier now records only bounded error-code/type and a coarse error-message class (not raw provider message, response body, token, or market rows); regression test added. One further single-call diagnostic may use this classification; no retry loop is permitted.
+- Status: code and test committed; one bounded diagnostic pending.
