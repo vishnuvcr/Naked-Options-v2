@@ -300,3 +300,11 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: No runtime error reported in the sanitized manifest.
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-022 — circular-backed sample row checks omitted Pandas import
+- Date: 2026-10-22. Severity: LOW (bounded source-audit implementation defect).
+- Workflow: [options audit run 39671900967](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39671900967).
+- Observation: the new row-level reconciliation raised `NameError` for each sampled file because the audit code used Pandas conversions without importing `pandas as pd`. The report therefore did not verify file expiry consistency, strikes, option type, or symbols.
+- Correction: add the missing import and a regression assertion. Keep all source/contract and P&L gates blocked until a new run verifies the sample checks; no metrics or P&L were produced by the failed checks.
+- Status: corrected in source; one bounded validation rerun pending.
