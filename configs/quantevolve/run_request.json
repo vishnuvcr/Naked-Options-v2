@@ -1,5 +1,5 @@
 {
-  "track": "options",
+  "track": "prediction",
   "run_llm": false,
   "iterations": 4,
   "refresh_data": false
