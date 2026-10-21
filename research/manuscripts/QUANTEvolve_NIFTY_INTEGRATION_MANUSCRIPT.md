@@ -12,7 +12,7 @@ This study integrated the pinned QuantEvolve evolutionary quantitative-research 
 
 The validated Dhan daily series contained 4,905 rows from 2007-01-02 through 2026-10-19. Two early bounded four-iteration controller runs saved an all-zero forecast specification, whose holdout MAE equaled the zero-return baseline (0.00580346; MAE skill 0; 95% block-bootstrap interval for MAE improvement [0, 0]). Those runs did not include provider-call telemetry, so successful LLM mutation cannot be established. A subsequent telemetry-enabled four-iteration run recorded four failed Gemini requests (three timeouts and one server error), and a one-iteration fallback using Gemini 3.6 Flash recorded one server error. Neither run generated a verified successful response; no candidate was scored in either run. Therefore, the prediction evidence is insufficient to conclude that evolutionary search itself is effective or ineffective.
 
-For options, a bounded audit downloaded three expiry-partitioned files from the public `thetrademarkk/india-index-options-1m` dataset (986,041 rows; 8.82 MB). The sampled schema contains timestamp, OHLCV, open interest, symbol, strike, option type, and expiry, but no lot-size field. The dataset is licensed CC-BY-NC-4.0 and contains OHLC bars rather than executable bid/ask quotes. Independent official-expiry reconciliation, historical lot-size mapping, full eligible-date coverage, duplicate-rate checks, and executable pricing are not yet verified. The options gate therefore remains blocked and P&L was not calculated. The deliverable is a reproducible integration scaffold and a documented blocked/inconclusive research result, not a profitable strategy.
+For options, a bounded audit downloaded three expiry-partitioned files from the public `thetrademarkk/india-index-options-1m` dataset (986,041 rows; 8.82 MB). The sampled schema contains timestamp, OHLCV, open interest, symbol, strike, option type and expiry, but no lot-size field. A separate single-call Dhan probe returned 1,155 structurally aligned one-minute observations from 3–5 August 2026; the response had no explicit expiry or lot-size field and included six distinct strike values, consistent with rolling ATM-relative data rather than a fixed contract ledger. NSE circulars map lot sizes for the three sampled expiry cohorts (75, 50 and 65), and row-level expiry/strike/type/symbol checks passed in those three files. However, complete row-by-row official MII contract-master reconciliation and full-history lot-size mapping remain unverified. The HF dataset is CC-BY-NC-4.0, and both sources contain OHLC rather than historical executable bid/ask quotes. Coverage, conflicting duplicates and executable pricing remain unverified; the options gate stays blocked and no P&L was calculated. The result is a reproducible integration scaffold and documented inconclusive research, not a profitable strategy.
 
 ## 1. Research questions
 
@@ -55,7 +55,7 @@ The existing repository's NIFTY-PRED study and its previous literature review re
 
 The public [Hugging Face dataset card](https://huggingface.co/datasets/thetrademarkk/india-index-options-1m) describes 1-minute index/option OHLCV data, including NIFTY options partitioned by expiry. It is licensed **CC-BY-NC-4.0**, and the card cautions that coverage is partial and should be verified against official exchange data. The sampled files contain OHLC bars but no lot-size column.
 
-The [NSE All Reports page](https://www.nseindia.com/all-reports-derivatives) lists F&O-MII contract files and UDiFF bhavcopy reports. NSE's [NIFTY 50 F&O information](https://betanseapi.nseindia.com/static/products-services/equity-derivatives-nifty50) says permitted lot size is governed by exchange rules and points to the daily contract file. Exchange circulars also document effective-date-specific contract/lot-size changes (for example, [NSE circular FAOP70616](https://nsearchives.nseindia.com/content/circulars/FAOP70616.pdf)). These sources establish a route for independent reconciliation, but the current run has not yet acquired and matched the relevant official historical files to every sampled contract.
+The [NSE All Reports page](https://www.nseindia.com/all-reports-derivatives) lists F&O-MII contract files and UDiFF bhavcopy reports. NSE's [NIFTY 50 F&O information](https://betanseapi.nseindia.com/static/products-services/equity-derivatives-nifty50) says permitted lot size is governed by exchange rules and points to the daily contract file. Exchange circulars also document effective-date-specific contract/lot-size changes (for example, [NSE circular FAOP70616](https://nsearchives.nseindia.com/content/circulars/FAOP70616.pdf)). The reviewed NSE circulars support expiry-cohort lot sizes of 75 for 27 May 2021, 50 for 4 January 2024, and 65 for 4 August 2026, and the sampled files' dates and expiry weekdays are internally consistent. This only maps the three sampled cohorts; row-by-row official MII contract-master matching for every contract and the full historical series has not been completed.
 
 ## 4. Data
 
@@ -89,7 +89,7 @@ The timestamp type in each sampled file is `timestamp[ns, tz=+05:30]`. The union
 
 Per-file hashes and source metadata are in [options_source_audit.json](../../reports/quantevolve/options_source_audit.json). Raw licensed parquet files are cached in the workflow runtime/cache only and are not committed to the repository.
 
-**Unverified options data requirements:** official expiry-date reconciliation; historically valid lot-size mapping; exact contract continuity; full eligible-date coverage; conflicting-duplicate group rate; and executable-side pricing. Existing gates remain at at least 80% eligible-date coverage and no more than 1% conflicting duplicate groups. They were not relaxed.
+**Unverified options data requirements:** row-by-row official MII contract-master matching across the full source history; full-history lot-size/contract continuity; at least 80% eligible-date coverage; no more than 1% conflicting duplicate groups; and executable-side pricing. Circular lot-size mapping and row-level structural checks passed for only the three sampled expiry files. These limited checks do not open the gate, and thresholds were not relaxed.
 
 ## 5. Scientific methodology
 
@@ -113,7 +113,7 @@ The bounded run budget is at most four evolution iterations. API retries are not
 
 The options track requires a provenance manifest and normalized rows with timestamp, expiry, strike, option type, OHLCV, and lot size. The gate checks source hash, official-expiry reconciliation, historical lot-size verification, license/use review, timezone, explicit pricing policy, invalid rows, duplicate conflicts, and eligible-session coverage. Passing the gate would permit only a subsequent research backtest; it would not establish profitability.
 
-No options P&L is computed from the sampled source because historical lot size and official contract identity are not verified and OHLC bars do not establish bid/ask execution. Any later strategy study must include Paytm Money brokerage and applicable statutory/exchange charges, adverse slippage/spread sensitivity, missed fills, drawdown, tail loss, turnover, and no-trade baselines.
+No options P&L is computed because the HF source's lot-size column is absent, Dhan's rolling response omits explicit expiry and lot-size fields, full-history official contract-master reconciliation and coverage are not verified, and OHLC bars do not establish bid/ask execution. Any later strategy study must include Paytm Money brokerage and applicable statutory/exchange charges, adverse slippage/spread sensitivity, missed fills, drawdown, tail loss, turnover, and no-trade baselines.
 
 ## 6. Results
 
@@ -155,14 +155,41 @@ MAE improvement          0.00000000
 | Public sample files obtained | 3 |
 | Sample rows | 986,041 |
 | Required option identity and OHLCV fields present | Yes in sampled schema |
-| Historical lot size included | No |
-| Official expiry reconciliation completed | No |
+| Lot-size field present in sampled HF schema | No |
+| NSE circular lot-size mapping for the three sampled expiry cohorts | 75 / 50 / 65 (mapped) |
+| Row-by-row official MII contract-master reconciliation for all sampled contracts | No — incomplete |
+| Explicit expiry and lot-size fields in the Dhan rolling probe | No |
 | Bid/ask quotes available from sample | No |
 | Full eligible-date coverage measured | No |
 | P&L permitted | **No** |
-| Status | `BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED` |
+| Status | `BLOCKED_FULL_HISTORY_AND_OFFICIAL_CONTRACT_MASTER_RECONCILIATION` |
 
-The options gate remains `BLOCKED_NO_VERIFIED_CONTRACT_DATA`. This is a data-readiness result, not a negative profitability test.
+The Dhan probe shows that minute-level data can be retrieved, and the HF sample supports circular-backed lot sizes for three expiries. It does not identify a stable expiry-specific, lot-sized tradeable contract stream across the historical period. The options gate remains `BLOCKED_NO_VERIFIED_CONTRACT_DATA`. This is a data-readiness result, not a negative profitability test.
+
+### 6.3 Dhan API probe and sample lot-size reconciliation
+
+The sanitized Dhan call used `expiryFlag=WEEK`, `expiryCode=1` (Next Expiry), `strike=ATM`, `drvOptionType=CALL`, `interval=1`, and the 2026-08-03 to 2026-08-05 window. It returned HTTP 200 and 1,155 time points. Every requested field (OHLC, volume, IV, strike, OI, spot) had 1,155 values; timestamps were monotonic from 09:15 IST on 3 August to 15:39 IST on 5 August 2026. Close ranged from 9.7 to 192.5 and six strike values were present (24,450–24,750). The output saved to the repository contains aggregates only, not raw market rows or credentials.
+
+| Dhan probe check | Result |
+|---|---|
+| HTTP response | 200 |
+| Observations | 1,155 |
+| Required array lengths aligned | Yes |
+| Timestamps monotonic | Yes |
+| Explicit expiry in response | No |
+| Row-level lot size | No |
+| Fixed-contract ledger established | No |
+| P&L permitted | **No** |
+
+NSE circular-based lot-size mapping and row-level source-file checks for the three HF expiry partitions:
+
+| Sampled expiry | Circular-backed lot size | Row-level expiry/strike/type/symbol checks |
+|---|---:|---|
+| 2021-05-27 | 75 | Pass |
+| 2024-01-04 | 50 | Pass |
+| 2026-08-04 | 65 | Pass |
+
+These two acquisitions are complementary, but neither yields a full point-in-time contract ledger. The HF dataset is not an executable quote feed, the Dhan ATM-relative series has no explicit expiry/lot fields, and full official MII contract-master reconciliation plus full-history coverage and duplicate checks remain outstanding.
 
 ### 6.3 Integration and automated checks
 
@@ -189,7 +216,7 @@ No inferential P&L statistics are appropriate because the verified contract/lot-
 
 The integration has made the research pipeline more reproducible and safer: upstream code is pinned, candidate source is restricted to a declarative grammar, holdout use is guarded, reports are hashed, LLM calls are counted without exposing sensitive text, and raw licensed data is kept out of public artifacts. These are infrastructure outcomes, not evidence of alpha.
 
-Two distinct blockers remain. First, Gemini generation calls failed in five bounded attempts across two model identifiers; exception classes do not establish whether the cause was service availability, quota, network or project configuration. The finite diagnostic was stopped rather than looping or spending more API quota. Second, the sampled options dataset omits lot size and does not independently prove official expiry mapping or executable prices. The existing gate appropriately prevents P&L from being calculated.
+Two distinct blockers remain for any strategy conclusion. First, Gemini generation calls failed in five bounded attempts across two model identifiers; the finite diagnostic stopped rather than looping or spending more quota. Second, free options data is reachable, but the HF sample has no lot-size field and only three expiry cohorts have circular-backed lot-size mappings; Dhan returned a rolling ATM-relative series with no explicit expiry or lot-size identifier. Full official contract-master matching, full-history coverage, duplicate checks and executable pricing are unverified. The existing gate appropriately prevents P&L from being calculated.
 
 The integration should not be promoted as a usable prediction engine or trading strategy. The prior repository's historical no-go results remain unchanged and are not superseded by these integration diagnostics.
 
@@ -213,7 +240,7 @@ The integration should not be promoted as a usable prediction engine or trading 
 - Official expiry reconciliation, historical lot size, full coverage, duplicate rate, and bid/ask/executable prices remain unverified.
 - No options strategy backtest, Paytm Money charge model, or trading P&L was run.
 - Dataset CC-BY-NC-4.0 limits commercial use and redistribution; license and attribution conditions must remain explicit.
-- The study does not establish that all NIFTY prediction models are ineffective.
+- The study does not establish that all NIFTY prediction models are ineffective. The options source checks establish only a three-expiry lot-size mapping and a successful sample request to Dhan, not a valid backtest dataset.
 
 ## 11. Conclusion
 
