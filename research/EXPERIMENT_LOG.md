@@ -142,3 +142,14 @@ The first automated step is a Dhan weekly/monthly schema control probe on a fixe
 ### VOL-REGIME-OPT-1.0 source-gate correction — 2026-10-15
 
 Initial workflow failure was an infrastructure configuration error (setup-python pip cache path); fixed by explicitly naming requirements-research.txt. The subsequent Dhan probe passed the MONTH schema control (375 rows per option type in 2025-01-06 through 2025-01-10) but WEEK / expiryCode=0 returned HTTP 400 / DH-905 “expiryCode is required”. A single bounded correction now tests weekly codes 0, 1 and 2. No option P&L has been calculated and monthly rows are not treated as weekly contracts.
+
+
+### QE-NIFTY-1.0 — safe adapter implementation (2026-10-22)
+
+- Pinned upstream QuantEvolve to 2df1e85758620e8ac0ca88ffc428b379d6cb9620.
+- Added a literal-only candidate schema and a trusted evaluator using daily NIFTY data, past-only feature normalization, three chronological development folds and a one-time final 20% holdout evaluation.
+- Added an updated Gemini provider patch using the google-genai SDK, with a single model, maximum four iterations, fixed seed, no retries and a separate publisher that only receives sanitized JSON.
+- Added automated checks for source parsing (not execution), feature causality, holdout isolation, metric interval generation and explicit options source/contract gates.
+- Regression workflow [39662185936](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39662185936) exposed an exact-phrase assertion mismatch (2 pass, 1 fail), before any candidate ran. The correction is included in this implementation batch. Verify the next workflow run before considering the integration shell passed.
+- Options contract/quality status remains blocked by the previous cancelled HF contract audit [38807375042](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38807375042). No option P&L was run, and none is permitted until the new source gate passes.
+- No OOS performance finding exists at this implementation checkpoint.

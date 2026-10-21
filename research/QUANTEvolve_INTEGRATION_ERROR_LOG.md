@@ -71,3 +71,19 @@ This log records visible technical findings and corrective actions. It does not 
 - **Change:** The workflow now installs pytest and runs `tests/test_quantevolve_integration_protocol.py` before fetching/auditing upstream. Trigger filters focus on source code, the protocol tests, and the workflow itself rather than every documentation-only edit.
 - **Verification:** Source audit succeeded in previous runs, but the revised workflow containing this test step has not yet been verified to pass. Record as pending rather than assuming success.
 - **Review policy:** No independent review/tester handoff will be created, per the user's instruction. Automated checks remain required.
+
+
+## QE-ERR-007 — assertion wording mismatch in governance tests
+- Date: 2026-10-22
+- Severity: LOW
+- Observed workflow: [run 39662185936](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39662185936).
+- Observation: the test required the exact phrase “sealed final holdout,” while the plan says “Freeze a time-based final holdout before evolution.” Two of three tests passed; the failure happened before upstream clone or model execution.
+- Correction: assert the actual protocol safeguard semantically by checking that the plan mentions the final holdout and that it is kept out of evolution. Expanded adapter tests also cover literal-only parsing, coefficient/feature limits, causal normalization, final-holdout separation, bootstrap metrics and a source manifest gate.
+- Status: CORRECTED IN BRANCH; next hosted run must verify.
+
+## QE-STEP-008 — adapter and bounded workflow implementation
+- Date: 2026-10-22
+- Upstream pin: 2df1e85758620e8ac0ca88ffc428b379d6cb9620.
+- Implemented: safe declarative candidate schema; trusted causal forecasting evaluator; modern Google Gen AI wrapper; maximum four evolution iterations; option-data provenance/contract quality gate; artifact allowlist publisher; automated/manual GitHub Actions research workflow.
+- Security: candidate source is parsed only and never executed/imported. The generation job receives GOOGLE_API_KEY; the evaluation and publication steps do not. Raw market data, generated source, logs and checkpoints are not copied into public artifacts or the repository.
+- Verification: this commit creates the implementation files, but its hosted test/evolution run is not yet verified. No QuantEvolve-derived performance claim is made.

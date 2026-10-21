@@ -1,0 +1,67 @@
+max_iterations: 4
+checkpoint_interval: 2
+log_level: WARNING
+random_seed: 20261022
+log_dir: null
+
+llm:
+  primary_model: "gemini-3.8-flash"
+  primary_model_weight: 1.0
+  secondary_model: ""
+  secondary_model_weight: 0.0
+  api_base: "https://generativelanguage.googleapis.com/"
+  api_key: ""
+  temperature: 0.3
+  top_p: 0.9
+  max_tokens: 2048
+  timeout: 45
+  retries: 0
+  retry_delay: 0
+
+prompt:
+  system_message: |
+    Evolve a declarative NIFTY 50 next-session log-return forecasting specification for QE-NIFTY-1.0.
+    Do not write executable strategy code. The only valid candidate is exactly one top-level Python literal
+    assignment named STRATEGY_SPEC. The evaluator parses it with ast.literal_eval and never runs candidate
+    source. Modify only the literal dictionary inside EVOLVE-BLOCK markers. Do not add imports, functions,
+    calls, code fences, or extra top-level statements.
+    Allowed schema: version=1, track="prediction", model="linear", features (1 to 6 unique allowed names),
+    weights (numeric coefficients within [-3,3]), intercept within [-0.02,0.02], clip in [0.001,0.10].
+    Allowed features: ret_1, ret_5, ret_10, ret_20, vol_5, vol_20, vol_60, intraday, gap, range.
+    Forecasts are one-session log returns. Features are standardized using past observations only.
+    Fitness is averaged across three chronological development-only folds against a zero-return baseline,
+    minus a complexity penalty and fold-instability penalty. Higher is better.
+    Never request or optimize on the final chronological 20% holdout. Do not claim a trading strategy.
+    Preserve exact syntax and output a valid diff focused only on STRATEGY_SPEC.
+  num_top_programs: 2
+  use_template_stochasticity: false
+
+database:
+  population_size: 8
+  archive_size: 4
+  num_islands: 2
+  elite_selection_ratio: 0.25
+  exploitation_ratio: 0.6
+
+evaluator:
+  timeout: 60
+  max_retries: 0
+  memory_limit_mb: 512
+  cpu_limit: 1.0
+  cascade_evaluation: false
+  cascade_thresholds: []
+  parallel_evaluations: 1
+  distributed: false
+  use_llm_feedback: false
+  llm_feedback_weight: 0.0
+
+diff_based_evolution: true
+allow_full_rewrites: false
+max_code_length: 12000
+
+data_collection:
+  binance_api_key: ""
+  binance_api_secret: ""
+  default_symbol: "NIFTY50"
+  default_interval: "1d"
+  default_lookback_days: 5000

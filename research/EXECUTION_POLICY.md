@@ -79,3 +79,15 @@ This scoped addendum applies to the QuantEvolve integration branch and its predi
 - Evolution fitness may use development-only walk-forward results. A sealed chronological holdout must not be read by candidate generation, fitness selection, tuning, debugging prompts or repeated retries. Correct the final comparison family for search multiplicity.
 - For this QuantEvolve integration, the user has explicitly stated **no independent review/tester branch or review sign-off is required**. Do not create an independent-tester handoff or wait for it to advance. Automated unit/regression tests, security checks, leakage checks, artifact validation and recorded gate decisions are still mandatory. Do not falsely label automated checks as independent review.
 - Maintain the finite QE-NIFTY-1.0 phases in `research/QUANTEvolve_INTEGRATION_PLAN.md`; stop after the prescribed phases or a serious blocker. Record visible actions, decisions, workflow/commit IDs, errors and evidence—not hidden chain-of-thought.
+
+
+## QuantEvolve guarded integration enforcement
+
+- QE-NIFTY-1.0 is a distinct follow-on; it must not overwrite the historical NIFTY-PRED or options dispositions.
+- Pin QuantEvolve upstream to the reviewed revision; do not run moving upstream main for confirmatory experiments.
+- LLM-generated candidate source is untrusted. The permitted prediction candidate is one literal STRATEGY_SPEC assignment and is parsed using AST parsing plus ast.literal_eval. Never import, compile, exec, or directly execute candidate source.
+- Do not use the default Binance evaluator to produce NIFTY results. The upstream evaluator is not a point-in-time NIFTY/options engine and does not include realistic Indian brokerage/slippage.
+- Fitness runs only on the first 80% chronological development sample using development-only folds. Evaluate the final 20% once after model selection. Do not feed holdout metrics, plots or error feedback to the evolution controller.
+- GOOGLE_API_KEY is reported by the user as a GitHub Actions secret. Use it only within bounded generation steps; do not store its value. Remove it, along with Dhan/HF/GitHub tokens, from all candidate-evaluation and publication processes.
+- No independent tester/review branch or sign-off is required for this integration by explicit user direction. Automated unit tests, secret isolation, causal target/feature, holdout-separation and report validation checks still must pass.
+- Options P&L is forbidden until expiry-date and fixed-contract identity, source/license, lot size, timestamp, coverage and conflicting-duplicate gates are verified. Include Paytm Money brokerage, applicable exchange/statutory costs and adverse slippage sensitivity if/when the P&L gate opens.

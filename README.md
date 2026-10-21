@@ -291,3 +291,24 @@ A separate integration branch `research/quantevolve-integration` is active. The 
 - [Audit workflow run](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39661711639)
 
 Status: integration setup only; no QuantEvolve-derived NIFTY prediction or options strategy out-of-sample result exists yet. Existing historical results and gates remain unchanged.
+
+
+## QE-NIFTY-1.0 — QuantEvolve integration implementation (2026-10-22)
+
+A guarded integration has been added on the separate branch [research/quantevolve-integration](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quantevolve-integration).
+
+- [Finite integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
+- [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
+- [Integration error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+- [Core execution policy](research/EXECUTION_POLICY.md)
+- [Safe declarative candidate schema and causal feature engine](tools/quantevolve/strategy_dsl.py)
+- [NIFTY prediction evaluator](tools/quantevolve/prediction_evaluator.py)
+- [Modern Google Gen AI provider patch](tools/quantevolve/modern_gemini_provider.py)
+- [Options source/contract quality gate](tools/quantevolve/options_contract_gate.py)
+- [Bounded research workflow](.github/workflows/quantevolve-research.yml)
+- [Sanitized report publisher](tools/quantevolve/publish_run.py)
+- [Initial automated run request](configs/quantevolve/run_request.json)
+
+The QuantEvolve source is pinned to revision 2df1e85758620e8ac0ca88ffc428b379d6cb9620. Generated candidate code is not executed: candidate source is constrained to a literal strategy specification and parsed only. Prediction fitness is calculated on development-only chronological folds; the final 20% is evaluated once after selection. The Google key is restricted to the generation process. Existing NIFTY/options results and gates have not been rewritten.
+
+The previous source-audit workflow succeeded, while the first expanded regression run found one wording-only test defect (two passed, one failed); the fix is included in this branch and the next workflow run must confirm it. No QuantEvolve prediction or options performance claim is established by the source audit itself. Options P&L remains blocked until expiry/contract identity, source licensing, lot size and data quality pass.

@@ -1,0 +1,134 @@
+import hashlib
+import json
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import pytest
+
+from tools.quantevolve.strategy_dsl import (
+    SpecValidationError,
+    build_causal_features,
+    evaluate_spec,
+    parse_spec_text,
+    validate_daily_frame,
+)
+from tools.quantevolve.options_contract_gate import inspect_options
+
+
+VALID = """STRATEGY_SPEC = {
+    'version': 1, 'track': 'prediction', 'model': 'linear',
+    'features': ['ret_1'], 'weights': {'ret_1': 0.25},
+    'intercept': 0.0, 'clip': 0.02
+}"""
+
+
+def daily_fixture(n=900):
+    rng = np.random.default_rng(44)
+    returns = rng.normal(0.0003, 0.01, n)
+    close = 22000 * np.exp(np.cumsum(returns))
+    open_ = close * (1 + rng.normal(0, .002, n))
+    high = np.maximum(open_, close) * 1.004
+    low = np.minimum(open_, close) * .996
+    dates = pd.bdate_range("2020-01-01", periods=n)
+    return pd.DataFrame({
+        "date": dates.strftime("%Y-%m-%d"), "open": open_, "high": high,
+        "low": low, "close": close, "volume": np.arange(n) + 1,
+        "source_id": "synthetic_test_fixture",
+    })
+
+
+def test_spec_uses_literal_ast_only():
+    spec = parse_spec_text(VALID)
+    assert spec["track"] == "prediction"
+    unsafe = [
+        "import os\nSTRATEGY_SPEC = {'version':1}",
+        "STRATEGY_SPEC = get_spec()",
+        "STRATEGY_SPEC = {'version': 1}\nprint('bad')",
+        "STRATEGY_SPEC = {'version':1,'track':'prediction','model':'linear','features':['__import__'],'weights':{'__import__':1},'intercept':0,'clip':.02}",
+    ]
+    for source in unsafe:
+        with pytest.raises(SpecValidationError):
+            parse_spec_text(source)
+
+
+def test_spec_bounds_and_feature_limits():
+    with pytest.raises(SpecValidationError):
+        parse_spec_text(VALID.replace("'ret_1': 0.25", "'ret_1': 4.0"))
+    too_many = """STRATEGY_SPEC = {
+      'version':1,'track':'prediction','model':'linear',
+      'features':['ret_1','ret_5','ret_10','ret_20','vol_5','vol_20','vol_60'],
+      'weights':{'ret_1':0,'ret_5':0,'ret_10':0,'ret_20':0,'vol_5':0,'vol_20':0,'vol_60':0},
+      'intercept':0,'clip':0.02
+    }"""
+    with pytest.raises(SpecValidationError):
+        parse_spec_text(too_many)
+
+
+def test_feature_rows_are_causal_under_future_mutation():
+    original = validate_daily_frame(daily_fixture())
+    changed = original.copy()
+    changed.loc[700:, ["open", "high", "low", "close"]] *= 1.2
+    f1 = build_causal_features(original)
+    f2 = build_causal_features(changed)
+    pd.testing.assert_frame_equal(f1.iloc[:700], f2.iloc[:700])
+
+
+def test_holdout_does_not_influence_development_fitness():
+    frame = validate_daily_frame(daily_fixture())
+    spec = parse_spec_text(VALID)
+    dev1 = evaluate_spec(frame, spec, "development")["metrics"]
+    altered = frame.copy()
+    altered.loc[int(len(frame)*0.8):, ["open", "high", "low", "close"]] *= 1.7
+    dev2 = evaluate_spec(validate_daily_frame(altered), spec, "development")["metrics"]
+    assert dev1["combined_score"] == pytest.approx(dev2["combined_score"])
+    assert dev1["sample_count"] == dev2["sample_count"]
+
+
+def test_holdout_metrics_have_block_interval_and_no_selection_flag():
+    frame = validate_daily_frame(daily_fixture())
+    metrics = evaluate_spec(frame, parse_spec_text(VALID), "holdout")["metrics"]
+    assert metrics["evaluation_stage"] == "holdout"
+    assert metrics["sample_count"] >= 50
+    assert metrics["final_holdout_used_for_candidate_selection"] == 0.0
+    assert np.isfinite(metrics["mae_improvement_ci95_low"])
+    assert np.isfinite(metrics["mae_improvement_ci95_high"])
+
+
+def test_options_gate_blocks_missing_source_and_disallows_pnl():
+    report = inspect_options(
+        Path("file_missing_nifty_options.csv"),
+        Path("file_missing_manifest.json"),
+        Path("file_missing_underlying.csv"),
+    )
+    assert report["status"] == "BLOCKED_NO_VERIFIED_CONTRACT_DATA"
+    assert report["pnl_permitted"] is False
+
+
+def test_options_gate_accepts_test_fixture_only_when_all_gates_are_explicit(tmp_path):
+    dates = pd.bdate_range("2025-01-01", periods=50)
+    rows = []
+    for i, stamp in enumerate(dates):
+        for option_type in ("CE", "PE"):
+            rows.append({
+                "timestamp": stamp.strftime("%Y-%m-%d") + "T10:00:00+05:30",
+                "expiry": (stamp + pd.Timedelta(days=20)).strftime("%Y-%m-%d"),
+                "strike": 23000, "option_type": option_type, "open": 100+i,
+                "high": 103+i, "low": 98+i, "close": 101+i, "volume": 1000, "lot_size": 25,
+            })
+    input_path = tmp_path / "options.csv"
+    pd.DataFrame(rows).to_csv(input_path, index=False)
+    underlying_path = tmp_path / "underlying.csv"
+    pd.DataFrame({"date": dates.strftime("%Y-%m-%d"), "close": 23000}).to_csv(underlying_path, index=False)
+    digest = hashlib.sha256(input_path.read_bytes()).hexdigest()
+    manifest_path = tmp_path / "source_manifest.json"
+    manifest_path.write_text(json.dumps({
+        "status": "PASS", "source_sha256": digest, "official_expiry_reconciled": True,
+        "lot_size_history_verified": True, "license_review_status": "PASS_NONCOMMERCIAL",
+        "timestamp_timezone": "Asia/Kolkata", "executable_price_policy": "OHLC_ADVERSE_PROXY",
+        "source_license": "CC-BY-NC-4.0",
+    }))
+    report = inspect_options(input_path, manifest_path, underlying_path)
+    assert report["status"] == "PASS"
+    assert report["pnl_permitted"] is True
+    assert report["eligible_date_coverage"] == pytest.approx(1.0)

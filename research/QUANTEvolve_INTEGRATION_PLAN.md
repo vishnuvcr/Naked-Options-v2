@@ -84,3 +84,16 @@
 
 ## Current result
 P0 has begun. Repository and upstream reconnaissance found that upstream's default data collector/evaluator is Binance OHLCV-oriented (README/config default BTCUSDT 1h), with Gemini-backed strategy generation and a large default evolution budget (200 iterations, population 50). These defaults are incompatible with direct NIFTY/options use without an adapter and stricter resource/data gates. This is an architecture finding, not a performance result.
+
+
+## P1 implementation amendment — 2026-10-22
+
+The upstream revision is pinned to commit 2df1e85758620e8ac0ca88ffc428b379d6cb9620; confirmatory runs must not execute from a moving upstream branch.
+
+A custom prediction adapter is being introduced instead of the upstream Binance evaluator. Candidate source is restricted to a single literal STRATEGY_SPEC assignment, parsed with Python AST parsing and ast.literal_eval. Generated source is never imported, compiled, or executed. The trusted evaluator builds causal NIFTY features and scores next-session log-return forecasts using a zero-return benchmark.
+
+Development fitness is computed from the first 80% of dated data, before feature/target construction, using three chronological folds within that development section. Only after candidate selection is the final chronological 20% evaluated once. The holdout is not sent back to the controller/LLM. Report MAE skill, RMSE, directional accuracy, sample count and a circular block-bootstrap interval for mean absolute-error improvement. This is forecasting research, not a trading strategy claim.
+
+The generation process is bounded at no more than four iterations, one configured model, 2,048 output tokens, zero retries, and a fixed seed. GOOGLE_API_KEY is used only in the restricted generation process; evaluation and publication steps run without it. Dhan/Hugging Face/GitHub tokens are stripped from the candidate-generation subprocess except for the single configured Gemini key, and generated source is never executed.
+
+The options track is deliberately separate. A source/contract gate requires file/hash provenance, official expiry reconciliation, historical lot-size verification, license clearance, Asia/Kolkata timestamps, explicit executable-price policy, at least 80% covered eligible sessions and at most 1% conflicting duplicate groups. The previously inspected HF exact-contract audit was cancelled before its audit step completed, so the current inherited source is not a pass. Options P&L remains blocked until contract identity and quality evidence actually pass.

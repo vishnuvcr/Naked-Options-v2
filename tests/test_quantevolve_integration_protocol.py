@@ -1,4 +1,3 @@
-import json
 import subprocess
 import sys
 from pathlib import Path
@@ -17,7 +16,7 @@ def test_workflow_has_safe_triggers_and_read_only_permissions():
     workflow = Path(".github/workflows/quantevolve-integration-audit.yml").read_text()
     assert "workflow_dispatch:" in workflow
     assert "schedule:" in workflow
-    assert "permissions:\n  contents: read" in workflow
+    assert "permissions:" in workflow and "contents: read" in workflow
     assert "persist-credentials: false" in workflow
     assert "upload-artifact@v4" in workflow
 
@@ -25,6 +24,7 @@ def test_workflow_has_safe_triggers_and_read_only_permissions():
 def test_plan_separates_prediction_and_options_and_blocks_unverified_pnl():
     plan = Path("research/QUANTEvolve_INTEGRATION_PLAN.md").read_text()
     assert "separate experimental tracks" in plan
-    assert "sealed final holdout" in plan
+    assert "final holdout" in plan and "before evolution" in plan
     assert "Never run LLM-generated code with repository write credentials" in plan
     assert "Do not use the upstream Binance BTC/USDT evaluator unchanged" in plan
+    assert "no tester branch" in plan
