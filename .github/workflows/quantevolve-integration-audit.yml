@@ -48,8 +48,6 @@ jobs:
           git -C /tmp/quantevolve checkout --detach origin/main
           git -C /tmp/quantevolve status --short
       - name: Run static compatibility audit
-        env:
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: |
           python tools/quantevolve/audit_upstream.py \
             --upstream /tmp/quantevolve \
