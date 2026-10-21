@@ -249,3 +249,10 @@ This log records visible technical findings and corrective actions. It does not 
 - Observation: the bounded source audit and options gate steps both completed successfully, but the sanitized report was not committed because the publisher allowlist only copied files adjacent to a run manifest and did not include the top-level `options_source_audit.json`.
 - Correction: publisher now explicitly allowlists and copies the sanitized options source audit report. Raw parquet remains in the cache and is not copied.
 - Status: corrected; one bounded options-source audit rerun is required to persist the evidence.
+
+## QE-DELIVERY-39670001128 — automated run record
+- Date: 2026-10-21T20:25:04.924319+00:00
+- Run status: NO_RUN_MANIFEST
+- Reason/error classification: No runtime error reported in the sanitized manifest.
+- Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
+- No API key or credential value is persisted.

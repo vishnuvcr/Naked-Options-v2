@@ -1,0 +1,123 @@
+{
+  "audit_type": "bounded_public_source_schema_audit",
+  "claim": null,
+  "limitations": [
+    "A filename/expiry column is not independent official-exchange expiry reconciliation.",
+    "Historical lot-size mapping is not established by this dataset sample.",
+    "OHLC bars are not historical bid/ask quotes and cannot by themselves prove executable fills.",
+    "Three expiry samples do not establish full-history coverage or contract continuity.",
+    "The dataset is CC-BY-NC-4.0; raw files must not be redistributed in public reports or repository commits."
+  ],
+  "next_gate": "Reconcile exact expiry and historical lot size against official NSE contract files; measure full eligible-date coverage and conflicting duplicates before constructing a backtest ledger.",
+  "pnl_permitted": false,
+  "protocol": "QE-NIFTY-1.0",
+  "sample": {
+    "expiry_column_present_in_all_samples": true,
+    "file_count": 3,
+    "files": [
+      {
+        "columns": [
+          "close",
+          "expiry",
+          "high",
+          "low",
+          "open",
+          "open_interest",
+          "option_type",
+          "strike",
+          "symbol",
+          "timestamp",
+          "trading_day",
+          "volume"
+        ],
+        "download_bytes": 3624537,
+        "expiry_column_present": true,
+        "expiry_from_filename": "2021-05-27",
+        "lot_size_column_present": false,
+        "repo_path": "options/NIFTY/2021-05-27.parquet",
+        "rows": 333365,
+        "sha256": "46aef7e94628ea3c180e4deb4998a19fab2d1082fce0529cc5ba6bca7313e26e",
+        "timestamp_type": "timestamp[ns, tz=+05:30]"
+      },
+      {
+        "columns": [
+          "close",
+          "expiry",
+          "high",
+          "low",
+          "open",
+          "open_interest",
+          "option_type",
+          "strike",
+          "symbol",
+          "timestamp",
+          "trading_day",
+          "volume"
+        ],
+        "download_bytes": 5139509,
+        "expiry_column_present": true,
+        "expiry_from_filename": "2024-01-04",
+        "lot_size_column_present": false,
+        "repo_path": "options/NIFTY/2024-01-04.parquet",
+        "rows": 650030,
+        "sha256": "c7e4da3130309c2695b134e3027e3ba40767f7b99359c0f9fe78fc0bc37f5dbf",
+        "timestamp_type": "timestamp[ns, tz=+05:30]"
+      },
+      {
+        "columns": [
+          "close",
+          "expiry",
+          "high",
+          "low",
+          "open",
+          "open_interest",
+          "option_type",
+          "strike",
+          "symbol",
+          "timestamp",
+          "trading_day",
+          "volume"
+        ],
+        "download_bytes": 58248,
+        "expiry_column_present": true,
+        "expiry_from_filename": "2026-08-04",
+        "lot_size_column_present": false,
+        "repo_path": "options/NIFTY/2026-08-04.parquet",
+        "rows": 2646,
+        "sha256": "8de2f08cef1456c448c4fc4be0d9d586a1b26af30bf67990171385361af92f9c",
+        "timestamp_type": "timestamp[ns, tz=+05:30]"
+      }
+    ],
+    "lot_size_column_present_in_all_samples": false,
+    "required_identity_and_ohlcv_columns_present": true,
+    "sample_hash_manifest_sha256": "b8b433c5f76e62bbe262dfa39bed83d2a454f56a0152c411d8f0bd14bc1e0073",
+    "schema_union": [
+      "close",
+      "expiry",
+      "high",
+      "low",
+      "open",
+      "open_interest",
+      "option_type",
+      "strike",
+      "symbol",
+      "timestamp",
+      "trading_day",
+      "volume"
+    ],
+    "timezone_metadata_examples": [
+      "Asia/Kolkata"
+    ],
+    "total_download_bytes": 8822294,
+    "total_rows": 986041
+  },
+  "source": {
+    "attribution": "thetrademarkk, India Index & Options - 1-minute OHLC dataset",
+    "license": "CC-BY-NC-4.0",
+    "raw_source_data_committed": false,
+    "repo_id": "thetrademarkk/india-index-options-1m",
+    "source_scope": "NIFTY option OHLCV bars sampled from files partitioned by expiry",
+    "url": "https://huggingface.co/datasets/thetrademarkk/india-index-options-1m"
+  },
+  "status": "BLOCKED_OFFICIAL_EXPIRY_AND_HISTORICAL_LOT_SIZE_UNVERIFIED"
+}
