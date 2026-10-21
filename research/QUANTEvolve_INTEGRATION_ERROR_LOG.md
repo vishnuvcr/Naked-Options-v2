@@ -271,3 +271,11 @@ This log records visible technical findings and corrective actions. It does not 
 - Observation: options-source workflows have no prediction run manifest; the publisher therefore logged NO_RUN_MANIFEST and used prediction-oriented wording even though the options audit step ran.
 - Correction: options track now writes an explicit options run manifest, and publisher generates options-specific status summaries using the sanitized source report. Publisher allowlist includes options_source_audit.json.
 - Status: corrected in workflow/publisher; source audit report now committed at reports/quantevolve/options_source_audit.json.
+
+
+## QE-ERR-021 — report publisher lost a fast-forward race
+- Date: 2026-10-22. Severity: MEDIUM (automatic publication reliability).
+- Workflow: [run 39670338776](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39670338776).
+- Observation: the research job completed, but the publisher's push was rejected because the branch advanced while the job was preparing its report commit.
+- Correction: publisher now retries up to three times; on a non-fast-forward rejection it fetches the current branch, resets the workspace to that head, reruns the sanitized publisher from the downloaded artifact, and attempts a fresh commit. No force push is used.
+- Status: correction committed; audit passed at [39670352181](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39670352181). A subsequent workflow run will verify the push-retry path.
