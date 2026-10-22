@@ -350,3 +350,15 @@ The earlier P&L metrics were superseded after finding and correcting a historica
 - [Sanitized run report](reports/quant_evolve_nob_v1/RESULTS.md) · [Run summary JSON](reports/quant_evolve_nob_v1/run_summary.json) · [Workflow artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025)
 
 The frozen-ledger reprice audit is a separate sensitivity check, not the final evolutionary run. No strategy is approved. User explicitly declined independent testing; no tester branch/report is claimed. The bounded study is closed; do not repeat unbounded search without materially better contract/execution data.
+
+
+## Follow-on research: QE-NOB-2.0 open structural discovery
+
+The completed QE-NOB-1.0 search returned **NO-GO for the tested candidate grammar**. A new bounded protocol is being prepared to address the structural novelty limitation rather than simply increasing parameter variations.
+
+- [Developer branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v2-discovery-developer)
+- [Discovery plan](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/OPEN_STRATEGY_DISCOVERY_PLAN.md)
+- [Phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md)
+- [Feature feasibility audit](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/FEATURE_FEASIBILITY_V2.md)
+
+**Status (2026-10-22):** Protocol amendment committed; feature/source runtime audit and implementation have not yet run. Fixed maximum budget: 1,500 unique structural candidates, 20 generations. Strategy novelty, evolved exit state machines, chronological holdout, multiple-testing correction, bootstrap uncertainty, fees and slippage are mandatory. No new strategy is claimed profitable. User explicitly said “No tester”; no tester branch/report will be created.
