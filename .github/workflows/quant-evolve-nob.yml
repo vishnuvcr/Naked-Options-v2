@@ -21,7 +21,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: quant-evolve-nob-v1-${{ github.ref }}
+  group: quant-evolve-nob-current-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
