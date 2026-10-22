@@ -406,3 +406,12 @@ CI results are not yet verified. The simulator has not been run against the hist
 - Initial runtime audit [#39803204747](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803204747) returned `BLOCKED_NO_LOCAL_CACHE` (zero files). This does not prove Dhan or any free source is unavailable; the sibling branch's Actions cache was not present in the v2 runner.
 - A bounded cache-first/source-acquisition-only workflow was added: [.github/workflows/qe-nob-v2-data-audit.yml](.github/workflows/qe-nob-v2-data-audit.yml). Run [#39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257) was automatically triggered; inspect its sanitized artifact before changing Phase 2 status. Raw market payloads are kept in the runner cache and are not uploaded as artifacts.
 - QE-NOB-1.0 remains NO-GO and unchanged. No QE-NOB-2.0 candidate has yet been backtested for fitness or shown profitable; no tester branch/report is created, per the user's explicit instruction.
+
+
+### QE-NOB-2.0 acquisition result — 2026-10-23
+
+**Status: BLOCKED at data acquisition; no new candidate or profitability result.** Eligible weekly-only workflow [#39838508682](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39838508682) passed pre-acquisition regression gates but failed the source gate. Its [fresh sanitized artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39838508682/artifacts/12451299405) reports Dhan HTTP 401 DH-901 (access token invalid or expired), incomplete weekly option history, and no verified 5-minute underlying series. The final cache audit counted 745 parseable JSON files, including 744 option-folder files and one underlying probe; parseability does not establish historical coverage. Exact contract identity and historical bid/ask/depth remain unverified. The cache was preserved and empirical discovery was skipped.
+
+- [Phase status](research/quant-evolve-nob/PHASE_STATUS_V2.md) · [Error log](research/quant-evolve-nob/ERROR_LOG_V2.md) · [Activity log](research/quant-evolve-nob/INTERACTION_LOG_V2.md) · [Source catalogue](research/quant-evolve-nob/SOURCE_CATALOG_V2.md)
+
+**Next gate:** renew the Dhan token in GitHub Actions secrets or verify and integrate a legally usable alternate source with explicit expiry/contract mapping and historical underlying bars. Do not repeat acquisition with the same invalid credential. Phase 5 remains blocked; Phases 6–7 are not started; execution remains FAIL.
