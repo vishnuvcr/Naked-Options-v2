@@ -282,13 +282,17 @@ def retrieve_options(token, supported, refresh=False):
                     try:
                         payload = json.loads(path.read_text(encoding="utf-8"))
                         state = validate_option_payload(payload,side)
-                        reqs.append({"expiry_flag":flag,"expiry_code":code,"from":d0.isoformat(),"to_exclusive":d1.isoformat(),
-                                     "offset":offset,"side":side,"status":"CACHED_"+state,"path":str(path.relative_to(ROOT))})
-                        cached_count += 1
-                        planned += 1
-                        if planned % 25 == 0 or planned == total_expected:
-                            print(f"[QE-NOB-2.0] option progress {planned}/{total_expected}; cached={cached_count}; downloaded={downloaded_count}; failures={len(failures)}; elapsed_min={(time.monotonic()-started)/60:.1f}", flush=True)
-                        continue
+                        if state == "EMPTY":
+                            path.unlink(missing_ok=True)
+                            print(f"[QE-NOB-2.0] removed previously cached empty response; will retry expiry={flag}{code} offset={offset} side={side} from={d0.isoformat()}", flush=True)
+                        else:
+                            reqs.append({"expiry_flag":flag,"expiry_code":code,"from":d0.isoformat(),"to_exclusive":d1.isoformat(),
+                                         "offset":offset,"side":side,"status":"CACHED_"+state,"path":str(path.relative_to(ROOT))})
+                            cached_count += 1
+                            planned += 1
+                            if planned % 25 == 0 or planned == total_expected:
+                                print(f"[QE-NOB-2.0] option progress {planned}/{total_expected}; cached={cached_count}; downloaded={downloaded_count}; failures={len(failures)}; elapsed_min={(time.monotonic()-started)/60:.1f}", flush=True)
+                            continue
                     except Exception:
                         pass
                 body = option_request_body(flag,code,offset,side,d0,d1-timedelta(days=1))
