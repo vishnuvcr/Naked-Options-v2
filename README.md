@@ -446,3 +446,17 @@ An indicative long-option simulator has been added to the developer branch. It m
 - Initial runtime audit [#39803204747](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803204747) returned `BLOCKED_NO_LOCAL_CACHE` (zero files). This does not prove Dhan or any free source is unavailable; the sibling branch's Actions cache was not present in the v2 runner.
 - A bounded cache-first/source-acquisition-only workflow was added: [QE-NOB v2 data-audit workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/.github/workflows/qe-nob-v2-data-audit.yml). Run [#39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257) was automatically triggered; inspect its sanitized artifact before changing Phase 2 status. Raw market payloads are kept in the runner cache and are not uploaded as artifacts.
 - QE-NOB-1.0 remains NO-GO and unchanged. No QE-NOB-2.0 candidate has yet been backtested for fitness or shown profitable; no tester branch/report is created, per the user's explicit instruction.
+
+
+### QE-NOB-2.0 runtime checkpoint — 2026-10-22 21:05 IST
+
+The structural-discovery branch now has tested components for typed strategy grammar, bounded candidate generation, point-in-time NIFTY OHLC features, next-bar signal timing, and an OHLC option simulator with modeled fees/slippage and same-session handling. Recent passing workflows include grammar/cache-audit #39802894371, standalone feature audit #39802894311, candidate generator #39805233976, feature builder #39805843560, signal evaluator #39806277479, and simulator #39806376781. Expiry-family normalization has been committed; its focused regression workflow #39806440507 is queued.
+
+- [Current phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md)
+- [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
+- [Interaction/activity log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/INTERACTION_LOG_V2.md)
+- [Point-in-time feature builder](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/feature_builder_v2.py)
+- [Option simulator](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/option_simulator_v2.py)
+- [Bounded acquisition/cache audit workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/.github/workflows/qe-nob-v2-data-audit.yml) · [Current acquisition run #39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257)
+
+**Evidence boundary:** acquisition is still running, and the runtime cache has not yet passed the current Phase 2 audit. No QE-NOB-2.0 candidate has been fitness-scored on verified market data; there is no P&L result or profitable strategy claim. The execution gate remains false because rolling OHLC does not establish exact contract identity, historical bid/ask/depth, or broker fills. Search remains capped at 1,500 unique candidates and 20 generations. No tester branch/report will be created, per the user's instruction.
