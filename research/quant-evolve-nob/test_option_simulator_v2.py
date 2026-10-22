@@ -155,3 +155,29 @@ def test_expiry_code_maps_week_family_to_week1():
     })
     index = sim.prepare_option_index(rows)
     assert ('WEEK1', 'CALL', 0, 2) in index['entry_lookup']
+
+
+def test_long_holding_period_is_forced_to_close_same_session():
+    day1 = [
+        int(pd.Timestamp("2026-01-05 15:20:00", tz="Asia/Kolkata").timestamp()),
+        int(pd.Timestamp("2026-01-05 15:25:00", tz="Asia/Kolkata").timestamp()),
+    ]
+    day2 = [
+        int(pd.Timestamp("2026-01-06 09:15:00", tz="Asia/Kolkata").timestamp()),
+        int(pd.Timestamp("2026-01-06 09:20:00", tz="Asia/Kolkata").timestamp()),
+    ]
+    ts = day1 + day2
+    strategy = grammar.Strategy("signal", (grammar.Predicate("nifty_return_1", "gt", 0),), "and",
+                                "CALL", "WEEK1", "ATM", 12, (grammar.ExitRule("time_exit"),),
+                                "The long hold must not cross the overnight gap.")
+    underlying = pd.DataFrame({"timestamp": ts, "open": [100]*4, "close": [100]*4})
+    features = pd.DataFrame({"timestamp": ts, "nifty_return_1": [1.0, 1.0, -1.0, -1.0]})
+    options = pd.DataFrame({"timestamp": ts, "expiry_flag":["WEEK1"]*4, "side":["CALL"]*4,
+                            "offset":[0]*4, "strike":[100.0]*4, "open":[10.0,11.0,20.0,21.0],
+                            "close":[10.5,11.5,20.5,21.5], "high":[11.0,12.0,21.0,22.0],
+                            "low":[9.0,10.0,19.0,20.0]})
+    result = sim.simulate_strategy(underlying, options, features, strategy, {"nifty_return_1"})
+    assert result["trade_count"] == 1
+    assert result["trades"][0]["exit_reason"] == "session_close"
+    assert result["trades"][0]["exit_timestamp"] == day1[-1]
+    assert result["trades"][0]["legs"][0]["exit_open"] == pytest.approx(11.5)
