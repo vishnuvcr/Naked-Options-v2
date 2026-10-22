@@ -50,3 +50,8 @@ Governance: developer-led; user explicitly said “No tester.” No tester branc
 ## Automation handoff checkpoint — 2026-10-22
 
 The bounded acquisition workflow now automatically invokes the v2 discovery runner after successful acquisition and cache audit, and uploads sanitized candidate/validation/OOS/stress reports. Workflow #39808171927 is queued behind acquisition run #39803647257, so no manual user workflow action is required. Phase 2 remains open until the acquired cache report is inspected; Phase 5 is implemented and test-verified but not yet empirically completed.
+
+
+## Cache-gate regression — 2026-10-22
+
+The discovery-runner CI passed after adding the stricter cache audit gate: [run #39808407294](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39808407294). It now rejects any cache with JSON parse failures or without both underlying and option files. A later CI run #39808626484 uses a leaner dependency set to reduce unrelated installation time.
