@@ -117,3 +117,32 @@ def test_unimplemented_exit_rules_fail_closed():
     o = pd.DataFrame(columns=["timestamp","expiry_flag","side","offset","strike","open"])
     with pytest.raises(ValueError, match="does not implement exit rule"):
         sim.simulate_strategy(u, o, f, strategy, {"nifty_return_1"})
+
+
+def test_reusable_option_index_matches_inline_index():
+    strategy = grammar.Strategy("signal", (grammar.Predicate("nifty_return_1", "gt", 0),), "and",
+                                "CALL", "WEEK1", "ATM", 1, (grammar.ExitRule("time_exit"),),
+                                "Prepared-index consistency fixture.")
+    underlying = pd.DataFrame({"timestamp":[1,2,3,4], "open":[100]*4, "close":[100]*4})
+    features = pd.DataFrame({"timestamp":[1,2,3,4], "nifty_return_1":[1,-1,-1,-1]})
+    options = pd.DataFrame({
+        "timestamp":[2,3,4], "expiry_flag":["WEEK1"]*3, "side":["CALL"]*3,
+        "offset":[0]*3, "strike":[100.0]*3, "open":[10.0,11.0,12.0],
+    })
+    prepared = sim.prepare_option_index(options)
+    inline = sim.simulate_strategy(underlying, options, features, strategy, {"nifty_return_1"})
+    reused = sim.simulate_strategy(underlying, options, features, strategy, {"nifty_return_1"},
+                                   prepared_option_index=prepared)
+    assert inline["trade_count"] == reused["trade_count"]
+    assert inline["total_net_pnl_rupees"] == pytest.approx(reused["total_net_pnl_rupees"])
+
+
+def test_prepared_index_drops_conflicting_same_strike_across_offsets():
+    options = pd.DataFrame({
+        "timestamp":[2,2,3], "expiry_flag":["WEEK1"]*3, "side":["CALL"]*3,
+        "offset":[0,1,0], "strike":[100.0,100.0,100.0], "open":[10.0,12.0,11.0],
+        "high":[10.5,12.5,11.5], "low":[9.5,11.5,10.5],
+    })
+    prepared = sim.prepare_option_index(options)
+    assert prepared["contract_collision_keys_dropped"] == 1
+    assert ("WEEK1", "CALL", 2, 100.0) not in prepared["contract_lookup"]
