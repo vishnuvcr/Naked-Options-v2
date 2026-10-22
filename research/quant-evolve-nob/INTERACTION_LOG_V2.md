@@ -124,3 +124,11 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 ## 2026-10-23 — source-client CI passed
 - Independent source-client workflow check suite 107965316843 completed SUCCESS (18:47:42 UTC) for commit 8241ef05. Python compilation and pytest steps therefore passed, though the summary endpoint did not expose the individual pytest test count.
 - The data acquisition run #39803647257 still reports IN_PROGRESS with its last API update at 15:18:56 UTC; the current recovery workflow suite remains PENDING behind the concurrency group. Its status needs another live check; no acquisition outcome is inferred.
+
+
+## 2026-10-23 — partial cache recovery and strike-scope amendment
+- Old acquisition #39803647257 was cancelled through a one-time, commit-message-gated recovery change because it stayed in the same step for 211 minutes. Its cache-save and sanitized artifact steps nevertheless completed.
+- Downloaded artifact #12450341572 and inspected feature_availability.json: 720 JSON files parse, 716 historical weekly-option files plus three probes, one underlying probe, no historical underlying cache, and no historical monthly-option cache. This evidence is documented as a partial cache state, not an acquisition PASS.
+- To finish within the fixed bounded run without optimizing on P&L, formally narrowed the protocol from OTM2+ to ATM/OTM1. Updated strategy_grammar_v2.py, evolve_candidates_v2.py, run_research.py and their regression tests; updated the frozen plan, source catalogue and phase status. Expected grid is 732 option request groups; cache filename counts suggest about 425 option requests and up to 23 underlying-history chunks remain.
+- Independent source-client CI on the earlier bounded-client revision passed; new tests for the current ATM/OTM1 version are expected to run automatically and must be checked again.
+- The workflow now uses a one-time conditional concurrency handoff, short request timeouts/two attempts, progress logging, cache-resume passes, and fail-closed source gating. Do not mark Phase 2 complete until the resumed job's artifact proves historical underlying and option coverage.
