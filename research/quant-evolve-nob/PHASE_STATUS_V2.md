@@ -204,3 +204,11 @@ The full audit artifact from run #39837698610 includes 11 MONTH1 cache files in 
 - Fresh audit reports 745 parseable JSON files, 744 option-folder files, one underlying probe, zero parse failures, no verified contract identity, and no historical bid/ask/depth. Parseability is not time-series coverage. The cache was saved.
 - Hugging Face/Zenodo discovery did not admit an alternate dataset: candidate licenses were unknown/other or CC-BY-NC, and this run did not verify a usable direct download plus expiry mapping. This does not prove all free data are unavailable.
 - Phase 2 is BLOCKED; Phase 5 discovery was correctly skipped; Phases 6–7 remain NOT STARTED. No candidate fitness, OOS result, or profitability conclusion exists. Do not rerun with the same credential until it is renewed or a verified alternate source is integrated.
+
+
+## Dhan token automation checkpoint — 2026-10-23
+
+- Added `research/quant-evolve-nob/dhan_auth.py`, a standard-library RFC 6238 TOTP generator that requests a fresh 24-hour access token from Dhan's official generation endpoint, validates it against `/v2/profile`, and writes the token only to the current GitHub Actions job environment. It suppresses token values from logs.
+- Added RFC TOTP regression tests in `test_dhan_auth.py` and wired them into the bounded acquisition workflow before any data request.
+- The workflow now requires Actions secrets `DHAN_CLIENT_ID`, `DHAN_PIN`, and `DHAN_TOTP_SECRET`. Configure these before the next acquisition run; the old `DHAN_ACCESS_TOKEN` alone cannot guarantee unattended renewal after expiry. Keep `DHAN_ACCESS_TOKEN` only as a legacy/local compatibility secret if needed.
+- Current status: implementation committed; live token generation has NOT been verified because repository secrets are not readable from this integration and no credential values were provided. No acquisition run or research gate is claimed to have passed because of this code change. Next automatic workflow run must pass TOTP tests, token generation, and profile validation before acquisition starts.
