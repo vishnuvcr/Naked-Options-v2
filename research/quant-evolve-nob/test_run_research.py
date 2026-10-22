@@ -258,3 +258,17 @@ def test_option_request_progress_counts_each_pair_once(tmp_path, monkeypatch):
     assert result["cached_files_reused"] == 1
     assert result["downloaded_files"] == 5
     assert calls["n"] == 5
+
+
+def test_active_expiry_families_are_weekly_code_one_only():
+    source_families = [
+        {"flag": "WEEK", "code": 1},
+        {"flag": "WEEK", "code": 2},
+        {"flag": "MONTH", "code": 1},
+        {"flag": "week", "code": 1},
+    ]
+    assert qe.active_expiry_families(source_families) == [
+        {"flag": "WEEK", "code": 1},
+        {"flag": "week", "code": 1},
+    ]
+    assert qe.active_expiry_families([{"flag": "MONTH", "code": 1}]) == []
