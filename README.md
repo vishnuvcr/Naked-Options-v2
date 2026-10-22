@@ -389,3 +389,15 @@ The follow-on branch now includes a cache-schema audit utility, regression tests
 - [Implementation error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
 
 **Current gate:** test workflows have been configured, but successful runs have not been verified; the feature audit has not yet run against the research cache. Backtester integration and the new discovery run remain pending. No new strategy has been shown profitable. No tester branch/report, per the user's instruction.
+
+
+### QE-NOB-2.0 — implementation checkpoint 2
+
+Added a sanitized cache/feature audit utility and regression tests; expanded the grammar CI workflow to run both test suites. Corrected a test import problem caused by the hyphenated research directory and logged the defect/correction.
+
+- [Feature audit code](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/audit_features_v2.py)
+- [Feature audit tests](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/test_audit_features_v2.py)
+- [Current phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md)
+- [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
+
+**Verification status:** the code and tests are committed; successful CI has not been verified in this checkpoint. The feature audit has not yet run against the prior study's cached data, and no new strategy backtest has run.
