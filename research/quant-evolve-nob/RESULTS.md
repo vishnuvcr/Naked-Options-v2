@@ -1,13 +1,12 @@
 # QE-NOB-1.0 — fresh QuantEvolve-style naked option buying
 
-**Run status:** PASS_ANALYZED — corrected duplicate identity passed; workflow #39741806754 completed successfully  
+**Run status:** CORRECTED RERUN PENDING — the prior P&L was superseded after a historical lot-size proxy defect was found. Corrected source uses expiry-family/date-based NSE lots; CI pending at [workflow #39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025).  
 **Date range:** 2021-10-25 to 2026-10-21  
 **Candidates tested:** 600  
-**Candidates meeting statistical gate:** 0  
-**Candidates meeting strict execution/promotion gate:** 0  
-**Basic data quality gate:** PASS on duplicate/grid checks (contract identity still unverified)  
-**Execution data gate:** FAIL  
-**Decision:** DATA_LIMITED — no profitability conclusion; no strategy approved.
+**Previous-run result (superseded):** 0/600 candidates passed the statistical gate; do not carry forward its P&L values after correcting lot sizing.  
+**Data integrity:** offset-aware duplicate/grid checks pass; exact contract IDs remain unavailable.  
+**Execution readiness:** quotes/depth not available; exploratory OHLC analysis proceeds with adverse-slippage and cost assumptions, but this is not a claim of executable fills.  
+**Interim decision:** no strategy approved; corrected metrics await the bounded rerun.
 
 ## Run and dataset
 
@@ -15,21 +14,21 @@ Corrected workflow [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/
 
 ## Main finding
 
-The best candidate selected on validation was a 0.15% opening-gap continuation rule. Its OOS mean daily net was ₹10.68, with a 95% block-bootstrap interval of -₹188.62 to ₹237.43/day, OOS Sharpe 0.097, profit factor 1.021, and Holm-adjusted p=1.0. The first OOS half averaged ₹109.76/day, while the second averaged -₹87.60/day, indicating instability. The modeled 100-bps slippage / ₹20-per-order stress case averaged -₹98.54/day; the 200-bps / ₹20-per-order case averaged -₹288.37/day. The candidate also failed the paired baseline significance test.
+Those candidate statistics were computed using an invalid date-based lot proxy that assigned 25 units to the entire period before November 2024. They are retained only as a record of the superseded run and must not be used as the current P&L result. The corrected run applies dated lot proxies by WEEK1 versus MONTH1 and will recompute candidate ranking, net P&L, uncertainty intervals and stress results.
 
-These are exploratory simulated results based on rolling option OHLC, not verified executable fills. They do not establish a profitable strategy.
+The study proceeds using next-bar option OHLC, modeled adverse slippage, and disclosed fee assumptions. Missing historic best bid/ask/depth limits execution realism, not whether the planned statistical analysis may be run.
 
 ## Data and execution limitations
 
 - Corrected duplicate identity includes the source ATM offset; this reduced the detected duplicate groups from 471 (453 conflicting) to zero. This resolves the prior duplicate-key diagnostic but does not validate exact exchange contract identity.
 - Dhan rolling ATM-relative option OHLC does not provide historical best bid/ask/depth for execution validation.
-- Exact historical expiry, stable strike/contract identity and lot-size mapping have not been reconciled to dated instrument-master evidence.
-- Cost assumptions are provisional and must be reconciled to the actual Paytm Money tariff effective on each date.
+- Exact historical expiry and stable exchange contract identity are not returned by the rolling endpoint. A dated WEEK1/MONTH1 lot-size proxy now uses NSE circular transition dates; it is a defensible approximation, not an exact instrument-master join.
+- Primary brokerage uses ₹10 per executed order per Paytm Money's currently published F&O FAQ; ₹20 per order remains the conservative stress scenario because account-specific legacy tariffs can differ. Statutory/exchange fees are date-based approximations and slippage is modeled rather than observed.
 - Failed Dhan requests are preserved in the source failure report.
 
 ## Final disposition
 
-**DATA-LIMITED / NO-GO for strategy approval.** Do not paper trade or deploy any candidate from this run. Resolve duplicate identity semantics, validate exact contract continuity and dated lot sizes, obtain or defensibly reconstruct executable quotes, freeze the actual cost schedule, and rerun the frozen gates before considering prospective paper testing.
+**No strategy is approved.** The statistical research does not wait for unavailable bid/ask/depth: the revised methodology proceeds with OHLC and modeled slippage. Exact contract identity and executable fills remain unproven, so even a positive corrected result would remain exploratory and could not authorize paper/live deployment. The current pre-correction metrics are superseded until the dated-lot rerun finishes.
 
 ## Artifacts
 
@@ -41,3 +40,21 @@ These are exploratory simulated results based on rolling option OHLC, not verifi
 - [Run summary JSON](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v1-developer/reports/quant_evolve_nob_v1)
 
 The corrected report artifact and bounded report files were committed by workflow #39741806754. A follow-up workflow #39741823249 was queued by the test change and is being monitored.
+
+
+## Dated lot-size correction — 2026-10-22
+
+The prior proxy was defective: it applied 25 units to every date before 2024-11-20, despite NSE's 2021 change from 75 to 50 and the 2024 change from 50 to 25. The corrected proxy is family-aware:
+
+| Rolling series | Period | Proxy lot size | Grounding |
+|---|---|---:|---|
+| WEEK1 / MONTH1 | 2021-10-25 to 2024-04-25 | 50 | [NSE circular FAOP47854 (2021)](https://archives.nseindia.com/content/circulars/FAOP47854.pdf) |
+| WEEK1 / MONTH1 | From 2024-04-26; revised weekly and monthly expiries begin May 2 / May 30 | 25 | [NSE circular FAOP61415 (2024)](https://nsearchives.nseindia.com/content/circulars/FAOP61415.pdf) |
+| WEEK1 | 2024-12-20 to 2025-12-23 | 75 | [NSE corrigendum FAOP64672 (2024)](https://nsearchives.nseindia.com/content/circulars/FAOP64672.pdf) |
+| MONTH1 | 2024-12-20 to 2025-01-30 | 25 | [NSE corrigendum FAOP64672 (2024)](https://nsearchives.nseindia.com/content/circulars/FAOP64672.pdf) |
+| MONTH1 | 2025-01-31 to 2025-12-30 | 75 | [NSE circular FAOP64672 (2024)](https://nsearchives.nseindia.com/content/circulars/FAOP64672.pdf) |
+| WEEK1 | 2025-12-24 onward | 65 | [NSE circular FAOP70616 (2025)](https://nsearchives.nseindia.com/content/circulars/FAOP70616.pdf) |
+| MONTH1 | 2025-12-31 onward | 65 | [NSE circular FAOP70616 (2025)](https://nsearchives.nseindia.com/content/circulars/FAOP70616.pdf) |
+
+This uses last-old/first-new expiry dates as trade-date cutoffs because individual expiry IDs are absent in the Dhan rolling series. The additional regression test checks all proxy transitions. Corrected P&L and inference remain pending workflow #39774033025.
+
