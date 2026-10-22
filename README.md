@@ -495,3 +495,15 @@ The Phase 2 public-source review is recorded in [SOURCE_CATALOG_V2.md](https://g
 Two public Hugging Face options datasets were found but not imported: one has a non-specific 'other' license; the other is CC BY-NC 4.0 and therefore not approved for a trading-oriented evidence pipeline without separate rights. A public GitHub NIFTY OHLC dataset is only a candidate for underlying-bar cross-check after provenance and row-level validation.
 
 **Gate unchanged:** external-source discovery does not complete runtime acquisition. [Acquisition #39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257) is still the controlling data gate; [automatic follow-up #39808171927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39808171927) has no verified discovery result yet. Phase 2 remains open and execution remains FAIL.
+
+
+### QE-NOB-2.0 acquisition stall remediation — 2026-10-23
+
+The acquisition client and workflow have been hardened after the original data job remained on its source-acquisition step for multiple hours without any visible progress output.
+
+- [Updated acquisition client](https://github.com/vishnuvcr/Naked-Options-v2/commits/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/run_research.py) now requests only the v2-supported ATM-to-OTM2 offset range (-2 through +2), writes progress lines every 25 requests, uses bounded request timeouts/retries, and halts after ten consecutive source request failures.
+- Empty option payloads are not cached as valid source files. The acquisition result now requires all planned request groups, zero request failures, and at least 80% non-empty option responses; partial option or underlying acquisition exits non-zero, preventing the downstream discovery step from running.
+- [Acquisition workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/.github/workflows/qe-nob-v2-data-audit.yml) now allows at most three resume passes, stops early if no cache progress is detected, applies a 160-minute acquisition-step timeout, and automatically runs when the source client or its regression tests change.
+- Regression tests cover the supported offset domain, timeout/retry bounds, stop-after-consecutive-failure behavior, empty-data coverage gating, and fail-closed acquisition readiness. [Source-catalogue note](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/SOURCE_CATALOG_V2.md) has the revised estimated request count (~1,220 for two expiry families; this is not a count of completed API calls).
+
+**Verification is pending.** The original active workflow #39803647257 was launched with the old client and cannot be patched mid-run. The queued successor #39808171927 remains the intended first run to check out the current developer branch and test the recovery changes. Until its acquisition audit succeeds, Phase 2 remains open, empirical discovery remains blocked, and execution remains FAIL. No profitable strategy result is claimed.
