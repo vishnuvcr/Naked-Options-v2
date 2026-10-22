@@ -82,3 +82,17 @@ This commit creates the protocol only. No new option data has yet been acquired 
 ## Change control
 
 Any change to hypothesis, strategy universe, cost model, data period, split boundary, optimization budget or promotion thresholds requires a dated protocol amendment before inspecting new outcome metrics; the error/interaction log must record why. No hidden chain-of-thought is stored; repository logs record actionable decisions, operations, results and errors only.
+
+## QuantEvolve method specification (protocol amendment before final OOS lock)
+
+The implemented search is explicitly QuantEvolve-inspired, not a claim to reproduce the original paper's LLM-generated agents or results. It adapts the public framework's hypothesis-driven candidate generation and quality-diversity island evolution to a constrained, auditable option-rule grammar:
+- Hypothesis role: deterministic, human-readable hypothesis per candidate family/parameter set.
+- Strategy constructor role: generate typed rule candidates for opening-range, EMA/VWAP, gap continuation/fade, pullback-reclaim, and long-volatility range breaks; fixed-buy controls remain outside the evolved families.
+- Evaluation role: evaluate only chronological training/validation metrics during evolution. No final OOS metrics are passed to fitness.
+- Diversity/risk role: four islands, a quality-diversity archive on family / trade-frequency / drawdown, crossover and mutation, periodic migration, and a strict cap of 600 unique hypotheses over up to 25 generations.
+- Final evaluation role: freeze the candidate set, then evaluate each once on the last 20% of eligible sessions; apply Holm correction across the complete candidate family. Top-20 validation finalists receive block-bootstrap precision analysis, without replacing the one-time family-wide OOS p-values.
+- A separate paired comparison evaluates evolved candidates against a fixed-time momentum-buy comparator or comparable long-straddle/strangle baseline. Net profitability must beat zero and the matched baseline after costs.
+- The original paper includes a multi-agent / LLM generation layer; this implementation uses deterministic agent-role functions to remain reproducible and avoid an undeclared model-provider dependency. The paper's own reported performance is not assumed transferable to NIFTY options.
+- The data feed currently provides rolling ATM-relative OHLC; contract/expiry identity and historical bid/ask have not been proven. Thus even a statistical candidate is not called execution validated; the final promotion gate is blocked until those fields are reconciled.
+
+The fresh five-minute option research operates on the 5-minute underlying/option feed only. Config timeframes must match actual implementation; no unsupported 1m/15m claim is made.
