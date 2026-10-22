@@ -417,7 +417,10 @@ def load_frames(return_quality=False):
         o["dt"]=pd.to_datetime(o.timestamp,unit="s",utc=True).dt.tz_convert(TIME_ZONE)
         o["date"]=o.dt.dt.date.astype(str)
         o["strike_key"]=o.strike.round(2)
-        key=["expiry_flag","expiry_code","side","timestamp","strike_key"]
+        # Offset is part of the source identity: Dhan rolling ATM-relative data can
+        # emit equal strikes through different offsets. Do not conflate them.
+        # This is request identity, not proof of a stable exchange contract ID.
+        key=["expiry_flag","expiry_code","offset","side","timestamp","strike_key"]
         group_size=o.groupby(key).size()
         unique_prices=o.groupby(key).open.nunique(dropna=True)
         duplicate_keys=set(group_size[group_size>1].index.tolist())
