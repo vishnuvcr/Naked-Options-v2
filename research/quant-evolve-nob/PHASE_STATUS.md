@@ -1,5 +1,13 @@
 # Phase status — QE-NOB-1.0
 
+## QE-NOB-2.0 TOTP acquisition recovery update — 2026-10-23
+
+- Authentication: PASS in workflow [#39844476476](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39844476476); fresh token passed Dhan `/profile` validation.
+- Acquisition: BLOCKED/INCOMPLETE in run #39844476476. Three bounded passes ended partial; the last pass recorded 363/366 option requests (358 cached, 5 newly downloaded in that pass) with 3 transient read timeouts. Underlying requests passed. No candidate discovery ran.
+- Cache audit: PASS, 816 JSON files parsed, zero parse failures; 25 underlying files and 791 option files. Audit explicitly says exact contract identity and historical bid/ask/depth are unverified.
+- Correction: request timeout increased from 25s to 40s; attempts increased from 2 to 4; bounded exponential retry backoff 2/4/8s. Regression expectations updated. Error QE-NOB2-E010 logged.
+- Current status: validation reruns [#39865638080](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39865638080) and [#39865638057](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39865638057) are queued/running after sequential commits; verify final test/acquisition outcome before advancing. Keep candidate discovery blocked unless acquisition is PASS and quality gates pass.
+
 Last updated: 2026-10-22 (final corrected rerun completed)
 
 Governance note: User explicitly declined an independent tester. No tester branch/report is created or awaited. Developer-side automated tests and explicit scientific/execution gates remain required.
