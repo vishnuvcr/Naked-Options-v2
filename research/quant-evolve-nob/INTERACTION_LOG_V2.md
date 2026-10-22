@@ -41,3 +41,9 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Added regression tests and an automatic/manual GitHub Actions workflow.
 - Code review found a timing defect in the first draft: sparse signals were mapped to the next signal timestamp rather than the next market bar. Corrected the evaluator to map against the full timestamp grid and added a dedicated regression test. Logged as QE-NOB2-E008.
 - No workflow test result has been verified; the evaluator generates signal timestamps only and does not simulate option fills or P&L.
+
+## 2026-10-22 — OHLC option simulator added
+- Added `option_simulator_v2.py` to align candidate signals with next-bar entries, select rolling option OHLC rows by expiry family/side/offset/timestamp, use same-strike exits, apply date/family lot-size proxies, modeled statutory/exchange fees, brokerage and adverse slippage, and block overlapping trades within one candidate.
+- Execution gate is hard-coded false because rolling OHLC does not establish exact exchange contract identity, historical bid/ask/depth or broker fills.
+- Added tests for lot-size transition assumptions, fee/slippage drag, negative-cost rejection, no-overlap behavior and the permanent execution gate.
+- Code review found and corrected a first-draft overlap/lookup issue, recorded as QE-NOB2-E009. CI is not verified and no historical candidate backtest has been run.
