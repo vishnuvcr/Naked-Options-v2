@@ -45,3 +45,8 @@ Governance: developer-led; user explicitly said “No tester.” No tester branc
 - Feature allowlist eligibility is computed on the training period only; full-sample feature coverage is diagnostic only.
 - Statistical utility regression tests passed in runner workflow #39807638261; candidate/training fitness tests passed in #39807602936.
 - Runtime source acquisition run #39803647257 remains in progress. Phase 2 and the empirical Phase 5 run are blocked pending its sanitized audit result.
+
+
+## Automation handoff checkpoint — 2026-10-22
+
+The bounded acquisition workflow now automatically invokes the v2 discovery runner after successful acquisition and cache audit, and uploads sanitized candidate/validation/OOS/stress reports. Workflow #39808171927 is queued behind acquisition run #39803647257, so no manual user workflow action is required. Phase 2 remains open until the acquired cache report is inspected; Phase 5 is implemented and test-verified but not yet empirically completed.
