@@ -168,7 +168,7 @@ def retrieve_options(token, supported, refresh=False):
                         continue
                     except Exception:
                         pass
-                body = option_request_body(flag,code,offset,side,d0,d1)
+                body = option_request_body(flag,code,offset,side,d0,d1-timedelta(days=1))
                 error = None
                 for attempt in range(3):
                     try:
@@ -214,7 +214,7 @@ def retrieve_underlying(token, refresh=False):
                 pass
         body = {"securityId":"13","exchangeSegment":"IDX_I","instrument":"INDEX","interval":"5","oi":False,
                 "fromDate":d0.strftime("%Y-%m-%d 09:15:00"),
-                "toDate":d1.strftime("%Y-%m-%d 15:30:00")}
+                "toDate":(d1-timedelta(days=1)).strftime("%Y-%m-%d 15:30:00")}
         error = None
         for attempt in range(3):
             try:
