@@ -939,6 +939,7 @@ def run_quant_evolve(u,o,expiry_flags,data_quality=None):
         row["selected_by_validation"]=key in finalist_keys
         # Statistical gate first; the stricter overall promotion gate is applied after source audit.
         row["statistical_gate_pass"]=bool(
+            row.get("family") in EVOLVABLE_FAMILIES and row.get("oos_baseline_comparison_available",False) and
             row.get("oos_trade_count",0)>=150 and
             row.get("oos_mean_daily_net_rupees",0)>0 and row.get("oos_median_daily_net_rupees",0)>0 and
             row.get("oos_daily_net_ci95_low",0)>0 and row.get("oos_holm_p",1)<0.05 and
@@ -946,12 +947,14 @@ def run_quant_evolve(u,o,expiry_flags,data_quality=None):
             row.get("oos_stress100_fee20_mean_daily_net_rupees",0)>0 and
             row.get("oos_part1_trade_count",0)>=40 and row.get("oos_part2_trade_count",0)>=40 and
             row.get("oos_part1_mean_daily_net_rupees",0)>0 and
-            row.get("oos_part2_mean_daily_net_rupees",0)>0)
-        # Strict execution gate: rolling relative-strike OHLC and a lot-size proxy are not
-        # sufficient for strategy promotion, irrespective of a nominal statistical win.
-        row["promotion_gate_pass"]=False
+            row.get("oos_part2_mean_daily_net_rupees",0)>0 and
+            row.get("oos_baseline_paired_mean_daily_diff",0)>0 and
+            row.get("oos_baseline_paired_ci95_low",0)>0 and row.get("oos_baseline_holm_p",1)<0.05)
+        # Historical bid/ask/depth and contract-master reconciliation are unresolved, so
+        # this OHLC-only pipeline cannot certify executable strategy profitability.
         row["execution_data_gate_pass"]=False
         row["execution_data_gate_reason"]="No historical bid/ask/depth validation; contract-expiry and lot-size mapping not reconciled to dated instrument master."
+        row["promotion_gate_pass"]=False
     archive_rows=sorted(archive.values(),key=lambda x:x["fitness"],reverse=True)
     final.update({"evolution":{"method":"bounded QuantEvolve-inspired quality-diversity island evolution",
         "generations_completed":generations_done,"islands":n_islands,"population_size_per_island":pop_size,
