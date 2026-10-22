@@ -66,10 +66,16 @@ def evaluate_signals(frame: pd.DataFrame, strategy: Strategy, available_features
         raise ValueError("unsupported logic")
     data["next_bar_timestamp"] = data["timestamp"].shift(-1)
     out = data.loc[signal, ["timestamp", "next_bar_timestamp"]].copy()
+    # Never map an intraday signal at session close into the next session's open.
+    # Source timestamps are epoch seconds; tiny integer timestamps in unit tests
+    # naturally resolve to the same local date.
+    out = out[out["next_bar_timestamp"].notna()].copy()
+    if not out.empty:
+        signal_day = pd.to_datetime(out["timestamp"], unit="s", utc=True).dt.tz_convert("Asia/Kolkata").dt.date
+        entry_day = pd.to_datetime(out["next_bar_timestamp"], unit="s", utc=True).dt.tz_convert("Asia/Kolkata").dt.date
+        out = out.loc[signal_day.to_numpy() == entry_day.to_numpy()].copy()
     out["candidate_direction"] = 1 if strategy.instrument in {"CALL", "STRADDLE", "STRANGLE"} else -1
     out["instrument"] = strategy.instrument
     out["hold_bars"] = int(strategy.hold_bars)
     out = out.rename(columns={"next_bar_timestamp": "entry_timestamp"})
-    # The last observed bar has no known next bar; exclude it instead of fabricating one.
-    out = out[out["entry_timestamp"].notna()].reset_index(drop=True)
-    return out
+    return out.reset_index(drop=True)
