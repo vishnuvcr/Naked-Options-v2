@@ -32,7 +32,9 @@ Status: Defect-driven rerun #39699761966 completed successfully; prediction-only
 | Volatility expansion | 20 | Technical Logistic | 980 | Accuracy 66.43%; Brier skill +0.133 | Holm (33 primary) p=.0582 |
 | Level | 1 / 5 / 20 | Global ElasticNet / ElasticNet / Ridge | 981 / 977 / 962 | MSE skill vs persistence -16.4% / -8.9% / -34.5% | Significantly worse after correction |
 
-\n## Historical run #49 (superseded for current metrics by run #39699761966)
+
+
+## Historical run #49 (superseded for current metrics by run #39699761966)
 
 - Workflow: [run #49](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38533512128)
 - Commit: `9b655da8d72667a6d2f15e4dad5df55a1bec2e84`
