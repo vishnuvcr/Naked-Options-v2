@@ -102,3 +102,12 @@ The corrective GitHub Actions workflow completed successfully on `research/fresh
 ### Decision
 
 The missing-target-date defect is fixed for this artifact and the pipeline completed. The prediction research has **not** established a robust return/direction edge. The volatility-proxy result is promising within the screened historical holdout but requires a genuinely untouched future-period replication and calibration/robustness checks. No trading strategy or options P&L is approved. User requested developer-only continuation; no tester branch/report is required.
+
+
+## Numerical stability diagnostic — corrected artifact #39704420478 (2026-10-22)
+
+Recomputed h1 volatility metrics from the actual `metrics.csv` and inspected corresponding `predictions.csv` rows (936 OOS rows per global model). The largest apparent QLIKE improvements among the global models are LightGBM (mean loss difference −0.37355, Holm p=1.58e−7), Random Forest (−0.35978, Holm p=7.39e−8), CatBoost (−0.33325, Holm p=3.33e−8), and ExtraTrees (−0.30181, Holm p=4.87e−8). CatBoost MSE skill is +7.45%; LightGBM +7.84%. These are candidate comparisons from the same screened holdout, not future replication.
+
+**Stability failure identified:** MLP h1 volatility predictions span approximately 1e−8 to 0.2384; 1e−8 is the floor applied by the QLIKE calculation. Its mean loss difference is +2.50e11 and QLIKE is +2.50e11, while its MSE skill is −22.31%. Ridge-global also has a large positive mean loss difference (+1.83e9), although its MSE skill is +4.10%. These rows are dominated by unstable extreme loss contributions and are not interpretable as normal model comparisons. Their p-values must not be interpreted as evidence of model skill. This supports excluding MLP/Ridge from volatility-proxy conclusions pending predeclared scale floors and sensitivity analysis.
+
+The audit also showed that the earlier summary's phrase “best global h1 comparison by adjusted p-value was CatBoost” was inaccurate: LightGBM and Random Forest have smaller Holm-adjusted p-values in this artifact. The records are corrected to distinguish strongest corrected QLIKE evidence from the model with the best MSE skill. No model is selected for deployment. Further work: inspect the pipeline's loss construction and floor; run sensitivity analysis with a prespecified floor; report median/winsorized loss and calibration; require untouched future-period evaluation. The current dataset ends 2026-10-19, so no future-period replication is available in this artifact.
