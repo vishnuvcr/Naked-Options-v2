@@ -55,3 +55,11 @@ The bounded acquisition workflow now automatically invokes the v2 discovery runn
 ## Cache-gate regression — 2026-10-22
 
 The discovery-runner CI passed after adding the stricter cache audit gate: [run #39808407294](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39808407294). It now rejects any cache with JSON parse failures or without both underlying and option files. A later CI run #39808626484 uses a leaner dependency set to reduce unrelated installation time.
+
+
+## Continuation check — 2026-10-22 21:24 IST
+
+- Discovery-runner CI #39808626484 completed successfully; this is software-test evidence only.
+- Acquisition run #39803647257 remains in progress at the source-acquisition step. Cache audit, cache save, and report upload are still pending.
+- Automatic follow-up #39808171927 remains pending; no jobs or discovery results have been produced by that run yet.
+- No phase gate changed: Phase 2 remains in progress, Phase 5 empirical discovery remains blocked, Phases 6–7 remain not started, and execution remains FAIL pending exact contract and executable quote/fill evidence.
