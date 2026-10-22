@@ -35,3 +35,9 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Added generator regression tests and a dedicated automatic/manual GitHub Actions workflow.
 - The generator explicitly emits `CANDIDATES_GENERATED_NOT_BACKTESTED`; it does not compute fitness or reuse QE-NOB-1.0 outcomes. This is not yet the profitability search loop because a tested simulator/evaluator is not integrated.
 - Updated phase status and error log. CI execution and tests remain unverified; no candidate P&L or strategy result is claimed.
+
+## 2026-10-22 — leakage-aware signal evaluator added
+- Added `signal_evaluator_v2.py` to evaluate allowlisted numeric/categorical predicates using current and past completed bars, reject duplicate/missing timestamps and emit next-market-bar entry timestamps.
+- Added regression tests and an automatic/manual GitHub Actions workflow.
+- Code review found a timing defect in the first draft: sparse signals were mapped to the next signal timestamp rather than the next market bar. Corrected the evaluator to map against the full timestamp grid and added a dedicated regression test. Logged as QE-NOB2-E008.
+- No workflow test result has been verified; the evaluator generates signal timestamps only and does not simulate option fills or P&L.
