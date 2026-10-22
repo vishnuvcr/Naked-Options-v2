@@ -320,6 +320,9 @@ def simulate_strategy(underlying: pd.DataFrame, options: pd.DataFrame, features:
                 exit_contracts.append(float(contract[exit_price_field]))
             if failed:
                 missing_exits += 1
+                # The position was opened but its exit is unobservable. Block new
+                # entries until the planned/forced exit horizon to preserve no-overlap.
+                last_exit_idx = time_exit_idx
                 continue
             exit_price_by_leg = exit_contracts
 
