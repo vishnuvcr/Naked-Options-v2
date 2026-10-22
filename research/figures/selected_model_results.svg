@@ -1,41 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650" viewBox="0 0 900 650">
-<rect width="900" height="650" fill="#ffffff"/>
-<text x="28" y="36" font-family="Arial,sans-serif" font-size="22" font-weight="bold" fill="#172033">NIFTY-PRED-1.0 — selected holdout diagnostics (run #49)</text>
-<text x="28" y="62" font-family="Arial,sans-serif" font-size="13" fill="#46536b">Exploratory forecast metrics; one chronological holdout. Bars are not trading returns.</text>
-<text x="28" y="105" font-family="Arial,sans-serif" font-size="17" font-weight="bold" fill="#172033">A. Global selected return models — MSE skill vs zero-return baseline</text>
-<line x1="330" y1="130" x2="330" y2="278" stroke="#68758a" stroke-width="1.5"/>
-<text x="330" y="123" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#46536b">0%</text>
-<text x="28" y="157" font-family="Arial,sans-serif" font-size="14" fill="#172033">1 session · CatBoost</text>
-<rect x="330" y="139" width="2" height="24" fill="#2c7a7b"/>
-<text x="341" y="156" font-family="Arial,sans-serif" font-size="13" fill="#172033">+0.17% (p=.579; Holm p=1.000)</text>
-<text x="28" y="204" font-family="Arial,sans-serif" font-size="14" fill="#172033">5 sessions · HistGradientBoosting</text>
-<rect x="299" y="186" width="31" height="24" fill="#c45a4a"/>
-<text x="290" y="203" text-anchor="end" font-family="Arial,sans-serif" font-size="13" fill="#172033">−25.8%</text>
-<text x="28" y="251" font-family="Arial,sans-serif" font-size="14" fill="#172033">20 sessions · HistGradientBoosting</text>
-<rect x="142" y="233" width="188" height="24" fill="#c45a4a"/>
-<text x="134" y="250" text-anchor="end" font-family="Arial,sans-serif" font-size="13" fill="#172033">−157.0%</text>
-<line x1="28" y1="294" x2="872" y2="294" stroke="#d6dbe4"/>
-<text x="28" y="326" font-family="Arial,sans-serif" font-size="17" font-weight="bold" fill="#172033">B. Selected direction accuracy</text>
-<text x="28" y="354" font-family="Arial,sans-serif" font-size="14" fill="#172033">1 session · CatBoost (global)</text>
-<rect x="310" y="337" width="220" height="20" fill="#2c7a7b"/>
-<text x="540" y="352" font-family="Arial,sans-serif" font-size="13" fill="#172033">54.08%; Holm p=.548</text>
-<text x="28" y="390" font-family="Arial,sans-serif" font-size="14" fill="#172033">5 sessions · Random Forest (global)</text>
-<rect x="310" y="373" width="104" height="20" fill="#6d8eb4"/>
-<text x="424" y="388" font-family="Arial,sans-serif" font-size="13" fill="#172033">50.20%</text>
-<text x="28" y="426" font-family="Arial,sans-serif" font-size="14" fill="#172033">20 sessions · Random Forest (global)</text>
-<rect x="310" y="409" width="82" height="20" fill="#6d8eb4"/>
-<text x="402" y="424" font-family="Arial,sans-serif" font-size="13" fill="#172033">49.12%</text>
-<text x="310" y="447" font-family="Arial,sans-serif" font-size="11" fill="#46536b">Bars shown from 45% reference; 50% is chance only for balanced classes.</text>
-<line x1="28" y1="464" x2="872" y2="464" stroke="#d6dbe4"/>
-<text x="28" y="496" font-family="Arial,sans-serif" font-size="17" font-weight="bold" fill="#172033">C. Technical Logistic volatility-expansion probability ECE (descriptive)</text>
-<text x="28" y="524" font-family="Arial,sans-serif" font-size="14" fill="#172033">1 session</text>
-<rect x="150" y="508" width="184" height="19" fill="#c45a4a"/>
-<text x="344" y="523" font-family="Arial,sans-serif" font-size="13" fill="#172033">0.184 — poor calibration</text>
-<text x="28" y="557" font-family="Arial,sans-serif" font-size="14" fill="#172033">5 sessions</text>
-<rect x="150" y="541" width="53" height="19" fill="#6d8eb4"/>
-<text x="213" y="556" font-family="Arial,sans-serif" font-size="13" fill="#172033">0.053</text>
-<text x="28" y="590" font-family="Arial,sans-serif" font-size="14" fill="#172033">20 sessions</text>
-<rect x="150" y="574" width="40" height="19" fill="#6d8eb4"/>
-<text x="200" y="589" font-family="Arial,sans-serif" font-size="13" fill="#172033">0.040</text>
-<text x="28" y="625" font-family="Arial,sans-serif" font-size="12" fill="#46536b">ECE is a supplemental decile diagnostic, not preregistered. Volatility expansion is not a trading recommendation.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="660" viewBox="0 0 1000 660">
+<rect width="1000" height="660" fill="#ffffff"/>
+<text x="28" y="36" font-family="Arial,sans-serif" font-size="22" font-weight="bold" fill="#172033">NIFTY-PRED-1.0 — latest selected holdout diagnostics</text>
+<text x="28" y="61" font-family="Arial,sans-serif" font-size="13" fill="#46536b">Run 39699761966 · 2026-10-22 · forecasts only; no trading returns or strategy P&amp;L</text>
+<text x="28" y="103" font-family="Arial,sans-serif" font-size="17" font-weight="bold" fill="#172033">A. Selected global return models — MSE skill vs zero-return baseline</text>
+<line x1="330" y1="125" x2="330" y2="267" stroke="#68758a" stroke-width="1.5"/>
+<text x="330" y="119" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#46536b">0%</text>
+<text x="28" y="153" font-family="Arial,sans-serif" font-size="14" fill="#172033">1 session · CatBoost</text>
+<rect x="304" y="136" width="26" height="22" fill="#c45a4a"/>
+<text x="295" y="151" text-anchor="end" font-family="Arial,sans-serif" font-size="13" fill="#172033">−0.26%</text>
+<text x="28" y="198" font-family="Arial,sans-serif" font-size="14" fill="#172033">5 sessions · CatBoost</text>
+<rect x="330" y="181" width="85" height="22" fill="#2c7a7b"/>
+<text x="424" y="196" font-family="Arial,sans-serif" font-size="13" fill="#172033">+0.85%</text>
+<text x="28" y="243" font-family="Arial,sans-serif" font-size="14" fill="#172033">20 sessions · CatBoost</text>
+<rect x="160" y="226" width="170" height="22" fill="#c45a4a"/>
+<text x="151" y="241" text-anchor="end" font-family="Arial,sans-serif" font-size="13" fill="#172033">−1.70%</text>
+<text x="530" y="151" font-family="Arial,sans-serif" font-size="12" fill="#46536b">None statistically supported after correction</text>
+<line x1="28" y1="285" x2="972" y2="285" stroke="#d6dbe4"/>
+<text x="28" y="318" font-family="Arial,sans-serif" font-size="17" font-weight="bold" fill="#172033">B. Selected global one-session volatility-proxy model — QLIKE loss difference</text>
+<text x="28" y="345" font-family="Arial,sans-serif" font-size="13" fill="#46536b">Model minus baseline; negative favors the model. Moving-block bootstrap 95% CI.</text>
+<line x1="720" y1="365" x2="720" y2="438" stroke="#68758a" stroke-width="1.5"/>
+<text x="720" y="359" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#46536b">0</text>
+<line x1="508" y1="398" x2="615" y2="398" stroke="#2c7a7b" stroke-width="5" stroke-linecap="round"/>
+<line x1="508" y1="389" x2="508" y2="407" stroke="#2c7a7b" stroke-width="2"/>
+<line x1="615" y1="389" x2="615" y2="407" stroke="#2c7a7b" stroke-width="2"/>
+<circle cx="562" cy="398" r="7" fill="#2c7a7b" stroke="#ffffff" stroke-width="2"/>
+<text x="28" y="395" font-family="Arial,sans-serif" font-size="14" fill="#172033">ExtraTrees · n=981</text>
+<text x="28" y="417" font-family="Arial,sans-serif" font-size="13" fill="#172033">Δ QLIKE = −0.3156; 95% CI [−0.4230, −0.2101]</text>
+<text x="735" y="394" font-family="Arial,sans-serif" font-size="13" fill="#172033">Holm p = 4.26 × 10⁻⁷</text>
+<text x="735" y="414" font-family="Arial,sans-serif" font-size="12" fill="#46536b">Across all 299 OOS comparisons</text>
+<line x1="28" y1="454" x2="972" y2="454" stroke="#d6dbe4"/>
+<text x="28" y="487" font-family="Arial,sans-serif" font-size="17" font-weight="bold" fill="#172033">C. Other selected results</text>
+<text x="28" y="518" font-family="Arial,sans-serif" font-size="14" fill="#172033">Direction · 1 session · Global CatBoost</text>
+<text x="360" y="518" font-family="Arial,sans-serif" font-size="14" fill="#172033">53.01% accuracy; 52.82% balanced accuracy; no significant edge</text>
+<text x="28" y="550" font-family="Arial,sans-serif" font-size="14" fill="#172033">Volatility expansion · 20 sessions · Technical Logistic</text>
+<text x="440" y="550" font-family="Arial,sans-serif" font-size="14" fill="#172033">66.43% accuracy; adjusted p=.0582 — exploratory</text>
+<text x="28" y="591" font-family="Arial,sans-serif" font-size="13" fill="#46536b">Familywise audit: 85/299 candidate comparisons differed from baseline after Holm; 77 were worse, and all 8 significant improvements were one-session volatility-proxy forecasts.</text>
+<text x="28" y="616" font-family="Arial,sans-serif" font-size="12" fill="#46536b">Single chronological holdout; the volatility finding requires independent-period replication. No trading strategy or profitability claim.</text>
 </svg>
