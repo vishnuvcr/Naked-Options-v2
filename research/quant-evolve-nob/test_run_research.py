@@ -46,6 +46,37 @@ def test_cache_filename_parser_loads_fresh_option_rows(tmp_path, monkeypatch):
     assert set(o["strike"].astype(int)) == {25000}
 
 
+def test_rolling_offset_is_part_of_duplicate_identity(tmp_path, monkeypatch):
+    opt_cache = tmp_path / "options"
+    idx_cache = tmp_path / "underlying"
+    opt_cache.mkdir()
+    idx_cache.mkdir()
+    monkeypatch.setattr(qe, "OPT_CACHE", opt_cache)
+    monkeypatch.setattr(qe, "IDX_CACHE", idx_cache)
+
+    ts = int(pd.Timestamp("2026-10-21 09:15", tz="Asia/Kolkata").timestamp())
+    underlying = {
+        "timestamp": [ts], "open": [25000], "high": [25010],
+        "low": [24990], "close": [25005], "volume": [1000]
+    }
+    (idx_cache / "nifty_5m_20261021_20261022.json").write_text(json.dumps(underlying))
+
+    for offset, price in [(0, 100), (1, 125)]:
+        side = {
+            "timestamp": [ts], "open": [price], "high": [price + 5],
+            "low": [price - 5], "close": [price + 2], "iv": [15],
+            "volume": [100], "oi": [1000], "strike": [25000], "spot": [25005]
+        }
+        payload = {"data": {"ce": side, "pe": None}}
+        (opt_cache / f"week1_20261021_20261022_{offset:+d}_call.json").write_text(json.dumps(payload))
+
+    _, options, quality = qe.load_frames(return_quality=True)
+    assert len(options) == 2
+    assert set(options["offset"]) == {0, 1}
+    assert quality["duplicate_groups"] == 0
+    assert quality["conflicting_duplicate_groups"] == 0
+
+
 def test_costs_are_positive_and_adverse_slippage_reduces_pnl():
     legs = [{"entry": 100.0, "exit": 120.0}]
     no_slip = qe.cost_and_pnl(legs, "2026-10-20", 0, 10)
