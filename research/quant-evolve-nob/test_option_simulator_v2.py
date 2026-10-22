@@ -146,3 +146,12 @@ def test_prepared_index_drops_conflicting_same_strike_across_offsets():
     prepared = sim.prepare_option_index(options)
     assert prepared["contract_collision_keys_dropped"] == 1
     assert ("WEEK1", "CALL", 2, 100.0) not in prepared["contract_lookup"]
+
+
+def test_expiry_code_maps_week_family_to_week1():
+    rows = pd.DataFrame({
+        'timestamp': [2, 3], 'expiry_flag': ['WEEK', 'WEEK'], 'expiry_code': [1, 1],
+        'side': ['CALL', 'CALL'], 'offset': [0, 0], 'strike': [100.0, 100.0], 'open': [10.0, 11.0]
+    })
+    index = sim.prepare_option_index(rows)
+    assert ('WEEK1', 'CALL', 0, 2) in index['entry_lookup']
