@@ -369,3 +369,15 @@ The candidate proposal generator now creates typed, structurally distinct strate
 - [Updated error log](research/quant-evolve-nob/ERROR_LOG_V2.md)
 
 Automated test results have not been verified yet. This is a candidate-generation component, not evidence of a profitable strategy.
+
+
+### QE-NOB-2.0 — signal evaluator checkpoint
+
+A leakage-aware predicate evaluator now converts strategy conditions into signal timestamps and maps entry to the next actual market bar. A sparse-signal timing defect in the first draft was caught, corrected and recorded in the error log. Regression tests and a manual/automatic workflow are committed; CI is not yet verified.
+
+- [Signal evaluator](research/quant-evolve-nob/signal_evaluator_v2.py)
+- [Signal evaluator tests](research/quant-evolve-nob/test_signal_evaluator_v2.py)
+- [Signal evaluator workflow](.github/workflows/qe-nob-v2-signal-evaluator-tests.yml)
+- [Updated error log](research/quant-evolve-nob/ERROR_LOG_V2.md)
+
+This component does not simulate option fills, transaction costs or P&L. The study must not progress to profitability conclusions until the option simulator and cost fixtures are implemented and tested.
