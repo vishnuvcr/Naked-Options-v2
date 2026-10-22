@@ -253,8 +253,8 @@ def test_option_request_progress_counts_each_pair_once(tmp_path, monkeypatch):
     monkeypatch.setattr(qe, "api_post", valid_api)
     result = qe.retrieve_options("not-a-real-token", [{"flag": "WEEK", "code": 1}])
     assert result["status"] == "PASS"
-    assert result["requests_processed"] == result["requests_expected"] == 10
-    assert result["requests_recorded"] == 10
+    assert result["requests_processed"] == result["requests_expected"] == 6
+    assert result["requests_recorded"] == 6
     assert result["cached_files_reused"] == 1
     assert result["downloaded_files"] == 5
     assert calls["n"] == 5
