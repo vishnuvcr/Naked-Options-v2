@@ -401,3 +401,14 @@ Added a sanitized cache/feature audit utility and regression tests; expanded the
 - [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
 
 **Verification status:** the code and tests are committed; successful CI has not been verified in this checkpoint. The feature audit has not yet run against the prior study's cached data, and no new strategy backtest has run.
+
+
+### QE-NOB-2.0 — bounded structural candidate generator
+
+The follow-on research branch now contains a bounded candidate proposal engine with structural novelty, deterministic mutation/crossover, lineage and a fixed budget of 1,500 candidates / 20 generations. It is not yet a fitness-guided strategy search: simulator integration and CI verification remain pending, and no new strategy has been backtested or shown profitable.
+
+- [Candidate generator](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/evolve_candidates_v2.py)
+- [Generator tests](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/test_evolve_candidates_v2.py)
+- [Workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/.github/workflows/qe-nob-v2-candidate-generator-tests.yml)
+- [Phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md)
+- [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
