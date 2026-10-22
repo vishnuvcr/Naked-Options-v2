@@ -77,6 +77,22 @@ def test_rolling_offset_is_part_of_duplicate_identity(tmp_path, monkeypatch):
     assert quality["conflicting_duplicate_groups"] == 0
 
 
+def test_dated_nifty_lot_size_proxy_uses_expiry_family():
+    # NSE circulars: 50 before the Apr-2024 transition, then distinct
+    # weekly/monthly transition expiries for 25 -> 75 and 75 -> 65.
+    assert qe.lot_size_proxy("2022-06-01", "WEEK1") == 50
+    assert qe.lot_size_proxy("2024-04-25", "MONTH1") == 50
+    assert qe.lot_size_proxy("2024-04-26", "WEEK1") == 25
+    assert qe.lot_size_proxy("2024-12-19", "WEEK1") == 25
+    assert qe.lot_size_proxy("2024-12-20", "WEEK1") == 75
+    assert qe.lot_size_proxy("2025-01-30", "MONTH1") == 25
+    assert qe.lot_size_proxy("2025-01-31", "MONTH1") == 75
+    assert qe.lot_size_proxy("2025-12-23", "WEEK1") == 75
+    assert qe.lot_size_proxy("2025-12-24", "WEEK1") == 65
+    assert qe.lot_size_proxy("2025-12-30", "MONTH1") == 75
+    assert qe.lot_size_proxy("2025-12-31", "MONTH1") == 65
+
+
 def test_costs_are_positive_and_adverse_slippage_reduces_pnl():
     legs = [{"entry": 100.0, "exit": 120.0}]
     no_slip = qe.cost_and_pnl(legs, "2026-10-20", 0, 10)
