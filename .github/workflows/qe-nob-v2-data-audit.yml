@@ -18,6 +18,10 @@ on:
       - research/quant-evolve-nob/run_research.py
       - research/quant-evolve-nob/test_run_research.py
       - research/quant-evolve-nob/config.json
+      - research/quant-evolve-nob/strategy_grammar_v2.py
+      - research/quant-evolve-nob/evolve_candidates_v2.py
+      - research/quant-evolve-nob/test_strategy_grammar_v2.py
+      - research/quant-evolve-nob/test_evolve_candidates_v2.py
 
 # Scope amendment 2026-10-23: only ATM and one-step OTM offsets are in the active candidate grammar.
 # Recovery note: resume the ATM/OTM1 cache only; source-client regression tests must pass before acquisition.
@@ -59,6 +63,14 @@ jobs:
           pip install -r requirements-research.txt scipy pandas numpy requests pytest
       - name: Validate source client before acquisition
         run: pytest -q research/quant-evolve-nob/test_run_research.py
+      - name: Validate active QE-NOB-2.0 grammar and simulator before acquisition
+        run: |
+          pytest -q \
+            research/quant-evolve-nob/test_strategy_grammar_v2.py \
+            research/quant-evolve-nob/test_evolve_candidates_v2.py \
+            research/quant-evolve-nob/test_feature_builder_v2.py \
+            research/quant-evolve-nob/test_option_simulator_v2.py \
+            research/quant-evolve-nob/test_run_discovery_v2.py
       - name: Acquire source data without candidate fitness or P&L
         timeout-minutes: 160
         env:
@@ -123,10 +135,10 @@ jobs:
         with:
           name: qe-nob-v2-data-audit-${{ github.run_id }}
           path: |
-            reports/quant_evolve_nob_v1/source_probe.json
-            reports/quant_evolve_nob_v1/acquisition_summary.json
-            reports/quant_evolve_nob_v1/underlying_summary.json
-            reports/quant_evolve_nob_v1/source_failures.csv
+            reports/quant_evolve_nob_v2/source_probe.json
+            reports/quant_evolve_nob_v2/acquisition_summary.json
+            reports/quant_evolve_nob_v2/underlying_summary.json
+            reports/quant_evolve_nob_v2/source_failures.csv
             reports/quant_evolve_nob_v2/feature_availability.json
             reports/quant_evolve_nob_v2/run_summary.json
             reports/quant_evolve_nob_v2/RESULTS.md
