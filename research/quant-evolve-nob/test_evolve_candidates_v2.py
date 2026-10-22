@@ -45,3 +45,23 @@ def test_generator_never_uses_old_fitness():
     result = ENGINE.generate(budget=20, generations=2, population_size=4, seed=11)
     assert not any("fitness" in x for x in result["candidates"])
     assert "No QE-NOB-1.0 candidate score or OOS result is used as fitness or seed label." in result["important_limitations"]
+
+
+def test_optional_training_only_fitness_guides_pareto_search():
+    def scorer(strategy):
+        # Deterministic synthetic objective fixture tests API wiring only; not market evidence.
+        return {
+            "mean_net_per_trade_rupees": 5.0 if strategy.instrument == "CALL" else -2.0,
+            "mean_daily_net_rupees": 3.0 if strategy.logic == "and" else 1.0,
+            "negative_drawdown_fraction": -0.10,
+            "stability_score": 0.5,
+            "trade_count_score": 0.8,
+        }
+
+    result = ENGINE.generate(budget=40, generations=2, population_size=8, seed=91,
+                             fitness_evaluator=scorer)
+    assert result["status"] == "TRAINING_FITNESS_SCORED"
+    assert result["unique_candidate_count"] <= 40
+    assert all("training_fitness" in c for c in result["candidates"])
+    assert all(isinstance(c["training_fitness"]["mean_net_per_trade_rupees"], float)
+               for c in result["candidates"])
