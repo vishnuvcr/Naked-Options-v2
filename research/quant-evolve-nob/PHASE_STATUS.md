@@ -24,8 +24,13 @@ Governance note: User explicitly declined an independent tester. No tester branc
 | 4. Cost model and baseline tests | COMPLETE WITH LIMITATIONS | Uses published ₹10/order primary brokerage, ₹20/order stress, date-effective statutory-fee approximations, 50-bps primary adverse slippage and higher slippage stresses; spreads are not observed. |
 | 5. Bounded QuantEvolve discovery | COMPLETE | 600 unique constrained candidates evaluated over 9 generations; selection used train/validation only. |
 | 6. Nested chronological and OOS testing | COMPLETE — NO PASS | Final chronology evaluated; Holm-adjusted p-values, block uncertainty, split-half checks and baseline comparisons did not clear the gates. |
-| 7. Robustness / execution gate | IN PROGRESS — CORRECTED RERUN | OHLC-based robustness analysis proceeds regardless of quote depth; exact execution readiness remains failed. New workflow started after its pre-run tests passed; recompute results after dated-lot proxy correction. |
-| 8. Manuscript and final decision | IN PROGRESS — METRICS SUPERSEDED | Documentation records the discovered lot-size defect and the corrected bounded rerun. Final statistical conclusion is pending revised results; no tester branch per user instruction. |
+| 7. Robustness / execution gate | COMPLETE WITH LIMITATIONS — NO-GO | Repricing 483,706 saved trades with corrected dated lot proxies yielded no frozen candidate meeting the joint median/validation/stress gates. Quote/depth and stable contract identity remain execution limitations. Corrected full search workflow #39774033025 is supplementary and was still in progress at the last check. |
+| 8. Manuscript and final decision | COMPLETE — NO-GO ON SAVED CANDIDATE SET | Reprice audit and structured manuscript are committed. No strategy is approved; a single corrected full-run workflow is already active as supplementary confirmation. No tester branch per user instruction. |
 
 ## Run rule
 A phase changes status only after its exit evidence exists. Workflow success alone is not evidence that a strategy is profitable. Missing execution quotes are recorded as limitations but do not halt the bounded OHLC analysis. Lot-size proxy corrections invalidate earlier P&L metrics until rerun. Stop after Phase 8; no unbounded evolutions.
+
+
+## Bounded reprice disposition — 2026-10-22
+
+[LOT_SIZE_REPRICE_AUDIT.md](LOT_SIZE_REPRICE_AUDIT.md) reprices 483,706 trade-ledger rows using the corrected NSE effective-date/family lot proxy. The frozen prior candidate set has no strategy passing the combined daily-median, corrected-validation and stress-cost prerequisites. The research decision is NO-GO for strategy approval. A running full re-evolution workflow may supplement the audit, but absent bid/ask/depth is not a reason to pause OHLC-based research. Do not expand the search budget.
