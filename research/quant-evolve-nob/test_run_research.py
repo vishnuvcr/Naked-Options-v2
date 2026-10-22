@@ -199,3 +199,11 @@ def test_option_acquisition_stops_after_consecutive_failures_and_preserves_cache
     assert result["consecutive_failures"] == qe.MAX_CONSECUTIVE_OPTION_FAILURES
     assert calls["n"] == qe.MAX_CONSECUTIVE_OPTION_FAILURES * qe.OPTION_REQUEST_ATTEMPTS
     assert not list(opt_cache.glob("*.json"))
+
+
+def test_acquisition_ready_requires_complete_option_and_underlying():
+    assert qe.acquisition_ready({"status": "PASS"}, {"status": "PASS"})
+    assert not qe.acquisition_ready({"status": "PARTIAL"}, {"status": "PASS"})
+    assert not qe.acquisition_ready({"status": "PARTIAL_NO_PROGRESS"}, {"status": "PASS"})
+    assert not qe.acquisition_ready({"status": "PASS"}, {"status": "PARTIAL"})
+    assert not qe.acquisition_ready({"status": "PASS"}, {"status": "BLOCKED_NO_UNDERLYING"})
