@@ -249,7 +249,7 @@ def payload_rows(payload, flag, code, offset, side):
     for i in range(n):
         try:
             ts = int(part["timestamp"][i])
-            row = {"timestamp":ts,"expiry_flag":flag,"expiry_code":int(code),"offset":int(offset),"side":side}
+            row = {"timestamp":ts,"expiry_flag":f"{flag}{int(code)}","expiry_family":flag,"expiry_code":int(code),"offset":int(offset),"side":side}
             for name in ("open","high","low","close","iv","volume","strike","oi","spot"):
                 vals = part.get(name)
                 try: val = float(vals[i]) if vals is not None and vals[i] is not None else np.nan
