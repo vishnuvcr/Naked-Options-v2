@@ -1,6 +1,6 @@
 # QE-NOB-1.0: A bounded QuantEvolve-inspired search for NIFTY 50 naked option buying
 
-**Status:** revised rerun pending; previous P&L metrics are superseded by a corrected dated lot-size proxy; no deployable strategy identified; no independent tester per user's explicit instruction.  
+**Status:** corrected frozen-candidate reprice completed; no candidate met the cost-robustness gates. Previous P&L metrics are superseded; a single full corrected evolution workflow remains as supplementary confirmation. No independent tester per user's explicit instruction.  
 **Latest data-quality run:** [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754) · **Period:** 2021-10-25 to 2026-10-21. Corrected source/test workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) is pending.  
 **Protocol:** [PLAN.md](PLAN.md) · [Results](RESULTS.md) · [Phase status](PHASE_STATUS.md) · [Error log](ERROR_LOG.md).
 
@@ -8,7 +8,7 @@
 
 This study used a bounded QuantEvolve-inspired quality-diversity search to explore NIFTY 50 long-premium option-buying rules. Eligible positions were long calls, long puts, long straddles and long strangles; short-option legs were excluded. Four islands evaluated 600 unique candidates over nine completed generations. The dataset comprised 92,510 underlying rows and 2,600,975 rolling option rows across 1,241 sessions. After adding ATM offset to the duplicate key, no duplicate groups or rows were removed. This validates request identity only, not exact exchange contract identity. Candidates were selected using chronological training/validation data, and the latest 20% chronology was reserved for final evaluation. After-cost P&L, baseline comparisons, Holm multiplicity correction, block-bootstrap uncertainty, split-half checks and adverse cost stress tests were included.
 
-The first completed run reported 0/600 statistical passes, but its P&L values must not be carried forward: the dated lot-size proxy incorrectly used 25 units for all dates before November 2024. That defect is fixed in code and a corrected bounded rerun is pending. The duplicate key includes ATM offset and the data-quality check now reports zero duplicate groups; this is not proof of exact exchange-contract identity. Missing bid/ask/depth will not block the planned OHLC-based statistical run; next-bar OHLC prices use explicitly modeled adverse slippage and disclosed fee assumptions. Exact contract identity and executable fills remain unresolved, so paper/live claims are prohibited regardless of the exploratory result.
+The first completed run's original P&L values were superseded because its lot-size proxy was wrong. A frozen-candidate reprice audit has now recalculated 483,706 trades using the corrected date/family proxy. No candidate in this saved set met the combined daily-median, validation and stress-cost prerequisites. Missing bid/ask/depth did not block the statistical reprice; the analysis uses next-bar option OHLC and explicitly modeled slippage and fees. Exact contract identity and executable fills remain unresolved, so paper/live claims are prohibited. A corrected full evolutionary workflow is still in progress as supplementary confirmation.
 
 ## 1. Research questions and hypotheses
 
@@ -119,6 +119,20 @@ Base modeled costs       +10.68 | █
 100 bps + ₹20/order      -98.54 | █████
 200 bps + ₹20/order     -288.37 | ██████████████
 ```
+
+## Corrected lot-size reprice audit (frozen prior candidate set)
+
+The superseded run's 483,706-row sanitized trade ledger was re-priced with the corrected date/family lot proxy and the same cost equations. This does not substitute for a fresh evolutionary search because the old population was generated/scored under the incorrect proxy; it is a bounded sensitivity check on all saved trade rows. See [reproducible audit report](LOT_SIZE_REPRICE_AUDIT.md).
+
+| Candidate | OOS mean/day | OOS median/day | 100-bps / ₹20 order stress | 200-bps / ₹20 order stress | Key failure |
+|---|---:|---:|---:|---:|---|
+| 86 — Monthly gap continuation, 120 min | ₹6.14 | ₹0.00 | −₹104.19 | −₹296.25 | Median and cost robustness |
+| 558 — Weekly gap continuation, 15 min | ₹70.37 | ₹0.00 | ₹10.02 | −₹80.53 | Median and severe stress |
+| 501 — Weekly ORB, 30 min | ₹44.06 | ₹41.40 | −₹43.99 | −₹173.83 | Validation and cost robustness |
+| 588 — Monthly ORB, 30 min | ₹23.81 | ₹69.30 | −₹147.26 | −₹443.16 | Validation and cost robustness |
+| 264 — Weekly pullback, 120 min | ₹126.11 | ₹0.00 | ₹76.99 | ₹4.74 | Only 137 OOS trades, no validation result, zero median |
+
+Only two candidates combined at least 150 OOS trades with positive daily median; both failed validation and cost stress. No candidate in the frozen set passed the preregistered conjunctive gates. Exact HAC/block-bootstrap inference from the full underlying session grid still belongs to the active corrected workflow; the local audit's Holm diagnostic is explicitly approximate because seven zero-trade sessions were not represented in the trade-ledger export.
 
 ## 6. Discussion and inferences
 
