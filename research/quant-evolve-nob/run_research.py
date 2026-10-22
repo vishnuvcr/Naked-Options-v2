@@ -1015,12 +1015,12 @@ def write_outputs(probe, acquisition, underlying, summary, errors):
           f"**Candidates tested:** {report.get('candidate_count')}  ",f"**Candidates passing the preliminary statistical gate:** {passing}  ",
           f"**Decision:** {report['decision']}","",
           "## Important execution-quality limitation",
-          "The Dhan rolling endpoint supplies OHLC/IV/OI/volume/spot in an ATM-relative layout, not historical bid/ask depth. P&L therefore uses next-bar open with prespecified adverse slippage; this is not proof of executable fills. Historical expiry-level lot-size mapping still requires a contract-master reconciliation. A candidate does not qualify for live trading from this report.",
+          "The Dhan rolling endpoint supplies OHLC/IV/OI/volume/spot in an ATM-relative layout, not historical bid/ask depth. P&L therefore uses next-bar open with prespecified adverse slippage; this is not proof of executable fills. Historical expiry-level lot-size mapping still requires a contract-master reconciliation. The full promotion gate cannot pass until historical execution quotes and contract identity are verified. Even a future PASS only permits prospective paper testing, never automatic live trading.",
           "## Top candidates selected on validation only","",
-          "|ID|Family|Validation mean daily net (₹)|OOS trades|OOS mean daily net (₹)|OOS 95% block CI low (₹)|OOS Holm p|Preliminary gate|",
+          "|ID|Hypothesis|Validation mean daily net (₹)|OOS trades|OOS mean daily net (₹)|OOS 95% block CI low (₹)|OOS Holm p|Statistical gate|",
           "|---:|---|---:|---:|---:|---:|---:|---|"]
     for _,r in selected.head(20).iterrows():
-        body.append("|"+ "|".join(str(r.get(k,"")) for k in ["candidate_id","candidate_key","validation_mean_daily_net_rupees","oos_trade_count","oos_mean_daily_net_rupees","oos_daily_net_ci95_low","oos_holm_p","promotion_gate_pass"])+"|")
+        body.append("|"+ "|".join(str(r.get(k,"")) for k in ["candidate_id","hypothesis","validation_mean_daily_net_rupees","oos_trade_count","oos_mean_daily_net_rupees","oos_daily_net_ci95_low","oos_holm_p","statistical_gate_pass"])+"|")
     body += ["","## Files","- source_probe.json and acquisition_summary.json: source status, range, cache and request outcomes",
              "- candidate_results.csv: all candidates, all chronology splits, full-family Holm correction",
              "- trade_ledger_sanitized.csv: sanitized per-trade P&L and fee decomposition",
