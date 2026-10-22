@@ -14,3 +14,5 @@ Only errors, source failures and protocol deviations from the fresh QE-NOB-1.0 t
 
 ## Handling rules
 Never include credentials/tokens in logs. Record date, source endpoint, status/error class, retry, cache status and hash. Preserve failed requests. A no-data result is not a zero-price or a losing trade. Do not repair price gaps with synthetic OHLC.
+
+| QE-NOB-E008 | 2026-10-22 | HIGH | Prior P&L metrics were unusable after the lot-size proxy defect; the full corrected rerun is long-running and the old workflow's report commit conflicted. | Rupee turnover and fees scale with historical NIFTY lot size; the prior code used 25 across the whole pre-Nov-2024 period. | Repriced all 483,706 saved trade rows using the corrected date/family lot proxy; committed [LOT_SIZE_REPRICE_AUDIT.md](LOT_SIZE_REPRICE_AUDIT.md). No frozen candidate met the joint median/validation/stress prerequisites. Current full re-evolution workflow #39774033025 remains a single supplementary check, not a reason to wait for unavailable quotes. | CLOSED for bounded conclusion; supplementary rerun pending |
