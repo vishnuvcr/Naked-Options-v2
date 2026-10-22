@@ -1,14 +1,14 @@
 # QE-NOB-1.0: A bounded QuantEvolve-inspired search for NIFTY 50 naked option buying
 
-**Status:** corrected frozen-candidate reprice completed; no candidate met the cost-robustness gates. Previous P&L metrics are superseded; a single full corrected evolution workflow remains as supplementary confirmation. No independent tester per user's explicit instruction.  
-**Latest data-quality run:** [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754) · **Period:** 2021-10-25 to 2026-10-21. Corrected source/test workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) is pending.  
+**Status:** corrected full evolutionary rerun completed; 0/600 candidates passed the statistical gate and 0 passed execution/promotion. Final disposition: NO_STATISTICAL_CANDIDATE / NO-GO for strategy approval. No independent tester per user's explicit instruction.  
+**Latest data-quality run:** [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754) · **Period:** 2021-10-25 to 2026-10-21. Corrected full workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) completed successfully.  
 **Protocol:** [PLAN.md](PLAN.md) · [Results](RESULTS.md) · [Phase status](PHASE_STATUS.md) · [Error log](ERROR_LOG.md).
 
 ## Abstract
 
 This study used a bounded QuantEvolve-inspired quality-diversity search to explore NIFTY 50 long-premium option-buying rules. Eligible positions were long calls, long puts, long straddles and long strangles; short-option legs were excluded. Four islands evaluated 600 unique candidates over nine completed generations. The dataset comprised 92,510 underlying rows and 2,600,975 rolling option rows across 1,241 sessions. After adding ATM offset to the duplicate key, no duplicate groups or rows were removed. This validates request identity only, not exact exchange contract identity. Candidates were selected using chronological training/validation data, and the latest 20% chronology was reserved for final evaluation. After-cost P&L, baseline comparisons, Holm multiplicity correction, block-bootstrap uncertainty, split-half checks and adverse cost stress tests were included.
 
-The first completed run's original P&L values were superseded because its lot-size proxy was wrong. A frozen-candidate reprice audit has now recalculated 483,706 trades using the corrected date/family proxy. No candidate in this saved set met the combined daily-median, validation and stress-cost prerequisites. Missing bid/ask/depth did not block the statistical reprice; the analysis uses next-bar option OHLC and explicitly modeled slippage and fees. Exact contract identity and executable fills remain unresolved, so paper/live claims are prohibited. A corrected full evolutionary workflow is still in progress as supplementary confirmation.
+The first completed run's original P&L values were superseded because its lot-size proxy was wrong. A frozen-candidate reprice audit has now recalculated 483,706 trades using the corrected date/family proxy. No candidate in this saved set met the combined daily-median, validation and stress-cost prerequisites. Missing bid/ask/depth did not block the statistical reprice; the analysis uses next-bar option OHLC and explicitly modeled slippage and fees. Exact contract identity and executable fills remain unresolved, so paper/live claims are prohibited. The corrected full evolutionary rerun has now completed; it confirmed the no-go conclusion for the tested candidate set.
 
 ## 1. Research questions and hypotheses
 
@@ -191,3 +191,12 @@ The bounded search completed, but **did not identify a strategy that can respons
 ## Appendix C. Developer handoff
 
 Resolve open issues in [ERROR_LOG.md](ERROR_LOG.md), complete the bounded corrected rerun, and update every metric/result link. Keep candidate rules frozen with respect to locked OOS outcomes. Do not recommend paper or live deployment. Exact quote/contract-ID availability is not a precondition for completing this OHLC-based study. No tester branch/report is requested by the user.
+
+
+## 9. Final corrected full-run result and closure
+
+The corrected evolutionary run [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) completed successfully after the dated lot-size proxy correction. It evaluated 600 unique candidates over four islands and nine generations using 1,241 sessions from 2021-10-25 through 2026-10-21. The dataset contained 92,510 underlying rows and 2,600,975 rolling-option rows. The run summary records 1,708 planned acquisition requests, all satisfied from cache, with zero acquisition failures. Pre-run and post-run automated tests passed; the sanitized artifact was uploaded and bounded reports were committed.
+
+The final corrected report records **zero statistical-gate passes out of 600** and **zero execution/promotion-gate passes**. The basic OHLC quality gate passed, but the execution-data gate did not. Validation-selected candidate 86 had validation mean daily net P&L of approximately ₹116.80, OOS mean daily net of approximately ₹6.14, a 95% block-bootstrap interval lower bound of approximately −₹195.69, and Holm-adjusted p=1.0. No candidate passed the preregistered statistical gate. See the [corrected run report](../../reports/quant_evolve_nob_v1/RESULTS.md), [run summary](../../reports/quant_evolve_nob_v1/run_summary.json), and [workflow artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025).
+
+This result is a bounded no-go for the 600 tested candidates, not proof that every possible strategy is unprofitable. Historical bid/ask/depth and exact exchange contract identity remain unavailable; lot sizes use a dated expiry-family proxy and costs/slippage are modeled. No executable-fill, paper-trading, or live-trading claim is justified. No independent tester review was performed because the user explicitly declined it. The planned study is closed; further work should require new, materially better contract-level or execution-quality evidence rather than an unbounded repeat of the same search.
