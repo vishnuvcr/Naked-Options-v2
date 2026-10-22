@@ -20,7 +20,7 @@ IDX_CACHE = CACHE / "underlying_intraday"
 OUT = ROOT / "reports" / "quant_evolve_nob_v1"
 SEED = 20261022
 # The v2 grammar supports ATM and up to two-step OTM instruments only.
-OPTION_OFFSETS = (-2, -1, 0, 1, 2)
+OPTION_OFFSETS = (-1, 0, 1)
 OPTION_REQUEST_TIMEOUT_SECONDS = 25
 OPTION_REQUEST_ATTEMPTS = 2
 MAX_CONSECUTIVE_OPTION_FAILURES = 10
