@@ -1,12 +1,12 @@
 # Phase status — QE-NOB-1.0
 
-Last updated: 2026-10-22
+Last updated: 2026-10-22 (final corrected rerun completed)
 
 Governance note: User explicitly declined an independent tester. No tester branch/report is created or awaited. Developer-side automated tests and explicit scientific/execution gates remain required.
 
 ## Latest completed acquisition/discovery run
 
-- Latest completed data-quality run: [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754). A lot-size defect was identified and fixed in code; corrected source/test run is in progress at [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025); its pre-run test step passed. Earlier stalled run [#39741823249](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741823249) is not final evidence.
+- Latest completed data-quality run: [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754). A lot-size defect was identified and fixed in code; corrected full rerun completed successfully at [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025); its pre-run test step passed. Earlier stalled run [#39741823249](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741823249) is not final evidence.
 - Run status: `PASS_ANALYZED`; workflow and bounded report commit succeeded. Offset-aware duplicate identity reduced duplicate/conflicting groups to zero; no rows were removed by conflict filtering.
 - Data window: 2021-10-25 to 2026-10-21; 1,241 sessions; 92,510 underlying rows; 2,600,975 option rows. Timestamp coverage 99.772%; row-grid coverage 100%.
 - Evolution: 600 unique candidates, 4 islands, 9 generations completed.
@@ -33,4 +33,12 @@ A phase changes status only after its exit evidence exists. Workflow success alo
 
 ## Bounded reprice disposition — 2026-10-22
 
-[LOT_SIZE_REPRICE_AUDIT.md](LOT_SIZE_REPRICE_AUDIT.md) reprices 483,706 trade-ledger rows using the corrected NSE effective-date/family lot proxy. The frozen prior candidate set has no strategy passing the combined daily-median, corrected-validation and stress-cost prerequisites. The research decision is NO-GO for strategy approval. A running full re-evolution workflow may supplement the audit, but absent bid/ask/depth is not a reason to pause OHLC-based research. Do not expand the search budget.
+[LOT_SIZE_REPRICE_AUDIT.md](LOT_SIZE_REPRICE_AUDIT.md) reprices 483,706 trade-ledger rows using the corrected NSE effective-date/family lot proxy. The frozen prior candidate set has no strategy passing the combined daily-median, corrected-validation and stress-cost prerequisites. The research decision is NO-GO for strategy approval. A running full corrected re-evolution workflow has completed, but absent bid/ask/depth is not a reason to pause OHLC-based research. Do not expand the search budget.
+
+
+## Final corrected full-run checkpoint — 2026-10-22
+
+- Corrected full evolution workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025): **completed successfully**. The bounded search finished after the date/family lot-size correction; pre-run and post-run automated test steps passed; reports were uploaded and committed.
+- Final output: 600 unique candidates, four islands, nine generations; 0/600 statistical gate passes and 0 execution/promotion gate passes. Basic OHLC data-quality gate passed; execution-data gate failed due missing historical bid/ask/depth and unverified exact contract identity.
+- Final research decision: **NO_STATISTICAL_CANDIDATE / NO-GO for strategy approval**. No additional search expansion is authorized. See [corrected run results](../../reports/quant_evolve_nob_v1/RESULTS.md), [workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025), and [frozen-candidate reprice audit](LOT_SIZE_REPRICE_AUDIT.md).
+- Independent tester: not performed, as explicitly declined by the user. This is developer-led research with automated checks only.
