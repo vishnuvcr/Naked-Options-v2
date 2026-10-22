@@ -16,6 +16,7 @@ Governance: developer-led; user explicitly said “No tester.” No tester branc
 ## Checkpoint completed
 - Created new developer branch and froze a bounded open structural discovery protocol.
 - Added typed strategy grammar with candidate validation, canonical signatures, novelty distance, deterministic mutation, crossover and lineage.
+- Added bounded candidate generator with deterministic seed, feature allowlist, syntactic uniqueness, novelty-based environmental selection, maximum 1,500 candidate budget and 20-generation ceiling. It generates candidates only and computes no P&L.
 - Added feature/cache audit utility that reports file hashes, schema fields, timestamp counts, array lengths and null counts without exposing credentials or claiming contract identity.
 - Added unit tests for grammar and feature audit, plus two dedicated automatic/manual GitHub Actions workflows.
 - Identified and corrected test-import defects caused by the hyphenated research directory and dynamic module loading. This was a code review correction, not evidence of passing tests.
