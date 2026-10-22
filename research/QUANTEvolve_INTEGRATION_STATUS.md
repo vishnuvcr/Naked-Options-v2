@@ -440,3 +440,12 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 - Combined options evidence: three bounded HF files (986,041 rows) passed sample row-level expiry/strike/type/symbol checks and have circular-backed lot mappings 75 (2021-05-27), 50 (2024-01-04), and 65 (2026-08-04). This does not establish full-history coverage or full official MII contract-master matching.
 - Final phase disposition: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**. No options P&L, no strategy ranking, and no live-trading recommendation. The Dhan request field error is resolved for this probe; the remaining blocker is data identity/provenance and executable-price coverage, not an active API retry.
 - Automation config restored to offline prediction mode (`run_llm=false`); no additional model API call was requested.
+
+
+## QE-STEP-016 — NIFTY prediction workflow progressing; final result merge pending
+- Date: 2026-10-22.
+- Active run: [NIFTY prediction research #39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966).
+- Completed: cached target restored, target data validation, target-construction/scoring tests, feature matrix, and technical-only model catalogue.
+- In progress at checkpoint: global-augmented model catalogue. The workflow's run-level metadata is stale while the job is executing, but step summaries confirm progression from technical-only to global-augmented models.
+- The newly added empty/headerless CSV helper regression test passed in this run's test step. The final merger step has not yet run, so end-to-end success and prediction metrics remain unverified.
+- Options gate is unchanged: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**, `pnl_permitted=false`.
