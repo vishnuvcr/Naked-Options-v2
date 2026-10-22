@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fresh QuantEvolve-style NIFTY long-option strategy study (QE-NOB-1.0).
+"""QE-NOB-2.0 source acquisition client for the NIFTY long-option research pipeline.
 
 The script writes sanitized reports only. Raw licensed Dhan responses remain in a
 separate runtime cache and are never committed or uploaded as artifacts.
@@ -216,7 +216,7 @@ def probe_sources(token):
     """Small schema/credential probe; never inferred from prior report/cache."""
     end = date.today()
     start = end - timedelta(days=14)
-    report = {"research_id":"QE-NOB-1.0", "probed_at_utc":utc_now(),
+    report = {"research_id":"QE-NOB-2.0", "probed_at_utc":utc_now(),
               "fresh_cache_namespace":str(CACHE.relative_to(ROOT)), "sources":[], "supported_expiries":[]}
     report["open_dataset_audit"]=audit_open_dataset_catalog(os.getenv("HF_TOKEN","").strip())
     if not token:
