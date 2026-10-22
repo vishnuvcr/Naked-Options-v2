@@ -304,9 +304,16 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     u_oos = u[u["date"].astype(str).isin(set(oos_days))].copy().reset_index(drop=True)
     f_oos = feature_frame[feature_frame["session_date"].isin(set(oos_days))].drop(columns="session_date").copy().reset_index(drop=True)
 
-    active_features = set(feature_meta["available_features"])
+    # Feature eligibility is frozen from the training partition only. Full-sample
+    # coverage/variation is diagnostic and must not influence the search grammar.
+    train_feature_input = u_train[["timestamp", "open", "high", "low", "close"] +
+                                  (["volume"] if "volume" in u_train.columns else [])].copy()
+    _, training_feature_meta = build_features(
+        train_feature_input, minimum_coverage=args.minimum_feature_coverage
+    )
+    active_features = set(training_feature_meta["available_features"])
     if not active_features:
-        return output_blocked("No derived feature passed point-in-time coverage and variation gates.", cache, quality)
+        return output_blocked("No derived feature passed training-only coverage and variation gates.", cache, quality)
     if len(args.seeds) != args.islands:
         return output_blocked("The number of fixed seeds must equal the declared island count.", cache, quality)
 
@@ -443,6 +450,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "reason": reason, "generated_at_utc": pd.Timestamp.now(tz="UTC").isoformat(),
             "cache": {k: v for k, v in cache.items() if k != "files"},
             "data_quality": quality, "feature_metadata": feature_meta,
+        "training_feature_metadata": training_feature_meta,
+            "training_feature_metadata": training_feature_meta,
             "session_split": {"train": [train_days[0], train_days[-1]],
                               "validation": [validation_days[0], validation_days[-1]],
                               "oos": [oos_days[0], oos_days[-1]]},
