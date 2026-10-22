@@ -9,6 +9,7 @@ MODULE_PATH = Path(__file__).with_name("strategy_grammar_v2.py")
 SPEC = importlib.util.spec_from_file_location("strategy_grammar_v2", MODULE_PATH)
 GRAMMAR = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader
+sys.modules[SPEC.name] = GRAMMAR
 SPEC.loader.exec_module(GRAMMAR)
 Predicate, ExitRule, Strategy = GRAMMAR.Predicate, GRAMMAR.ExitRule, GRAMMAR.Strategy
 canonical_signature, crossover, mutate = GRAMMAR.canonical_signature, GRAMMAR.crossover, GRAMMAR.mutate
