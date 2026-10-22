@@ -83,3 +83,6 @@ Historical option chains, FII/DII, PCR, breadth, timestamped news, and corporate
 A post hoc sensitivity diagnostic split the same 981-origin final holdout into four approximately equal-count consecutive slices. All four mean QLIKE loss differences were negative after within-four-slice Holm adjustment (adjusted p-values 0.003174–0.006660; moving-block 95% intervals below zero). These are slices of the same holdout, not independent-period replication.
 
 The distribution is skewed: the median model-minus-baseline QLIKE loss difference is +0.00662, and the model has a higher loss than the baseline on 50.97% of days, despite the negative mean difference −0.31560. A 10% winsorized mean remains negative (−0.10137), so the mean result is not explained by one observation, but it should not be described as uniform day-by-day superiority. The one-session volatility result remains a narrow average-score replication candidate; it is not a trading signal.
+
+
+Supplemental figure: [Four-window volatility-proxy QLIKE sensitivity](figures/volatility_qlike_subperiod_sensitivity.svg). This partitions the same holdout and is not an independent replication.
