@@ -467,3 +467,10 @@ The structural-discovery branch now has tested components for typed strategy gra
 The bounded discovery runner now has passing automated tests for compilation, chronology/statistical utilities, candidate generation and training-only fitness: [runner tests #39807638261](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39807638261), [candidate/training fitness tests #39807602936](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39807602936). The runner separates training, validation and final OOS blocks; feature eligibility is determined from training-period coverage only; it applies block-bootstrap uncertainty, Holm correction and cost stresses to frozen finalists.
 
 **Still blocked:** the bounded Dhan/cache acquisition run [#39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257) is still running. No real-data discovery result, OOS performance claim, or profitable strategy is available yet. Exact contract identity and executable bid/ask/depth remain unverified, so the execution gate stays FAIL.
+
+
+### QE-NOB-2.0 automatic discovery handoff — 2026-10-22
+
+The acquisition workflow is now wired to run the bounded QE-NOB-2.0 discovery/validation runner automatically after successful cache acquisition and audit; its queued follow-up is [run #39808171927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39808171927). The runner rejects caches with JSON parse failures or missing underlying/option files, and its cache-gate regression passed in [run #39808407294](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39808407294). A lighter CI dependency set is being applied to reduce unnecessary test setup time.
+
+**Current evidence boundary:** source acquisition [run #39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257) is still in progress. The discovery runner has passed software tests but has not produced a verified market-data result. No strategy is claimed profitable, and execution remains blocked by missing exact contract/quote/fill evidence.
