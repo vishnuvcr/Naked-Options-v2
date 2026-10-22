@@ -6,26 +6,26 @@ Governance note: User explicitly declined an independent tester. No tester branc
 
 ## Latest completed acquisition/discovery run
 
-- Latest completed workflow: [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754); follow-up [#39741823249](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741823249) is still in progress.
+- Latest completed data-quality run: [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754). A lot-size defect was identified and fixed in code; corrected source/test run is pending at [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025). Earlier stalled run [#39741823249](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741823249) is not final evidence.
 - Run status: `PASS_ANALYZED`; workflow and bounded report commit succeeded. Offset-aware duplicate identity reduced duplicate/conflicting groups to zero; no rows were removed by conflict filtering.
 - Data window: 2021-10-25 to 2026-10-21; 1,241 sessions; 92,510 underlying rows; 2,600,975 option rows. Timestamp coverage 99.772%; row-grid coverage 100%.
 - Evolution: 600 unique candidates, 4 islands, 9 generations completed.
 - Candidate gates: 0/600 met the statistical gate; 0 passed the strict execution/promotion gate.
 - Duplicate/grid gate: PASS after adding ATM offset to the duplicate key (0 duplicate groups; 0 conflicting groups; 0 rows dropped). This is a request-identity check, not proof of stable exchange contract identity.
-- Execution gate: FAIL. Historical best bid/ask/depth and exact expiry-level contract/lot-size mapping are not validated.
-- Decision: `DATA_LIMITED / NO-GO`; no candidate passed the statistical gate and no strategy is approved. Duplicate/grid diagnostic passes after correction, but executable profitability remains unverified.
-- Best validation-selected candidate was a 0.15% opening-gap continuation rule, but OOS mean daily net was only ₹10.68, its 95% block-bootstrap interval included large losses (-₹188.62 to ₹237.43/day), Holm-adjusted p=1.0, and stressed costs produced -₹98.54/day at the 100-bps/₹20-order scenario. This is not a usable profitable strategy.
+- Research execution policy: missing bid/ask/depth does not block OHLC-based statistical analysis. It remains a separate execution-readiness failure and bars executable/paper/live claims.
+- Historical lot-size bug: the prior proxy wrongly used 25 lots before November 2024. Code now uses official NSE effective-date schedules by rolling family (WEEK1 vs MONTH1); corrected backtest/inference are pending the bounded rerun. Prior P&L metrics are superseded.
+- Interim decision: no strategy is approved. Do not rely on pre-correction OOS values; read the updated `RESULTS.md` and `MANUSCRIPT.md` after workflow #39774033025 completes.
 
 | Phase | Status | Evidence / required exit gate |
 |---|---|---|
 | 1. Fresh protocol, literature seed, source audit | COMPLETE WITH LIMITATIONS | Frozen protocol and source audit recorded; no prior study performance imported. |
 | 2. Fresh data acquisition and cache | COMPLETE WITH LIMITATIONS | Dhan acquisition produced a multi-year rolling ATM-relative OHLC dataset; corrected duplicate key yields zero duplicate groups, but exact contract identity and failed source requests remain documented. |
-| 3. Feature panel and option contract identity | BLOCKED | Rolling ATM-relative rows do not establish stable exact expiry/strike continuity or dated lot-size truth. |
-| 4. Cost model and baseline tests | PARTIAL / PROVISIONAL | Brokerage/fees and slippage are modeled; exact historical Paytm Money tariff and observed bid/ask spreads are not verified. |
+| 3. Feature panel and option contract identity | COMPLETE WITH LIMITATIONS | Rolling ATM-relative data are used for exploratory OHLC tests; exact contract identity is unknown and lot sizing uses a sourced family/date proxy. |
+| 4. Cost model and baseline tests | COMPLETE WITH LIMITATIONS | Uses published ₹10/order primary brokerage, ₹20/order stress, date-effective statutory-fee approximations, 50-bps primary adverse slippage and higher slippage stresses; spreads are not observed. |
 | 5. Bounded QuantEvolve discovery | COMPLETE | 600 unique constrained candidates evaluated over 9 generations; selection used train/validation only. |
 | 6. Nested chronological and OOS testing | COMPLETE — NO PASS | Final chronology evaluated; Holm-adjusted p-values, block uncertainty, split-half checks and baseline comparisons did not clear the gates. |
-| 7. Robustness / execution gate | BLOCKED / FAIL | Duplicate/grid diagnostic now passes after the offset-key correction, but execution-data gate still fails; stress-cost results were not robust. |
-| 8. Manuscript and final decision | COMPLETE — NO-GO | Manuscript, results, phase status, error log, activity log and README links updated. Final decision: no candidate passed the statistical gate; execution data remain inadequate. No tester branch per user instruction. |
+| 7. Robustness / execution gate | IN PROGRESS — CORRECTED RERUN | OHLC-based robustness analysis proceeds regardless of quote depth; exact execution readiness remains failed. Recompute results after dated-lot proxy correction, then report no-go/pass based on statistical gates. |
+| 8. Manuscript and final decision | IN PROGRESS — METRICS SUPERSEDED | Documentation records the discovered lot-size defect and the corrected bounded rerun. Final statistical conclusion is pending revised results; no tester branch per user instruction. |
 
 ## Run rule
-A phase changes status only after its exit evidence exists. Workflow success alone is not evidence that a strategy is profitable. A failed API/data/quality gate is recorded and is never converted into a strategy result. Stop after Phase 8; no unbounded evolutions.
+A phase changes status only after its exit evidence exists. Workflow success alone is not evidence that a strategy is profitable. Missing execution quotes are recorded as limitations but do not halt the bounded OHLC analysis. Lot-size proxy corrections invalidate earlier P&L metrics until rerun. Stop after Phase 8; no unbounded evolutions.
