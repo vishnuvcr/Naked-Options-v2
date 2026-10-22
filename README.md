@@ -3,7 +3,7 @@
 **Research version:** NIFTY-PRED-1.0  
 **Scope:** Prediction only. No trading strategy design, optimization, or recommendation in this study.  
 **Started:** 2026-10-14  
-**Status:** NIFTY-PRED-1.0 is closed with accepted limitations. Follow-on OPT-BUY-1.0 is also closed: no tested option-buying candidate passed the data-quality and profitability gates.
+**Status:** NIFTY-PRED-1.0 remains prediction-only with accepted limitations. Defect-driven rerun [39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966) completed successfully: no robust return/direction edge; one-session volatility-proxy result retained for replication. Follow-on options studies remain blocked or no-go.
 
 ## Repository audit
 
@@ -809,7 +809,8 @@ The free options-source audit sampled three expiry partitions (986,041 rows tota
 - Final gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; `pnl_permitted=false`. No options P&L or trading recommendation is authorized. See [phase status](research/QUANTEvolve_INTEGRATION_STATUS.md), [error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md), and [manuscript](research/manuscripts/QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md).
 
 
-### Current NIFTY prediction workflow checkpoint (run 39699761966)
-- [Active workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966): data validation, target-construction tests and feature matrix succeeded; technical-only model catalogue completed; global-augmented model catalogue is still running.
-- The empty/headerless CSV merger regression test ran successfully as part of the workflow's test step. End-to-end merge validation and forecast results are not available until the workflow finishes.
-- No new prediction metrics or strategy conclusions are claimed at this checkpoint. Options remain **BLOCKED_NO_VERIFIED_CONTRACT_DATA**.
+### Completed NIFTY prediction rerun — 39699761966
+- [Workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966) succeeded; data validation, regression tests, technical/global model catalogues, ARIMA, merge, status generation and report artifact publication completed.
+- [Sanitized aggregate results](reports/nifty_prediction_run_39699761966_summary.json), [updated manuscript](research/MANUSCRIPT.md), [results register](research/RESULTS.md), [phase status](research/PHASE_STATUS.md), and [updated chart](research/figures/selected_model_results.svg).
+- Conclusion: no robust selected return/direction edge. One-session volatility-proxy QLIKE improvement for global ExtraTrees survives Holm correction across 299 candidate comparisons (p=4.26e-7); independent-period replication is required.
+- Options gate remains **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; no options P&L or trading recommendation.
