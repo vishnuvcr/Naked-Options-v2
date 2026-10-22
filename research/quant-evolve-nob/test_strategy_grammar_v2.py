@@ -121,3 +121,12 @@ def test_mutation_repairs_feature_type_mismatches():
     for seed in range(50):
         child = mutate(categorical, random.Random(seed))
         validate_strategy(child)
+
+
+def test_otm2_is_excluded_by_the_bounded_phase_two_data_scope():
+    invalid = Strategy(**{**base().__dict__, "moneyness": "OTM2"})
+    with pytest.raises(ValueError, match="invalid moneyness"):
+        validate_strategy(invalid)
+    for seed in range(50):
+        child = mutate(base(), random.Random(seed))
+        assert child.moneyness in {"ATM", "OTM1"}
