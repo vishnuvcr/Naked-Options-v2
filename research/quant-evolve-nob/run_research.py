@@ -289,7 +289,6 @@ def retrieve_options(token, supported, refresh=False):
                             reqs.append({"expiry_flag":flag,"expiry_code":code,"from":d0.isoformat(),"to_exclusive":d1.isoformat(),
                                          "offset":offset,"side":side,"status":"CACHED_"+state,"path":str(path.relative_to(ROOT))})
                             cached_count += 1
-                            planned += 1
                             if planned % 25 == 0 or planned == total_expected:
                                 print(f"[QE-NOB-2.0] option progress {planned}/{total_expected}; cached={cached_count}; downloaded={downloaded_count}; failures={len(failures)}; elapsed_min={(time.monotonic()-started)/60:.1f}", flush=True)
                             continue
@@ -334,7 +333,6 @@ def retrieve_options(token, supported, refresh=False):
                             "elapsed_seconds":round(time.monotonic()-started,2),"stopped_early":"consecutive source failures"}
                         print(f"[QE-NOB-2.0] stopping option acquisition after {consecutive_failures} consecutive failed request groups; valid cache files are preserved.", flush=True)
                         return {**summary, "requests":reqs, "failures":failures}
-                planned += 1
                 if planned % 25 == 0 or error or planned == total_expected:
                     print(f"[QE-NOB-2.0] option progress {planned}/{total_expected}; cached={cached_count}; downloaded={downloaded_count}; failures={len(failures)}; elapsed_min={(time.monotonic()-started)/60:.1f}", flush=True)
                 time.sleep(0.15)
@@ -380,7 +378,7 @@ def retrieve_underlying(token, refresh=False):
         error = None
         for attempt in range(OPTION_REQUEST_ATTEMPTS):
             try:
-                obj = api_post("charts/intraday",body,token,timeout=80)
+                obj = api_post("charts/intraday",body,token,timeout=45)
                 n = len(obj.get("timestamp",[]))
                 if n == 0 or any(len(obj.get(k,[])) != n for k in ("open","high","low","close")):
                     raise ValueError("underlying intraday response schema invalid or empty")
