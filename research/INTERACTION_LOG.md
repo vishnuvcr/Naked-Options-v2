@@ -233,3 +233,10 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Updated the developer branch's README, results, phase status, manuscript corrigendum, error log, interaction log and dedicated audit file. The original plan remains frozen; only a defect-driven correction is permitted.
 - A truly untouched future-period replication cannot be claimed with only a short post-holdout extension in the current data; historic folds have already informed model screening. This is explicitly recorded as future work. No option P&L or strategy is approved.
 - Operational audit log only; it contains no secrets or hidden reasoning.
+
+
+## 2026-10-22 — volatility score distribution sensitivity
+
+- Performed a non-training artifact diagnostic on the saved h1 global ExtraTrees predictions. Four equal-count chronological slices within the same holdout all had negative mean QLIKE loss differences, with intervals below zero and exploratory within-four-slice Holm p-values <0.01.
+- Checked day-level distribution: median QLIKE loss difference +0.00662; the model's loss was worse than baseline on 50.97% of days; 10% winsorized mean remained negative at −0.10137. This limits interpretation to a skewed mean-score advantage, not consistent daily superiority.
+- Added reusable artifact-audit utility at `research/audits/audit_nifty_predictions.py` and recorded these caveats in RESULTS.md, MANUSCRIPT.md, and the dated audit.
