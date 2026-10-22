@@ -84,3 +84,21 @@ Supplemental figure: [`volatility_qlike_subperiod_sensitivity.svg`](figures/vola
 ## QLIKE interpretation caveat — 2026-10-22
 
 The pipeline trains the h1 volatility model on absolute next-session log return and then squares the target, forecast and baseline before applying QLIKE. This makes the scored realized quantity (r_{t+1}^2), but the model forecast is the square of a fitted absolute-return estimate, not a separately trained conditional-variance estimate. Therefore the reported improvement is metric-specific evidence for a variance-scaled volatility proxy; it should not be described as a fully calibrated conditional-variance forecast without additional validation.
+
+
+## Corrected run #39704420478 — results reconciliation (2026-10-22)
+
+The corrective GitHub Actions workflow completed successfully on `research/fresh-prediction-developer` at commit `e8133a582cbe6c06ce46514f871d1393fc142f6f`. The downloaded artifact reports 277,633 prediction rows, 647 metric rows, 299 OOS-evaluated model/task/horizon comparisons, and **zero missing target dates**. Data quality validation passed for 4,683 NIFTY daily rows (2007-09-17 to 2026-10-19); one weekend-dated observation (2025-02-01) is preserved and flagged for calendar/source cross-check.
+
+### Forecast conclusions from the corrected artifact
+
+- **Returns:** No statistically robust selected return edge. Selected CatBoost 5- and 20-session MSE skill versus baseline was +1.12% and +4.57%, respectively, but raw p-values were 0.361 and 0.275 and Holm-adjusted p-values were 1.0. The selected 1-session Transformer had negative MSE skill (−1.78%) and Holm p=0.556.
+- **Direction:** Selected accuracy was 52.99% at one session (balanced accuracy 50.0%), 53.86% at five sessions (balanced accuracy 50.0%), and 57.91% at 20 sessions (balanced accuracy 50.03%). Holm-adjusted p-values were 1.0 across these selected rows; no useful directional edge is established.
+- **Level:** Selected Elastic Net forecast RMSE was 190.97, 422.23 and 857.03 index points at horizons 1, 5 and 20. MSE skill versus the historical-mean baseline was negative (−7.97%, −7.86%, −22.34%). Statistical loss-difference tests were significant after correction for some horizons, but they indicate the model is worse than the baseline (positive model-minus-baseline loss difference); they are not evidence of predictive benefit.
+- **Volatility proxy:** Best global h1 comparison by adjusted p-value was CatBoost, n=936, MAE=0.004048, RMSE=0.005375, MSE skill +7.45%, mean model-minus-baseline loss difference −0.33325, 95% CI [−0.46212, −0.23389], raw p=1.66e−9, Holm p=3.33e−8 across the 299 OOS comparisons. Global ExtraTrees was also positive in this artifact (MSE skill +7.34%, Holm p=4.87e−8). These are model-selection comparisons within the screened catalogue, not independent-period replication. The scored QLIKE transformation squares an absolute-return forecast; interpret as a variance-scaled volatility-proxy score, not a fully calibrated conditional variance estimate.
+- **Model diagnostics:** Some volatility MLP/Ridge rows have extreme loss-difference magnitudes, suggesting near-zero or otherwise unstable predicted scales under the QLIKE transformation. These rows must be investigated before generalizing from the overall candidate family. The selected Elastic Net h1 volatility row itself does not show the strongest result; selection-by-validation and best OOS score must not be conflated.
+- **Data scope:** This run used the cached NIFTY close/volume series and global index sources in the manifest. The manifest's cross-source checks are empty; this run does not establish official NSE/BSE reconciliation, complete DII/FII/news/corporate-action coverage, or option-contract data sufficiency.
+
+### Decision
+
+The missing-target-date defect is fixed for this artifact and the pipeline completed. The prediction research has **not** established a robust return/direction edge. The volatility-proxy result is promising within the screened historical holdout but requires a genuinely untouched future-period replication and calibration/robustness checks. No trading strategy or options P&L is approved. User requested developer-only continuation; no tester branch/report is required.
