@@ -55,7 +55,7 @@ def seed_population(features: set[str], rng: random.Random) -> list[Strategy]:
                         entry_mode="signal",
                         predicates=(predicate,), logic="and", instrument=instrument,
                         expiry=rng.choice(("WEEK1", "MONTH1")),
-                        moneyness=rng.choice(("ATM", "OTM1", "OTM2")),
+                        moneyness=rng.choice(("ATM", "OTM1")),
                         hold_bars=rng.choice((1, 2, 3, 6, 12, 24, 36, 48, 60)),
                         exits=rng.choice(EXIT_SEEDS),
                         hypothesis=f"Mechanism hypothesis: {feature} {op} {value!r} conditions {instrument} entry; empirical validity unknown.",
