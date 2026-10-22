@@ -114,3 +114,8 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Reviewed the shell retry loop before its first automated run and noticed the initial cache fingerprint included probe JSON files rewritten at every new source-probe pass. That could falsely count the probe rewrite as historical cache progress.
 - Corrected the fingerprint to exclude probe_* metadata JSON, and logged the risk as QE-NOB2-E026. The run still stops after at most three acquisition passes and stops earlier if the historical data cache does not change.
 - Updated workflow commit d55fa380. Its automatic check remains pending behind the old in-progress acquisition job; no recovery-run test result is available yet.
+
+
+## 2026-10-23 — independent source-client CI
+- Added a separate automatically triggered / manually dispatchable GitHub Actions workflow for source-client compilation and regression tests. This workflow does not use the data-acquisition concurrency group, so it can test fixes while the original acquisition job is stalled.
+- Commit 8241ef05 created check suite 107965316843, which entered IN_PROGRESS. The actual test conclusion has not yet been retrieved; do not treat the run being started as a pass.
