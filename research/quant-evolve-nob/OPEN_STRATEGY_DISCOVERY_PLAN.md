@@ -91,3 +91,12 @@ Record each step, status change, command/workflow run, test count, cache hit/mis
 ## Current disposition
 
 QE-NOB-1.0 remains closed NO-GO for its tested grammar. QE-NOB-2.0 is a new protocol, not a claim that any new strategy is profitable. Implementation has not yet been validated or run; do not describe candidate discovery as complete until workflow evidence exists.
+
+
+## Protocol amendment 1 — acquisition-bounded moneyness universe (2026-10-23)
+
+After the first bounded acquisition attempt, the sanitized runtime cache audit reported 716 historical option files plus three rolling probe files, all historical option files in the weekly family; it had no historical underlying cache and no monthly option history. The acquisition job was still at its option-source step after 211 minutes. This is a data-throughput diagnosis only; no strategy scores or P&L were examined.
+
+To preserve the fixed phase limit and avoid an unbounded acquisition, the active v2 instrument universe is amended to **ATM and one-step OTM only** (option offsets 0, +1 for calls, and 0, -1 for puts). OTM2 is removed from the candidate grammar and seed generator. The candidate count/generation caps, four islands, fixed seeds, chronology, statistical gates, fee/slippage stresses, source-provenance rules and final OOS seal are unchanged. This amendment is committed before the corrected acquisition is allowed to run and does not use empirical performance results.
+
+From the sanitized cache manifest, the amended five-year collection is estimated to require 732 option request groups across two expiry families (61 30-day chunks × 3 offsets × 2 sides × 2 families). Of those, 307 files appear to be reusable weekly history in the amended offset universe; roughly 425 option groups remain, plus up to 23 underlying-history chunks and a small source probe. These are estimates based on filename counts and the existing code, not confirmed pending API calls. The new client logs actual progress, reuses validated cached files, times out and retries boundedly, and fails closed if acquisition is incomplete. If source coverage remains insufficient within the bounded run, disposition will be DATA-LIMITED rather than silently relaxing the thresholds.
