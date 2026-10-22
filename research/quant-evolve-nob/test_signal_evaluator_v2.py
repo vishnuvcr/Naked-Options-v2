@@ -67,3 +67,16 @@ def test_sparse_signals_still_enter_on_next_market_bar():
     result = evaluator.evaluate_signals(frame, strategy(), {"nifty_return_1"})
     assert result["timestamp"].tolist() == [1, 4]
     assert result["entry_timestamp"].tolist() == [2, 5]
+
+
+def test_unimplemented_entry_modes_fail_closed():
+    frame = pd.DataFrame({"timestamp": [1, 2, 3], "nifty_return_1": [1.0, 1.0, 1.0]})
+    s = grammar.Strategy(
+        entry_mode="breakout_then_retest",
+        predicates=(grammar.Predicate("nifty_return_1", "gt", 0.0),),
+        logic="and", instrument="CALL", expiry="WEEK1", moneyness="ATM",
+        hold_bars=1, exits=(grammar.ExitRule("time_exit"),),
+        hypothesis="Unimplemented mode must not silently behave like a simple signal.",
+    )
+    with pytest.raises(ValueError, match="entry_mode is not implemented"):
+        evaluator.evaluate_signals(frame, s, {"nifty_return_1"})
