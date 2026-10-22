@@ -70,3 +70,19 @@ Using the prior artifact's `predictions.csv` and the repository's documented los
 | Holm p-value over the saved 299-comparison family | 4.264104230004976e-07 |
 
 The all-299 Holm correction independently yields 85 statistically different comparisons, of which 8 are improvements (negative model-minus-baseline loss differences); all eight are from the one-session volatility-proxy comparison family, consistent with the summary. This is a valid reproduction of the prior artifact's arithmetic, not evidence of generalization or a completed independent-period replication. The h1 cell is not affected by the 798 missing target-date rows found in h5/h20 volatility/volatility-expansion outputs. The overall prior-run sign-off remains blocked until the correction run is reviewed.
+
+
+## Exploratory temporal consistency and distribution audit — prior h1 holdout
+
+As a sensitivity check only (not an untouched replication), the 981-row h1 holdout was split into four consecutive, approximately equal-count time windows. Model-minus-baseline QLIKE differences were recomputed without changing the model or threshold. All four window means were negative; their moving-block 95% intervals remained below zero and the exploratory within-four-window Holm-adjusted p-values were below 0.01:
+
+| Window | Dates | n | Mean QLIKE difference | 95% block interval | HAC p | Holm p across four windows |
+|---|---|---:|---:|---:|---:|---:|
+| 1 | 2022-11-04 to 2023-11-01 | 246 | -0.2640 | [-0.4370, -0.1046] | .001492 | .003871 |
+| 2 | 2023-11-02 to 2024-10-25 | 245 | -0.3516 | [-0.5893, -0.0959] | .006660 | .006660 |
+| 3 | 2024-10-28 to 2025-10-21 | 245 | -0.2770 | [-0.4582, -0.1261] | .000793 | .003174 |
+| 4 | 2025-10-23 to 2026-10-19 | 245 | -0.3700 | [-0.6041, -0.1589] | .001290 | .003871 |
+
+This average-loss improvement is not uniform day by day: 50.97% of daily QLIKE loss differences are positive (the model loss is worse than baseline on those days), and the overall median loss difference is +0.00662 even though the mean is -0.31560. A 10% winsorized mean remains negative (-0.10137), so the mean result is not explained by a single outlier; however, the sign of the median and the highly dispersed tails are material qualifications. The selected h1 finding should be described as an average QLIKE improvement with a skewed loss-differential distribution, not consistent daily superiority.
+
+The subperiod split is post hoc and partitions the same final holdout; these results are descriptive sensitivity evidence, not independent-period replication. Preserve the original p-values and do not upgrade the final gate until the corrected run's artifact has been reviewed.
