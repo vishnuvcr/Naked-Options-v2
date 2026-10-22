@@ -512,3 +512,10 @@ The acquisition client and workflow have been hardened after the original data j
 ### QE-NOB-2.0 recovery queue update — 2026-10-23 00:13 IST
 
 The original acquisition run [#39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257) was still reported in progress at the last poll, while [the previous queued follow-up #39808171927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39808171927) was cancelled at 18:41:39 UTC by GitHub concurrency handling as branch updates accumulated. The latest remediation commit [9ef5f663](https://github.com/vishnuvcr/Naked-Options-v2/commit/9ef5f663122a8b802445a618e3bf91f022590d65) has a pending GitHub Actions check suite with no started check runs yet. The corrected run therefore has not been tested; it is waiting for the active concurrency slot. See the [updated phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md).
+
+
+### QE-NOB-2.0 recovery-code CI result — 2026-10-23 00:18 IST
+
+- The standalone [source-client regression workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/.github/workflows/qe-nob-v2-source-client-tests.yml) passed: [check suite for commit 8241ef05](https://github.com/vishnuvcr/Naked-Options-v2/commit/8241ef05cea41a75a309f2cec979f0b69587a2e7/checks) completed successfully. This covers code compilation and unit tests, not market-data acquisition or profitability.
+- At the same poll, acquisition run [#39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257) was still reported in progress with no API update since 15:18:56 UTC. The corrected acquisition suite remains pending behind the concurrency group.
+- Research gates remain unchanged until the source-acquisition workflow has an actual result: Phase 2 open, empirical discovery blocked, and execution FAIL.
