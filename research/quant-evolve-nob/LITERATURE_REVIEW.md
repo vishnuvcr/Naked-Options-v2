@@ -74,3 +74,34 @@ YouTube/blog strategy claims are candidate-generation material only. No strategy
 | Eaton et al. (2026) | Peer-reviewed finance | Medium | Short-dated retail demand/IV hypothesis | Actionable strategy |
 
 Further literature searching and source validation are Phase 2 outputs. The study stops at the eight preregistered phases.
+
+## 4A. QuantEvolve method paper and implementation adaptation
+
+Yun, Lee and Jeon (2025), “QuantEvolve: Automating Quantitative Strategy Discovery through Multi-Agent Evolutionary Framework,” arXiv:2510.18569, describes hypothesis-driven strategy generation and quality-diversity optimization to preserve strategy-type/risk/turnover/return diversity. This motivates the method structure, not a NIFTY option-profit expectation. The current QE-NOB implementation approximates the roles with deterministic hypothesis strings, constrained strategy constructors, separate validation evaluators, a four-island population and quality-diversity archive; it does not claim to duplicate the paper's LLM-generated agent implementation or reproduce its results.
+- Paper: https://arxiv.org/abs/2510.18569
+- Public reference implementation: https://github.com/CiubancanC/QuantEvolve
+
+## 4B. Recent evidence on retail short-dated option demand and premium
+
+Eaton, Green, Roseman and Wu (2026), “Retail option traders and the implied volatility surface,” Journal of Financial Economics 177, article 104238, finds US retail net buying concentrated in short-dated, especially out-of-the-money options and evidence that demand shocks affect implied volatility. The result is not Indian index-option alpha. It justifies explicitly comparing implied-versus-realized movement, moneyness and premium paid, rather than equating a correct directional forecast with a profitable option trade.
+- Publisher: https://www.sciencedirect.com/science/article/pii/S0304405X26000097
+- DOI: https://doi.org/10.1016/j.jfineco.2026.104238
+
+The 2026 Review of Finance article “Losing is optional: retail option trading and expected announcement volatility” reports that the studied retail sample often paid for options at prices high relative to subsequent realized volatility and incurred significant bid–ask costs around announcements. Its market/sample is not NIFTY, but it supports modeling entry cost and buying-volatility thresholds, not assuming a volatility event is profitable.
+- Publisher: https://academic.oup.com/rof/article-abstract/30/2/489/8301159
+- DOI: https://doi.org/10.1093/rof/rfaf052
+
+## 6A. Open data scan and licensing decision (2026-10-22)
+
+- Hugging Face dataset rissin/nse-options-intraday presents roughly 259M Parquet rows of legacy NSE EOD plus Upstox 1-minute data beginning in 2024, but its dataset card uses license tag “other”, so rights are not sufficiently clear for automated use or redistribution. It is recorded as a candidate to verify, not downloaded for this run.
+  - https://huggingface.co/datasets/rissin/nse-options-intraday
+- Hugging Face thetrademarkk/india-index-options-1m presents about 377M rows/4GB, but the dataset card states CC BY-NC 4.0 (non-commercial) and educational-use caveats. It is excluded from this strategy research to avoid relying on non-commercially licensed data for trading strategy research.
+  - https://huggingface.co/datasets/thetrademarkk/india-index-options-1m
+- Zenodo dataset “Nifty spot, futures and options one-minute data from 2017 to 2020” (DOI 10.5281/zenodo.10899828) has about 320.9MB of 1-minute OHLC files, but the visible record leaves the license/rights field blank. It is not automatically used until reuse rights and data provenance are established.
+  - https://zenodo.org/records/10899828
+- These public datasets are valuable fallback leads but none of the above can be silently merged into the primary series. Dhan is the primary licensed source; this run logs exact coverage and every failure and will report DATA-LIMITED if usable contract-level history is inadequate.
+
+## 6B. Current Paytm Money brokerage caveat
+
+The broker's public pricing page says statutory, regulatory and exchange charges are levied at actuals and can change, but the parsed public tariff does not expose a clear current F&O brokerage amount. Therefore ₹10/order is a provisional base only and ₹20/order is a stress case, not an independently confirmed current tariff. Before paper-trade promotion, the current broker in-app tariff / calculator must be recorded and the model's cost example reconciled.
+- https://www.paytmmoney.com/stocks/pricing
