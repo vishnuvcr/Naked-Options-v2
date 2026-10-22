@@ -1,6 +1,6 @@
 # QE-NOB-1.0 — fresh QuantEvolve-style naked option buying
 
-**Run status:** CORRECTED RERUN PENDING — the prior P&L was superseded after a historical lot-size proxy defect was found. Corrected source uses expiry-family/date-based NSE lots; CI pending at [workflow #39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025).  
+**Run status:** CORRECTED RERUN COMPLETE — NO_STATISTICAL_CANDIDATE. Workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) completed successfully.  
 **Date range:** 2021-10-25 to 2026-10-21  
 **Candidates tested:** 600  
 **Previous-run result (superseded):** 0/600 candidates passed the statistical gate; do not carry forward its P&L values after correcting lot sizing.  
@@ -62,7 +62,7 @@ This uses last-old/first-new expiry dates as trade-date cutoffs because individu
 
 ## Latest reprice audit
 
-See [LOT_SIZE_REPRICE_AUDIT.md](LOT_SIZE_REPRICE_AUDIT.md). All 483,706 rows from the saved ledger were repriced using the corrected date/family lot schedule. No candidate from this frozen 600-candidate set met the joint median/validation/stress gates. The prior P&L result remains superseded; full corrected re-evolution workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) was in progress at last check.
+See [LOT_SIZE_REPRICE_AUDIT.md](LOT_SIZE_REPRICE_AUDIT.md). All 483,706 rows from the saved ledger were repriced using the corrected date/family lot schedule. No candidate from this frozen 600-candidate set met the joint median/validation/stress gates. The prior P&L result remains superseded; the corrected full re-evolution workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) completed successfully and its final metrics are summarized above.
 
 
 ## Corrected full evolutionary rerun — completed 2026-10-22
