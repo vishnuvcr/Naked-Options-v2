@@ -2,6 +2,8 @@
 
 Last updated: 2026-10-22
 
+Governance note: User explicitly declined an independent tester. No tester branch/report is required. Developer-side automated tests and explicit scientific/execution gates remain required.
+
 | Phase | Status | Evidence / required exit gate |
 |---|---|---|
 | 1. Fresh protocol, literature seed, source audit | IN PROGRESS | Protocol and research questions frozen; verify official source register and implementation contract. |
