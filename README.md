@@ -362,3 +362,16 @@ The completed QE-NOB-1.0 search returned **NO-GO for the tested candidate gramma
 - [Feature feasibility audit](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/FEATURE_FEASIBILITY_V2.md)
 
 **Status (2026-10-22):** Protocol amendment committed; feature/source runtime audit and implementation have not yet run. Fixed maximum budget: 1,500 unique structural candidates, 20 generations. Strategy novelty, evolved exit state machines, chronological holdout, multiple-testing correction, bootstrap uncertainty, fees and slippage are mandatory. No new strategy is claimed profitable. User explicitly said “No tester”; no tester branch/report will be created.
+
+
+### QE-NOB-2.0 progress update — 2026-10-22
+
+The first implementation checkpoint is now committed on the [QE-NOB-2.0 developer branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v2-discovery-developer). It adds a typed strategy grammar, structural fingerprints, novelty distance, deterministic mutation/crossover, parent lineage, regression tests and a dedicated automatic/manual test workflow.
+
+- [Phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md)
+- [Feature feasibility audit](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/FEATURE_FEASIBILITY_V2.md)
+- [Grammar source](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/strategy_grammar_v2.py)
+- [Grammar tests](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/test_strategy_grammar_v2.py)
+- [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
+
+**Status:** test workflow is configured, but a successful CI run has not yet been verified. The grammar is not integrated with the backtester, runtime feature coverage is not fully audited, and no new strategy has been backtested or shown profitable. The next gate is automated grammar validation and feature-gated simulator integration. No tester branch/report, per user instruction.
