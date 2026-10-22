@@ -1,0 +1,88 @@
+name: QE-NOB-2.0 bounded data acquisition and feature audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      refresh_data:
+        description: Force refresh source cache; otherwise reuse cache where available
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches:
+      - research/quant-evolve-nob-v2-discovery-developer
+    paths:
+      - .github/workflows/qe-nob-v2-data-audit.yml
+      - research/quant-evolve-nob/feature_audit_v2.py
+      - research/quant-evolve-nob/FEATURE_FEASIBILITY_V2.md
+      - research/quant-evolve-nob/config.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qe-nob-v2-data-audit-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  bounded-source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 210
+    steps:
+      - name: Checkout developer branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-research.txt
+      - name: Restore QE-NOB runtime cache if available
+        uses: actions/cache/restore@v4
+        with:
+          path: data/cache/quant_evolve_nob_v1
+          key: qe-nob-v2-${{ runner.os }}-${{ hashFiles('research/quant-evolve-nob/run_research.py', 'research/quant-evolve-nob/config.json') }}-seed
+          restore-keys: |
+            qe-nob-v2-${{ runner.os }}-${{ hashFiles('research/quant-evolve-nob/run_research.py', 'research/quant-evolve-nob/config.json') }}-
+            qe-nob-v2-${{ runner.os }}-
+      - name: Install bounded research dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-research.txt scipy pandas numpy requests pytest
+      - name: Validate source client before acquisition
+        run: pytest -q research/quant-evolve-nob/test_run_research.py
+      - name: Acquire source data without candidate fitness or P&L
+        env:
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          REFRESH_DATA: ${{ inputs.refresh_data }}
+        run: |
+          if [ "$REFRESH_DATA" = "true" ]; then
+            python research/quant-evolve-nob/run_research.py --stage acquire --refresh-data
+          else
+            python research/quant-evolve-nob/run_research.py --stage acquire
+          fi
+      - name: Audit acquired or restored local cache
+        if: always()
+        run: python research/quant-evolve-nob/feature_audit_v2.py
+      - name: Save cache for future QE-NOB-2.0 runs
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/cache/quant_evolve_nob_v1
+          key: qe-nob-v2-${{ runner.os }}-${{ hashFiles('research/quant-evolve-nob/run_research.py', 'research/quant-evolve-nob/config.json') }}-${{ github.run_id }}
+      - name: Upload sanitized acquisition and feature reports only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qe-nob-v2-data-audit-${{ github.run_id }}
+          path: |
+            reports/quant_evolve_nob_v1/source_probe.json
+            reports/quant_evolve_nob_v1/acquisition_summary.json
+            reports/quant_evolve_nob_v1/underlying_summary.json
+            reports/quant_evolve_nob_v1/source_failures.csv
+            reports/quant_evolve_nob_v2/feature_availability.json
+          if-no-files-found: warn
+          retention-days: 90
