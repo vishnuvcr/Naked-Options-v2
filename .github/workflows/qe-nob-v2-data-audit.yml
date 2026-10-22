@@ -20,6 +20,7 @@ on:
       - research/quant-evolve-nob/config.json
 
 # Scope amendment 2026-10-23: only ATM and one-step OTM offsets are in the active candidate grammar.
+# Recovery note: resume the ATM/OTM1 cache only; source-client regression tests must pass before acquisition.
 
 permissions:
   contents: read
