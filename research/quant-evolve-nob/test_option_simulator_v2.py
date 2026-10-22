@@ -43,3 +43,20 @@ def test_rejects_negative_cost_assumptions():
                               pd.DataFrame(columns=["timestamp","expiry_flag","side","offset","strike","open"]),
                               pd.DataFrame({"timestamp":[1],"nifty_return_1":[1]}), s,
                               {"nifty_return_1"}, slippage_bps=-1)
+
+
+def test_simulator_prevents_overlapping_positions_and_never_passes_execution_gate():
+    strategy = grammar.Strategy("signal", (grammar.Predicate("nifty_return_1", "gt", 0),), "and",
+                                "CALL", "WEEK1", "ATM", 1, (grammar.ExitRule("time_exit"),),
+                                "Unit fixture only; not market evidence.")
+    underlying = pd.DataFrame({"timestamp":[1,2,3,4,5],"open":[100]*5,"close":[100]*5})
+    features = pd.DataFrame({"timestamp":[1,2,3,4,5],"nifty_return_1":[1,1,-1,1,-1]})
+    options = pd.DataFrame({
+        "timestamp":[2,3,3,4], "expiry_flag":["WEEK1"]*4, "side":["CALL"]*4,
+        "offset":[0]*4, "strike":[100.0]*4, "open":[10.0,11.0,11.0,12.0]
+    })
+    result = sim.simulate_strategy(underlying, options, features, strategy, {"nifty_return_1"})
+    assert result["trade_count"] == 1
+    assert result["trades"][0]["entry_timestamp"] == 2
+    assert result["trades"][0]["exit_timestamp"] == 3
+    assert result["execution_gate_pass"] is False
