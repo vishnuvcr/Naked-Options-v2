@@ -48,3 +48,25 @@ Commit `e8133a582cbe6c06ce46514f871d1393fc142f6f` changes the multi-session vola
 ## Developer instructions
 
 After run #39704420478 completes, submit the artifact and exact commit to this branch for independent review. Do not change thresholds, testing families, or the model catalogue to obtain a preferred result. If any evaluated target-date or arithmetic discrepancy remains, return a defect-specific disposition and require one bounded correction; otherwise issue a final PASS WITH SCOPE LIMITATIONS or FAIL with reproducible evidence.
+
+
+## Independent numerical reproduction on the prior run — 2026-10-22
+
+Using the prior artifact's `predictions.csv` and the repository's documented loss formulas, I independently reproduced the selected global ExtraTrees h1 volatility-proxy row (n=981):
+
+| Quantity | Independent result |
+|---|---:|
+| Missing target dates in this selected h1 cell | 0 |
+| Model MAE | 0.003951503401359386 |
+| Baseline MAE | 0.0039670795428635025 |
+| Model RMSE | 0.00530450608513134 |
+| Baseline RMSE | 0.005550349224629921 |
+| Model QLIKE | -8.740194670917209 |
+| Baseline QLIKE | -8.424597621609786 |
+| Mean model-minus-baseline QLIKE loss | -0.31559704930742444 |
+| HAC statistic (repository's lag floor of 5) | -6.019683565027913 |
+| Two-sided HAC p-value | 1.7475837008193224e-09 |
+| Moving-block 95% CI (seed 20261015, 300 resamples) | [-0.4229809375699845, -0.2101454223350167] |
+| Holm p-value over the saved 299-comparison family | 4.264104230004976e-07 |
+
+The all-299 Holm correction independently yields 85 statistically different comparisons, of which 8 are improvements (negative model-minus-baseline loss differences); all eight are from the one-session volatility-proxy comparison family, consistent with the summary. This is a valid reproduction of the prior artifact's arithmetic, not evidence of generalization or a completed independent-period replication. The h1 cell is not affected by the 798 missing target-date rows found in h5/h20 volatility/volatility-expansion outputs. The overall prior-run sign-off remains blocked until the correction run is reviewed.
