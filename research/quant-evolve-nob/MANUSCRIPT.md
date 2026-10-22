@@ -1,14 +1,14 @@
 # QE-NOB-1.0: A bounded QuantEvolve-inspired search for NIFTY 50 naked option buying
 
 **Status:** exploratory manuscript; no deployable strategy identified; no independent tester per user's explicit instruction.  
-**Run:** [GitHub Actions #39712854501](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39712854501) · **Period:** 2021-10-25 to 2026-10-21.  
+**Latest completed run:** [GitHub Actions #39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754) · **Period:** 2021-10-25 to 2026-10-21. Follow-up [#39741823249](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741823249) is in progress.  
 **Protocol:** [PLAN.md](PLAN.md) · [Results](RESULTS.md) · [Phase status](PHASE_STATUS.md) · [Error log](ERROR_LOG.md).
 
 ## Abstract
 
-This study used a bounded QuantEvolve-inspired quality-diversity search to explore NIFTY 50 long-premium option-buying rules. Eligible positions were long calls, long puts, long straddles and long strangles; short-option legs were excluded. Four islands evaluated 600 unique candidates over nine completed generations. The dataset comprised 92,510 underlying rows and 2,588,918 option rows after duplicate-conflict filtering across 1,241 sessions. Candidates were selected using chronological training/validation data, and the latest 20% chronology was reserved for final evaluation. After-cost P&L, baseline comparisons, Holm multiplicity correction, block-bootstrap uncertainty, split-half checks and adverse cost stress tests were included.
+This study used a bounded QuantEvolve-inspired quality-diversity search to explore NIFTY 50 long-premium option-buying rules. Eligible positions were long calls, long puts, long straddles and long strangles; short-option legs were excluded. Four islands evaluated 600 unique candidates over nine completed generations. The dataset comprised 92,510 underlying rows and 2,600,975 rolling option rows across 1,241 sessions. After adding ATM offset to the duplicate key, no duplicate groups or rows were removed. This validates request identity only, not exact exchange contract identity. Candidates were selected using chronological training/validation data, and the latest 20% chronology was reserved for final evaluation. After-cost P&L, baseline comparisons, Holm multiplicity correction, block-bootstrap uncertainty, split-half checks and adverse cost stress tests were included.
 
-Zero candidates passed the statistical gate and zero passed the execution/promotion gate. Data quality failed because 453 of 471 duplicate groups conflicted. Historical bid/ask/depth, exact expiry/strike continuity, dated lot sizes and the effective-date broker tariff remain unverified. The leading validation-selected opening-gap candidate had OOS mean daily net ₹10.68, a 95% block-bootstrap interval of -₹188.62 to ₹237.43, Holm-adjusted p=1.0, and stressed mean daily net of -₹98.54 at 100-bps slippage/₹20 per order. Conclusion: **DATA-LIMITED / NO-GO for strategy approval**. This does not prove all possible strategies unprofitable; the available data are insufficient to establish executable profitability.
+Zero candidates passed the statistical gate and zero passed the execution/promotion gate. The original duplicate diagnostic was traced to a key that omitted the rolling ATM offset. The corrected key reports zero duplicate groups; exact contract identity remains unverified. Historical bid/ask/depth, exact expiry/strike continuity, dated lot sizes and the effective-date broker tariff remain unverified. The leading validation-selected opening-gap candidate had OOS mean daily net ₹10.68, a 95% block-bootstrap interval of -₹188.62 to ₹237.43, Holm-adjusted p=1.0, and stressed mean daily net of -₹98.54 at 100-bps slippage/₹20 per order. Conclusion: **DATA-LIMITED / NO-GO for strategy approval**. This does not prove all possible strategies unprofitable; the available data are insufficient to establish executable profitability.
 
 ## 1. Research questions and hypotheses
 
@@ -50,17 +50,17 @@ Training ended 2024-10-17; validation ended 2025-10-17; the final 20% chronology
 | Window | 2021-10-25–2026-10-21 |
 | Sessions | 1,241 |
 | Underlying rows | 92,510 |
-| Option rows after conflict filtering | 2,588,918 |
+| Option rows | 2,600,975 |
 | Unique candidates / islands / generations | 600 / 4 / 9 |
-| Duplicate groups | 471 |
-| Conflicting duplicate groups | 453 (96.18% of groups) |
-| Rows excluded for conflicts | 906 |
+| Duplicate groups after offset-aware key | 0 |
+| Conflicting duplicate groups | 0 |
+| Rows excluded for conflicts | 0 |
 | Option timestamp coverage | 99.772% |
-| Row-grid coverage | 99.947% |
+| Row-grid coverage | 100% |
 | Statistical gate passes | 0 |
 | Execution/promotion gate passes | 0 |
 
-The source provided rolling ATM-relative OHLC, IV, OI, volume and spot—not a stable fixed-contract tape with historical executable bid/ask and depth. Intermittent Dhan HTTP 502 failures are recorded in `source_failures.csv`. The duplicate conflict rate caused the basic data-quality gate to fail; high row-grid coverage does not resolve identity conflicts.
+The source provided rolling ATM-relative OHLC, IV, OI, volume and spot—not a stable fixed-contract tape with historical executable bid/ask and depth. Intermittent Dhan HTTP 502 failures are recorded in `source_failures.csv`. The duplicate/grid diagnostic now passes after including offset; this does not establish stable contract identity. The execution gate remains blocked.
 
 ## 4. Costs and statistical analysis
 
@@ -110,7 +110,7 @@ The positive base point estimate is small relative to uncertainty, OOS halves ha
 | 332 | Gap continuation | ₹70.35 | -₹49.03 | 1.0 | Fail |
 | 303 | Gap continuation | ₹61.11 | -₹69.99 | 1.0 | Fail |
 
-All 20 validation-selected finalists failed the statistical gate; all 600 candidates failed the strict execution/promotion gate. The full 600-candidate metrics and 20-finalist table are in the [workflow artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39712854501).
+All 20 validation-selected finalists failed the statistical gate; all 600 candidates failed the strict execution/promotion gate. The full 600-candidate metrics and 20-finalist table are in the [latest completed workflow artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754).
 
 ### Stress comparison (mean daily net, ₹; simulated)
 
@@ -124,7 +124,7 @@ Base modeled costs       +10.68 | █
 
 1. **No evidence-supported winner was discovered.** Zero of 600 candidates passed the statistical gate.
 2. **This is data-limited, not proof of universal inefficiency.** Rolling ATM-relative rows do not establish exact contract identity or executable quotes.
-3. **Duplicate conflicts are a primary blocker.** Their source key and schema semantics must be diagnosed; arbitrary deduplication could distort trades.
+3. **Duplicate-key diagnosis was corrected.** ATM offset was omitted from the prior key; the regression test now guards against conflating separate rolling requests. Contract-level identity remains a blocker.
 4. **Execution realism is unresolved.** Bid/ask, depth, contract identity, expiry, lot size and date-specific charges must be reconciled before profitability claims.
 5. **Evolution increases selection risk.** A large candidate search can select chance patterns; multiplicity correction and locked OOS testing did not validate these candidates.
 6. **Method label matters.** This was a deterministic constrained adaptation inspired by QuantEvolve, not the original LLM multi-agent implementation.
