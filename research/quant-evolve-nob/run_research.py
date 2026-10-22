@@ -23,8 +23,8 @@ SEED = 20261022
 OPTION_OFFSETS = (-1, 0, 1)
 STUDY_START_DATE = date(2021, 10, 23)
 STUDY_END_EXCLUSIVE = date(2025, 12, 31)
-OPTION_REQUEST_TIMEOUT_SECONDS = 25
-OPTION_REQUEST_ATTEMPTS = 2
+OPTION_REQUEST_TIMEOUT_SECONDS = 40
+OPTION_REQUEST_ATTEMPTS = 4
 MAX_CONSECUTIVE_OPTION_FAILURES = 10
 SEBI_RATE = 0.000001
 STAMP_RATE = 0.00003
@@ -333,7 +333,8 @@ def retrieve_options(token, supported, refresh=False):
                     except Exception as exc:
                         error = type(exc).__name__ + ": " + str(exc)[:180]
                         if attempt < OPTION_REQUEST_ATTEMPTS - 1:
-                            time.sleep(1)
+                            # Bounded exponential backoff for transient provider read timeouts.
+                            time.sleep(min(2 ** (attempt + 1), 8))
                 if error:
                     failures.append({"expiry_flag":flag,"expiry_code":code,"from":d0.isoformat(),"offset":offset,"side":side,"error":error})
                     consecutive_failures += 1
