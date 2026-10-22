@@ -1,0 +1,123 @@
+{
+  "research_version": "NIFTY-PRED-1.0",
+  "workflow_run_id": 39699761966,
+  "workflow_url": "https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966",
+  "commit": "cecac3a63878d3a189c94b143f875bcb9be33983",
+  "workflow_conclusion": "success",
+  "artifact": {
+    "name": "nifty-prediction-reports-39699761966",
+    "sha256": "6f2cd6bb302763e5e972fb54e447bfbd47bba0c8cd3cfe3fd024f9cf6062c8dc",
+    "note": "Contains raw prediction rows in the GitHub Actions artifact; this repository summary contains only aggregate metrics."
+  },
+  "data": {
+    "target_source": "Dhan daily NIFTY 50",
+    "rows": 4906,
+    "first_date": "2007-01-02",
+    "last_date": "2026-10-21",
+    "target_sha256": "2a76714665754ec6371e92d8b9b56565606c0d1a4a2fc9cc9013291e233b2158",
+    "validation": "PASS",
+    "weekend_dated_rows_flagged": 20,
+    "yahoo_crosscheck_overlap_rows": 4683,
+    "yahoo_max_abs_close_difference": 0.0007812500007275958,
+    "external_sources_passed": ["S&P 500", "Nasdaq Composite", "Nikkei 225", "Hang Seng", "CBOE VIX", "India VIX", "US 10-year yield proxy"],
+    "external_sources_failed": [
+      {"source": "NSE official endpoint", "reason": "No recognized data rows returned"},
+      {"source": "USD/INR", "reason": "Invalid OHLC range in 237 rows"},
+      {"source": "Gold futures", "reason": "Invalid OHLC range in 149 rows"},
+      {"source": "WTI crude", "reason": "Non-positive OHLC"}
+    ]
+  },
+  "experiment_counts": {
+    "technical_metric_rows": 356,
+    "technical_oos_prediction_rows": 148407,
+    "global_metric_rows": 288,
+    "global_oos_prediction_rows": 140559,
+    "arima_return_benchmark_rows": 3,
+    "merged_metric_rows": 647,
+    "oos_evaluated_model_comparisons": 299,
+    "cv_pass_rows": 296,
+    "blocked_compute_budget_rows": 52,
+    "merged_prediction_rows_including_arima": 291886,
+    "empty_error_csvs_skipped": ["experiment_errors_global.csv", "experiment_errors_technical.csv"]
+  },
+  "holdout": {
+    "split": "Chronological first 80 percent development / final 20 percent holdout",
+    "holdout_origin_start": "2022-11-04",
+    "holdout_origin_end_for_one_session": "2026-10-19",
+    "return_n_by_horizon": {"1": 981, "5": 977, "20": 962},
+    "selection": "Validation CV loss only; holdout was not used to choose a winner",
+    "validation_folds": {"tabular": 4, "sequence": 2},
+    "sequence_epochs_actually_used": 3,
+    "metadata_note": "The original technical run metadata incorrectly said 8 sequence epochs; code set epochs=3 before fitting. The metadata discrepancy is fixed for future runs."
+  },
+  "familywise_inference": {
+    "primary_validation_selected_tests_including_arima": 33,
+    "primary_holm_significant_tests": 4,
+    "all_oos_candidate_comparisons_with_p_values": 299,
+    "all_oos_holm_significant_differences": 85,
+    "all_oos_holm_significant_improvements": 8,
+    "all_eight_improvements_are": "One-session volatility-proxy QLIKE loss comparisons",
+    "selected_global_volatility_h1": {
+      "model": "ExtraTrees",
+      "n": 981,
+      "target": "Absolute next-session log return (one-session volatility proxy)",
+      "mae": 0.003951503401359386,
+      "baseline_mae": 0.003967079542863502,
+      "rmse": 0.00530450608513134,
+      "baseline_rmse": 0.005550349224629921,
+      "qlike": -8.740194670917209,
+      "baseline_qlike": -8.424597621609786,
+      "mean_qlike_loss_difference_model_minus_baseline": -0.31559704930742444,
+      "moving_block_bootstrap_95pct_ci_for_mean_loss_difference": [-0.4229809, -0.2101454],
+      "hac_two_sided_p_value": 1.747584e-9,
+      "holm_p_within_task_horizon": 2.621376e-8,
+      "holm_p_across_33_primary_tests": 5.767026e-8,
+      "holm_p_across_299_candidate_comparisons": 4.264104e-7,
+      "interpretation": "Statistically strong one-session volatility-proxy forecast result in this single chronological holdout; requires independent-period replication and is not evidence of a trading edge."
+    },
+    "selected_global_return_models": [
+      {"horizon": 1, "model": "CatBoost", "n": 981, "mae": 0.0057882153, "baseline_mae": 0.0058032916, "mse_skill_vs_zero_return": -0.0025831, "raw_p": 0.5881288, "holm_p_primary_family": 1.0},
+      {"horizon": 5, "model": "CatBoost", "n": 977, "mae": 0.0136227396, "baseline_mae": 0.0137297154, "mse_skill_vs_zero_return": 0.0085159, "raw_p": 0.5867783, "holm_p_primary_family": 1.0},
+      {"horizon": 20, "model": "CatBoost", "n": 962, "mae": 0.0271712420, "baseline_mae": 0.0262515842, "mse_skill_vs_zero_return": -0.0170378, "raw_p": 0.8581801, "holm_p_primary_family": 1.0}
+    ],
+    "selected_global_direction_h1": {
+      "model": "CatBoost",
+      "n": 981,
+      "accuracy": 0.5300714,
+      "balanced_accuracy": 0.528181,
+      "brier_skill_vs_prevalence": -0.000867,
+      "raw_p": 0.8792942,
+      "holm_p_primary_family": 1.0
+    },
+    "selected_technical_volatility_expansion_h20": {
+      "model": "Logistic regression",
+      "n": 980,
+      "accuracy": 0.6642857,
+      "brier_skill": 0.132759,
+      "raw_p": 0.0020061,
+      "holm_p_primary_family": 0.0581763,
+      "interpretation": "Exploratory; does not meet 0.05 after correction across 33 selected tests."
+    },
+    "selected_global_level_models": {
+      "h1": {"model": "ElasticNet", "mae": 145.9318, "p": 9.672132e-9, "holm_p_primary_family": 3.095082e-7, "skill_vs_persistence": -0.164011},
+      "h5": {"model": "ElasticNet", "mae": 327.4761, "p": 0.0014158, "holm_p_primary_family": 0.0424747, "skill_vs_persistence": -0.088869},
+      "h20": {"model": "Ridge", "mae": 699.0833, "p": 0.0007859, "holm_p_primary_family": 0.0243631, "skill_vs_persistence": -0.345179}
+    }
+  },
+  "conclusion": {
+    "return_prediction": "No robust selected-model improvement over zero-return benchmark.",
+    "direction_prediction": "No robust selected-model edge after multiplicity correction.",
+    "level_prediction": "Selected global models are significantly worse than persistence at all three horizons after correction.",
+    "volatility_prediction": "One-session volatility-proxy QLIKE result survives Holm correction across all 299 OOS model comparisons; treat as a replication candidate only.",
+    "options_strategy": "Not evaluated. Fixed-contract identity and executable-price gates remain blocked; no P&L or trading recommendation."
+  },
+  "limitations": [
+    "One chronological holdout only; no independent-period replication.",
+    "NSE official endpoint returned no recognized rows.",
+    "USD/INR, gold and WTI were rejected by current OHLC validation and were excluded.",
+    "Weekend-dated rows are preserved and flagged for exchange-calendar review.",
+    "Options chains, FII/DII, PCR, breadth, timestamped news and point-in-time corporate actions were not acquired and validated.",
+    "The volatility target is a daily-return-based proxy, not intraday realized volatility.",
+    "No brokerage, spread, slippage, margin or execution simulation was performed because this was prediction-only research."
+  ]
+}
