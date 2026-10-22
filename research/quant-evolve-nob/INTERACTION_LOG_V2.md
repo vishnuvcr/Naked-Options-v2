@@ -9,3 +9,11 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Created branch `research/quant-evolve-nob-v2-discovery-developer` from the completed QE-NOB-1.0 developer branch.
 - Committed a new bounded plan with typed strategy trees, hypothesis cards, exit-state machines, novelty-aware multi-objective evolution, fixed budget, chronological OOS and cost/execution gates.
 - Current state: Phase 1 complete; Phase 2 feature/source feasibility is next. No code implementation or strategy run is yet claimed.
+
+## 2026-10-22 — first structural grammar implementation checkpoint
+- Completed a static feature/source feasibility matrix from the existing pipeline and reports. Runtime cache coverage remains unverified, so several proposed features are conditional and must be gated.
+- Added `strategy_grammar_v2.py`: typed candidate schema, validation, canonical signatures, structural novelty distance, bounded deterministic mutation and crossover with parent lineage.
+- Added tests for canonical identity, structural exit novelty, feature allowlisting, invalid stop values, deterministic mutation and crossover.
+- Added `.github/workflows/qe-nob-v2-grammar-tests.yml` for automatic tests on relevant pushes and manual dispatch.
+- Updated phase status and implementation log. CI success has not yet been verified; this grammar is not integrated into the backtester and no new strategy has been backtested.
+- User's instruction “No tester” remains in force. No tester branch/report was created or awaited.
