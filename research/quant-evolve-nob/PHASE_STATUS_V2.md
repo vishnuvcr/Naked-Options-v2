@@ -167,3 +167,8 @@ The discovery-runner CI passed after adding the stricter cache audit gate: [run 
 - Duplicate pending run #39838710148 was cancelled using an explicit temporary target; the recovery helper default was restored to the original already-cancelled run #39803647257. No further cancellation commits should be made while #39838508682 is active.
 - Regression CI on the amended code passed: source client #39838112165, candidate generator #39838066721, discovery runner #39838066761, option simulator #39838060682, signal evaluator #39838060728, and grammar #39838074982. The active data workflow repeats those gates before acquisition.
 - Gates: Phase 2 IN PROGRESS; Phase 5 empirical discovery BLOCKED pending the weekly-only source audit and historical underlying series; Phases 6–7 NOT STARTED; execution FAIL.
+
+
+## Month-family inventory correction — 2026-10-23
+
+The full audit artifact from run #39837698610 includes 11 MONTH1 cache files in the first two 30-day chunks (6 files in the first and 5 in the second), rather than zero. This remains far below the 366-file target grid for a five-year ATM/OTM1 monthly series. The weekly-only amendment remains justified by incomplete historical coverage, not by a claim of absolute source unavailability. The legacy v1 acquisition_summary.json in the same artifact is stale and is not used as evidence.
