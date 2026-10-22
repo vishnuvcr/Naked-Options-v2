@@ -22,7 +22,7 @@ def bars():
         "2026-01-06 09:20:00+05:30", "2026-01-06 09:25:00+05:30",
         "2026-01-06 09:30:00+05:30", "2026-01-06 09:35:00+05:30",
     ], utc=True)
-    close = [100, 101, 102, 104, 101, 110, 111, 109, 112, 114]
+    close = [100, 101, 102, 104, 101, 110, 111, 109, 107, 114]
     return pd.DataFrame({
         "timestamp": [int(x.timestamp()) for x in times],
         "open": [x - 0.2 for x in close],
@@ -33,7 +33,7 @@ def bars():
 
 
 def test_opening_range_uses_only_first_three_bars_and_activates_afterward():
-    features, metadata = BUILDER.build_features(bars(), minimum_coverage=0.50)
+    features, metadata = BUILDER.build_features(bars(), minimum_coverage=0.30)
     assert features["opening_range_position"].iloc[:3].isna().all()
     assert features["opening_range_position"].iloc[3] == pytest.approx(1.5)
     # The first session's fourth-bar close is above the first-three-bar high.
