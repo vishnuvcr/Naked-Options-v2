@@ -48,7 +48,9 @@ def build(df):
         out[f"target_direction_{h}"]=np.where(y.notna(),(y>0).astype(float),np.nan)
         out[f"target_close_{h}"]=c.shift(-h); out[f"target_log_close_{h}"]=np.log(c.shift(-h))
         fr=pd.concat([r.shift(-k) for k in range(1,h+1)],axis=1)
-        fv=r.shift(-1).abs() if h==1 else fr.std(axis=1,ddof=1)
+        # Require a complete forward window: DataFrame.std skips NaNs by default, which
+        # would otherwise label tail rows using fewer than h future returns.
+        fv=r.shift(-1).abs() if h==1 else fr.std(axis=1,ddof=1,skipna=False)
         out[f"target_future_vol_{h}"]=fv
         out[f"target_vol_expansion_{h}"]=np.where(fv.notna() & x["vol_20"].notna(),(fv>x["vol_20"]).astype(float),np.nan)
     return out.replace([np.inf,-np.inf],np.nan)

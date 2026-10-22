@@ -60,3 +60,16 @@ def test_merge_results_skips_empty_or_headerless_csv(tmp_path):
     assert frame is not None
     assert list(frame.columns) == ["metric", "value"]
     assert frame.iloc[0]["metric"] == "mae"
+
+def test_future_volatility_requires_complete_forward_window():
+    out=build(sample())
+    # The h-session future-volatility target uses h forward daily returns;
+    # every one of the final h origins is therefore ineligible.
+    for h in (1,5,20):
+        vol=out[f"target_future_vol_{h}"]
+        expansion=out[f"target_vol_expansion_{h}"]
+        assert vol.iloc[-h:].isna().all()
+        assert expansion.iloc[-h:].isna().all()
+        assert np.isfinite(vol.iloc[-h-1])
+        assert pd.notna(expansion.iloc[-h-1])
+
