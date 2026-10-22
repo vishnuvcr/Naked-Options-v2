@@ -19,7 +19,6 @@ OPT_CACHE = CACHE / "options_rolling"
 IDX_CACHE = CACHE / "underlying_intraday"
 OUT = ROOT / "reports" / "quant_evolve_nob_v1"
 SEED = 20261022
-EXCHANGE_RATE = 0.0003553
 SEBI_RATE = 0.000001
 STAMP_RATE = 0.00003
 GST_RATE = 0.18
@@ -318,6 +317,16 @@ def lot_size_proxy(day):
     if d < date(2025,11,20): return 75
     return 65
 
+def exchange_rate(day):
+    # Conservative date-effective NSE option-premium fee estimates, including IPFT where applicable.
+    # The pre-Oct-2024 schedule was monthly-turnover dependent; this uses conservative high-side rates.
+    d=pd.Timestamp(day).date()
+    if d < date(2023,4,1): return 0.000535
+    if d < date(2024,4,1): return 0.000505
+    if d < date(2024,10,1): return 0.000500
+    # NSE 27-Sep-2024 true-to-label revision plus IPFT; 27-Feb-2026 revision retains approx total outflow.
+    return 0.0003553
+
 def cost_and_pnl(legs, day, slip_bps, brokerage):
     # Each leg is dict(entry, exit); one lot per leg; long-option transaction charges.
     lots=lot_size_proxy(day)
@@ -331,7 +340,8 @@ def cost_and_pnl(legs, day, slip_bps, brokerage):
     d=pd.Timestamp(day).date()
     stt_rate=0.000625 if d < date(2024,10,1) else (0.001 if d < date(2026,4,1) else 0.0015)
     brokerage_total=brokerage*2*len(legs)
-    exchange=turnover*EXCHANGE_RATE
+    exchange_rate_value=exchange_rate(day)
+    exchange=turnover*exchange_rate_value
     sebi=turnover*SEBI_RATE
     stamp=buy_turnover*STAMP_RATE
     stt=sell_turnover*stt_rate
@@ -340,7 +350,7 @@ def cost_and_pnl(legs, day, slip_bps, brokerage):
     return {"gross_pnl_rupees":gross,"net_pnl_rupees":gross-fees,"entry_debit_rupees":buy_turnover,
             "brokerage_rupees":brokerage_total,"exchange_fee_rupees":exchange,"sebi_fee_rupees":sebi,
             "stamp_rupees":stamp,"stt_rupees":stt,"gst_rupees":gst,"total_cost_rupees":fees,
-            "lot_size_proxy":lots,"stt_rate":stt_rate,"turnover_rupees":turnover}
+            "lot_size_proxy":lots,"stt_rate":stt_rate,"exchange_rate":exchange_rate_value,"turnover_rupees":turnover}
 
 def signal_events(frame, candidate):
     # Return one signal event per session; signal is evaluated using the just-closed bar.
