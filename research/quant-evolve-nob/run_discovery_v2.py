@@ -69,6 +69,24 @@ def cache_manifest() -> dict[str, Any]:
     }
 
 
+def chronological_split(unique_days: list[str]) -> dict[str, list[str]]:
+    """Freeze disjoint train/validation/OOS date blocks in chronological order."""
+    days = sorted(set(map(str, unique_days)))
+    if len(days) < 60:
+        raise ValueError("at least 60 unique sessions are required")
+    train_end = max(1, int(len(days) * 0.60))
+    validation_end = max(train_end + 1, int(len(days) * 0.80))
+    blocks = {"train": days[:train_end], "validation": days[train_end:validation_end],
+              "oos": days[validation_end:]}
+    if not blocks["train"] or not blocks["validation"] or len(blocks["oos"]) < 20:
+        raise ValueError("chronological blocks are too small")
+    if set(blocks["train"]) & set(blocks["validation"]):
+        raise AssertionError("train and validation overlap")
+    if set(blocks["train"]) & set(blocks["oos"]) or set(blocks["validation"]) & set(blocks["oos"]):
+        raise AssertionError("OOS must be disjoint from all model-selection periods")
+    return blocks
+
+
 def strategy_from_record(record: dict[str, Any]) -> Strategy:
     obj = record["strategy"]
     return Strategy(
@@ -286,16 +304,13 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     if "date" not in u.columns:
         u["date"] = pd.to_datetime(u["timestamp"], unit="s", utc=True).dt.tz_convert("Asia/Kolkata").dt.strftime("%Y-%m-%d")
     unique_days = sorted(u["date"].dropna().astype(str).unique().tolist())
-    if len(unique_days) < 60:
-        return output_blocked(f"Only {len(unique_days)} usable sessions; at least 60 are required for train/validation/OOS chronology.", cache, quality)
-
-    train_end = max(1, int(len(unique_days) * 0.60))
-    validation_end = max(train_end + 1, int(len(unique_days) * 0.80))
-    train_days = unique_days[:train_end]
-    validation_days = unique_days[train_end:validation_end]
-    oos_days = unique_days[validation_end:]
-    if not train_days or not validation_days or len(oos_days) < 20:
-        return output_blocked("Chronological split is too small to preserve independent OOS data.", cache, quality)
+    try:
+        split = chronological_split(unique_days)
+    except ValueError as exc:
+        return output_blocked(str(exc), cache, quality)
+    train_days = split["train"]
+    validation_days = split["validation"]
+    oos_days = split["oos"]
 
     u_train = u[u["date"].astype(str).isin(set(train_days))].copy().reset_index(drop=True)
     f_train = feature_frame[feature_frame["session_date"].isin(set(train_days))].drop(columns="session_date").copy().reset_index(drop=True)
