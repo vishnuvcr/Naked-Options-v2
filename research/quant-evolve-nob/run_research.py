@@ -997,6 +997,57 @@ def run_quant_evolve(u,o,expiry_flags,data_quality=None):
                 for k,v in detailed.items():
                     if k.startswith(("train_","validation_","oos_")) and k!="oos_holm_p":
                         row[k]=v
+    # Compare evolved rules with prespecified fixed-buy benchmarks using paired daily OOS P&L.
+    all_days=sorted(u.date.unique())
+    oos_days=[d for d in all_days if d>=final["split_validation_end"]]
+    by_params={}
+    daily_by_id={}
+    for row in final["results"]:
+        cand=row["candidate"]
+        ident=(cand["family"],int(cand.get("hold",0)),str(cand.get("expiry","")),int(cand.get("money",0)))
+        by_params[ident]=row
+        daily_by_id[int(row["candidate_id"])]={}
+    oos_day_set=set(oos_days)
+    for trade in final["ledger"]:
+        day=str(trade["date"])
+        if day in oos_day_set:
+            idx=int(trade["candidate_id"])
+            daily_by_id.setdefault(idx,{})
+            daily_by_id[idx][day]=daily_by_id[idx].get(day,0.0)+float(trade["net_pnl_rupees"])
+    paired_rows=[]
+    paired_pvalues=[]
+    for row in final["results"]:
+        cand=row["candidate"]
+        family=cand["family"]
+        base_family=("always_straddle" if family=="orb_straddle" else
+                     "always_strangle" if family=="orb_strangle" else
+                     "always_momentum" if family in EVOLVABLE_FAMILIES else None)
+        baseline=None
+        if base_family:
+            pair_key=(base_family,int(cand.get("hold",0)),str(cand.get("expiry","")),int(cand.get("money",0)))
+            baseline=by_params.get(pair_key)
+        row["family"]=family
+        row["baseline_family"]=base_family or ""
+        if baseline is None or family not in EVOLVABLE_FAMILIES or not oos_days:
+            row["oos_baseline_comparison_available"]=False
+            for name in ("oos_baseline_paired_mean_daily_diff","oos_baseline_paired_ci95_low","oos_baseline_paired_ci95_high","oos_baseline_hac_one_sided_p","oos_baseline_holm_p"):
+                row[name]=float("nan")
+            continue
+        a=daily_by_id.get(int(row["candidate_id"]),{})
+        b=daily_by_id.get(int(baseline["candidate_id"]),{})
+        diff=np.asarray([float(a.get(d,0.0))-float(b.get(d,0.0)) for d in oos_days],dtype=float)
+        cmp=metrics(diff,[],bootstrap_reps=1000)
+        row["oos_baseline_comparison_available"]=True
+        row["baseline_candidate_id"]=int(baseline["candidate_id"])
+        row["oos_baseline_paired_mean_daily_diff"]=float(cmp.get("mean_daily_net_rupees",float("nan")))
+        row["oos_baseline_paired_ci95_low"]=float(cmp.get("daily_net_ci95_low",float("nan")))
+        row["oos_baseline_paired_ci95_high"]=float(cmp.get("daily_net_ci95_high",float("nan")))
+        row["oos_baseline_hac_one_sided_p"]=float(cmp.get("hac_one_sided_p",float("nan")))
+        paired_rows.append(row)
+        paired_pvalues.append(row["oos_baseline_hac_one_sided_p"])
+    paired_adjusted=adjust_holm(paired_pvalues)
+    for row,padj in zip(paired_rows,paired_adjusted):
+        row["oos_baseline_holm_p"]=padj
     # Preserve the all-candidate Holm adjustment from the single final OOS evaluation.
     finalist_keys={genome_key(x) for x in finalist_candidates}
     for row in final["results"]:
