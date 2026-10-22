@@ -175,3 +175,9 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - The current run #39837698610 started before the weekly-only configuration was committed and therefore remains an older two-expiry acquisition. It should not satisfy the updated gate. A newer pending run exists on the weekly-only code.
 - Regression checks on recent commits are passing: source client #39838112165, candidate generator #39838066721, discovery runner #39838066761, option simulator #39838060682, signal evaluator #39838060728, and grammar validation #39838074982. The weekly-only acquisition workflow has been expanded to run these tests before acquisition.
 - Next action: cancel the older data run via the exact recovery commit phrase (its always-run cache save and sanitized artifact upload should preserve progress) and let the latest pending weekly-only workflow resume. Do not use the helper workflow's default target for this cancellation.
+
+
+## 2026-10-23 — weekly-only acquisition handoff started
+- The two-expiry run #39837698610 was cancelled explicitly through the helper workflow after the weekly-only amendment was documented. This avoids using an acquisition run that started before the amended protocol and before the full regression gate was wired into the workflow.
+- New eligible run #39838508682 is active. It restores the cached data and runs dependency installation, then validates source-client plus grammar, candidate generator, feature builder, simulator and discovery runner before it may download data.
+- Cancelled duplicate pending run #39838710148 to avoid redundant acquisition; restored the helper's default target to original stale run #39803647257. Do not cancel #39838508682.
