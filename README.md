@@ -536,5 +536,10 @@ The cached-data audit confirmed that the cancelled initial acquisition had 716 h
 
 - [The amended protocol](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/OPEN_STRATEGY_DISCOVERY_PLAN.md) and [source catalogue/cache accounting](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/SOURCE_CATALOG_V2.md) document the scope and estimated remaining request count.
 - Grammar CI passed on [check suite #107968717033](https://github.com/vishnuvcr/Naked-Options-v2/commit/ada4d63039e4449465d6c7c4bb23230b844df240/checks).
-- The first source-client regression check failed because one fixture retained the earlier 10-request expectation; the stale assertions were corrected to six in commit [ad0a7b65](https://github.com/vishnuvcr/Naked-Options-v2/commit/ad0a7b65b9141e303e239a130ed38a552793ee60). Its follow-up check suite #107969795697 is queued and has not yet passed.
+- The first source-client regression check failed because the fail-fast test fixture supplied only six failing requests in one chunk, below the ten-consecutive-failure threshold. The exact log showed 17 passed and one failed; the test was corrected to provide two contiguous chunks in [commit e9982ddc](https://github.com/vishnuvcr/Naked-Options-v2/commit/e9982ddc1ee7cabb0a5aa3a581c1441df16b5cfb). Re-run CI is pending.
 - Phase 2 remains open until the restarted run audits real historical underlying and option data. Empirical discovery is blocked, and the execution gate remains FAIL.
+
+
+### QE-NOB-2.0 source-client CI diagnosis correction
+
+Inspection of failed source-client run [#39835953946](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39835953946) showed **17 passed, 1 failed**. The failure was a test-fixture gap: a single chunk has only six requests under the ATM/OTM1 scope and cannot reach the ten-consecutive-failure stop threshold. The fixture now spans two chunks so the early-stop behavior can be verified. This was not a market-data or strategy-performance failure; the next CI run must confirm the correction.
