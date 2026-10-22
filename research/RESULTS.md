@@ -60,3 +60,19 @@ Scoped conclusion: no robust return/direction edge was demonstrated. Volatility-
 ## Closure record
 
 The nine-phase study is closed for the bounded prediction-only scope. The tested model/data set did not establish a robust return/direction edge. Unavailable options/FII-DII/PCR/breadth/news inputs and lack of brokerage/slippage/execution tests prohibit strategy-level claims.
+
+
+## Exploratory within-holdout sensitivity and score distribution — 2026-10-22
+
+The selected global ExtraTrees h1 volatility-proxy model was evaluated in four equal-count consecutive slices of the same final holdout. This is retrospective sensitivity analysis, not independent-period replication.
+
+| Slice | Origin dates | n | Mean model-minus-baseline QLIKE | 95% moving-block CI | HAC p | Holm p across four slices |
+|---|---|---:|---:|---:|---:|---:|
+| 1 | 2022-11-04 to 2023-11-01 | 246 | −0.2640 | [−0.4370, −0.1046] | 0.001492 | 0.003871 |
+| 2 | 2023-11-02 to 2024-10-25 | 245 | −0.3516 | [−0.5893, −0.0959] | 0.006660 | 0.006660 |
+| 3 | 2024-10-28 to 2025-10-21 | 245 | −0.2770 | [−0.4582, −0.1261] | 0.000793 | 0.003174 |
+| 4 | 2025-10-23 to 2026-10-19 | 245 | −0.3700 | [−0.6041, −0.1589] | 0.001290 | 0.003871 |
+
+All four mean differences are negative in this diagnostic. However, the daily loss differential is skewed: its median is +0.00662 and 50.97% of days have positive model-minus-baseline loss (worse model score), despite the mean of −0.31560. The 10% winsorized mean remains negative (−0.10137). Therefore the selected average QLIKE result is not consistent daily superiority; it is sensitive to the magnitude of tail outcomes. The within-holdout splits do not replace a future untouched-period replication.
+
+These checks were calculated from run #39699761966's saved predictions, before the corrected artifact was available. The artifact-level reproduction utility is [`research/audits/audit_nifty_predictions.py`](audits/audit_nifty_predictions.py).
