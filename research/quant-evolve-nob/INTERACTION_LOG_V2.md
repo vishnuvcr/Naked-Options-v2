@@ -29,3 +29,9 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Corrected tests to load Python files directly because the research directory name contains hyphens; registered dynamically loaded modules before dataclass initialization.
 - Updated phase status and error log. These fixes are source-level only; workflow execution and full-cache audit results remain unverified.
 - Still blocked from a discovery run: no integrated simulator, no confirmed Phase 2 feature matrix from runtime data, and no new strategy P&L. No tester branch/report created.
+
+## 2026-10-22 — bounded candidate generator added
+- Added `evolve_candidates_v2.py`, a deterministic candidate proposal generator with feature allowlist, unique structural signatures, mutation/crossover, lineage, novelty-based environmental selection, and hard 1,500-candidate / 20-generation ceilings.
+- Added generator regression tests and a dedicated automatic/manual GitHub Actions workflow.
+- The generator explicitly emits `CANDIDATES_GENERATED_NOT_BACKTESTED`; it does not compute fitness or reuse QE-NOB-1.0 outcomes. This is not yet the profitability search loop because a tested simulator/evaluator is not integrated.
+- Updated phase status and error log. CI execution and tests remain unverified; no candidate P&L or strategy result is claimed.
