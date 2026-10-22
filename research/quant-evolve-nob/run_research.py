@@ -642,6 +642,286 @@ def backtest(u,o,expiry_flags,candidates_override=None,include_oos=True,bootstra
                      "Primary metrics use one-lot after-cost P&L, but not all execution quality can be proven with OHLC.",
                      "Only the latest 20% chronology is reserved for final confirmation; its full candidate-family p-values are Holm-adjusted."]}
 
+def genome_key(candidate):
+    return json.dumps(candidate,sort_keys=True,separators=(",",":"))
+
+EVOLVABLE_FAMILIES=("orb","trend","gap_cont","gap_fade","pullback","orb_straddle","orb_strangle")
+
+def hypothesis_for(candidate):
+    fam=candidate["family"]
+    if fam=="orb":
+        return f"Break the first {candidate['range_bars']*5}-minute range with a {candidate['buffer']:.2f} range-width buffer; buy the directional option and hold {candidate['hold']*5} minutes."
+    if fam=="trend":
+        return f"An EMA {candidate['fast']}/{candidate['slow']} cross, optionally confirmed by VWAP, predicts continuation over {candidate['hold']*5} minutes."
+    if fam=="gap_cont":
+        return f"An opening gap of at least {candidate['gap']:.2%} continues intraday; buy the gap-direction option after the opening bars."
+    if fam=="gap_fade":
+        return f"An opening gap of at least {candidate['gap']:.2%} mean-reverts; buy the opposite-direction option after the opening bars."
+    if fam=="pullback":
+        return f"A {candidate['fast']}/{candidate['slow']} EMA trend resumes after a VWAP reclaim/rejection; hold {candidate['hold']*5} minutes."
+    if fam in ("orb_straddle","orb_strangle"):
+        structure="ATM long straddle" if fam=="orb_straddle" else "one-step OTM long strangle"
+        return f"An opening-range break predicts enough realized movement to cover the cost of a {structure} over {candidate['hold']*5} minutes."
+    if fam=="always_call":
+        return f"Fixed-time long-call benchmark, {candidate['hold']*5}-minute holding period, moneyness offset {candidate.get('money',0)}."
+    if fam=="always_put":
+        return f"Fixed-time long-put benchmark, {candidate['hold']*5}-minute holding period, moneyness offset {candidate.get('money',0)}."
+    if fam=="always_straddle":
+        return f"Fixed-time ATM long-straddle benchmark with {candidate['hold']*5}-minute holding period."
+    if fam=="always_strangle":
+        return f"Fixed-time one-step OTM long-strangle benchmark with {candidate['hold']*5}-minute holding period."
+    return "Structured long-premium strategy hypothesis."
+
+def random_genome(rng, expiry_flags, family=None):
+    fam=family or str(rng.choice(EVOLVABLE_FAMILIES))
+    expiry=str(rng.choice(expiry_flags))
+    hold=int(rng.choice((1,3,6,12,24)))
+    money=int(rng.integers(0,2))
+    c={"family":fam,"hold":hold,"expiry":expiry,"money":money}
+    if fam in ("orb","orb_straddle","orb_strangle"):
+        c["range_bars"]=int(rng.choice((1,3,6)))
+        c["buffer"]=float(rng.choice((0.0,0.1,0.25,0.4)))
+        if fam in ("orb_straddle","orb_strangle"): c.pop("money",None)
+    elif fam=="trend":
+        fast,slow=((5,13),(8,21),(9,34),(13,34))[int(rng.integers(0,4))]
+        c.update({"fast":fast,"slow":slow,"vwap_filter":bool(rng.integers(0,2))})
+    elif fam in ("gap_cont","gap_fade"):
+        c["gap"]=float(rng.choice((0.0015,0.0025,0.005,0.0075,0.01)))
+    elif fam=="pullback":
+        fast,slow=((5,13),(8,21),(9,34))[int(rng.integers(0,3))]
+        c.update({"fast":fast,"slow":slow})
+    return c
+
+def crossover_genome(a,b,rng,expiry_flags):
+    fam=str(rng.choice((a["family"],b["family"]))) if rng.random()<0.45 else str(rng.choice(EVOLVABLE_FAMILIES))
+    child=random_genome(rng,expiry_flags,fam)
+    for key in ("hold","expiry","money","range_bars","buffer","fast","slow","vwap_filter","gap"):
+        if key in child:
+            candidates=[p[key] for p in (a,b) if key in p]
+            if candidates and rng.random()<0.8: child[key]=candidates[int(rng.integers(0,len(candidates)))]
+    if "fast" in child and "slow" in child and child["fast"]>=child["slow"]:
+        child["fast"],child["slow"]=(5,13) if child["fast"]==5 else (8,21)
+    return child
+
+def mutate_genome(parent,rng,expiry_flags):
+    c=dict(parent)
+    if rng.random()<0.12:
+        return random_genome(rng,expiry_flags)
+    if rng.random()<0.08:
+        fam=str(rng.choice(EVOLVABLE_FAMILIES))
+        return random_genome(rng,expiry_flags,fam)
+    c["hold"]=int(rng.choice((1,3,6,12,24))) if rng.random()<0.4 else c["hold"]
+    c["expiry"]=str(rng.choice(expiry_flags)) if rng.random()<0.25 else c["expiry"]
+    if "money" in c and rng.random()<0.25: c["money"]=1-int(c["money"])
+    if c["family"] in ("orb","orb_straddle","orb_strangle"):
+        if rng.random()<0.4: c["range_bars"]=int(rng.choice((1,3,6)))
+        if rng.random()<0.4: c["buffer"]=float(rng.choice((0.0,0.1,0.25,0.4)))
+    elif c["family"]=="trend":
+        if rng.random()<0.5:
+            c["fast"],c["slow"]=((5,13),(8,21),(9,34),(13,34))[int(rng.integers(0,4))]
+        if rng.random()<0.3: c["vwap_filter"]=not bool(c["vwap_filter"])
+    elif c["family"] in ("gap_cont","gap_fade"):
+        if rng.random()<0.5: c["gap"]=float(rng.choice((0.0015,0.0025,0.005,0.0075,0.01)))
+    elif c["family"]=="pullback":
+        if rng.random()<0.5: c["fast"],c["slow"]=((5,13),(8,21),(9,34))[int(rng.integers(0,3))]
+    if "fast" in c and "slow" in c and c["fast"]>=c["slow"]:
+        c["fast"],c["slow"]=(5,13) if c["fast"]==5 else (8,21)
+    return c
+
+def fitness_from_validation(result):
+    mean=float(result.get("validation_mean_daily_net_rupees",0.0) or 0.0)
+    sharpe=float(result.get("validation_sharpe_ratio",0.0) or 0.0)
+    pf=result.get("validation_profit_factor")
+    pf=float(pf) if pf is not None and math.isfinite(float(pf)) else 0.1
+    pf=max(0.05,min(pf,5.0))
+    dd=float(result.get("validation_max_drawdown_fraction",0.0) or 0.0)
+    n=int(result.get("validation_trade_count",0) or 0)
+    score=0.45*math.tanh(sharpe/2.0)+0.25*math.tanh(mean/500.0)+0.20*math.tanh(math.log(pf))-2.0*dd
+    if mean<=0: score-=0.8
+    if float(result.get("train_mean_daily_net_rupees",0.0) or 0.0)<=0: score-=0.2
+    if n<30: score-=1.0
+    return float(score)
+
+def niche_key(candidate,result):
+    n=int(result.get("validation_trade_count",0) or 0)
+    freq="low" if n<20 else ("mid" if n<80 else "high")
+    dd=float(result.get("validation_max_drawdown_fraction",0.0) or 0.0)
+    risk="low" if dd<0.02 else ("mid" if dd<0.08 else "high")
+    return "|".join((candidate["family"],freq,risk))
+
+def trim_island(keys,eval_cache,population_size):
+    unique=[]
+    for k in keys:
+        if k in eval_cache and k not in unique: unique.append(k)
+    unique.sort(key=lambda k:eval_cache[k]["fitness"],reverse=True)
+    keep=[]; niches=set()
+    for k in unique:
+        niche=eval_cache[k]["niche"]
+        if niche not in niches:
+            keep.append(k); niches.add(niche)
+        if len(keep)>=population_size: return keep[:population_size]
+    for k in unique:
+        if k not in keep: keep.append(k)
+        if len(keep)>=population_size: break
+    return keep[:population_size]
+
+def run_quant_evolve(u,o,expiry_flags):
+    # QuantEvolve-inspired: four-island search, hypothesis templates, niche archive, crossover,
+    # mutation, migration, validation-only fitness. The final chronological block is not touched here.
+    cfg=json.loads(CONFIG_PATH.read_text())
+    rng=np.random.default_rng(int(cfg["random_seeds"][1]))
+    budget=int(cfg["candidate_budget_unique"]); max_gen=int(cfg["max_generations"])
+    n_islands=int(cfg["islands"]); pop_size=int(cfg["population_size"])
+    children_per_island=12
+    all_genomes={}; meta={}; eval_cache={}; archive={}; trace=[]
+    islands=[[] for _ in range(n_islands)]
+    baselines=[x for x in candidates_for(expiry_flags) if x["family"].startswith("always_")]
+    for i,cand in enumerate(baselines):
+        key=genome_key(cand); all_genomes.setdefault(key,cand)
+        meta.setdefault(key,{"generation_created":0,"island_created":i%n_islands,"parent_key":"","hypothesis":hypothesis_for(cand),"origin":"fixed_baseline"})
+        islands[i%n_islands].append(key)
+    for i in range(n_islands):
+        attempts=0
+        while len(islands[i])<pop_size and attempts<10000:
+            attempts+=1
+            cand=random_genome(rng,expiry_flags); key=genome_key(cand)
+            all_genomes.setdefault(key,cand)
+            if key not in islands[i]: islands[i].append(key)
+            meta.setdefault(key,{"generation_created":0,"island_created":i,"parent_key":"","hypothesis":hypothesis_for(cand),"origin":"random_seed"})
+    if len(all_genomes)>budget:
+        all_genomes=dict(list(all_genomes.items())[:budget])
+        allowed=set(all_genomes)
+        islands=[[k for k in pop if k in allowed] for pop in islands]
+    def evaluate_new(keys):
+        todo=[k for k in dict.fromkeys(keys) if k not in eval_cache and k in all_genomes]
+        if not todo: return
+        candidates=[all_genomes[k] for k in todo]
+        output=backtest(u,o,expiry_flags,candidates_override=candidates,include_oos=False,bootstrap_reps=0)
+        if output.get("status")!="PASS_ANALYZED":
+            raise RuntimeError("validation evaluation blocked: "+str(output.get("reason",output.get("status"))))
+        for row in output["results"]:
+            cand=row["candidate"]; key=genome_key(cand)
+            fit=fitness_from_validation(row); niche=niche_key(cand,row)
+            saved={k:v for k,v in row.items() if k not in ("candidate","trades")}
+            saved.update({"candidate":cand,"fitness":fit,"niche":niche,"hypothesis":hypothesis_for(cand)})
+            eval_cache[key]=saved
+            current=archive.get(niche)
+            if current is None or fit>current["fitness"]:
+                archive[niche]={"candidate_key":key,"fitness":fit,"candidate":cand,
+                    "validation_mean_daily_net_rupees":row.get("validation_mean_daily_net_rupees"),
+                    "validation_sharpe_ratio":row.get("validation_sharpe_ratio"),
+                    "validation_profit_factor":row.get("validation_profit_factor"),
+                    "validation_max_drawdown_fraction":row.get("validation_max_drawdown_fraction"),
+                    "validation_trade_count":row.get("validation_trade_count"),
+                    "hypothesis":hypothesis_for(cand)}
+    all_initial=list(all_genomes)
+    evaluate_new(all_initial)
+    for island_id in range(n_islands):
+        islands[island_id]=trim_island(islands[island_id],eval_cache,pop_size)
+    generations_done=0
+    for generation in range(1,max_gen+1):
+        if len(all_genomes)>=budget: break
+        children=[]; child_origins=[]
+        for island_id in range(n_islands):
+            made=0; attempts=0
+            while made<children_per_island and len(all_genomes)+len(children)<budget and attempts<children_per_island*30:
+                attempts+=1
+                local=[k for k in islands[island_id] if k in eval_cache]
+                if not local: break
+                if archive and rng.random()<0.65:
+                    candidates_archive=list(archive.values())
+                    # Uniform niche sampling preserves behavioral diversity; rank is only a secondary bias.
+                    candidates_archive.sort(key=lambda a:a["fitness"],reverse=True)
+                    top=candidates_archive[:max(1,int(len(candidates_archive)*0.7))]
+                    p1=top[int(rng.integers(0,len(top)))]["candidate"]
+                else:
+                    p1=all_genomes[local[int(rng.integers(0,len(local)))]]
+                same_family=[a for a in archive.values() if a["candidate"]["family"]==p1["family"]]
+                cousin_pool=same_family or list(archive.values())
+                if cousin_pool and rng.random()<0.75:
+                    p2=cousin_pool[int(rng.integers(0,len(cousin_pool)))]["candidate"]
+                else:
+                    p2=all_genomes[local[int(rng.integers(0,len(local)))]]
+                child=crossover_genome(p1,p2,rng,expiry_flags)
+                child=mutate_genome(child,rng,expiry_flags)
+                key=genome_key(child)
+                if key in all_genomes or any(genome_key(x)==key for x in children): continue
+                children.append(child)
+                child_origins.append({"key":key,"island":island_id,"generation":generation,"parent":genome_key(p1)})
+                made+=1
+            for record in child_origins[-made:] if made else []:
+                islands[island_id].append(record["key"])
+                meta[record["key"]]={"generation_created":generation,"island_created":island_id,
+                    "parent_key":record["parent"],"hypothesis":hypothesis_for(all_genomes.get(record["parent"],p1) if False else next(x for x in children if genome_key(x)==record["key"])),"origin":"mutation_crossover"}
+        if not children: break
+        # Enforce the unique-candidate budget at insertion, before any evaluation.
+        inserted=[]
+        for child in children:
+            key=genome_key(child)
+            if key not in all_genomes and len(all_genomes)<budget:
+                all_genomes[key]=child; inserted.append(key)
+        evaluate_new(inserted)
+        for island_id in range(n_islands):
+            islands[island_id]=trim_island(islands[island_id],eval_cache,pop_size)
+        # Periodic island migration of the strongest current individual.
+        if generation%5==0:
+            champions=[max(pop,key=lambda k:eval_cache[k]["fitness"]) for pop in islands if pop]
+            for source_id,champion in enumerate(champions):
+                target=(source_id+1)%n_islands
+                if champion not in islands[target]:
+                    islands[target]=trim_island(islands[target]+[champion],eval_cache,pop_size)
+        trace.append({"generation":generation,"unique_candidates_evaluated":len(eval_cache),
+            "qd_archive_niches":len(archive),"new_children":len(inserted),
+            "best_validation_fitness":max((x["fitness"] for x in eval_cache.values()),default=float("nan")),
+            "best_validation_mean_daily_net_rupees":max((float(x.get("validation_mean_daily_net_rupees",0) or 0) for x in eval_cache.values()),default=0.0)})
+        generations_done=generation
+        if len(all_genomes)>=budget: break
+    # Final locked evaluation: all generated candidates are scored against the untouched OOS block once.
+    frozen_keys=list(all_genomes)
+    final=backtest(u,o,expiry_flags,candidates_override=[all_genomes[k] for k in frozen_keys],include_oos=True,bootstrap_reps=0)
+    if final.get("status")!="PASS_ANALYZED": return final
+    selected=sorted(final["results"],key=lambda x:(float(x.get("validation_mean_daily_net_rupees",0) or 0),float(x.get("validation_sharpe_ratio",0) or 0)),reverse=True)[:20]
+    finalist_candidates=[x["candidate"] for x in selected]
+    if finalist_candidates:
+        detail=backtest(u,o,expiry_flags,candidates_override=finalist_candidates,include_oos=True,bootstrap_reps=int(cfg["bootstrap_replicates"]))
+        detail_map={x["candidate_key"]:x for x in detail["results"]}
+        for row in final["results"]:
+            detailed=detail_map.get(row["candidate_key"])
+            if detailed and row["selected_by_validation"]:
+                for k,v in detailed.items():
+                    if k.startswith(("train_","validation_","oos_")) and k!="oos_holm_p":
+                        row[k]=v
+    # Preserve the all-candidate Holm adjustment from the single final OOS evaluation.
+    finalist_keys={genome_key(x) for x in finalist_candidates}
+    for row in final["results"]:
+        key=row["candidate_key"]
+        metadata=meta.get(key,{})
+        row.update({"hypothesis":metadata.get("hypothesis",hypothesis_for(row["candidate"])),
+                    "generation_created":metadata.get("generation_created",0),
+                    "island_created":metadata.get("island_created",-1),
+                    "parent_key":metadata.get("parent_key",""),
+                    "origin":metadata.get("origin","random_or_baseline"),
+                    "evolution_fitness":eval_cache.get(key,{}).get("fitness",float("nan")),
+                    "qd_niche":eval_cache.get(key,{}).get("niche","")})
+        row["selected_by_validation"]=key in finalist_keys
+        # Statistical gate first; the stricter overall promotion gate is applied after source audit.
+        row["statistical_gate_pass"]=bool(
+            row.get("oos_trade_count",0)>=150 and
+            row.get("oos_mean_daily_net_rupees",0)>0 and row.get("oos_median_daily_net_rupees",0)>0 and
+            row.get("oos_daily_net_ci95_low",0)>0 and row.get("oos_holm_p",1)<0.05 and
+            row.get("validation_mean_daily_net_rupees",0)>0 and
+            row.get("oos_stress100_fee20_mean_daily_net_rupees",0)>0)
+        row["promotion_gate_pass"]=False
+    archive_rows=sorted(archive.values(),key=lambda x:x["fitness"],reverse=True)
+    final.update({"evolution":{"method":"bounded QuantEvolve-inspired quality-diversity island evolution",
+        "generations_completed":generations_done,"islands":n_islands,"population_size_per_island":pop_size,
+        "candidate_budget":budget,"unique_candidates":len(all_genomes),"evaluated_candidates":len(eval_cache),
+        "qd_archive_niches":len(archive),"offspring_per_island_per_generation":children_per_island,
+        "selection_metric":"validation-only composite of net P&L, Sharpe, profit factor and drawdown; no final OOS values used during discovery",
+        "implementation_note":"Strategy generation is constrained and template-based, not arbitrary LLM-generated code. Multi-agent roles are implemented as deterministic research/hypothesis/coding/evaluation functions; no unverified LLM API key is required."},
+        "evolution_trace":trace,"qd_archive":archive_rows,"candidate_metadata":meta})
+    return final
+
 def write_outputs(probe, acquisition, underlying, summary, errors):
     OUT.mkdir(parents=True,exist_ok=True)
     (OUT/"source_probe.json").write_text(json.dumps(probe,indent=2,default=str),encoding="utf-8")
@@ -731,7 +1011,7 @@ def main():
             write_outputs(probe,acquisition,underlying,None,acquisition.get("failures",[])+underlying.get("failures",[]))
             print(json.dumps({"status":"DATA_BLOCKED","underlying_rows":len(u),"option_rows":len(o),"probe":probe.get("status")},indent=2))
             return
-        summary=backtest(u,o,expiry_flags)
+        summary=run_quant_evolve(u,o,expiry_flags)
         write_outputs(probe,acquisition,underlying,summary,acquisition.get("failures",[])+underlying.get("failures",[]))
         print(json.dumps({k:v for k,v in summary.items() if k not in ("results","ledger")},indent=2,default=str))
 if __name__=="__main__":
