@@ -35,9 +35,7 @@ def bars():
 def test_opening_range_uses_only_first_three_bars_and_activates_afterward():
     features, metadata = BUILDER.build_features(bars(), minimum_coverage=0.50)
     assert features["opening_range_position"].iloc[:3].isna().all()
-    assert features["opening_range_position"].iloc[3] == pytest.approx(
-        (104 - max(100.5, 101.5, 102.5) if False else features["opening_range_position"].iloc[3])
-    )
+    assert features["opening_range_position"].iloc[3] == pytest.approx(1.5)
     # The first session's fourth-bar close is above the first-three-bar high.
     assert features["opening_range_break"].iloc[3] == "up"
     assert "opening_range_break" in metadata["available_features"]
