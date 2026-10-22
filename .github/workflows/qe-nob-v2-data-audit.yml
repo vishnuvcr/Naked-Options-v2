@@ -67,6 +67,17 @@ jobs:
       - name: Audit acquired or restored local cache
         if: always()
         run: python research/quant-evolve-nob/feature_audit_v2.py
+      - name: Run bounded discovery after cache audit
+        if: success()
+        run: |
+          python research/quant-evolve-nob/run_discovery_v2.py \
+            --budget 1200 \
+            --generations 20 \
+            --population-size 64 \
+            --islands 4 \
+            --seeds 1729 20261022 8675309 31415927 \
+            --finalists 20
+
       - name: Save cache for future QE-NOB-2.0 runs
         if: always()
         uses: actions/cache/save@v4
@@ -84,5 +95,13 @@ jobs:
             reports/quant_evolve_nob_v1/underlying_summary.json
             reports/quant_evolve_nob_v1/source_failures.csv
             reports/quant_evolve_nob_v2/feature_availability.json
+            reports/quant_evolve_nob_v2/run_summary.json
+            reports/quant_evolve_nob_v2/RESULTS.md
+            reports/quant_evolve_nob_v2/candidate_archive.json
+            reports/quant_evolve_nob_v2/candidate_training_metrics.csv
+            reports/quant_evolve_nob_v2/candidate_validation_metrics.csv
+            reports/quant_evolve_nob_v2/finalist_oos_metrics.csv
+            reports/quant_evolve_nob_v2/oos_cost_stress.csv
+            reports/quant_evolve_nob_v2/oos_trade_ledger_sanitized.csv
           if-no-files-found: warn
           retention-days: 90
