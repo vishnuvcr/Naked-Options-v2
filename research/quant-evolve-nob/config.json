@@ -1,5 +1,5 @@
 {
-  "research_id": "QE-NOB-1.0",
+  "research_id": "QE-NOB-2.0",
   "timezone": "Asia/Kolkata",
   "universe": [
     "NIFTY50_OPTIDX_CE",
@@ -8,15 +8,16 @@
     "NIFTY50_LONG_OTM_STRANGLE"
   ],
   "source_cache": "data/cache/quant_evolve_nob_v1",
-  "report_dir": "reports/quant_evolve_nob_v1",
-  "candidate_budget_unique": 600,
-  "max_generations": 25,
-  "population_size": 48,
+  "report_dir": "reports/quant_evolve_nob_v2",
+  "candidate_budget_unique": 1200,
+  "max_generations": 20,
+  "population_size": 64,
   "islands": 4,
   "random_seeds": [
     1729,
     20261022,
-    8675309
+    8675309,
+    31415927
   ],
   "timeframes_minutes": [
     5
@@ -39,17 +40,12 @@
     120
   ],
   "relative_strikes": [
-    -3,
-    -2,
     -1,
     0,
-    1,
-    2,
-    3
+    1
   ],
   "expiry_buckets": [
-    "weekly_near",
-    "monthly_near_if_coverage_allows"
+    "weekly_near"
   ],
   "slippage_bps_per_side": [
     0,
@@ -79,5 +75,5 @@
   "allow_synthetic_prices": false,
   "allow_live_orders": false,
   "fresh_findings_only": true,
-  "note": "Evolution v1 uses fixed holding-period exits; stop/target variants are reserved for Phase 7 finalist robustness tests."
+  "note": "QE-NOB-2.0 acquisition reuses the prior cache namespace data/cache/quant_evolve_nob_v1 for resumability; current active strategy universe is WEEK1 weekly expiry and ATM/OTM1 only. Monthly expiry is excluded because the runtime audit found no historical monthly cache. Discovery remains blocked until fresh v2 source audit passes."
 }
