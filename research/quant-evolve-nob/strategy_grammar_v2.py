@@ -30,6 +30,8 @@ ALLOWED_EXITS = {
     "regime_invalidation", "underlying_trailing_stop",
     "premium_risk_stop", "premium_target", "trail_after_target",
 }
+# These are the only exit primitives currently executed by the tested OHLC simulator.
+SIMULATOR_SUPPORTED_EXITS = {"time_exit", "premium_risk_stop", "premium_target"}
 ALLOWED_INSTRUMENTS = {"CALL", "PUT", "STRADDLE", "STRANGLE"}
 ALLOWED_EXPIRIES = {"WEEK1", "MONTH1"}
 ALLOWED_MONEYNESS = {"ATM", "OTM1", "OTM2"}
@@ -128,8 +130,10 @@ def validate_strategy(s: Strategy, available_features: set[str] | None = None) -
     # Stops/targets must have positive magnitudes; execution semantics belong to simulator.
     for e in s.exits:
         if e.kind in {"underlying_trailing_stop", "premium_risk_stop", "premium_target", "trail_after_target"}:
-            if not isinstance(e.value, (int, float)) or e.value <= 0:
+            if not isinstance(e.value, (int, float)) or isinstance(e.value, bool) or e.value <= 0:
                 raise ValueError(f"{e.kind} requires a positive numeric value")
+        if e.kind == "premium_risk_stop" and e.value > 1:
+            raise ValueError("premium_risk_stop must be <= 1.0")
 
 
 def to_dict(s: Strategy, include_lineage: bool = True) -> dict[str, Any]:
@@ -178,8 +182,7 @@ def mutate(s: Strategy, rng: random.Random, available_features: set[str] | None 
     predicates = list(s.predicates)
     exits = list(s.exits)
     operation = rng.choice(["replace_feature", "replace_operator", "add_predicate", "remove_predicate",
-                            "flip_logic", "replace_exit", "change_entry", "change_hold", "change_instrument"])
-    entry_modes = ["signal", "regime_then_signal", "breakout_then_retest", "volatility_expansion"]
+                            "flip_logic", "replace_exit", "change_hold", "change_instrument"])
     operators = ["gt", "lt", "cross_up", "cross_down", "in_bucket", "regime_is"]
     if operation == "replace_feature":
         i = rng.randrange(len(predicates)); p = predicates[i]
@@ -203,11 +206,9 @@ def mutate(s: Strategy, rng: random.Random, available_features: set[str] | None 
     elif operation == "flip_logic":
         logic = "or" if s.logic == "and" else "and"
     elif operation == "replace_exit":
-        i = rng.randrange(len(exits)); kind = rng.choice(sorted(ALLOWED_EXITS - {exits[i].kind}))
-        value = 0.02 if kind in {"underlying_trailing_stop", "premium_risk_stop", "premium_target", "trail_after_target"} else None
+        i = rng.randrange(len(exits)); kind = rng.choice(sorted(SIMULATOR_SUPPORTED_EXITS - {exits[i].kind}))
+        value = 0.02 if kind in {"premium_risk_stop", "premium_target"} else None
         exits[i] = ExitRule(kind, value)
-    elif operation == "change_entry":
-        entry_mode = rng.choice([x for x in entry_modes if x != s.entry_mode])
     elif operation == "change_hold":
         hold_bars = rng.choice([x for x in (1, 2, 3, 6, 12, 24, 36, 48, 60) if x != s.hold_bars])
     elif operation == "change_instrument":
@@ -240,7 +241,7 @@ def mutate(s: Strategy, rng: random.Random, available_features: set[str] | None 
                 val = 0.0
             predicates[j] = Predicate(p.feature, op, val, second)
     child = Strategy(
-        entry_mode=locals().get("entry_mode", s.entry_mode),
+        entry_mode=s.entry_mode,
         predicates=tuple(predicates),
         logic=locals().get("logic", s.logic),
         instrument=locals().get("instrument", s.instrument),
