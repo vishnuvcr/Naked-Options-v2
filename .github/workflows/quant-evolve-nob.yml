@@ -1,0 +1,104 @@
+name: QuantEvolve fresh naked option buying research
+
+on:
+  workflow_dispatch:
+    inputs:
+      refresh_data:
+        description: Force refresh in the isolated QE-NOB-1.0 data cache
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches:
+      - research/quant-evolve-nob-v1-developer
+    paths:
+      - research/quant-evolve-nob/**
+      - .github/workflows/quant-evolve-nob.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: quant-evolve-nob-v1-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  fresh-option-buying-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 210
+    steps:
+      - name: Checkout the isolated QE-NOB developer branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-research.txt
+
+      - name: Restore fresh-study market-data cache only
+        uses: actions/cache@v4
+        with:
+          path: data/cache/quant_evolve_nob_v1
+          key: qe-nob-v1-${{ runner.os }}-${{ hashFiles('research/quant-evolve-nob/run_research.py', 'research/quant-evolve-nob/config.json') }}-${{ github.run_id }}
+          restore-keys: |
+            qe-nob-v1-${{ runner.os }}-${{ hashFiles('research/quant-evolve-nob/run_research.py', 'research/quant-evolve-nob/config.json') }}-
+            qe-nob-v1-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-research.txt scipy pandas numpy requests pytest
+
+      - name: Test cost, cache parsing and search invariants before network calls
+        run: pytest -q research/quant-evolve-nob/test_run_research.py
+
+      - name: Run fresh QuantEvolve study
+        env:
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          REFRESH_DATA: ${{ inputs.refresh_data }}
+        run: |
+          if [ "$REFRESH_DATA" = "true" ]; then
+            python research/quant-evolve-nob/run_research.py --stage full --refresh-data
+          else
+            python research/quant-evolve-nob/run_research.py --stage full
+          fi
+
+      - name: Persist isolated raw data cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/cache/quant_evolve_nob_v1
+          key: qe-nob-v1-${{ runner.os }}-${{ hashFiles('research/quant-evolve-nob/run_research.py', 'research/quant-evolve-nob/config.json') }}-${{ github.run_id }}
+
+      - name: Re-test strategy mathematics after run
+        if: always()
+        run: pytest -q research/quant-evolve-nob/test_run_research.py
+
+      - name: Upload sanitized QE-NOB reports (never upload raw option quotes)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qe-nob-v1-reports-${{ github.run_id }}
+          path: reports/quant_evolve_nob_v1/
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Commit sanitized run records to the isolated developer branch
+        if: always()
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/quant_evolve_nob_v1 research/quant-evolve-nob/RESULTS.md
+          if git diff --cached --quiet; then
+            echo "No sanitized report files changed."
+          else
+            git commit -m "research(QE-NOB-1.0): save sanitized run $RUN_ID results"
+            git push
+          fi
