@@ -7,6 +7,7 @@ MODULE_PATH = Path(__file__).with_name("feature_audit_v2.py")
 SPEC = importlib.util.spec_from_file_location("feature_audit_v2", MODULE_PATH)
 AUDIT = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader
+sys.modules[SPEC.name] = AUDIT
 SPEC.loader.exec_module(AUDIT)
 audit, inspect_json = AUDIT.audit, AUDIT.inspect_json
 
