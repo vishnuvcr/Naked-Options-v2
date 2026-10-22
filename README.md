@@ -460,3 +460,10 @@ The structural-discovery branch now has tested components for typed strategy gra
 - [Bounded acquisition/cache audit workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/.github/workflows/qe-nob-v2-data-audit.yml) · [Current acquisition run #39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257)
 
 **Evidence boundary:** acquisition is still running, and the runtime cache has not yet passed the current Phase 2 audit. No QE-NOB-2.0 candidate has been fitness-scored on verified market data; there is no P&L result or profitable strategy claim. The execution gate remains false because rolling OHLC does not establish exact contract identity, historical bid/ask/depth, or broker fills. Search remains capped at 1,500 unique candidates and 20 generations. No tester branch/report will be created, per the user's instruction.
+
+
+### QE-NOB-2.0 test gate — 2026-10-22 21:15 IST
+
+The bounded discovery runner now has passing automated tests for compilation, chronology/statistical utilities, candidate generation and training-only fitness: [runner tests #39807638261](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39807638261), [candidate/training fitness tests #39807602936](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39807602936). The runner separates training, validation and final OOS blocks; feature eligibility is determined from training-period coverage only; it applies block-bootstrap uncertainty, Holm correction and cost stresses to frozen finalists.
+
+**Still blocked:** the bounded Dhan/cache acquisition run [#39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257) is still running. No real-data discovery result, OOS performance claim, or profitable strategy is available yet. Exact contract identity and executable bid/ask/depth remain unverified, so the execution gate stays FAIL.
