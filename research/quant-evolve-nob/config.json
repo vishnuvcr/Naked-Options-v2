@@ -1,26 +1,74 @@
 {
   "research_id": "QE-NOB-1.0",
   "timezone": "Asia/Kolkata",
-  "universe": ["NIFTY50_OPTIDX_CE", "NIFTY50_OPTIDX_PE", "NIFTY50_LONG_ATM_STRADDLE", "NIFTY50_LONG_OTM_STRANGLE"],
+  "universe": [
+    "NIFTY50_OPTIDX_CE",
+    "NIFTY50_OPTIDX_PE",
+    "NIFTY50_LONG_ATM_STRADDLE",
+    "NIFTY50_LONG_OTM_STRANGLE"
+  ],
   "source_cache": "data/cache/quant_evolve_nob_v1",
   "report_dir": "reports/quant_evolve_nob_v1",
   "candidate_budget_unique": 600,
   "max_generations": 25,
   "population_size": 48,
   "islands": 4,
-  "random_seeds": [1729, 20261022, 8675309],
-  "timeframes_minutes": [1, 5, 15],
-  "opening_range_minutes": [5, 15, 30],
+  "random_seeds": [
+    1729,
+    20261022,
+    8675309
+  ],
+  "timeframes_minutes": [
+    5
+  ],
+  "opening_range_minutes": [
+    5,
+    15,
+    30
+  ],
   "entry_time_ist": "after_signal_bar_only",
-  "exit_modes": ["time_exit", "underlying_stop", "premium_stop", "underlying_target", "premium_target"],
-  "holding_period_minutes": [5, 10, 15, 30, 60, 120],
-  "relative_strikes": [-3, -2, -1, 0, 1, 2, 3],
-  "expiry_buckets": ["weekly_near", "monthly_near_if_coverage_allows"],
-  "slippage_bps_per_side": [0, 25, 50, 100, 200],
-  "brokerage_rupees_per_order": [10, 20],
+  "exit_modes": [
+    "time_exit",
+    "underlying_stop",
+    "premium_stop",
+    "underlying_target",
+    "premium_target"
+  ],
+  "holding_period_minutes": [
+    5,
+    10,
+    15,
+    30,
+    60,
+    120
+  ],
+  "relative_strikes": [
+    -3,
+    -2,
+    -1,
+    0,
+    1,
+    2,
+    3
+  ],
+  "expiry_buckets": [
+    "weekly_near",
+    "monthly_near_if_coverage_allows"
+  ],
+  "slippage_bps_per_side": [
+    0,
+    25,
+    50,
+    100,
+    200
+  ],
+  "brokerage_rupees_per_order": [
+    10,
+    20
+  ],
   "primary_slippage_bps": 50,
   "primary_brokerage_rupees_per_order": 10,
-  "minimum_opportunity_coverage": 0.90,
+  "minimum_opportunity_coverage": 0.9,
   "maximum_conflicting_duplicate_rate": 0.005,
   "minimum_total_oos_trades": 150,
   "minimum_oos_trades_per_subperiod": 40,
@@ -34,5 +82,6 @@
   "allow_test_period_tuning": false,
   "allow_synthetic_prices": false,
   "allow_live_orders": false,
-  "fresh_findings_only": true
+  "fresh_findings_only": true,
+  "note": "Implementation uses 5-minute bars; source/contract execution gates remain explicit."
 }
