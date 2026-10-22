@@ -116,3 +116,10 @@ The discovery-runner CI passed after adding the stricter cache audit gate: [run 
 - Estimated full option request grid is 732 groups (two expiry families × 61 chunks × three offsets × two sides). Approximately 307 historical weekly files in the amended offsets appear reusable, leaving roughly 425 option groups plus up to 23 underlying-history chunks and source probes. This is a planning estimate; only resumed workflow logs/audits establish actual acquisition status.
 - Independent source-client CI passed at check suite [#107965316843](https://github.com/vishnuvcr/Naked-Options-v2/commit/8241ef05cea41a75a309f2cec979f0b69587a2e7/checks) before the latest scope narrowing. Latest grammar/source changes must pass their own subsequent CI before being treated as verified.
 - Current gate is still **Phase 2 IN PROGRESS**, Phase 5 empirical discovery BLOCKED pending the resumed cache audit, Phases 6–7 NOT STARTED, and execution FAIL. No candidate scores or strategy profitability have been established.
+
+
+## Scope-amendment regression checkpoint — 2026-10-23
+
+- Grammar CI passed on [check suite #107968717033](https://github.com/vishnuvcr/Naked-Options-v2/commit/ada4d63039e4449465d6c7c4bb23230b844df240/checks), including the explicit test that OTM2 is rejected and mutations remain within ATM/OTM1.
+- Source-client CI on the ATM/OTM1 branch failed because a progress-counter fixture retained two old ten-request assertions. Those assertions were corrected to six in commit [ad0a7b65](https://github.com/vishnuvcr/Naked-Options-v2/commit/ad0a7b65b9141e303e239a130ed38a552793ee60). Its next source-client check is queued (suite #107969795697); no pass is claimed yet.
+- The in-progress data-workflow check at this checkpoint still originates from recovery commit [706a27fa](https://github.com/vishnuvcr/Naked-Options-v2/commit/706a27fa6c1d464eebd06b50b54894ec6da97e64), which predates the ATM/OTM1 amendment. It must be replaced by the specifically gated recovery commit so the restarted acquisition uses the current amended code and retained cache.
