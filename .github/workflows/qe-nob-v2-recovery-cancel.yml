@@ -1,0 +1,62 @@
+name: QE-NOB-2.0 one-time stale-run cancellation
+
+on:
+  push:
+    branches:
+      - research/quant-evolve-nob-v2-discovery-developer
+    paths:
+      - .github/workflows/qe-nob-v2-recovery-cancel.yml
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: GitHub Actions workflow run ID to cancel
+        required: true
+        type: string
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cancel-stale-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Cancel the one stale run, if it is still active
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_RUN_ID: ${{ inputs.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN_ID="${INPUT_RUN_ID:-39834802715}"
+          case "$RUN_ID" in
+            ''|*[!0-9]*)
+              echo "Invalid workflow run ID."
+              exit 2
+              ;;
+          esac
+          API="https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
+          state="$(curl --fail --silent --show-error \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            "$API" | python -c 'import json,sys; print(json.load(sys.stdin).get("status","unknown"))')"
+          echo "Target run $RUN_ID status before cancellation: $state"
+          if [ "$state" = "completed" ]; then
+            echo "The target run is already complete; nothing to cancel."
+            exit 0
+          fi
+          code="$(curl --silent --show-error --output /tmp/cancel-response.json \
+            --write-out '%{http_code}' --request POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            "$API/cancel")"
+          cat /tmp/cancel-response.json
+          echo
+          if [ "$code" = "202" ]; then
+            echo "Cancellation requested for run $RUN_ID."
+          else
+            echo "GitHub returned HTTP $code while cancelling run $RUN_ID."
+            exit 1
+          fi
