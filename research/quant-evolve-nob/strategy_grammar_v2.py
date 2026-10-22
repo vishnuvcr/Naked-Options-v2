@@ -216,8 +216,8 @@ def mutate(s: Strategy, rng: random.Random, available_features: set[str] | None 
     else:
         # For bounded mutations that cannot apply (e.g. adding a fifth predicate),
         # change the exit rather than silently returning the parent unchanged.
-        i = rng.randrange(len(exits)); kind = rng.choice(sorted(ALLOWED_EXITS - {exits[i].kind}))
-        value = 0.02 if kind in {"underlying_trailing_stop", "premium_risk_stop", "premium_target", "trail_after_target"} else None
+        i = rng.randrange(len(exits)); kind = rng.choice(sorted(SIMULATOR_SUPPORTED_EXITS - {exits[i].kind}))
+        value = 0.02 if kind in {"premium_risk_stop", "premium_target"} else None
         exits[i] = ExitRule(kind, value)
     # Repair type mismatches introduced by feature/operator mutation instead of
     # emitting invalid candidates that silently fail later during evaluation.
