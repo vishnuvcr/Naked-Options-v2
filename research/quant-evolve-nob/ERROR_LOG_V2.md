@@ -54,3 +54,9 @@ This log records concrete defects, workflow outcomes and protocol deviations. It
 
 | QE-NOB2-E031 | 2026-10-23 | HIGH | The acquisition workflow reused reports/quant_evolve_nob_v1, so an old acquisition_summary.json with 1,708 CACHED_PASS requests was packaged beside a fresh cache audit from a cancelled run. Treating that summary as current would falsely close Phase 2. | Set current client OUT to reports/quant_evolve_nob_v2 and changed the workflow artifact allowlist to use v2 summaries. Keep the data cache namespace v1 only for historical cache reuse. | FIXED IN CURRENT SOURCE/WORKFLOW; VERIFY WITH FRESH ARTIFACT |
 | QE-NOB2-E032 | 2026-10-23 | MEDIUM | Initial month-family notes inferred there were zero MONTH1 files from an earlier artifact. A later manifest contains 11 historical month files, all in the first two 30-day chunks; this remains far below the 366-file five-year ATM/OTM1 target grid. | Corrected source catalogue, research plan, phase status, and README to describe 11 partial files and incomplete monthly coverage. Weekly-only remains a bounded protocol decision, not a claim that Dhan or all public sources can never supply monthly data. | DOCUMENTATION CORRECTED; FRESH WEEKLY-ONLY RUN IN PROGRESS |
+
+### QE-NOB2-E033 — 2026-10-23 — HIGH
+
+The eligible weekly-only acquisition run #39838508682 failed closed. Dhan returned HTTP 401 with error code DH-901, indicating an invalid or expired access token. The bounded retry could not verify expiry support or retrieve historical 5-minute underlying bars. Historical acquisition is incomplete.
+
+**Remediation:** preserve the partial cache; renew the token or integrate a legally usable alternate source with explicit expiry/contract fields and underlying history. Do not run candidate fitness until the Phase 2 data gate passes. Status: source blocker confirmed for this run; remediation required.
