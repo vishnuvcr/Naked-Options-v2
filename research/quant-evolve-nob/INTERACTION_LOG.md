@@ -19,3 +19,11 @@ This is an audit of user-facing scope decisions and concrete work. It is not a v
 - User clarified: “No tester”. This fresh QE-NOB study will proceed developer-led; do not create, invoke, or wait for an independent tester branch/report.
 - This changes the governance route only, not the statistical or data-quality gates. Developer-side validation and automated tests remain mandatory; limitations and unresolved execution-data gates must be disclosed.
 - At this update, workflow #39712854501 was still running in the QuantEvolve study step. No strategy result is inferred from an in-progress run.
+
+
+## Run #39712854501 — 2026-10-22
+- The bounded QE-NOB run completed its analysis stage: 600 candidates evaluated; zero passed statistical or execution/promotion gates.
+- Data quality failed on 453 conflicting duplicate groups out of 471 duplicate groups. Historical bid/ask/depth and exact expiry/lot-size mapping remain unverified.
+- Best validation-selected gap-continuation candidate had OOS mean daily net ₹10.68, 95% block CI -₹188.62 to ₹237.43, Holm p=1.0, and stressed mean daily net -₹98.54 at 100-bps/₹20-order assumptions. No strategy is approved.
+- GitHub Actions tests passed (11 passed before and after the run), but the final commit step failed during rebase due to a concurrent INTERACTION_LOG.md conflict. A workflow correction is required; full report artifact remains available at [run #39712854501](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39712854501).
+- User reiterated “No tester”; this research proceeds developer-led and does not claim independent testing.
