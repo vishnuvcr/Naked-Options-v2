@@ -412,3 +412,14 @@ The follow-on research branch now contains a bounded candidate proposal engine w
 - [Workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/.github/workflows/qe-nob-v2-candidate-generator-tests.yml)
 - [Phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md)
 - [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
+
+
+### QE-NOB-2.0 — signal evaluator checkpoint
+
+A leakage-aware signal evaluator and regression tests have been committed to the developer branch. A sparse-signal next-bar timing defect was caught and corrected; the correction is logged. CI is configured but not verified. This is not yet an option backtester and produces no P&L result.
+
+- [Signal evaluator](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/signal_evaluator_v2.py)
+- [Signal evaluator tests](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/test_signal_evaluator_v2.py)
+- [Workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/.github/workflows/qe-nob-v2-signal-evaluator-tests.yml)
+- [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
+- [Phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md)
