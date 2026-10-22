@@ -1,3 +1,8 @@
+## 2026-10-22 — corrected rerun started
+- Current corrected workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) is in progress. The pre-run automated test step passed with the dated-lot regression test included.
+- Stale workflow [#39741823249](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741823249) was canceled during the lot-size correction and its report commit hit rebase conflicts in `source_probe.json` and `acquisition_summary.json`. This is recorded as QE-NOB-E007; concurrency was updated to let corrected source supersede stale runs. The current run should be checked for clean report persistence.
+- No corrected P&L is claimed yet; previous candidate numbers remain superseded until the current run's report is committed and inspected.
+
 ## 2026-10-22 — execution-validation policy and dated lot-size correction
 - User explicitly directed that historical bid/ask/depth and a fully verified Paytm Money tariff should not block the research; continue with available OHLC price data and disclose assumptions.
 - Verified official NSE lot schedules from [FAOP47854](https://archives.nseindia.com/content/circulars/FAOP47854.pdf) (NIFTY 75→50 for monthly July-2021 and weekly August-2021 expiries onward), [FAOP61415](https://nsearchives.nseindia.com/content/circulars/FAOP61415.pdf) (50→25, first revised weekly 2-May-2024 and monthly 30-May-2024), [FAOP64672](https://nsearchives.nseindia.com/content/circulars/FAOP64672.pdf) (25→75; last old weekly 19-Dec-2024 / first new 2-Jan-2025; last old monthly 30-Jan-2025 / first new 27-Feb-2025), and [FAOP70616](https://nsearchives.nseindia.com/content/circulars/FAOP70616.pdf) (75→65; first revised weekly 6-Jan-2026 and monthly 27-Jan-2026).
