@@ -100,12 +100,78 @@ def option_request_body(expiry_flag, expiry_code, offset, side, start, end):
         "requiredData":["open","high","low","close","iv","volume","strike","oi","spot"],
         "fromDate":start.isoformat(), "toDate":end.isoformat()}
 
+def audit_open_dataset_catalog(hf_token=""):
+    # Metadata/licence audit only; no bulk dataset is downloaded unless rights and provenance pass.
+    # HF_TOKEN is used only for dataset catalogue access and is never returned or logged.
+    report={"status":"STARTED","huggingface_queries":[],"zenodo_queries":[],"approved_candidate_count":0,
+            "excluded_count":0,"notes":[]}
+    headers={"Authorization":"Bearer "+hf_token} if hf_token else {}
+    allow={"mit","apache-2.0","cc0-1.0","cc-by-4.0","cc-by-sa-4.0","odc-by","odbl-1.0"}
+    seen=set()
+    for query in ("nifty options","nse options intraday","india index options"):
+        item={"query":query,"status":"UNKNOWN","datasets":[]}
+        try:
+            response=requests.get("https://huggingface.co/api/datasets",
+                params={"search":query,"limit":15,"sort":"downloads","direction":-1},
+                headers=headers,timeout=20)
+            if not response.ok:
+                item.update({"status":"FAIL","http_status":response.status_code})
+            else:
+                payload=response.json()
+                for obj in payload if isinstance(payload,list) else []:
+                    name=str(obj.get("id",obj.get("modelId","")))
+                    if not name or name in seen: continue
+                    seen.add(name)
+                    tags=obj.get("tags",[]) or []
+                    lic=next((str(tag).split(":",1)[1].lower() for tag in tags if str(tag).startswith("license:")),"unknown")
+                    is_options=any(term in (name+" "+" ".join(map(str,tags))).lower() for term in ("nifty","nse","options","option-chain","index-options"))
+                    eligible=bool(is_options and lic in allow)
+                    item["datasets"].append({"repo_id":name,"license":lic,"downloads":obj.get("downloads"),
+                        "last_modified":obj.get("lastModified"),"candidate_relevant":is_options,
+                        "license_allowlisted":lic in allow,"eligible_for_review":eligible})
+                    if eligible: report["approved_candidate_count"]+=1
+                    elif is_options: report["excluded_count"]+=1
+                item["status"]="PASS"
+        except Exception as exc:
+            item.update({"status":"FAIL","error_type":type(exc).__name__})
+        report["huggingface_queries"].append(item)
+    for query in ('title:"Nifty" AND title:"options"','title:"index options"'):
+        item={"query":query,"status":"UNKNOWN","records":[]}
+        try:
+            response=requests.get("https://zenodo.org/api/records",
+                params={"q":query,"size":15,"sort":"mostviewed"},timeout=20)
+            if not response.ok:
+                item.update({"status":"FAIL","http_status":response.status_code})
+            else:
+                payload=response.json()
+                for obj in payload.get("hits",{}).get("hits",[]):
+                    meta=obj.get("metadata",{})
+                    title=str(meta.get("title",""))
+                    rights=meta.get("license")
+                    lic=(rights.get("id") if isinstance(rights,dict) else rights) or "unknown"
+                    lic=str(lic).lower()
+                    url=(obj.get("links",{}) or {}).get("html")
+                    approved=lic in allow
+                    relevant=any(w in title.lower() for w in ("nifty","option","index"))
+                    item["records"].append({"title":title[:180],"license":lic,"url":url,
+                                            "relevant":relevant,"license_allowlisted":approved})
+                    if relevant and approved: report["approved_candidate_count"]+=1
+                    elif relevant: report["excluded_count"]+=1
+                item["status"]="PASS"
+        except Exception as exc:
+            item.update({"status":"FAIL","error_type":type(exc).__name__})
+        report["zenodo_queries"].append(item)
+    report["status"]="PASS" if report["approved_candidate_count"] else "NO_LICENSE_VERIFIED_CANDIDATE"
+    report["notes"].append("Catalogue discovery does not itself grant rights: inspect data card, provenance, schema, and redistribution rights before use.")
+    return report
+
 def probe_sources(token):
     """Small schema/credential probe; never inferred from prior report/cache."""
     end = date.today()
     start = end - timedelta(days=14)
     report = {"research_id":"QE-NOB-1.0", "probed_at_utc":utc_now(),
               "fresh_cache_namespace":str(CACHE.relative_to(ROOT)), "sources":[], "supported_expiries":[]}
+    report["open_dataset_audit"]=audit_open_dataset_catalog(os.getenv("HF_TOKEN","").strip())
     if not token:
         report["status"] = "BLOCKED_NO_DHAN_ACCESS_TOKEN"
         report["notes"] = ["No token was present in the action environment; credentials were not logged."]
