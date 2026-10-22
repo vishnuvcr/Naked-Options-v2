@@ -141,5 +141,11 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 
 ## 2026-10-23 — pre-restart regression disposition
 - Grammar regression suite #107968717033 passed after OTM2 was removed from the allowed moneyness set and seed generator.
-- Source-client suite #107968585646 failed on stale fixture assertions that expected ten request groups after the protocol's offset set changed to (-1, 0, +1). Corrected the remaining two assertions to six; logged defect QE-NOB2-E028. The following source-client check suite #107969795697 is queued and its result is not yet known.
+- Exact CI logs revealed the source-client failure was not the stale request-count assertion originally suspected; it was the consecutive-failure test supplying only six failures in one chunk, below the ten-failure threshold. Corrected the fixture to supply two chunks, so the stop condition should fire on the tenth failure. The earlier diagnosis was amended in QE-NOB2-E028.
 - The recovery handoff still needs a fresh workflow push with the exact one-time phrase so an in-progress workflow that checked out the older five-offset client is cancelled. The restarted run must test the latest branch state before attempting acquisition.
+
+
+
+## 2026-10-23 — exact CI log reviewed
+- Retrieved the failed source-client run #39835953946 job log. Python compilation succeeded; pytest had 17 passed and 1 failed: test_option_acquisition_stops_after_consecutive_failures_and_preserves_cache raised KeyError because the mocked source loop only had six requests in one chunk and therefore could not reach ten consecutive failures.
+- Corrected the test's mocked chunks to provide two contiguous chunks, allowing the loop to reach ten consecutive failures. This is a test-fixture defect, not evidence that the real source client failed to stop in a multi-chunk failure sequence. Re-run CI is pending.
