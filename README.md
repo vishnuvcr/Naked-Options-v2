@@ -486,3 +486,12 @@ The latest live workflow inspection confirms QE-NOB-2.0 is **still in progress, 
 - [QE-NOB-2.0 phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md), [error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md), and [activity log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/INTERACTION_LOG_V2.md) record this checkpoint.
 
 **Current disposition:** Phase 2 remains open; empirical discovery is blocked pending cache audit; execution remains FAIL until exact contract identity and executable quote/fill evidence are verified. No QE-NOB-2.0 profitability result is currently verified. No tester branch/report will be created, per the recorded instruction. The bounded workflow remains responsible for automatic handoff; manual workflow launch is not required.
+
+
+### QE-NOB-2.0 external-source audit — 2026-10-22
+
+The Phase 2 public-source review is recorded in [SOURCE_CATALOG_V2.md](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/SOURCE_CATALOG_V2.md). Official NSE/Nifty Indices reports are candidates for daily index, India VIX and FII/DII context; Cboe/FRED are candidates for lag-aligned daily global volatility/macro context. These have not been added to candidate fitness yet.
+
+Two public Hugging Face options datasets were found but not imported: one has a non-specific 'other' license; the other is CC BY-NC 4.0 and therefore not approved for a trading-oriented evidence pipeline without separate rights. A public GitHub NIFTY OHLC dataset is only a candidate for underlying-bar cross-check after provenance and row-level validation.
+
+**Gate unchanged:** external-source discovery does not complete runtime acquisition. [Acquisition #39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257) is still the controlling data gate; [automatic follow-up #39808171927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39808171927) has no verified discovery result yet. Phase 2 remains open and execution remains FAIL.
