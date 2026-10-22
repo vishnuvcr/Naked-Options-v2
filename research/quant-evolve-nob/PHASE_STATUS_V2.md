@@ -90,3 +90,11 @@ The discovery-runner CI passed after adding the stricter cache audit gate: [run 
 - Original acquisition run #39803647257 remained in progress at the latest check, with no update since 15:18:56 UTC. The corrected check suite is waiting for the concurrency slot. Its exact timeout/completion must be observed; do not assume it timed out or succeeded.
 - Source review caught and corrected a progress-accounting defect and an unchanged underlying timeout in the first patch. The correction is logged as QE-NOB2-E025, with a regression test in `test_run_research.py`. CI outcome remains pending.
 - **Current gate:** Phase 2 remains IN PROGRESS; empirical Phase 5 is BLOCKED pending the runtime cache gate; Phases 6–7 are NOT STARTED; execution remains FAIL. No strategy outcome is available.
+
+
+## Independent source-client CI checkpoint — 2026-10-23 00:17 IST
+
+- Added [independent source-client regression workflow](../../.github/workflows/qe-nob-v2-source-client-tests.yml), with automatic push triggers and a manual dispatch button. It compiles the acquisition client/tests and runs pytest independently of the long acquisition workflow's concurrency group.
+- The new workflow check suite [107965316843](https://github.com/vishnuvcr/Naked-Options-v2/commit/8241ef05cea41a75a309f2cec979f0b69587a2e7/checks) entered IN PROGRESS at 18:46:58 UTC on 2026-10-22. No test conclusion has been observed yet.
+- The original acquisition run #39803647257 was still reported IN PROGRESS at the most recent poll, last updated at 15:18:56 UTC. The recovery workflow suite is still pending behind its concurrency group; the independent test workflow does not share that lock.
+- No empirical result has been produced. Phase 2 is IN PROGRESS, Phase 5 discovery remains BLOCKED, Phases 6–7 remain NOT STARTED, and execution remains FAIL.
