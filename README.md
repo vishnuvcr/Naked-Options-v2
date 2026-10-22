@@ -311,3 +311,8 @@ The corrected duplicate-key diagnostic is valid (0 duplicate groups; 2,600,975 o
 The study proceeds with available rolling option OHLC, modeled adverse slippage and a disclosed fee model; missing bid/ask/depth does not stop statistical analysis. It does prevent a claim of executable fills. No strategy is approved. [Research plan](research/quant-evolve-nob/RESEARCH_PLAN.md) · [Results](research/quant-evolve-nob/RESULTS.md) · [Phase status](research/quant-evolve-nob/PHASE_STATUS.md) · [Error log](research/quant-evolve-nob/ERROR_LOG.md) · [Manuscript](research/quant-evolve-nob/MANUSCRIPT.md) · [Activity log](research/quant-evolve-nob/INTERACTION_LOG.md)
 
 User explicitly declined an independent tester; no tester branch/report is awaited.
+
+
+## QE-NOB-1.0 corrected lot-size reprice audit — 2026-10-22
+
+The earlier P&L metrics were superseded after finding the lot-size proxy error. The saved 483,706-trade ledger has been re-priced using the corrected historical NSE lot-size schedule. No candidate in the frozen 600-candidate set met the joint daily-median, validation and cost-stress prerequisites; see [reprice audit](research/quant-evolve-nob/LOT_SIZE_REPRICE_AUDIT.md). Missing historical bid/ask/depth does not block OHLC-based statistical analysis, but remains an execution-readiness limitation. The corrected full evolution workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) was still running at last check as a single supplementary confirmation. No strategy is approved; no independent tester branch/report is claimed.
