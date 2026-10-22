@@ -20,14 +20,14 @@ def test_cache_filename_parser_loads_fresh_option_rows(tmp_path, monkeypatch):
     monkeypatch.setattr(qe, "OPT_CACHE", opt_cache)
     monkeypatch.setattr(qe, "IDX_CACHE", idx_cache)
 
-    # Two 5-minute bars on 2026-10-21, timestamped in Asia/Kolkata.
-    ts = pd.Timestamp("2026-10-21 09:15", tz="Asia/Kolkata").timestamp()
+    # Two 5-minute bars on 2025-12-30, timestamped in Asia/Kolkata.
+    ts = pd.Timestamp("2025-12-30 09:15", tz="Asia/Kolkata").timestamp()
     timestamps = [int(ts), int(ts + 300)]
     underlying = {
         "timestamp": timestamps, "open": [25000, 25010], "high": [25015, 25025],
         "low": [24995, 25005], "close": [25010, 25020], "volume": [1000, 1100]
     }
-    (idx_cache / "nifty_5m_20261021_20261022.json").write_text(json.dumps(underlying))
+    (idx_cache / "nifty_5m_20251230_20251231.json").write_text(json.dumps(underlying))
 
     side = {
         "timestamp": timestamps, "open": [100, 105], "high": [110, 112],
@@ -36,7 +36,7 @@ def test_cache_filename_parser_loads_fresh_option_rows(tmp_path, monkeypatch):
         "spot": [25010, 25020]
     }
     payload = {"data": {"ce": side, "pe": None}}
-    (opt_cache / "week1_20261021_20261022_+0_call.json").write_text(json.dumps(payload))
+    (opt_cache / "week1_20251201_20251231_+0_call.json").write_text(json.dumps(payload))
 
     u, o = qe.load_frames()
     assert len(u) == 2
@@ -54,12 +54,12 @@ def test_rolling_offset_is_part_of_duplicate_identity(tmp_path, monkeypatch):
     monkeypatch.setattr(qe, "OPT_CACHE", opt_cache)
     monkeypatch.setattr(qe, "IDX_CACHE", idx_cache)
 
-    ts = int(pd.Timestamp("2026-10-21 09:15", tz="Asia/Kolkata").timestamp())
+    ts = int(pd.Timestamp("2025-12-30 09:15", tz="Asia/Kolkata").timestamp())
     underlying = {
         "timestamp": [ts], "open": [25000], "high": [25010],
         "low": [24990], "close": [25005], "volume": [1000]
     }
-    (idx_cache / "nifty_5m_20261021_20261022.json").write_text(json.dumps(underlying))
+    (idx_cache / "nifty_5m_20251230_20251231.json").write_text(json.dumps(underlying))
 
     for offset, price in [(0, 100), (1, 125)]:
         side = {
@@ -68,7 +68,7 @@ def test_rolling_offset_is_part_of_duplicate_identity(tmp_path, monkeypatch):
             "volume": [100], "oi": [1000], "strike": [25000], "spot": [25005]
         }
         payload = {"data": {"ce": side, "pe": None}}
-        (opt_cache / f"week1_20261021_20261022_{offset:+d}_call.json").write_text(json.dumps(payload))
+        (opt_cache / f"week1_20251201_20251231_{offset:+d}_call.json").write_text(json.dumps(payload))
 
     _, options, quality = qe.load_frames(return_quality=True)
     assert len(options) == 2
@@ -272,3 +272,25 @@ def test_active_expiry_families_are_weekly_code_one_only():
         {"flag": "week", "code": 1},
     ]
     assert qe.active_expiry_families([{"flag": "MONTH", "code": 1}]) == []
+
+
+def test_weekly_option_cache_window_requires_all_six_files_per_chunk(tmp_path, monkeypatch):
+    opt_cache = tmp_path / "options"
+    opt_cache.mkdir()
+    monkeypatch.setattr(qe, "ROOT", tmp_path)
+    monkeypatch.setattr(qe, "OPT_CACHE", opt_cache)
+    start, end = date(2025, 12, 1), date(2025, 12, 31)
+    side = {"timestamp": [int(pd.Timestamp("2025-12-30 09:15", tz="Asia/Kolkata").timestamp())],
+            "open": [100], "high": [105], "low": [95], "close": [102], "strike": [25000], "spot": [25005]}
+    payload = {"data": {"ce": dict(side), "pe": dict(side)}}
+    for offset in qe.OPTION_OFFSETS:
+        for option_side in ("CALL", "PUT"):
+            name = f"week1_{start:%Y%m%d}_{end:%Y%m%d}_{offset:+d}_{option_side.lower()}.json"
+            (opt_cache / name).write_text(json.dumps(payload))
+    audit = qe.audit_weekly_option_window(start, end)
+    assert audit["status"] == "PASS"
+    assert audit["expected_file_count"] == audit["valid_nonempty_file_count"] == 6
+    (opt_cache / "week1_20251201_20251231_+1_put.json").unlink()
+    audit = qe.audit_weekly_option_window(start, end)
+    assert audit["status"] == "DATA_LIMITED"
+    assert audit["missing_file_count"] == 1

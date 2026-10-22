@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import time
 from datetime import date, datetime, timedelta
@@ -194,7 +195,7 @@ def download_or_reuse_year(year: int, timeout=(10, 90)) -> tuple[Path, dict[str,
             if len(payload) < 20_000:
                 raise ValueError(f"unexpectedly small yearly CSV for {year}: {len(payload)} bytes")
             # Validate header before replacing any prior local cache.
-            header = pd.read_csv(pd.io.common.BytesIO(payload), nrows=2)
+            header = pd.read_csv(io.BytesIO(payload), nrows=2)
             if not REQUIRED.issubset(set(header.columns)):
                 raise ValueError(f"required fields missing in yearly CSV {year}")
             tmp = path.with_suffix(".csv.tmp")

@@ -21,6 +21,8 @@ OUT = ROOT / "reports" / "quant_evolve_nob_v2"
 SEED = 20261022
 # QE-NOB-2.0 protocol: weekly expiry only, ATM and one-step OTM only.
 OPTION_OFFSETS = (-1, 0, 1)
+STUDY_START_DATE = date(2021, 10, 23)
+STUDY_END_EXCLUSIVE = date(2025, 12, 31)
 OPTION_REQUEST_TIMEOUT_SECONDS = 25
 OPTION_REQUEST_ATTEMPTS = 2
 MAX_CONSECUTIVE_OPTION_FAILURES = 10
@@ -461,6 +463,9 @@ def load_frames(return_quality=False):
     if not bars:
         return (pd.DataFrame(),pd.DataFrame(),quality) if return_quality else (pd.DataFrame(),pd.DataFrame())
     u=pd.DataFrame(bars).drop_duplicates("timestamp").sort_values("timestamp")
+    start_epoch=int(pd.Timestamp(STUDY_START_DATE, tz=TIME_ZONE).timestamp())
+    end_epoch=int(pd.Timestamp(STUDY_END_EXCLUSIVE, tz=TIME_ZONE).timestamp())
+    u=u[(u.timestamp >= start_epoch) & (u.timestamp < end_epoch)].copy()
     u["dt"]=pd.to_datetime(u.timestamp,unit="s",utc=True).dt.tz_convert(TIME_ZONE)
     u["date"]=u.dt.dt.date.astype(str); u["time"]=u.dt.dt.strftime("%H:%M")
     u=u[(u["time"] >= "09:15") & (u["time"] <= "15:25")].copy()
@@ -479,6 +484,11 @@ def load_frames(return_quality=False):
         except Exception: continue
         opts.extend(payload_rows(obj,flag,code,off,side))
     o=pd.DataFrame(opts)
+    if not o.empty:
+        start_epoch=int(pd.Timestamp(STUDY_START_DATE, tz=TIME_ZONE).timestamp())
+        end_epoch=int(pd.Timestamp(STUDY_END_EXCLUSIVE, tz=TIME_ZONE).timestamp())
+        o=o[(o.expiry_flag == "WEEK1") & o.offset.isin(OPTION_OFFSETS) &
+            (o.timestamp >= start_epoch) & (o.timestamp < end_epoch)].copy()
     quality["option_rows_read"]=int(len(o))
     if not o.empty:
         o["dt"]=pd.to_datetime(o.timestamp,unit="s",utc=True).dt.tz_convert(TIME_ZONE)
@@ -505,7 +515,7 @@ def load_frames(return_quality=False):
         common=set(u.timestamp.astype(int)).intersection(set(o.timestamp.astype(int))) if len(o) else set()
         quality["option_timestamp_coverage"]=float(len(common)/len(set(u.timestamp.astype(int))))
         expiries=int(o.expiry_flag.nunique()) if len(o) else 0
-        expected=len(set(u.timestamp.astype(int)))*max(1,expiries)*14
+        expected=len(set(u.timestamp.astype(int)))*max(1,expiries)*len(OPTION_OFFSETS)*2
         observed=len(o[["expiry_flag","side","offset","timestamp"]].drop_duplicates()) if len(o) else 0
         quality["row_grid_coverage"]=float(min(1.0,observed/max(1,expected)))
     return (u,o,quality) if return_quality else (u,o)
@@ -1308,9 +1318,118 @@ def acquisition_ready(acquisition, underlying):
     return acquisition.get("status") == "PASS" and underlying.get("status") == "PASS"
 
 
+def audit_weekly_option_window(start=STUDY_START_DATE, end_exclusive=STUDY_END_EXCLUSIVE):
+    expected = []
+    missing = []
+    empty = []
+    invalid = []
+    checked = 0
+    for d0, d1 in chunks(start, end_exclusive, 30):
+        for offset in OPTION_OFFSETS:
+            for side in ("CALL", "PUT"):
+                path = OPT_CACHE / f"week1_{d0:%Y%m%d}_{d1:%Y%m%d}_{offset:+d}_{side.lower()}.json"
+                expected.append(str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path))
+                if not path.exists():
+                    missing.append(str(path))
+                    continue
+                try:
+                    payload = json.loads(path.read_text(encoding="utf-8"))
+                    state = validate_option_payload(payload, side)
+                    if state != "PASS":
+                        empty.append(str(path))
+                    else:
+                        checked += 1
+                except Exception:
+                    invalid.append(str(path))
+    return {
+        "status": "PASS" if not missing and not empty and not invalid else "DATA_LIMITED",
+        "study_start_inclusive": start.isoformat(),
+        "study_end_exclusive": end_exclusive.isoformat(),
+        "expected_file_count": len(expected),
+        "valid_nonempty_file_count": checked,
+        "missing_file_count": len(missing),
+        "empty_or_invalid_schema_count": len(empty),
+        "json_parse_or_validation_failures": len(invalid),
+        "missing_files_sample": missing[:30],
+        "empty_files_sample": empty[:30],
+        "invalid_files_sample": invalid[:30],
+    }
+
+
+def run_cached_fallback():
+    """Validate a complete cached weekly-option window plus the pinned public spot fallback."""
+    manifest_path = OUT / "public_underlying_manifest.json"
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except Exception:
+        manifest = {"status": "MISSING_PUBLIC_UNDERLYING_MANIFEST"}
+    option_audit = audit_weekly_option_window()
+    u, o, quality = load_frames(return_quality=True)
+    duplicate_rate = quality.get("conflicting_duplicate_rate")
+    if duplicate_rate is None:
+        duplicate_rate = 1.0
+    quality_gates = {
+        "minimum_underlying_rows": len(u) >= 500,
+        "minimum_option_rows": len(o) >= 1000,
+        "option_timestamp_coverage_at_least_0_90": float(quality.get("option_timestamp_coverage", 0.0) or 0.0) >= 0.90,
+        "row_grid_coverage_at_least_0_90": float(quality.get("row_grid_coverage", 0.0) or 0.0) >= 0.90,
+        "conflicting_duplicate_rate_at_most_0_005": float(duplicate_rate) <= 0.005,
+    }
+    passed = option_audit.get("status") == "PASS" and manifest.get("status") == "PASS" and all(quality_gates.values())
+    auth_note = "Dhan returned HTTP 401 DH-901 Invalid_Authentication; no further Dhan calls were attempted for this fallback stage."
+    acquisition = {
+        "research_id": "QE-NOB-2.0",
+        "status": "PASS_CACHED_WEEKLY_OPTIONS" if passed else "DATA_LIMITED",
+        "mode": "cached Dhan rolling-weekly options plus public community NIFTY underlying fallback",
+        "token_status": "BLOCKED_AUTH",
+        "token_error_summary": auth_note,
+        "study_start_inclusive": STUDY_START_DATE.isoformat(),
+        "study_end_exclusive": STUDY_END_EXCLUSIVE.isoformat(),
+        "option_cache_audit": option_audit,
+        "underlying_source": manifest.get("source_name"),
+        "underlying_source_status": manifest.get("status"),
+        "underlying_rows_loaded": int(len(u)),
+        "option_rows_loaded": int(len(o)),
+        "data_quality": quality,
+        "quality_gates": quality_gates,
+        "decision": "PASS_FOR_BOUNDED_EXPLORATORY_DISCOVERY" if passed else "DATA-LIMITED; discovery must remain blocked",
+        "limitations": [
+            "Option history is Dhan rolling-relative-strike OHLC/IV/OI/volume, not stable exchange contract identity.",
+            "Public underlying bars come from a community-maintained mirror, not an official exchange feed.",
+            "No historical bid/ask, depth, or executable broker-fill evidence is available; execution gate remains FAIL.",
+            "The frozen study ends 2025-12-30 IST because this is the latest end of the contiguous complete weekly option cache window.",
+        ],
+    }
+    underlying = {
+        "status": "PASS_PUBLIC_FALLBACK" if manifest.get("status") == "PASS" else manifest.get("status", "FAIL"),
+        "source_name": manifest.get("source_name"),
+        "source_url": manifest.get("source_url"),
+        "source_commit": manifest.get("source_commit"),
+        "study_start_inclusive": STUDY_START_DATE.isoformat(),
+        "study_end_exclusive": STUDY_END_EXCLUSIVE.isoformat(),
+        "rows_loaded": int(len(u)),
+        "manifest_path": str(manifest_path.relative_to(ROOT)) if manifest_path.is_relative_to(ROOT) else str(manifest_path),
+        "limitations": manifest.get("limitations", []),
+    }
+    (OUT / "acquisition_summary.json").write_text(json.dumps(acquisition, indent=2, default=str), encoding="utf-8")
+    (OUT / "underlying_summary.json").write_text(json.dumps(underlying, indent=2, default=str), encoding="utf-8")
+    (OUT / "cached_fallback_summary.json").write_text(json.dumps({
+        "status": "PASS" if passed else "DATA_LIMITED",
+        "acquisition": acquisition,
+        "underlying": underlying,
+    }, indent=2, default=str), encoding="utf-8")
+    pd.DataFrame([{"source": "Dhan", "error_type": "PermissionError", "error_summary": auth_note}]).to_csv(
+        OUT / "source_failures.csv", index=False
+    )
+    print(json.dumps({"status": "PASS" if passed else "DATA_LIMITED", "quality_gates": quality_gates,
+                      "option_cache_audit": option_audit, "underlying_rows": len(u), "option_rows": len(o),
+                      "data_quality": quality}, indent=2, default=str), flush=True)
+    return passed
+
+
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument("--stage",choices=["probe","acquire","full","analyze","status"],default="full")
+    parser.add_argument("--stage",choices=["probe","acquire","cached-fallback","full","analyze","status"],default="full")
     parser.add_argument("--refresh-data",action="store_true")
     args=parser.parse_args()
     ensure_dirs()
@@ -1318,6 +1437,10 @@ def main():
     probe_path=OUT/"source_probe.json"
     if args.stage=="status":
         print(json.dumps({"cache_exists":OPT_CACHE.exists(),"underlying_cache_exists":IDX_CACHE.exists(),"report_dir":str(OUT)},indent=2))
+        return
+    if args.stage=="cached-fallback":
+        if not run_cached_fallback():
+            raise SystemExit(2)
         return
     probe=probe_sources(token) if args.stage in ("probe","acquire","full") else (json.loads(probe_path.read_text()) if probe_path.exists() else {"status":"BLOCKED_NO_PRIOR_PROBE"})
     if args.stage=="probe":

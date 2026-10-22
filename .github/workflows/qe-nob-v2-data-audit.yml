@@ -17,6 +17,10 @@ on:
       - research/quant-evolve-nob/FEATURE_FEASIBILITY_V2.md
       - research/quant-evolve-nob/run_research.py
       - research/quant-evolve-nob/test_run_research.py
+      - research/quant-evolve-nob/acquire_public_underlying.py
+      - research/quant-evolve-nob/test_public_underlying_fallback.py
+      - research/quant-evolve-nob/run_discovery_v2.py
+      - research/quant-evolve-nob/test_run_discovery_v2.py
       - research/quant-evolve-nob/config.json
       - research/quant-evolve-nob/strategy_grammar_v2.py
       - research/quant-evolve-nob/evolve_candidates_v2.py
@@ -64,7 +68,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-research.txt scipy pandas numpy requests pytest
       - name: Validate source client before acquisition
-        run: pytest -q research/quant-evolve-nob/test_run_research.py
+        run: pytest -q research/quant-evolve-nob/test_run_research.py research/quant-evolve-nob/test_public_underlying_fallback.py
       - name: Validate active QE-NOB-2.0 grammar and simulator before acquisition
         run: |
           pytest -q \
@@ -100,6 +104,12 @@ jobs:
               else
                 rc=$?
               fi
+            fi
+            if [ -f reports/quant_evolve_nob_v2/source_probe.json ] && grep -Eq 'DH-901|Invalid_Authentication|HTTP 401' reports/quant_evolve_nob_v2/source_probe.json; then
+              echo "[QE-NOB-2.0] Dhan authentication is invalid or expired. Do not retry the same token; try the cached-weekly-option plus public-underlying fallback."
+              python research/quant-evolve-nob/acquire_public_underlying.py
+              python research/quant-evolve-nob/run_research.py --stage cached-fallback
+              exit $?
             fi
             after="$(cache_state)"
             echo "[QE-NOB-2.0] pass $pass ended rc=$rc; cache fingerprint before=$before after=$after"
@@ -141,6 +151,8 @@ jobs:
             reports/quant_evolve_nob_v2/acquisition_summary.json
             reports/quant_evolve_nob_v2/underlying_summary.json
             reports/quant_evolve_nob_v2/source_failures.csv
+            reports/quant_evolve_nob_v2/public_underlying_manifest.json
+            reports/quant_evolve_nob_v2/cached_fallback_summary.json
             reports/quant_evolve_nob_v2/feature_availability.json
             reports/quant_evolve_nob_v2/run_summary.json
             reports/quant_evolve_nob_v2/RESULTS.md

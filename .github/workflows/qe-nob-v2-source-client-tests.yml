@@ -9,6 +9,8 @@ on:
       - .github/workflows/qe-nob-v2-source-client-tests.yml
       - research/quant-evolve-nob/run_research.py
       - research/quant-evolve-nob/test_run_research.py
+      - research/quant-evolve-nob/acquire_public_underlying.py
+      - research/quant-evolve-nob/test_public_underlying_fallback.py
 
 permissions:
   contents: read
@@ -36,5 +38,7 @@ jobs:
         run: |
           python -m py_compile research/quant-evolve-nob/run_research.py
           python -m py_compile research/quant-evolve-nob/test_run_research.py
+          python -m py_compile research/quant-evolve-nob/acquire_public_underlying.py
+          python -m py_compile research/quant-evolve-nob/test_public_underlying_fallback.py
       - name: Run source-client regression tests
-        run: pytest -q research/quant-evolve-nob/test_run_research.py
+        run: pytest -q research/quant-evolve-nob/test_run_research.py research/quant-evolve-nob/test_public_underlying_fallback.py

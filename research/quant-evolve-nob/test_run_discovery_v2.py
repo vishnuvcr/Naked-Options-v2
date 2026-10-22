@@ -72,3 +72,13 @@ def test_cache_audit_requires_both_source_families_and_zero_parse_failures():
     assert not RUNNER.cache_audit_pass({**good,'parse_failures':1})
     assert not RUNNER.cache_audit_pass({**good,'option_file_count':0})
     assert not RUNNER.cache_audit_pass({'status':'BLOCKED_NO_LOCAL_CACHE'})
+
+
+def test_data_quality_gate_blocks_low_coverage_and_conflicting_duplicates():
+    good = {"option_timestamp_coverage": 0.99, "row_grid_coverage": 0.97,
+            "conflicting_duplicate_rate": 0.001}
+    assert RUNNER.data_quality_gate(good)
+    assert not RUNNER.data_quality_gate({**good, "option_timestamp_coverage": 0.89})
+    assert not RUNNER.data_quality_gate({**good, "row_grid_coverage": 0.89})
+    assert not RUNNER.data_quality_gate({**good, "conflicting_duplicate_rate": 0.006})
+    assert not RUNNER.data_quality_gate({"option_timestamp_coverage": 0.99})

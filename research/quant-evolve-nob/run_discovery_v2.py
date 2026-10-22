@@ -248,6 +248,19 @@ def holm_adjust(pvalues: dict[str, float]) -> dict[str, float]:
     return adjusted
 
 
+def data_quality_gate(quality: dict[str, Any], minimum_coverage: float = 0.90,
+                      maximum_conflicting_duplicate_rate: float = 0.005) -> bool:
+    """Require aligned options/underlying coverage before scoring candidate strategies."""
+    try:
+        option_coverage = float(quality.get("option_timestamp_coverage", 0.0) or 0.0)
+        grid_coverage = float(quality.get("row_grid_coverage", 0.0) or 0.0)
+        conflict_rate = float(quality.get("conflicting_duplicate_rate", 1.0))
+    except (TypeError, ValueError):
+        return False
+    return (option_coverage >= minimum_coverage and grid_coverage >= minimum_coverage and
+            conflict_rate <= maximum_conflicting_duplicate_rate)
+
+
 def cache_audit_pass(audit: dict[str, Any]) -> bool:
     """Fail closed unless both source families are present and every JSON parses."""
     return bool(
@@ -303,6 +316,11 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         )
 
     u, o, quality = source_client.load_frames(return_quality=True)
+    if not data_quality_gate(quality):
+        return output_blocked(
+            "Pre-discovery quality gate failed: require aligned option timestamp/grid coverage >=90% and conflicting duplicate rate <=0.5%.",
+            cache, quality,
+        )
     if len(u) < 500 or len(o) < 1000:
         return output_blocked(
             f"Insufficient cache rows for a bounded study (underlying={len(u)}, options={len(o)}).",
