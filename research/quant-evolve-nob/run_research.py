@@ -975,17 +975,39 @@ def write_outputs(probe, acquisition, underlying, summary, errors):
     candidates=pd.DataFrame([{k:v for k,v in r.items() if k not in ("candidate","trades")} for r in summary["results"]])
     candidates.to_csv(OUT/"candidate_results.csv",index=False)
     pd.DataFrame(summary["ledger"]).to_csv(OUT/"trade_ledger_sanitized.csv",index=False)
-    selected=candidates[candidates.selected_by_validation==True].sort_values(["validation_mean_daily_net_rupees","validation_daily_net_ci95_low"],ascending=False)
-    keep=["candidate_id","candidate_key","validation_mean_daily_net_rupees","oos_trade_count","oos_mean_daily_net_rupees","oos_median_daily_net_rupees","oos_daily_net_ci95_low","oos_daily_net_ci95_high","oos_win_rate","oos_profit_factor","oos_total_net_rupees","oos_holm_p","promotion_gate_pass"]
+    selected=candidates[candidates.selected_by_validation==True]
+    if "validation_mean_daily_net_rupees" in selected.columns:
+        selected=selected.sort_values("validation_mean_daily_net_rupees",ascending=False)
+    keep=["candidate_id","candidate_key","family","hypothesis","generation_created","island_created","origin","evolution_fitness",
+          "validation_mean_daily_net_rupees","validation_trade_count","oos_trade_count",
+          "oos_mean_daily_net_rupees","oos_median_daily_net_rupees","oos_daily_net_ci95_low","oos_daily_net_ci95_high",
+          "oos_part1_mean_daily_net_rupees","oos_part2_mean_daily_net_rupees","oos_win_rate","oos_profit_factor",
+          "oos_sharpe_ratio","oos_sortino_ratio","oos_max_drawdown_fraction","oos_total_net_rupees","oos_holm_p",
+          "oos_stress100_fee20_mean_daily_net_rupees","oos_stress200_fee20_mean_daily_net_rupees",
+          "statistical_gate_pass","execution_data_gate_pass","execution_data_gate_reason","promotion_gate_pass"]
     for col in keep:
         if col not in selected.columns: selected[col]=np.nan
     selected[keep].to_csv(OUT/"validation_finalists_oos.csv",index=False)
-    report={k:v for k,v in summary.items() if k not in ("results","ledger")}
-    passing=int(candidates.promotion_gate_pass.fillna(False).sum())
+    report={k:v for k,v in summary.items() if k not in ("results","ledger","candidate_metadata")}
+    statistical_candidates=int(candidates.statistical_gate_pass.fillna(False).sum()) if "statistical_gate_pass" in candidates else 0
+    promoted=int(candidates.promotion_gate_pass.fillna(False).sum()) if "promotion_gate_pass" in candidates else 0
+    quality=summary.get("data_quality",{})
+    coverage=float(quality.get("row_grid_coverage",0.0) or 0.0)
+    conflict_rate=quality.get("conflicting_duplicate_rate")
+    basic_quality_pass=bool(coverage>=0.90 and conflict_rate is not None and float(conflict_rate)<=0.005)
+    execution_ready=bool(basic_quality_pass and quality.get("historical_bid_ask_available",False) and quality.get("exact_expiry_identity_validated",False) and quality.get("historical_lot_size_verified",False))
+    if promoted and execution_ready:
+        decision="PASS_FOR_FURTHER_PAPER_TEST_ONLY"
+    elif statistical_candidates:
+        decision="DATA_LIMITED — statistical candidate(s) found, but execution/contract gate remains unproven"
+    else:
+        decision="NO_STATISTICAL_CANDIDATE — profitability not established; execution data limitations remain"
     best=selected.iloc[0].to_dict() if not selected.empty else {}
-    report.update({"research_id":"QE-NOB-1.0","generated_at_utc":utc_now(),"passing_candidates":passing,
-                   "decision":"PASS_FOR_FURTHER_PAPER_TEST_ONLY" if passing else "NO_PROMOTION",
-                   "data_gate":"LIMITED — rolling OHLC only; no historic bid/ask; lot-size proxy requires contract-master validation",
+    report.update({"research_id":"QE-NOB-1.0","generated_at_utc":utc_now(),
+                   "statistical_candidate_count":statistical_candidates,"promotion_candidate_count":promoted,
+                   "basic_data_quality_gate_pass":basic_quality_pass,"execution_data_gate_pass":execution_ready,
+                   "decision":decision,
+                   "data_gate":"Historical bid/ask/depth not validated; rolling ATM-relative OHLC and date-based lot-size proxy cannot prove executable fills.",
                    "best_validation_finalist":{k:(v.item() if hasattr(v,"item") else v) for k,v in best.items() if k in keep}})
     (OUT/"run_summary.json").write_text(json.dumps(report,indent=2,default=str),encoding="utf-8")
     title="# QE-NOB-1.0 — fresh QuantEvolve-style naked option buying"
