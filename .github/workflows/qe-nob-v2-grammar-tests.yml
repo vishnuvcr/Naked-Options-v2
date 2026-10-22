@@ -8,6 +8,8 @@ on:
     paths:
       - research/quant-evolve-nob/strategy_grammar_v2.py
       - research/quant-evolve-nob/test_strategy_grammar_v2.py
+      - research/quant-evolve-nob/audit_features_v2.py
+      - research/quant-evolve-nob/test_audit_features_v2.py
       - .github/workflows/qe-nob-v2-grammar-tests.yml
 
 permissions:
@@ -30,5 +32,5 @@ jobs:
           python-version: "3.11"
       - name: Install test dependency
         run: python -m pip install --upgrade pytest
-      - name: Test typed strategy grammar
-        run: pytest -q research/quant-evolve-nob/test_strategy_grammar_v2.py
+      - name: Test typed strategy grammar and feature audit
+        run: pytest -q research/quant-evolve-nob/test_strategy_grammar_v2.py research/quant-evolve-nob/test_audit_features_v2.py
