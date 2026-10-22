@@ -226,3 +226,8 @@ Developer instruction: do not start P&L unless expiry mapping and fixed-contract
 - Return/direction predictive edge: NOT ESTABLISHED after multiple-testing correction.
 - Volatility proxy: EXPLORATORY ONLY. QLIKE instability in MLP/Ridge identified; ERR-PRED-004 remains open. Need prespecified floor sensitivity/calibration and future untouched-period replication.
 - Independent tester: not required per user's explicit instruction. Developer-led validation continues; no strategy/P&L gate is opened.
+
+
+## Fresh track added — QE-NOB-1.0 (2026-10-22)
+
+The new long-premium naked option-buying study is tracked separately at [QE-NOB plan](quant-evolve-nob/RESEARCH_PLAN.md), with source/cache names isolated from historical studies. Phase 1 protocol initialized; automated source/data run [#39710205711](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39710205711) is in progress, and a follow-up workflow run will consume the separate cache. No QE-NOB profitability result exists yet. User explicitly directed no tester.
