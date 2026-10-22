@@ -225,7 +225,7 @@ def generate(features: set[str] | None = None, budget: int = 1500, generations: 
         })
     candidates = []
     for idx, (signature, strategy) in enumerate(archive.items()):
-        candidates.append({
+        candidate_item = {
             "candidate_id": idx,
             "signature": signature,
             "strategy": {
@@ -240,8 +240,10 @@ def generate(features: set[str] | None = None, budget: int = 1500, generations: 
                 "hypothesis": strategy.hypothesis,
                 "parents": list(strategy.parents),
             },
-            "training_fitness": fitness_archive.get(signature) if fitness_evaluator is not None else None,
-        })
+        }
+        if fitness_evaluator is not None:
+            candidate_item["training_fitness"] = fitness_archive.get(signature)
+        candidates.append(candidate_item)
     return {
         "schema_version": "qe-nob-candidate-archive-v2.0",
         "status": "TRAINING_FITNESS_SCORED" if fitness_evaluator is not None else "CANDIDATES_GENERATED_NOT_BACKTESTED",
