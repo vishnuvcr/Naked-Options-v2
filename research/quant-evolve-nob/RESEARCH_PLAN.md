@@ -96,3 +96,8 @@ The implemented search is explicitly QuantEvolve-inspired, not a claim to reprod
 - The data feed currently provides rolling ATM-relative OHLC; contract/expiry identity and historical bid/ask have not been proven. Thus even a statistical candidate is not called execution validated; the final promotion gate is blocked until those fields are reconciled.
 
 The fresh five-minute option research operates on the 5-minute underlying/option feed only. Config timeframes must match actual implementation; no unsupported 1m/15m claim is made.
+
+
+### Exit-rule implementation clarification — 2026-10-22
+
+The initial evolutionary grammar uses fixed holding-period exits only (5–120 minutes on the 5-minute feed), so Phase 5 stays small and interpretable. Stop/target rules are not generated in the current v1 search; during Phase 7 they may be tested only as prespecified robustness controls on the finalists frozen by validation, not used to widen the search or tune the final OOS block. The config's active exit mode is therefore time_exit. This avoids claiming exit modes the tested code does not implement.
