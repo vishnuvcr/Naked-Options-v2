@@ -1,0 +1,40 @@
+name: QE-NOB-2.0 source client regression tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/quant-evolve-nob-v2-discovery-developer
+    paths:
+      - .github/workflows/qe-nob-v2-source-client-tests.yml
+      - research/quant-evolve-nob/run_research.py
+      - research/quant-evolve-nob/test_run_research.py
+
+permissions:
+  contents: read
+
+jobs:
+  source-client-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout developer branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-research.txt
+      - name: Install source-client test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-research.txt scipy pandas numpy requests pytest
+      - name: Compile source client and regression tests
+        run: |
+          python -m py_compile research/quant-evolve-nob/run_research.py
+          python -m py_compile research/quant-evolve-nob/test_run_research.py
+      - name: Run source-client regression tests
+        run: pytest -q research/quant-evolve-nob/test_run_research.py
