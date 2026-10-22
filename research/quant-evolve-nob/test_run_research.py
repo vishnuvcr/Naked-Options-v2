@@ -175,7 +175,7 @@ def test_oos_gate_requires_baseline_and_two_period_consistency():
 
 
 def test_v2_acquisition_offsets_and_timeout_budget_are_bounded():
-    assert qe.OPTION_OFFSETS == (-2, -1, 0, 1, 2)
+    assert qe.OPTION_OFFSETS == (-1, 0, 1)
     assert qe.OPTION_REQUEST_TIMEOUT_SECONDS == 25
     assert qe.OPTION_REQUEST_ATTEMPTS == 2
     assert qe.MAX_CONSECUTIVE_OPTION_FAILURES == 10
@@ -223,7 +223,7 @@ def test_empty_option_payloads_do_not_pass_source_coverage_gate(tmp_path, monkey
     monkeypatch.setattr(qe, "api_post", empty_api)
     result = qe.retrieve_options("not-a-real-token", [{"flag": "WEEK", "code": 1}])
     assert result["status"] == "PARTIAL"
-    assert result["requests_recorded"] == result["requests_expected"] == 10
+    assert result["requests_recorded"] == result["requests_expected"] == 6
     assert result["nonempty_response_count"] == 0
     assert result["data_response_fraction"] == 0.0
     assert not list(opt_cache.glob("*.json"))
@@ -256,5 +256,5 @@ def test_option_request_progress_counts_each_pair_once(tmp_path, monkeypatch):
     assert result["requests_processed"] == result["requests_expected"] == 10
     assert result["requests_recorded"] == 10
     assert result["cached_files_reused"] == 1
-    assert result["downloaded_files"] == 9
-    assert calls["n"] == 9
+    assert result["downloaded_files"] == 5
+    assert calls["n"] == 5
