@@ -124,7 +124,9 @@ def audit_open_dataset_catalog(hf_token=""):
                     seen.add(name)
                     tags=obj.get("tags",[]) or []
                     lic=next((str(tag).split(":",1)[1].lower() for tag in tags if str(tag).startswith("license:")),"unknown")
-                    is_options=any(term in (name+" "+" ".join(map(str,tags))).lower() for term in ("nifty","nse","options","option-chain","index-options"))
+                                    search_text=(name+" "+" ".join(map(str,tags))).lower()
+                    is_india_index=any(term in search_text for term in ("nifty","nse","india","index-options"))
+                    is_options=any(term in search_text for term in ("option","options")) and is_india_index
                     eligible=bool(is_options and lic in allow)
                     item["datasets"].append({"repo_id":name,"license":lic,"downloads":obj.get("downloads"),
                         "last_modified":obj.get("lastModified"),"candidate_relevant":is_options,
@@ -672,6 +674,9 @@ def backtest(u,o,expiry_flags,candidates_override=None,include_oos=True,bootstra
                     entry_missing=True; break
                 legs.append({"side":side,"strike":strike,"entry":entry,"exit":xt,"iv":iv})
             if entry_missing or not legs: continue
+            if c["family"] in ("orb_straddle","orb_strangle","always_straddle","always_strangle") and len(legs)==2:
+                if c["family"] in ("orb_straddle","always_straddle") and round(float(legs[0]["strike"]),2)!=round(float(legs[1]["strike"]),2):
+                    continue
             result=cost_and_pnl(legs,day,50,10)
             stress100=reprice_premium_turnovers(result["raw_buy_premium_turnover_rupees"],result["raw_sell_premium_turnover_rupees"],day,100,20,len(legs))
             stress200=reprice_premium_turnovers(result["raw_buy_premium_turnover_rupees"],result["raw_sell_premium_turnover_rupees"],day,200,20,len(legs))
@@ -764,6 +769,8 @@ def hypothesis_for(candidate):
         return f"Fixed-time long-call benchmark, {candidate['hold']*5}-minute holding period, moneyness offset {candidate.get('money',0)}."
     if fam=="always_put":
         return f"Fixed-time long-put benchmark, {candidate['hold']*5}-minute holding period, moneyness offset {candidate.get('money',0)}."
+    if fam=="always_momentum":
+        return f"Always enter at 09:25 after the first two completed bars, buying the call or put matching the initial move; hold {candidate['hold']*5} minutes."
     if fam=="always_straddle":
         return f"Fixed-time ATM long-straddle benchmark with {candidate['hold']*5}-minute holding period."
     if fam=="always_strangle":
