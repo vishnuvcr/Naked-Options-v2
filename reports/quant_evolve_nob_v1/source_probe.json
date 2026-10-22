@@ -1,6 +1,6 @@
 {
   "research_id": "QE-NOB-1.0",
-  "probed_at_utc": "2026-10-22T05:52:58.452945+00:00",
+  "probed_at_utc": "2026-10-22T07:38:32.993453+00:00",
   "fresh_cache_namespace": "data/cache/quant_evolve_nob_v1",
   "sources": [
     {
@@ -8,7 +8,7 @@
       "expiry_flag": "WEEK",
       "expiry_code": 1,
       "status": "PASS",
-      "rows": 719,
+      "rows": 740,
       "supported": true
     },
     {
@@ -16,7 +16,7 @@
       "expiry_flag": "WEEK",
       "expiry_code": 2,
       "status": "PASS",
-      "rows": 719,
+      "rows": 740,
       "supported": true
     },
     {
@@ -24,7 +24,7 @@
       "expiry_flag": "MONTH",
       "expiry_code": 1,
       "status": "PASS",
-      "rows": 719,
+      "rows": 740,
       "supported": true
     }
   ],
@@ -275,7 +275,7 @@
   },
   "underlying_probe": {
     "status": "PASS",
-    "rows": 700
+    "rows": 721
   },
   "status": "PASS"
 }

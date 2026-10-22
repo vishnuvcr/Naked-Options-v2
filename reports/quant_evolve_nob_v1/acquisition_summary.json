@@ -6,8 +6,7 @@
   "requests_recorded": 1708,
   "failures_count": 0,
   "request_status_counts": {
-    "CACHED_PASS": 1701,
-    "PASS": 7
+    "CACHED_PASS": 1708
   },
   "requests": [
     {
@@ -9407,7 +9406,7 @@
       "to_exclusive": "2022-05-21",
       "offset": -3,
       "side": "PUT",
-      "status": "PASS",
+      "status": "CACHED_PASS",
       "path": "data/cache/quant_evolve_nob_v1/options_rolling/month1_20220421_20220521_-3_put.json"
     },
     {
@@ -9417,7 +9416,7 @@
       "to_exclusive": "2022-05-21",
       "offset": -2,
       "side": "CALL",
-      "status": "PASS",
+      "status": "CACHED_PASS",
       "path": "data/cache/quant_evolve_nob_v1/options_rolling/month1_20220421_20220521_-2_call.json"
     },
     {
@@ -9427,7 +9426,7 @@
       "to_exclusive": "2022-05-21",
       "offset": -2,
       "side": "PUT",
-      "status": "PASS",
+      "status": "CACHED_PASS",
       "path": "data/cache/quant_evolve_nob_v1/options_rolling/month1_20220421_20220521_-2_put.json"
     },
     {
@@ -9437,7 +9436,7 @@
       "to_exclusive": "2022-05-21",
       "offset": -1,
       "side": "CALL",
-      "status": "PASS",
+      "status": "CACHED_PASS",
       "path": "data/cache/quant_evolve_nob_v1/options_rolling/month1_20220421_20220521_-1_call.json"
     },
     {
@@ -9677,7 +9676,7 @@
       "to_exclusive": "2022-07-20",
       "offset": -3,
       "side": "CALL",
-      "status": "PASS",
+      "status": "CACHED_PASS",
       "path": "data/cache/quant_evolve_nob_v1/options_rolling/month1_20220620_20220720_-3_call.json"
     },
     {
@@ -9747,7 +9746,7 @@
       "to_exclusive": "2022-07-20",
       "offset": 0,
       "side": "PUT",
-      "status": "PASS",
+      "status": "CACHED_PASS",
       "path": "data/cache/quant_evolve_nob_v1/options_rolling/month1_20220620_20220720_+0_put.json"
     },
     {
@@ -9817,7 +9816,7 @@
       "to_exclusive": "2022-08-19",
       "offset": -3,
       "side": "CALL",
-      "status": "PASS",
+      "status": "CACHED_PASS",
       "path": "data/cache/quant_evolve_nob_v1/options_rolling/month1_20220720_20220819_-3_call.json"
     },
     {
