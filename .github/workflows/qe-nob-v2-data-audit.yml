@@ -26,6 +26,7 @@ on:
 # Scope amendment 2026-10-23: only ATM and one-step OTM offsets are in the active candidate grammar.
 # Recovery note: resume the ATM/OTM1 cache only; source-client regression tests must pass before acquisition.
 # Weekly-only gate amendment: run all source/grammar/feature/simulator/discovery regression suites before acquisition.
+# Weekly-only restart: prior two-expiry run was cancelled after cache-save; current source and grammar gates must pass first.
 
 permissions:
   contents: read
