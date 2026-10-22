@@ -181,3 +181,16 @@ def test_long_holding_period_is_forced_to_close_same_session():
     assert result["trades"][0]["exit_reason"] == "session_close"
     assert result["trades"][0]["exit_timestamp"] == day1[-1]
     assert result["trades"][0]["legs"][0]["exit_open"] == pytest.approx(11.5)
+
+
+def test_equal_strike_offset_aliases_preserve_entry_keys():
+    options = pd.DataFrame({
+        "timestamp":[2,2,3], "expiry_flag":["WEEK"]*3, "expiry_code":[1,1,1],
+        "side":["CALL"]*3, "offset":[0,1,0], "strike":[100.0,100.0,100.0],
+        "open":[10.0,10.0,11.0], "high":[10.5,10.5,11.5], "low":[9.5,9.5,10.5],
+        "close":[10.2,10.2,11.2],
+    })
+    prepared = sim.prepare_option_index(options)
+    assert ("WEEK1", "CALL", 0, 2) in prepared["entry_lookup"]
+    assert ("WEEK1", "CALL", 1, 2) in prepared["entry_lookup"]
+    assert ("WEEK1", "CALL", 2, 100.0) in prepared["contract_lookup"]
