@@ -3,7 +3,7 @@
 **Audit date:** 2026-10-22  
 **Audit type:** bounded post-hoc revaluation of the saved 600-candidate trade ledger; not a fresh evolutionary run.  
 **Source artifact:** [Actions run #39741806754 artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754/artifacts/12417631602)  
-**Corrected full rerun:** [Actions run #39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025), in progress at the time of this report.
+**Corrected full rerun:** [Actions run #39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025), completed successfully; final corrected results are documented in [RESULTS.md](RESULTS.md) and [the bounded run report](../../reports/quant_evolve_nob_v1/RESULTS.md).
 
 ## Why this audit was needed
 
@@ -44,6 +44,6 @@ The available OHLC data were sufficient to conduct the bounded statistical reval
 
 ## Developer / tester handoff
 
-**Developer:** close the bounded work on this evidence unless the already-running corrected workflow produces materially different metrics; if so, reconcile the result and update the README/manuscript once. Do not restart unbounded discovery.
+**Developer:** the corrected full workflow completed and confirmed no statistical-gate pass. Close the bounded study with the no-go conclusion; do not restart unbounded discovery.
 
 **Tester:** the user explicitly declined an independent tester; no tester branch/report is requested or claimed.
