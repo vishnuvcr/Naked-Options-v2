@@ -26,7 +26,12 @@ def sha256(path: Path) -> str:
 
 
 def inspect_json(path: Path) -> dict[str, Any]:
-    record: dict[str, Any] = {"path": str(path.relative_to(ROOT)), "bytes": path.stat().st_size}
+    try:
+        display_path = str(path.relative_to(ROOT))
+    except ValueError:
+        # Tests and ad-hoc audits may intentionally inspect files outside the checkout.
+        display_path = str(path)
+    record: dict[str, Any] = {"path": display_path, "bytes": path.stat().st_size}
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except Exception as exc:
