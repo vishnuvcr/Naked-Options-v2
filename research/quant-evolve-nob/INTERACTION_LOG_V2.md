@@ -66,3 +66,10 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Fixed the mismatch between candidate expiry names WEEK1/MONTH1 and cached source fields WEEK/MONTH plus expiry code by normalizing a canonical family key in the reusable option index. Added a targeted regression test; the run is pending at checkpoint.
 - Added same-session timing safeguards to prevent intraday signals from silently opening positions on the next session. Signal evaluator #39806277479 and simulator #39806376781 passed.
 - The bounded cache-acquisition workflow #39803647257 remains in progress. No candidate fitness, P&L, or profitability conclusion is claimed while it is running.
+
+## 2026-10-22 — training-only fitness and bounded discovery runner
+- Inspected the existing bounded discovery runner and confirmed it uses four fixed-seed islands, a separate validation block, a sealed chronological OOS block, a 5-session moving-block bootstrap, Holm correction and the declared slippage/brokerage stress grid.
+- Corrected candidate feature eligibility to be based on training-period coverage/variation only; full-sample coverage remains diagnostic. This prevents OOS data from influencing which features enter the search grammar.
+- Added a standalone chronological training-only fitness utility with leakage tests and ensured numeric diagnostics are not automatically treated as Pareto objectives. The production discovery runner retains its own multi-objective fitness implementation because it also scores stability across time blocks.
+- Added automated tests for discovery statistical utilities and connected them to the candidate-generator CI workflow. CI result is pending at this checkpoint.
+- The long-running bounded data acquisition job remains in progress; no market candidate has yet been scored or claimed profitable.
