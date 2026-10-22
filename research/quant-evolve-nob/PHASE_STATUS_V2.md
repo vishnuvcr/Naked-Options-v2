@@ -172,3 +172,9 @@ The discovery-runner CI passed after adding the stricter cache audit gate: [run 
 ## Month-family inventory correction — 2026-10-23
 
 The full audit artifact from run #39837698610 includes 11 MONTH1 cache files in the first two 30-day chunks (6 files in the first and 5 in the second), rather than zero. This remains far below the 366-file target grid for a five-year ATM/OTM1 monthly series. The weekly-only amendment remains justified by incomplete historical coverage, not by a claim of absolute source unavailability. The legacy v1 acquisition_summary.json in the same artifact is stale and is not used as evidence.
+
+
+## Artifact provenance warning — cancelled pre-weekly run
+
+- Inspected the cancelled run #39837698610 artifact [#12451298406](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39837698610/artifacts/12451298406). Its feature audit is current for the enumerated cache and reports one underlying file only: `probe_underlying.json`, 674 timestamps, zero parse failures, no historical underlying cache. However, `acquisition_summary.json` and `underlying_summary.json` are stale v1 summaries: they reference the old -3..+3/two-expiry request grid, claim 1,708 CACHED_PASS requests and 23 cached underlying chunks, and conflict with the current feature audit. They must not be used as acquisition evidence.
+- This is logged as QE-NOB2-E031. The eligible weekly-only run #39838508682 must complete the acquisition step and produce fresh summaries. If it is cancelled before then, its feature audit/cache save can be retained, but the stale source summaries must be ignored.
