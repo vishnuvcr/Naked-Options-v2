@@ -84,3 +84,8 @@ The distribution is skewed: the median model-minus-baseline QLIKE loss differenc
 
 
 Supplemental figure: [Four-window volatility-proxy QLIKE sensitivity](figures/volatility_qlike_subperiod_sensitivity.svg). This partitions the same holdout and is not an independent replication.
+
+
+## QLIKE interpretation caveat — 2026-10-22
+
+The pipeline trains the h1 volatility model on absolute next-session log return and then squares the target, forecast and baseline before applying QLIKE. This makes the scored realized quantity (r_{t+1}^2), but the model forecast is the square of a fitted absolute-return estimate, not a separately trained conditional-variance estimate. Therefore the reported improvement is metric-specific evidence for a variance-scaled volatility proxy; it should not be described as a fully calibrated conditional-variance forecast without additional validation.
