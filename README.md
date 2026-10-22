@@ -333,3 +333,13 @@ QE-NOB-1.0 is closed **NO-GO** for its tested restricted grammar. The follow-on 
 - [Activity log](research/quant-evolve-nob/INTERACTION_LOG_V2.md)
 
 **Current status:** Phase 1 protocol amendment complete; Phase 2 data/feature feasibility is pending runtime coverage checks. The plan caps the new study at 1,500 unique structurally distinct candidates and 20 generations, with novelty-aware multi-objective search, evolvable exit state machines, frozen chronological OOS, Holm correction, block bootstrap and after-cost stress tests. The budget is fixed; this is not an endless search. No new strategy has yet been implemented, run, or shown profitable. No tester branch/report will be created, per the user's explicit instruction.
+
+
+### QE-NOB-2.0 implementation checkpoint — 2026-10-22
+
+Phase 1 protocol and static Phase 2 feasibility audit are documented. A typed structural grammar, novelty metric, mutation/crossover and regression tests are committed. Automated grammar CI is configured but its successful result has not yet been verified; the grammar is not integrated with the backtester and no new strategy results exist.
+
+- [Feature feasibility](research/quant-evolve-nob/FEATURE_FEASIBILITY_V2.md)
+- [Grammar implementation](research/quant-evolve-nob/strategy_grammar_v2.py)
+- [Grammar tests](research/quant-evolve-nob/test_strategy_grammar_v2.py)
+- [Implementation error log](research/quant-evolve-nob/ERROR_LOG_V2.md)
