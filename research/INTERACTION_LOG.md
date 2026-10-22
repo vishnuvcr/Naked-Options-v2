@@ -230,3 +230,10 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Updated main status, Pages warning, sanitized JSON metadata, results, phases, error log, manuscript corrigendum and this interaction log to hold final sign-off. The study plan stays frozen; no strategy or options P&L was advanced.
 - A truly untouched future-period replication cannot be claimed using already-screened historical folds or the short current data extension.
 - Operational actions only; no secrets or hidden reasoning are stored.
+
+
+## 2026-10-22 — volatility score distribution sensitivity
+
+- Performed a non-training artifact diagnostic on the saved h1 global ExtraTrees predictions. Four equal-count chronological slices within the same holdout all had negative mean QLIKE loss differences, with intervals below zero and exploratory within-four-slice Holm p-values <0.01.
+- Checked day-level distribution: median QLIKE loss difference +0.00662; the model's loss was worse than baseline on 50.97% of days; 10% winsorized mean remained negative at −0.10137. This limits interpretation to a skewed mean-score advantage, not consistent daily superiority.
+- Added reusable artifact-audit utility at `research/audits/audit_nifty_predictions.py` and recorded these caveats in RESULTS.md, MANUSCRIPT.md, and the dated audit.
