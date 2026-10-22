@@ -83,7 +83,7 @@ def main():
             seqstatus={"status":"BLOCKED_NO_TORCH","reason":"PyTorch is not installed in this workflow"}
         else:
             regmodels.update(sr); clsmodels.update(sc)
-            seqstatus={"status":"PASS","regression_models":list(sr),"classification_models":list(sc),"epochs":8}
+            seqstatus={"status":"PASS","regression_models":list(sr),"classification_models":list(sc),"epochs":3}
     REPORT.mkdir(parents=True,exist_ok=True)
     (REPORT/"sequence_model_status.json").write_text(json.dumps(seqstatus,indent=2))
     tasks=[("return","target_return"),("level","target_log_close"),("volatility","target_future_vol"),
