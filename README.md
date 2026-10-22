@@ -423,3 +423,14 @@ A leakage-aware signal evaluator and regression tests have been committed to the
 - [Workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/.github/workflows/qe-nob-v2-signal-evaluator-tests.yml)
 - [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
 - [Phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md)
+
+
+### QE-NOB-2.0 — OHLC option simulator checkpoint
+
+An indicative long-option simulator has been added to the developer branch. It models next-bar entries, same-strike exits, dated lot-size proxies, brokerage/statutory fees and adverse slippage, and prevents overlapping positions per candidate. The execution gate remains FAIL without exact contract identity and executable quotes. CI and historical-cache execution are not yet verified.
+
+- [Simulator source](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/option_simulator_v2.py)
+- [Simulator tests](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/test_option_simulator_v2.py)
+- [Workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/.github/workflows/qe-nob-v2-option-simulator-tests.yml)
+- [Phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md)
+- [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
