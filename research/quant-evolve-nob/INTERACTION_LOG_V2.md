@@ -119,3 +119,8 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 ## 2026-10-23 — independent source-client CI
 - Added a separate automatically triggered / manually dispatchable GitHub Actions workflow for source-client compilation and regression tests. This workflow does not use the data-acquisition concurrency group, so it can test fixes while the original acquisition job is stalled.
 - Commit 8241ef05 created check suite 107965316843, which entered IN_PROGRESS. The actual test conclusion has not yet been retrieved; do not treat the run being started as a pass.
+
+
+## 2026-10-23 — source-client CI passed
+- Independent source-client workflow check suite 107965316843 completed SUCCESS (18:47:42 UTC) for commit 8241ef05. Python compilation and pytest steps therefore passed, though the summary endpoint did not expose the individual pytest test count.
+- The data acquisition run #39803647257 still reports IN_PROGRESS with its last API update at 15:18:56 UTC; the current recovery workflow suite remains PENDING behind the concurrency group. Its status needs another live check; no acquisition outcome is inferred.
