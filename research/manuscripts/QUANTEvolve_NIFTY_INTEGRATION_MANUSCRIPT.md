@@ -293,3 +293,12 @@ No prediction edge, profitable strategy, or live-trading readiness is claimed. P
 4. NSE NIFTY 50 F&O contract information: https://betanseapi.nseindia.com/static/products-services/equity-derivatives-nifty50
 5. NSE contract/lot-size circular: https://nsearchives.nseindia.com/content/circulars/FAOP70616.pdf
 6. Google Gemini API model list: https://ai.google.dev/gemini-api/docs/models
+
+
+## Supplemental result — Dhan expired-options API probe (bounded, 22 October 2026)
+
+A single request to Dhan's rolling expired-options endpoint was used to test whether the existing subscription could supply a contract-identified historical series. The request returned HTTP 200 and 1,155 one-minute bars between 3 August 2026 09:15 IST and 5 August 2026 15:39 IST. The response included aligned OHLC, volume, IV, OI, strike, spot and timestamp arrays, with six distinct strikes. The sanitized report is stored at `reports/quantevolve/dhan_options_api_probe.json`.
+
+This is a source-availability result, not a strategy result. The response did not expose a row-level expiry or lot-size field. Because the endpoint returns a rolling ATM class, continuity of a single option contract cannot be inferred. OHLC prices also do not establish executable bid/ask fills. Consequently, the options data gate remains `BLOCKED_NO_VERIFIED_CONTRACT_DATA`; no options P&L, ranking or live recommendation is reported.
+
+The independent bounded HF source audit covers three expiry files and 986,041 rows. Those sampled files passed row-level expiry/strike/type/symbol checks and were mapped to NSE circular-backed lot sizes of 75, 50 and 65 for the sampled cohorts. This limited sample does not demonstrate full-history coverage or complete official MII contract-master reconciliation. Further research should acquire a source with stable contract identifiers and historical lot-size records, then reconcile all expiries against official exchange masters before implementing a cost- and slippage-aware backtest.
