@@ -1,14 +1,14 @@
 # QE-NOB-1.0: A bounded QuantEvolve-inspired search for NIFTY 50 naked option buying
 
-**Status:** exploratory manuscript; no deployable strategy identified; no independent tester per user's explicit instruction.  
-**Latest completed run:** [GitHub Actions #39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754) · **Period:** 2021-10-25 to 2026-10-21. Follow-up [#39741823249](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741823249) is in progress.  
+**Status:** revised rerun pending; previous P&L metrics are superseded by a corrected dated lot-size proxy; no deployable strategy identified; no independent tester per user's explicit instruction.  
+**Latest data-quality run:** [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754) · **Period:** 2021-10-25 to 2026-10-21. Corrected source/test workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) is pending.  
 **Protocol:** [PLAN.md](PLAN.md) · [Results](RESULTS.md) · [Phase status](PHASE_STATUS.md) · [Error log](ERROR_LOG.md).
 
 ## Abstract
 
 This study used a bounded QuantEvolve-inspired quality-diversity search to explore NIFTY 50 long-premium option-buying rules. Eligible positions were long calls, long puts, long straddles and long strangles; short-option legs were excluded. Four islands evaluated 600 unique candidates over nine completed generations. The dataset comprised 92,510 underlying rows and 2,600,975 rolling option rows across 1,241 sessions. After adding ATM offset to the duplicate key, no duplicate groups or rows were removed. This validates request identity only, not exact exchange contract identity. Candidates were selected using chronological training/validation data, and the latest 20% chronology was reserved for final evaluation. After-cost P&L, baseline comparisons, Holm multiplicity correction, block-bootstrap uncertainty, split-half checks and adverse cost stress tests were included.
 
-Zero candidates passed the statistical gate and zero passed the execution/promotion gate. The original duplicate diagnostic was traced to a key that omitted the rolling ATM offset. The corrected key reports zero duplicate groups; exact contract identity remains unverified. Historical bid/ask/depth, exact expiry/strike continuity, dated lot sizes and the effective-date broker tariff remain unverified. The leading validation-selected opening-gap candidate had OOS mean daily net ₹10.68, a 95% block-bootstrap interval of -₹188.62 to ₹237.43, Holm-adjusted p=1.0, and stressed mean daily net of -₹98.54 at 100-bps slippage/₹20 per order. Conclusion: **DATA-LIMITED / NO-GO for strategy approval**. This does not prove all possible strategies unprofitable; the available data are insufficient to establish executable profitability.
+The first completed run reported 0/600 statistical passes, but its P&L values must not be carried forward: the dated lot-size proxy incorrectly used 25 units for all dates before November 2024. That defect is fixed in code and a corrected bounded rerun is pending. The duplicate key includes ATM offset and the data-quality check now reports zero duplicate groups; this is not proof of exact exchange-contract identity. Missing bid/ask/depth will not block the planned OHLC-based statistical run; next-bar OHLC prices use explicitly modeled adverse slippage and disclosed fee assumptions. Exact contract identity and executable fills remain unresolved, so paper/live claims are prohibited regardless of the exploratory result.
 
 ## 1. Research questions and hypotheses
 
@@ -68,7 +68,7 @@ Primary results used one-lot simulated P&L with next-bar-open pricing and prespe
 
 Evaluation included Holm-adjusted candidate-family p-values, block-bootstrap intervals for daily net P&L, OOS split-half metrics, drawdown/profit-factor diagnostics, and paired comparisons with fixed-buy baselines. No candidate cleared all gates.
 
-## 5. Results
+## 5. Preliminary results from the superseded lot-size run (not final)
 
 ### Best validation-selected candidate
 
@@ -149,19 +149,19 @@ The bounded search completed, but **did not identify a strategy that can respons
 6. If any candidate clears all gates, require a separately approved prospective paper-trading period with quote/order logs. No automatic live deployment.
 7. Stop if lawful free data cannot resolve contract identity and execution limitations; do not search endlessly.
 
-## Appendix A. Gate summary
+## Appendix A. Gate summary (updated during correction)
 
-| Gate | Outcome | Reason |
+| Gate | Current status | Reason |
 |---|---|---|
 | Data volume | Passed | Multi-year underlying/options rows acquired |
-| Basic data quality | **Failed** | 453/471 duplicate groups conflict |
-| Search budget | Passed | 600 unique candidates, 9 generations |
-| Locked OOS evaluation | Completed | Final chronology evaluated after selection |
-| Statistical significance | **Failed** | Zero candidates passed; reported finalists Holm p=1.0 |
-| Baseline comparison | **Failed** | Paired interval crosses zero; top finalist p=0.350 |
-| Cost robustness | **Failed** | Top finalist negative under stress scenarios |
-| Execution realism | **Failed** | No validated historical bid/ask/depth or exact contract identity |
-| Promotion | **Failed** | Zero candidates passed strict gate |
+| Duplicate/grid quality | Passed | Offset-aware duplicate key: 0 duplicate groups, 0 rows dropped |
+| Lot-size scaling | Corrected; rerun pending | Prior P&L is superseded due to a wrong pre-Nov-2024 proxy |
+| Search budget | Prior run completed | 600 candidates and 9 generations; corrected metrics pending |
+| Locked OOS evaluation | Prior run completed; rerun pending | Recompute net P&L, uncertainty and rank metrics with corrected lots |
+| Statistical significance | Not yet final | Old zero-pass result is provisional until corrected run |
+| Cost robustness | Not yet final | Corrected gross/net turnover depends on correct lot scaling |
+| Execution realism | Limitation remains | No validated historic best bid/ask/depth or exact contract ID; OHLC analysis proceeds anyway |
+| Promotion | Not approved | No strategy approved; corrected results are still pending |
 
 ## Appendix B. Reproducibility and artifact map
 
@@ -176,4 +176,4 @@ The bounded search completed, but **did not identify a strategy that can respons
 
 ## Appendix C. Developer handoff
 
-Resolve open issues in [ERROR_LOG.md](ERROR_LOG.md), then rerun data-quality and contract-identity gates. Keep candidate rules frozen with respect to locked OOS outcomes. Do not recommend paper or live deployment. No tester branch/report is requested by the user.
+Resolve open issues in [ERROR_LOG.md](ERROR_LOG.md), complete the bounded corrected rerun, and update every metric/result link. Keep candidate rules frozen with respect to locked OOS outcomes. Do not recommend paper or live deployment. Exact quote/contract-ID availability is not a precondition for completing this OHLC-based study. No tester branch/report is requested by the user.
