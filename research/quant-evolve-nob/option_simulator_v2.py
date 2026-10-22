@@ -69,9 +69,76 @@ def _required_columns(frame: pd.DataFrame, required: set[str], label: str) -> No
         raise ValueError(f"{label} missing required columns: {sorted(missing)}")
 
 
+def prepare_option_index(options: pd.DataFrame) -> dict:
+    """Normalize and index rolling option bars once for reuse across many candidates."""
+    required = {"timestamp", "expiry_flag", "side", "offset", "strike", "open"}
+    _required_columns(options, required, "options")
+    o = options.copy()
+    o["timestamp"] = pd.to_numeric(o["timestamp"], errors="coerce")
+    o["offset"] = pd.to_numeric(o["offset"], errors="coerce")
+    o["strike"] = pd.to_numeric(o["strike"], errors="coerce")
+    for col in ("open", "high", "low", "close"):
+        if col in o.columns:
+            o[col] = pd.to_numeric(o[col], errors="coerce")
+    o = o.dropna(subset=["timestamp", "expiry_flag", "side", "offset", "strike", "open"]).copy()
+    if o.empty:
+        return {"entry_lookup": {}, "contract_lookup": {}, "source_rows": 0,
+                "indexed_rows": 0, "conflicting_keys_dropped": 0,
+                "contract_collision_keys_dropped": 0}
+    if (o["offset"] % 1 != 0).any():
+        raise ValueError("option offset must be an integer")
+    o["timestamp"] = o["timestamp"].astype("int64")
+    o["offset"] = o["offset"].astype("int64")
+    o["side"] = o["side"].astype(str).str.upper()
+    o["expiry_flag"] = o["expiry_flag"].astype(str)
+    o = o[o["offset"].between(-2, 2)].copy()
+    key = ["expiry_flag", "side", "offset", "timestamp"]
+    compare_cols = ["strike", "open"] + [name for name in ("high", "low", "close") if name in o.columns]
+    bad_keys = set()
+    duplicate_groups = o[o.duplicated(key, keep=False)]
+    for values, group in duplicate_groups.groupby(key, dropna=False):
+        if any(group[col].nunique(dropna=True) > 1 for col in compare_cols):
+            bad_keys.add(tuple(values if isinstance(values, tuple) else (values,)))
+    if bad_keys:
+        o = o[~o[key].apply(tuple, axis=1).isin(bad_keys)]
+    o = o.drop_duplicates(key, keep="first")
+    o = o[(o["open"] > 0) & (o["strike"] > 0)].copy()
+    o["strike_key"] = o["strike"].round(2)
+
+    # Equal strikes can appear under more than one rolling offset. Do not choose
+    # arbitrarily when their same-timestamp OHLC values disagree.
+    contract_key = ["expiry_flag", "side", "timestamp", "strike_key"]
+    collision_bad = set()
+    collision_rows = o[o.duplicated(contract_key, keep=False)]
+    for values, group in collision_rows.groupby(contract_key, dropna=False):
+        if any(group[col].nunique(dropna=True) > 1 for col in compare_cols if col in group.columns):
+            collision_bad.add(tuple(values if isinstance(values, tuple) else (values,)))
+    if collision_bad:
+        o = o[~o[contract_key].apply(tuple, axis=1).isin(collision_bad)]
+    o = o.drop_duplicates(contract_key, keep="first")
+    entry_lookup = {}
+    contract_lookup = {}
+    price_cols = ["open"] + [col for col in ("high", "low", "close") if col in o.columns]
+    for row in o.itertuples(index=False):
+        family = str(row.expiry_flag)
+        side = str(row.side).upper()
+        ts = int(row.timestamp)
+        strike = round(float(row.strike), 2)
+        vals = {col: getattr(row, col) for col in price_cols}
+        entry_lookup[(family, side, int(row.offset), ts)] = (strike, float(row.open))
+        contract_lookup[(family, side, ts, strike)] = vals
+    return {
+        "entry_lookup": entry_lookup, "contract_lookup": contract_lookup,
+        "source_rows": int(len(options)), "indexed_rows": int(len(o)),
+        "conflicting_keys_dropped": int(len(bad_keys)),
+        "contract_collision_keys_dropped": int(len(collision_bad)),
+    }
+
+
 def simulate_strategy(underlying: pd.DataFrame, options: pd.DataFrame, features: pd.DataFrame,
                       strategy: Strategy, available_features: set[str],
-                      slippage_bps: float = 50, brokerage_per_order: float = 10) -> dict:
+                      slippage_bps: float = 50, brokerage_per_order: float = 10,
+                      prepared_option_index: dict | None = None) -> dict:
     """Simulate long-option candidates using rolling OHLC proxies; never passes execution gate."""
     _required_columns(underlying, {"timestamp", "open", "close"}, "underlying")
     _required_columns(options, {"timestamp", "expiry_flag", "side", "offset", "strike", "open"}, "options")
@@ -99,52 +166,14 @@ def simulate_strategy(underlying: pd.DataFrame, options: pd.DataFrame, features:
     if u["open"].isna().any() or (u["open"] <= 0).any():
         raise ValueError("underlying open prices must be positive and non-null")
 
-    o = options.copy()
-    o["timestamp"] = pd.to_numeric(o["timestamp"], errors="coerce")
-    o["offset"] = pd.to_numeric(o["offset"], errors="coerce")
-    o["strike"] = pd.to_numeric(o["strike"], errors="coerce")
-    for col in ("open", "high", "low", "close"):
-        if col in o.columns:
-            o[col] = pd.to_numeric(o[col], errors="coerce")
-    # Invalid keys are excluded, never coerced to a made-up offset or timestamp.
-    o = o.dropna(subset=["timestamp", "expiry_flag", "side", "offset", "strike", "open"]).copy()
-    if o.empty:
-        raise ValueError("options contains no rows with valid timestamp/contract fields")
-    if (o["offset"] % 1 != 0).any():
-        raise ValueError("option offset must be an integer")
-    o["timestamp"] = o["timestamp"].astype("int64")
-    o["offset"] = o["offset"].astype("int64")
-    o["side"] = o["side"].astype(str).str.upper()
-    o["expiry_flag"] = o["expiry_flag"].astype(str)
-    key = ["expiry_flag", "side", "offset", "timestamp"]
-    compared_cols = ["strike", "open"] + [c for c in ("high", "low", "close") if c in o.columns]
-    bad_keys = set()
-    dup = o[o.duplicated(key, keep=False)]
-    for values, group in dup.groupby(key, dropna=False):
-        if any(group[col].nunique(dropna=True) > 1 for col in compared_cols):
-            bad_keys.add(tuple(values if isinstance(values, tuple) else (values,)))
-    if bad_keys:
-        o = o[~o[key].apply(tuple, axis=1).isin(bad_keys)]
-    o = o.drop_duplicates(key, keep="first")
-    o = o[(o["open"] > 0) & (o["strike"] > 0)].copy()
-    o["strike_key"] = o["strike"].round(2)
-
+    if any(rule.kind in {"premium_risk_stop", "premium_target"} for rule in strategy.exits):
+        _required_columns(options, {"high", "low"}, "options for premium stops/targets")
+    if prepared_option_index is None:
+        prepared_option_index = prepare_option_index(options)
+    entry_lookup = prepared_option_index["entry_lookup"]
+    contract_lookup = prepared_option_index["contract_lookup"]
     signals = evaluate_signals(features, strategy, available_features)
     idx = {int(ts): i for i, ts in enumerate(u["timestamp"])}
-    # Pre-index once. The former per-entry DataFrame filtering made large discovery runs
-    # unnecessarily quadratic in candidates x option rows.
-    entry_lookup = {}
-    contract_lookup = {}
-    price_cols = ["open"] + [col for col in ("high", "low", "close") if col in o.columns]
-    for row in o.itertuples(index=False):
-        family = str(row.expiry_flag)
-        side = str(row.side).upper()
-        ts = int(row.timestamp)
-        strike_key = round(float(row.strike), 2)
-        vals = {col: getattr(row, col) for col in price_cols}
-        entry_lookup[(family, side, int(row.offset), ts)] = (strike_key, float(row.open))
-        contract_lookup[(family, side, ts, strike_key)] = vals
-
     offset_for = {"ATM": 0, "OTM1": 1, "OTM2": 2}
     trades = []
     missing_entries = 0
