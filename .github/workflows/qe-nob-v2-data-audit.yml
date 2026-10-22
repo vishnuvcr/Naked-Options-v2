@@ -1,4 +1,4 @@
-name: QE-NOB-2.0 bounded data acquisition and feature audit
+name: QE-NOB-2.0 bounded data acquisition and feature audit (ATM-OTM1 recovery)
 
 on:
   workflow_dispatch:
@@ -18,6 +18,8 @@ on:
       - research/quant-evolve-nob/run_research.py
       - research/quant-evolve-nob/test_run_research.py
       - research/quant-evolve-nob/config.json
+
+# Scope amendment 2026-10-23: only ATM and one-step OTM offsets are in the active candidate grammar.
 
 permissions:
   contents: read
