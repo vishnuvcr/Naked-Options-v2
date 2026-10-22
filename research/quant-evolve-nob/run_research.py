@@ -163,8 +163,48 @@ def audit_open_dataset_catalog(hf_token=""):
         except Exception as exc:
             item.update({"status":"FAIL","error_type":type(exc).__name__})
         report["zenodo_queries"].append(item)
-    report["status"]="PASS" if report["approved_candidate_count"] else "NO_LICENSE_VERIFIED_CANDIDATE"
-    report["notes"].append("Catalogue discovery does not itself grant rights: inspect data card, provenance, schema, and redistribution rights before use.")
+    for source_name,url,params in (
+        ("github","https://api.github.com/search/repositories",{"q":"NIFTY options intraday dataset","per_page":10}),
+        ("kaggle","https://www.kaggle.com/api/v1/datasets/list",{"search":"NIFTY options intraday","page":1,"pageSize":10})
+    ):
+        item={"source":source_name,"status":"UNKNOWN","records":[]}
+        try:
+            response=requests.get(url,params=params,timeout=20,headers={"Accept":"application/json","User-Agent":"QE-NOB-1.0 research source audit"})
+            if not response.ok:
+                item.update({"status":"FAIL","http_status":response.status_code})
+            else:
+                payload=response.json()
+                records=(payload.get("items",[]) if isinstance(payload,dict) and source_name=="kaggle" else
+                         payload.get("items",[]) if isinstance(payload,dict) else payload if isinstance(payload,list) else [])
+                if source_name=="github" and isinstance(payload,dict):
+                    records=payload.get("items",[])
+                for obj in records[:10]:
+                    if source_name=="github":
+                        name=str(obj.get("full_name",""))
+                        desc=str(obj.get("description",""))
+                        lic=(obj.get("license") or {}).get("spdx_id","unknown")
+                        url_value=obj.get("html_url")
+                        text=(name+" "+desc).lower()
+                        relevant=any(x in text for x in ("nifty","nse","india")) and any(x in text for x in ("option","derivative","market data"))
+                        item["records"].append({"id":name,"title":desc[:180],"license":lic,"url":url_value,"relevant":relevant,"license_allowlisted":str(lic).lower() in allow})
+                    else:
+                        name=str(obj.get("ref",obj.get("title","")))
+                        lic=str(obj.get("licenseName","unknown") or "unknown")
+                        title=str(obj.get("title",""))
+                        subtitle=str(obj.get("subtitle",""))
+                        text=(name+" "+title+" "+subtitle).lower()
+                        relevant=any(x in text for x in ("nifty","nse","india")) and any(x in text for x in ("option","derivative","market data"))
+                        item["records"].append({"id":name,"title":title[:180],"license":lic,"url":("https://www.kaggle.com/datasets/"+name) if name else None,"relevant":relevant,"license_allowlisted":str(lic).lower() in allow})
+                item["status"]="PASS"
+        except Exception as exc:
+            item.update({"status":"FAIL","error_type":type(exc).__name__})
+        report[source_name+"_query"]=item
+        if item["status"]=="PASS":
+            for item_rec in item["records"]:
+                if item_rec.get("relevant") and item_rec.get("license_allowlisted"): report["approved_candidate_count"]+=1
+                elif item_rec.get("relevant"): report["excluded_count"]+=1
+    report["status"]="CATALOGUE_AUDITED" if report["huggingface_queries"] or report["zenodo_queries"] else "AUDIT_FAILED"
+    report["notes"].append("Catalogue discovery is not permission to use data: inspect dataset card, provenance, schema, and redistribution rights before use. The audit never downloads data.")
     return report
 
 def probe_sources(token):
