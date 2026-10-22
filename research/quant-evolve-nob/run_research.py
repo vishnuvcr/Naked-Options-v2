@@ -401,7 +401,10 @@ def signal_events(frame, candidate):
         g["ema_slow"]=g.close.ewm(span=slow,adjust=False).mean()
         sig=None
         family=candidate["family"]
-        if family in ("always_call","always_put","always_straddle","always_strangle"):
+        if family=="always_momentum":
+            direction=1 if float(g.close.iloc[1])>=float(g.open.iloc[0]) else -1
+            sig=(1,direction)
+        elif family in ("always_call","always_put","always_straddle","always_strangle"):
             sig=(1,1 if family in ("always_call","always_straddle","always_strangle") else -1)
         elif family in ("orb","orb_straddle","orb_strangle"):
             nr=int(candidate["range_bars"])
@@ -449,10 +452,10 @@ def candidates_for(expiry_flags):
     result=[]
     holds=(1,3,6,12,24)
     # Fixed-time always-buy comparators are placed first so a hard catalogue cap cannot remove them.
-    for fam in ("always_call","always_put","always_straddle","always_strangle"):
+    for fam in ("always_call","always_put","always_momentum","always_straddle","always_strangle"):
         for hold in (3,6,12,24):
             for ef in expiry_flags:
-                monies=(0,1) if fam in ("always_call","always_put") else (0,)
+                monies=(0,1) if fam in ("always_call","always_put","always_momentum") else (0,)
                 for money in monies:
                     result.append({"family":fam,"hold":hold,"expiry":ef,"money":money})
     for fam in ("orb","orb_straddle","orb_strangle"):
