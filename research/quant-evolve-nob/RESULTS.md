@@ -63,3 +63,14 @@ This uses last-old/first-new expiry dates as trade-date cutoffs because individu
 ## Latest reprice audit
 
 See [LOT_SIZE_REPRICE_AUDIT.md](LOT_SIZE_REPRICE_AUDIT.md). All 483,706 rows from the saved ledger were repriced using the corrected date/family lot schedule. No candidate from this frozen 600-candidate set met the joint median/validation/stress gates. The prior P&L result remains superseded; full corrected re-evolution workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) was in progress at last check.
+
+
+## Corrected full evolutionary rerun — completed 2026-10-22
+
+The corrected run [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) completed successfully. It reran the bounded search after the dated WEEK1/MONTH1 lot-size proxy correction. The run summary reports 1,241 sessions (2021-10-25–2026-10-21), 92,510 underlying rows, 2,600,975 rolling-option rows, 600 unique candidates, four islands and nine generations. All 1,708 acquisition requests were satisfied from the preserved cache; source failures in this corrected run: zero. Pre-run and post-run mathematical/test steps passed, and the sanitized report artifact was uploaded and bounded report files committed.
+
+**Final corrected disposition: NO_STATISTICAL_CANDIDATE.** Zero of 600 candidates passed the statistical gate; zero passed the strict execution/promotion gate. The basic OHLC data-quality gate passed, but the execution data gate did not. Validation-selected candidate 86 had validation mean daily net P&L about ₹116.80; its OOS mean daily net was about ₹6.14, the 95% block-bootstrap lower bound was about −₹195.69, and Holm-adjusted p=1.0. It did not pass the gate. These figures supersede the earlier incorrect lot-size run; they do not establish profitability.
+
+The corrected run summary is [run_summary.json](../../reports/quant_evolve_nob_v1/run_summary.json); its top-candidate table is in [the bounded run report](../../reports/quant_evolve_nob_v1/RESULTS.md), with the full downloadable files in [workflow artifact #39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025). The frozen-ledger reprice audit remains a separate sensitivity check, not a substitute for the corrected evolution.
+
+Execution limitations remain: rolling ATM-relative OHLC does not provide historical bid/ask/depth or stable exact exchange contract identity. Lot sizes are date/family proxies, not an exact instrument-master join. Costs/slippage are modeled. Therefore no paper/live deployment or executable-fill claim is approved. No independent tester was performed, per user's explicit instruction.
