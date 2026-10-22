@@ -60,6 +60,8 @@ def series_part(payload, side):
     if not isinstance(data, dict):
         raise ValueError("data is not an object")
     part = data.get("ce" if side == "CALL" else "pe")
+    if part is None and any(k in data for k in ("timestamp","open","close")):
+        part = data
     if part is None:
         return None
     if not isinstance(part, dict) or "timestamp" not in part:
@@ -370,7 +372,9 @@ def signal_events(frame, candidate):
         g["ema_slow"]=g.close.ewm(span=slow,adjust=False).mean()
         sig=None
         family=candidate["family"]
-        if family in ("orb","orb_straddle","orb_strangle"):
+        if family in ("always_call","always_put","always_straddle","always_strangle"):
+            sig=(1,1 if family in ("always_call","always_straddle","always_strangle") else -1)
+        elif family in ("orb","orb_straddle","orb_strangle"):
             nr=int(candidate["range_bars"])
             if n>nr+1:
                 rh=float(g.high.iloc[:nr].max()); rl=float(g.low.iloc[:nr].min()); width=max(rh-rl,1.0)
@@ -415,6 +419,13 @@ def signal_events(frame, candidate):
 def candidates_for(expiry_flags):
     result=[]
     holds=(1,3,6,12,24)
+    # Fixed-time always-buy comparators are placed first so a hard catalogue cap cannot remove them.
+    for fam in ("always_call","always_put","always_straddle","always_strangle"):
+        for hold in (3,6,12,24):
+            for ef in expiry_flags:
+                monies=(0,1) if fam in ("always_call","always_put") else (0,)
+                for money in monies:
+                    result.append({"family":fam,"hold":hold,"expiry":ef,"money":money})
     for fam in ("orb","orb_straddle","orb_strangle"):
         for nr in (1,3,6):
             for buf in (0.0,0.1,0.25):
@@ -528,11 +539,11 @@ def backtest(u,o,expiry_flags):
             exit_ts=int(daybars.timestamp.iloc[exit_idx])
             if str(daybars.time.iloc[exit_idx])>"15:15": continue
             legs=[]
-            structures=["CALL","PUT"] if c["family"] in ("orb_straddle","orb_strangle") else (["CALL"] if ev["direction"]>0 else ["PUT"])
+            structures=["CALL","PUT"] if c["family"] in ("orb_straddle","orb_strangle","always_straddle","always_strangle") else (["CALL"] if ev["direction"]>0 else ["PUT"])
             entry_missing=False
             for side in structures:
                 offset=0
-                if c["family"]=="orb_strangle":
+                if c["family"] in ("orb_strangle","always_strangle"):
                     offset=1 if side=="CALL" else -1
                 elif c["family"] not in ("orb_straddle","orb_strangle") and int(c.get("money",0))==1:
                     offset=1 if side=="CALL" else -1
@@ -549,7 +560,7 @@ def backtest(u,o,expiry_flags):
             result=cost_and_pnl(legs,day,50,10)
             trades.append({"date":day,"family":c["family"],"expiry":c["expiry"],"entry_timestamp":int(ev["entry_timestamp"]),
                 "exit_timestamp":exit_ts,"direction":ev["direction"],"hold_bars":int(c["hold"]),
-                "structure":"straddle" if c["family"]=="orb_straddle" else ("strangle" if c["family"]=="orb_strangle" else ("CALL" if ev["direction"]>0 else "PUT")),
+                "structure":"straddle" if c["family"] in ("orb_straddle","always_straddle") else ("strangle" if c["family"] in ("orb_strangle","always_strangle") else ("CALL" if ev["direction"]>0 else "PUT")),
                 "gross_pnl_rupees":result["gross_pnl_rupees"],"net_pnl_rupees":result["net_pnl_rupees"],
                 "total_cost_rupees":result["total_cost_rupees"],"entry_debit_rupees":result["entry_debit_rupees"],
                 "brokerage_rupees":result["brokerage_rupees"],"stt_rupees":result["stt_rupees"],
@@ -612,7 +623,7 @@ def write_outputs(probe, acquisition, underlying, summary, errors):
     candidates=pd.DataFrame([{k:v for k,v in r.items() if k not in ("candidate","trades")} for r in summary["results"]])
     candidates.to_csv(OUT/"candidate_results.csv",index=False)
     pd.DataFrame(summary["ledger"]).to_csv(OUT/"trade_ledger_sanitized.csv",index=False)
-    selected=candidates[candidates.selected_by_validation==True].sort_values("oos_mean_daily_net_rupees",ascending=False)
+    selected=candidates[candidates.selected_by_validation==True].sort_values(["validation_mean_daily_net_rupees","validation_daily_net_ci95_low"],ascending=False)
     keep=["candidate_id","candidate_key","validation_mean_daily_net_rupees","oos_trade_count","oos_mean_daily_net_rupees","oos_median_daily_net_rupees","oos_daily_net_ci95_low","oos_daily_net_ci95_high","oos_win_rate","oos_profit_factor","oos_total_net_rupees","oos_holm_p","promotion_gate_pass"]
     for col in keep:
         if col not in selected.columns: selected[col]=np.nan
