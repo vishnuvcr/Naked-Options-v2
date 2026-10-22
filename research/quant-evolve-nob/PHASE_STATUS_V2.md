@@ -98,3 +98,10 @@ The discovery-runner CI passed after adding the stricter cache audit gate: [run 
 - The new workflow check suite [107965316843](https://github.com/vishnuvcr/Naked-Options-v2/commit/8241ef05cea41a75a309f2cec979f0b69587a2e7/checks) entered IN PROGRESS at 18:46:58 UTC on 2026-10-22. No test conclusion has been observed yet.
 - The original acquisition run #39803647257 was still reported IN PROGRESS at the most recent poll, last updated at 15:18:56 UTC. The recovery workflow suite is still pending behind its concurrency group; the independent test workflow does not share that lock.
 - No empirical result has been produced. Phase 2 is IN PROGRESS, Phase 5 discovery remains BLOCKED, Phases 6–7 remain NOT STARTED, and execution remains FAIL.
+
+
+## Independent source-client test outcome — 2026-10-23 00:18 IST
+
+- Independent workflow check suite [107965316843](https://github.com/vishnuvcr/Naked-Options-v2/commit/8241ef05cea41a75a309f2cec979f0b69587a2e7/checks) completed with conclusion SUCCESS at 18:47:42 UTC. This includes Python compilation and the source-client pytest suite; the number of individual tests is not independently exposed by the summary we retrieved.
+- The old acquisition run [#39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257) was still reported IN PROGRESS with an unchanged update timestamp of 15:18:56 UTC at the same check. The corrected acquisition check suite remains PENDING behind its concurrency group. This is a workflow scheduling/runtime block, not a passing or failing market-data result.
+- The independent tests pass, but no verified cache audit, candidate fitness, OOS statistics, or P&L is available. Phase 2 stays IN PROGRESS; Phase 5 discovery stays BLOCKED; Phases 6–7 stay NOT STARTED; execution remains FAIL.
