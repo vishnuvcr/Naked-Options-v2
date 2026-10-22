@@ -450,7 +450,6 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "reason": reason, "generated_at_utc": pd.Timestamp.now(tz="UTC").isoformat(),
             "cache": {k: v for k, v in cache.items() if k != "files"},
             "data_quality": quality, "feature_metadata": feature_meta,
-        "training_feature_metadata": training_feature_meta,
             "training_feature_metadata": training_feature_meta,
             "session_split": {"train": [train_days[0], train_days[-1]],
                               "validation": [validation_days[0], validation_days[-1]],
