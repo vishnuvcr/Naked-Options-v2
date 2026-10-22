@@ -233,6 +233,67 @@
       "holm_p_across_299": 4.264104230004976e-7,
       "status": "numerically reproduced; replication candidate only, not a trading signal"
     },
-    "independent_future_period_replication": "not available from the short new-data extension; prior screened folds cannot be relabelled untouched"
+    "independent_future_period_replication": "not available from the short new-data extension; prior screened folds cannot be relabelled untouched",
+    "loss_distribution_diagnostic": {
+      "median_qlike_loss_difference": 0.006624731422760988,
+      "share_days_model_loss_worse_than_baseline": 0.509683995922528,
+      "winsorized_mean_10pct": -0.101372837,
+      "interpretation": "The overall mean QLIKE improvement is skewed; the model loss is worse on slightly more than half of days. Do not describe this as universal daily superiority."
+    },
+    "same_holdout_subperiod_sensitivity": [
+      {
+        "window": 1,
+        "origin_start": "2022-11-04",
+        "origin_end": "2023-11-01",
+        "n": 246,
+        "mean_qlike_difference": -0.263996,
+        "ci_95pct": [
+          -0.437021,
+          -0.104636
+        ],
+        "hac_p": 0.001492,
+        "holm_p_across_four": 0.003871
+      },
+      {
+        "window": 2,
+        "origin_start": "2023-11-02",
+        "origin_end": "2024-10-25",
+        "n": 245,
+        "mean_qlike_difference": -0.351599,
+        "ci_95pct": [
+          -0.589259,
+          -0.095908
+        ],
+        "hac_p": 0.00666,
+        "holm_p_across_four": 0.00666
+      },
+      {
+        "window": 3,
+        "origin_start": "2024-10-28",
+        "origin_end": "2025-10-21",
+        "n": 245,
+        "mean_qlike_difference": -0.277016,
+        "ci_95pct": [
+          -0.458175,
+          -0.126117
+        ],
+        "hac_p": 0.000793,
+        "holm_p_across_four": 0.003174
+      },
+      {
+        "window": 4,
+        "origin_start": "2025-10-23",
+        "origin_end": "2026-10-19",
+        "n": 245,
+        "mean_qlike_difference": -0.369989,
+        "ci_95pct": [
+          -0.604089,
+          -0.158868
+        ],
+        "hac_p": 0.00129,
+        "holm_p_across_four": 0.003871
+      }
+    ],
+    "same_holdout_subperiod_note": "Exploratory equal-count slices of the same final holdout; not an untouched independent-period replication."
   }
 }
