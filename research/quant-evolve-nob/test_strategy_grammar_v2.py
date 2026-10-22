@@ -78,7 +78,7 @@ def test_mutation_is_deterministic_and_structurally_changes_candidate():
 def test_crossover_records_both_parents_and_is_valid():
     a = base()
     b = Strategy("breakout_then_retest", (Predicate("opening_range_break", "regime_is", "up"),),
-                 "or", "STRANGLE", "MONTH1", "OTM1", 12,
+                 "or", "STRANGLE", "WEEK1", "OTM1", 12,
                  (ExitRule("failed_breakout"),), "Breakout retest hypothesis.")
     child = crossover(a, b, random.Random(9))
     validate_strategy(child)
@@ -130,3 +130,12 @@ def test_otm2_is_excluded_by_the_bounded_phase_two_data_scope():
     for seed in range(50):
         child = mutate(base(), random.Random(seed))
         assert child.moneyness in {"ATM", "OTM1"}
+
+
+def test_monthly_expiry_is_excluded_by_weekly_only_protocol():
+    invalid = Strategy(**{**base().__dict__, "expiry": "MONTH1"})
+    with pytest.raises(ValueError, match="invalid expiry"):
+        validate_strategy(invalid)
+    for seed in range(50):
+        child = mutate(base(), random.Random(seed))
+        assert child.expiry == "WEEK1"
