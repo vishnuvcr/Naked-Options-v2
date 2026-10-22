@@ -85,3 +85,9 @@ def test_holm_adjustment_monotone_in_sorted_p_values():
     order = np.argsort([0.001, 0.02, 0.01, 0.5])
     sorted_adjusted = adjusted[order]
     assert np.all(np.diff(sorted_adjusted) >= -1e-12)
+
+def test_exchange_fee_schedule_is_date_effective():
+    assert qe.exchange_rate("2022-06-01") == 0.000535
+    assert qe.exchange_rate("2023-07-01") == 0.000505
+    assert qe.exchange_rate("2024-07-01") == 0.000500
+    assert qe.exchange_rate("2025-01-01") == 0.0003553
