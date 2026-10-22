@@ -19,6 +19,11 @@ OPT_CACHE = CACHE / "options_rolling"
 IDX_CACHE = CACHE / "underlying_intraday"
 OUT = ROOT / "reports" / "quant_evolve_nob_v1"
 SEED = 20261022
+# The v2 grammar supports ATM and up to two-step OTM instruments only.
+OPTION_OFFSETS = (-2, -1, 0, 1, 2)
+OPTION_REQUEST_TIMEOUT_SECONDS = 25
+OPTION_REQUEST_ATTEMPTS = 2
+MAX_CONSECUTIVE_OPTION_FAILURES = 10
 SEBI_RATE = 0.000001
 STAMP_RATE = 0.00003
 GST_RATE = 0.18
@@ -82,7 +87,7 @@ def validate_option_payload(payload, side):
             raise ValueError("no numeric values in " + key)
     return "PASS"
 
-def api_post(endpoint, body, token, timeout=50):
+def api_post(endpoint, body, token, timeout=OPTION_REQUEST_TIMEOUT_SECONDS):
     response = requests.post("https://api.dhan.co/v2/" + endpoint,
         headers={"Accept":"application/json", "Content-Type":"application/json", "access-token":token},
         json=body, timeout=timeout)
@@ -259,8 +264,13 @@ def retrieve_options(token, supported, refresh=False):
     end = date.today()
     start = max(date(2021,10,22), end - timedelta(days=365*5))
     reqs, failures = [], []
-    pairs = [(offset, side) for offset in range(-3,4) for side in ("CALL","PUT")]
+    pairs = [(offset, side) for offset in OPTION_OFFSETS for side in ("CALL","PUT")]
     planned = 0
+    total_expected = len(supported) * len(list(chunks(start,end,30))) * len(pairs)
+    cached_count = downloaded_count = 0
+    started = time.monotonic()
+    consecutive_failures = 0
+    print(f"[QE-NOB-2.0] option acquisition started: expiry_families={len(supported)}, requests_expected={total_expected}, offsets={OPTION_OFFSETS}", flush=True)
     for expiry in supported:
         flag, code = expiry["flag"], int(expiry["code"])
         for d0,d1 in chunks(start,end,30):
@@ -274,18 +284,24 @@ def retrieve_options(token, supported, refresh=False):
                         state = validate_option_payload(payload,side)
                         reqs.append({"expiry_flag":flag,"expiry_code":code,"from":d0.isoformat(),"to_exclusive":d1.isoformat(),
                                      "offset":offset,"side":side,"status":"CACHED_"+state,"path":str(path.relative_to(ROOT))})
+                        cached_count += 1
+                        planned += 1
+                        if planned % 25 == 0 or planned == total_expected:
+                            print(f"[QE-NOB-2.0] option progress {planned}/{total_expected}; cached={cached_count}; downloaded={downloaded_count}; failures={len(failures)}; elapsed_min={(time.monotonic()-started)/60:.1f}", flush=True)
                         continue
                     except Exception:
                         pass
                 body = option_request_body(flag,code,offset,side,d0,d1-timedelta(days=1))
                 error = None
-                for attempt in range(3):
+                for attempt in range(OPTION_REQUEST_ATTEMPTS):
                     try:
-                        payload = api_post("charts/rollingoption",body,token)
+                        payload = api_post("charts/rollingoption",body,token,timeout=OPTION_REQUEST_TIMEOUT_SECONDS)
                         state = validate_option_payload(payload,side)
                         path.write_text(json.dumps(payload,separators=(",",":")),encoding="utf-8")
                         reqs.append({"expiry_flag":flag,"expiry_code":code,"from":d0.isoformat(),"to_exclusive":d1.isoformat(),
                                      "offset":offset,"side":side,"status":state,"path":str(path.relative_to(ROOT))})
+                        downloaded_count += 1
+                        consecutive_failures = 0
                         error = None
                         break
                     except PermissionError as exc:
@@ -294,14 +310,30 @@ def retrieve_options(token, supported, refresh=False):
                         return {"status":"BLOCKED_AUTH","requests_planned":planned,"requests":reqs,"failures":failures}
                     except Exception as exc:
                         error = type(exc).__name__ + ": " + str(exc)[:180]
-                        if attempt < 2:
-                            time.sleep(2**attempt)
+                        if attempt < OPTION_REQUEST_ATTEMPTS - 1:
+                            time.sleep(1)
                 if error:
                     failures.append({"expiry_flag":flag,"expiry_code":code,"from":d0.isoformat(),"offset":offset,"side":side,"error":error})
+                    consecutive_failures += 1
+                    print(f"[QE-NOB-2.0] option request failed: expiry={flag}{code} offset={offset} side={side} from={d0.isoformat()} consecutive_failures={consecutive_failures}; error={error[:100]}", flush=True)
+                    if consecutive_failures >= MAX_CONSECUTIVE_OPTION_FAILURES:
+                        summary = {"status":"PARTIAL_NO_PROGRESS" if reqs else "BLOCKED_NO_OPTION_DATA",
+                            "range_start":start.isoformat(),"range_end_exclusive":end.isoformat(),
+                            "requests_expected":total_expected,"requests_processed":planned,"requests_recorded":len(reqs),
+                            "cached_files_reused":cached_count,"downloaded_files":downloaded_count,
+                            "failures_count":len(failures),"consecutive_failures":consecutive_failures,
+                            "elapsed_seconds":round(time.monotonic()-started,2),"stopped_early":"consecutive source failures"}
+                        print(f"[QE-NOB-2.0] stopping option acquisition after {consecutive_failures} consecutive failed request groups; valid cache files are preserved.", flush=True)
+                        return {**summary, "requests":reqs, "failures":failures}
+                planned += 1
+                if planned % 25 == 0 or error or planned == total_expected:
+                    print(f"[QE-NOB-2.0] option progress {planned}/{total_expected}; cached={cached_count}; downloaded={downloaded_count}; failures={len(failures)}; elapsed_min={(time.monotonic()-started)/60:.1f}", flush=True)
                 time.sleep(0.15)
     return {"status":"PASS" if reqs and not failures else ("PARTIAL" if reqs else "BLOCKED_NO_OPTION_DATA"),
             "range_start":start.isoformat(),"range_end_exclusive":end.isoformat(),
-            "requests_planned":planned,"requests_recorded":len(reqs),"failures_count":len(failures),
+            "requests_expected":total_expected,"requests_processed":planned,"requests_recorded":len(reqs),
+            "cached_files_reused":cached_count,"downloaded_files":downloaded_count,
+            "elapsed_seconds":round(time.monotonic()-started,2),"failures_count":len(failures),
             "request_status_counts":pd.Series([x["status"] for x in reqs]).value_counts().to_dict(),
             "requests":reqs,"failures":failures}
 
@@ -309,6 +341,9 @@ def retrieve_underlying(token, refresh=False):
     end = date.today()
     start = max(date(2021,10,22), end - timedelta(days=365*5))
     records, failures = [], []
+    started = time.monotonic()
+    total_expected = len(list(chunks(start,end,80)))
+    print(f"[QE-NOB-2.0] underlying acquisition started: requests_expected={total_expected}", flush=True)
     for d0,d1 in chunks(start,end,80):
         name = f"nifty_5m_{d0:%Y%m%d}_{d1:%Y%m%d}.json"
         path = IDX_CACHE / name
@@ -318,6 +353,8 @@ def retrieve_underlying(token, refresh=False):
                 n = len(obj.get("timestamp",[]))
                 if n and all(len(obj.get(k,[])) == n for k in ("open","high","low","close")):
                     records.append({"status":"CACHED","path":str(path.relative_to(ROOT)),"rows":n})
+                    if len(records) % 5 == 0 or len(records) == total_expected:
+                        print(f"[QE-NOB-2.0] underlying progress {len(records)}/{total_expected}; failures={len(failures)}", flush=True)
                     continue
             except Exception:
                 pass
@@ -325,7 +362,7 @@ def retrieve_underlying(token, refresh=False):
                 "fromDate":d0.strftime("%Y-%m-%d 09:15:00"),
                 "toDate":(d1-timedelta(days=1)).strftime("%Y-%m-%d 15:30:00")}
         error = None
-        for attempt in range(3):
+        for attempt in range(OPTION_REQUEST_ATTEMPTS):
             try:
                 obj = api_post("charts/intraday",body,token,timeout=80)
                 n = len(obj.get("timestamp",[]))
@@ -333,6 +370,8 @@ def retrieve_underlying(token, refresh=False):
                     raise ValueError("underlying intraday response schema invalid or empty")
                 path.write_text(json.dumps(obj,separators=(",",":")),encoding="utf-8")
                 records.append({"status":"PASS","path":str(path.relative_to(ROOT)),"rows":n})
+                if len(records) % 5 == 0 or len(records) == total_expected:
+                    print(f"[QE-NOB-2.0] underlying progress {len(records)}/{total_expected}; failures={len(failures)}", flush=True)
                 error = None
                 break
             except PermissionError as exc:
@@ -341,13 +380,15 @@ def retrieve_underlying(token, refresh=False):
                 return {"status":"BLOCKED_AUTH","requests":records,"failures":failures}
             except Exception as exc:
                 error = type(exc).__name__ + ": " + str(exc)[:180]
-                if attempt < 2:
-                    time.sleep(2**attempt)
+                if attempt < OPTION_REQUEST_ATTEMPTS - 1:
+                    time.sleep(1)
         if error:
             failures.append({"from":d0.isoformat(),"error":error})
+            print(f"[QE-NOB-2.0] underlying request failed from={d0.isoformat()}; error={error[:120]}", flush=True)
         time.sleep(0.15)
     return {"status":"PASS" if records and not failures else ("PARTIAL" if records else "BLOCKED_NO_UNDERLYING"),
-            "range_start":start.isoformat(),"range_end_exclusive":end.isoformat(),"requests":records,"failures":failures}
+            "range_start":start.isoformat(),"range_end_exclusive":end.isoformat(),"requests":records,"failures":failures,
+            "requests_expected":total_expected,"requests_recorded":len(records),"elapsed_seconds":round(time.monotonic()-started,2)}
 
 def payload_rows(payload, flag, code, offset, side):
     part = series_part(payload, side)
