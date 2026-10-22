@@ -375,3 +375,17 @@ The first implementation checkpoint is now committed on the [QE-NOB-2.0 develope
 - [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
 
 **Status:** test workflow is configured, but a successful CI run has not yet been verified. The grammar is not integrated with the backtester, runtime feature coverage is not fully audited, and no new strategy has been backtested or shown profitable. The next gate is automated grammar validation and feature-gated simulator integration. No tester branch/report, per user instruction.
+
+
+### QE-NOB-2.0 progress — feature audit tooling
+
+The follow-on branch now includes a cache-schema audit utility, regression tests and a dedicated manual/automatic GitHub Actions workflow. This work helps determine which market features can safely enter structural strategy search; it does not produce trading results.
+
+- [Developer branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v2-discovery-developer)
+- [Feature audit utility](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/feature_audit_v2.py)
+- [Feature audit tests](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/test_feature_audit_v2.py)
+- [Feature audit workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/.github/workflows/qe-nob-v2-feature-audit-tests.yml)
+- [Updated phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md)
+- [Implementation error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
+
+**Current gate:** test workflows have been configured, but successful runs have not been verified; the feature audit has not yet run against the research cache. Backtester integration and the new discovery run remain pending. No new strategy has been shown profitable. No tester branch/report, per the user's instruction.
