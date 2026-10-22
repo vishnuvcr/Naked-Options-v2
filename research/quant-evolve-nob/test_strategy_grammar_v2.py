@@ -1,10 +1,22 @@
+import importlib.util
+from pathlib import Path
 import random
 import pytest
 
-from research.quant_evolve_nob.strategy_grammar_v2 import (
-    Predicate, ExitRule, Strategy, canonical_signature, crossover, mutate,
-    novelty_distance, validate_strategy,
-)
+MODULE_PATH = Path(__file__).with_name("strategy_grammar_v2.py")
+SPEC = importlib.util.spec_from_file_location("strategy_grammar_v2", MODULE_PATH)
+GRAMMAR = importlib.util.module_from_spec(SPEC)
+assert SPEC and SPEC.loader
+SPEC.loader.exec_module(GRAMMAR)
+
+Predicate = GRAMMAR.Predicate
+ExitRule = GRAMMAR.ExitRule
+Strategy = GRAMMAR.Strategy
+canonical_signature = GRAMMAR.canonical_signature
+crossover = GRAMMAR.crossover
+mutate = GRAMMAR.mutate
+novelty_distance = GRAMMAR.novelty_distance
+validate_strategy = GRAMMAR.validate_strategy
 
 
 def base():
@@ -39,9 +51,8 @@ def test_material_exit_change_is_novel():
 
 
 def test_rejects_unavailable_or_unapproved_feature():
-    s = base()
     with pytest.raises(ValueError):
-        validate_strategy(s, available_features={"nifty_return_3"})
+        validate_strategy(base(), available_features={"nifty_return_3"})
 
 
 def test_rejects_future_or_arbitrary_feature_name():
@@ -78,6 +89,5 @@ def test_crossover_records_both_parents_and_is_valid():
 
 
 def test_mutation_respects_feature_gate():
-    a = base()
     with pytest.raises(ValueError):
-        mutate(a, random.Random(1), available_features={"nifty_return_3"})
+        mutate(base(), random.Random(1), available_features={"nifty_return_3"})
