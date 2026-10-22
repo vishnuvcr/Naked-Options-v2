@@ -261,13 +261,15 @@ def payload_rows(payload, flag, code, offset, side):
             continue
     return out
 
-def load_frames():
+def load_frames(return_quality=False):
     bars=[]
+    underlying_rows_read=0
     for path in sorted(IDX_CACHE.glob("nifty_5m_*.json")):
         try: obj=json.loads(path.read_text(encoding="utf-8"))
         except Exception: continue
         n=len(obj.get("timestamp",[]))
         if not n: continue
+        underlying_rows_read+=n
         for i,ts in enumerate(obj["timestamp"]):
             try:
                 row={"timestamp":int(ts)}
@@ -277,8 +279,12 @@ def load_frames():
                 bars.append(row)
             except (ValueError,TypeError,IndexError):
                 continue
+    quality={"underlying_rows_read":underlying_rows_read,"option_rows_read":0,
+             "duplicate_groups":0,"conflicting_duplicate_groups":0,"conflicting_duplicate_rate":None,
+             "option_rows_dropped_conflicts":0,"option_rows_after_conflict_filter":0,
+             "option_timestamp_coverage":0.0,"row_grid_coverage":0.0}
     if not bars:
-        return pd.DataFrame(),pd.DataFrame()
+        return (pd.DataFrame(),pd.DataFrame(),quality) if return_quality else (pd.DataFrame(),pd.DataFrame())
     u=pd.DataFrame(bars).drop_duplicates("timestamp").sort_values("timestamp")
     u["dt"]=pd.to_datetime(u.timestamp,unit="s",utc=True).dt.tz_convert(TIME_ZONE)
     u["date"]=u.dt.dt.date.astype(str); u["time"]=u.dt.dt.strftime("%H:%M")
@@ -288,29 +294,43 @@ def load_frames():
     opts=[]
     for path in sorted(OPT_CACHE.glob("*_*.json")):
         if path.name.startswith("probe_"): continue
-        # Filename: flag_code_YYYYMMDD_YYYYMMDD_offset_side.json
+        # Filename: expiry-family/code + inclusive dates + ATM offset + option type.
         parts=path.stem.split("_")
         if len(parts) != 5: continue
-        try: flag=parts[0][:-1].upper(); code=int(parts[0][-1]); d0=parts[1]; d1=parts[2]; off=int(parts[3]); side=parts[4].upper()
+        try: flag=parts[0][:-1].upper(); code=int(parts[0][-1]); off=int(parts[3]); side=parts[4].upper()
         except Exception: continue
         if flag not in ("WEEK","MONTH") or side not in ("CALL","PUT"): continue
         try: obj=json.loads(path.read_text(encoding="utf-8"))
         except Exception: continue
         opts.extend(payload_rows(obj,flag,code,off,side))
     o=pd.DataFrame(opts)
+    quality["option_rows_read"]=int(len(o))
     if not o.empty:
         o["dt"]=pd.to_datetime(o.timestamp,unit="s",utc=True).dt.tz_convert(TIME_ZONE)
         o["date"]=o.dt.dt.date.astype(str)
         o["strike_key"]=o.strike.round(2)
-        # A key with conflicting prices is discarded rather than arbitrarily chosen.
         key=["expiry_flag","expiry_code","side","timestamp","strike_key"]
-        dup=o.groupby(key).open.nunique(dropna=True)
-        bad=set(dup[dup>1].index.tolist())
+        group_size=o.groupby(key).size()
+        unique_prices=o.groupby(key).open.nunique(dropna=True)
+        duplicate_keys=set(group_size[group_size>1].index.tolist())
+        bad=set(unique_prices[unique_prices>1].index.tolist())
+        quality["duplicate_groups"]=int(len(duplicate_keys))
+        quality["conflicting_duplicate_groups"]=int(len(bad & duplicate_keys))
+        quality["conflicting_duplicate_rate"]=float(quality["conflicting_duplicate_groups"]/max(1,quality["duplicate_groups"]))
+        quality["option_rows_dropped_conflicts"]=int(sum(int(group_size.get(k,0)) for k in bad))
         if bad:
             idx=pd.MultiIndex.from_frame(o[key])
             o=o.loc[~idx.isin(bad)].copy()
         o=o.drop_duplicates(key,keep="first").reset_index(drop=True)
-    return u,o
+    quality["option_rows_after_conflict_filter"]=int(len(o))
+    if len(u):
+        common=set(u.timestamp.astype(int)).intersection(set(o.timestamp.astype(int))) if len(o) else set()
+        quality["option_timestamp_coverage"]=float(len(common)/len(set(u.timestamp.astype(int))))
+        expiries=int(o.expiry_flag.nunique()) if len(o) else 0
+        expected=len(set(u.timestamp.astype(int)))*max(1,expiries)*14
+        observed=len(o[["expiry_flag","side","offset","timestamp"]].drop_duplicates()) if len(o) else 0
+        quality["row_grid_coverage"]=float(min(1.0,observed/max(1,expected)))
+    return (u,o,quality) if return_quality else (u,o)
 
 def lot_size_proxy(day):
     # Exploratory proxy only: no result is strategy-approved without expiry-level lot master.
@@ -775,7 +795,7 @@ def trim_island(keys,eval_cache,population_size):
         if len(keep)>=population_size: break
     return keep[:population_size]
 
-def run_quant_evolve(u,o,expiry_flags):
+def run_quant_evolve(u,o,expiry_flags,data_quality=None):
     # QuantEvolve-inspired: four-island search, hypothesis templates, niche archive, crossover,
     # mutation, migration, validation-only fitness. The final chronological block is not touched here.
     cfg=json.loads(CONFIG_PATH.read_text())
@@ -936,7 +956,7 @@ def run_quant_evolve(u,o,expiry_flags):
         "qd_archive_niches":len(archive),"offspring_per_island_per_generation":children_per_island,
         "selection_metric":"validation-only composite of net P&L, Sharpe, profit factor and drawdown; no final OOS values used during discovery",
         "implementation_note":"Strategy generation is constrained and template-based, not arbitrary LLM-generated code. Multi-agent roles are implemented as deterministic research/hypothesis/coding/evaluation functions; no unverified LLM API key is required."},
-        "evolution_trace":trace,"qd_archive":archive_rows,"candidate_metadata":meta})
+        "evolution_trace":trace,"qd_archive":archive_rows,"candidate_metadata":meta,"data_quality":data_quality or {}})
     return final
 
 def write_outputs(probe, acquisition, underlying, summary, errors):
@@ -1022,13 +1042,13 @@ def main():
         if args.stage=="acquire":
             print(json.dumps({"probe":probe.get("status"),"acquisition":acq_public,"underlying_status":underlying.get("status")},indent=2,default=str)); return
     if args.stage in ("full","analyze"):
-        u,o=load_frames()
+        u,o,data_quality=load_frames(return_quality=True)
         expiry_flags=sorted(o.expiry_flag.dropna().unique().tolist()) if not o.empty else []
         if len(u)<500 or len(o)<1000:
             write_outputs(probe,acquisition,underlying,None,acquisition.get("failures",[])+underlying.get("failures",[]))
             print(json.dumps({"status":"DATA_BLOCKED","underlying_rows":len(u),"option_rows":len(o),"probe":probe.get("status")},indent=2))
             return
-        summary=run_quant_evolve(u,o,expiry_flags)
+        summary=run_quant_evolve(u,o,expiry_flags,data_quality)
         write_outputs(probe,acquisition,underlying,summary,acquisition.get("failures",[])+underlying.get("failures",[]))
         print(json.dumps({k:v for k,v in summary.items() if k not in ("results","ledger")},indent=2,default=str))
 if __name__=="__main__":
