@@ -81,3 +81,8 @@ These checks were calculated from run #39699761966's saved predictions, before t
 
 
 Supplemental figure: [`volatility_qlike_subperiod_sensitivity.svg`](figures/volatility_qlike_subperiod_sensitivity.svg).
+
+
+## QLIKE interpretation caveat — 2026-10-22
+
+The pipeline trains the h1 volatility model on absolute next-session log return and then squares the target, forecast and baseline before applying QLIKE. This makes the scored realized quantity (r_{t+1}^2), but the model forecast is the square of a fitted absolute-return estimate, not a separately trained conditional-variance estimate. Therefore the reported improvement is metric-specific evidence for a variance-scaled volatility proxy; it should not be described as a fully calibrated conditional-variance forecast without additional validation.
