@@ -1,17 +1,17 @@
 # QE-NOB-1.0 — fresh QuantEvolve-style naked option buying
 
-**Run status:** PASS_ANALYZED (GitHub Actions overall failure was in the final commit/rebase step)  
+**Run status:** PASS_ANALYZED — corrected duplicate identity passed; workflow #39741806754 completed successfully  
 **Date range:** 2021-10-25 to 2026-10-21  
 **Candidates tested:** 600  
 **Candidates meeting statistical gate:** 0  
 **Candidates meeting strict execution/promotion gate:** 0  
-**Basic data quality gate:** FAIL  
+**Basic data quality gate:** PASS on duplicate/grid checks (contract identity still unverified)  
 **Execution data gate:** FAIL  
 **Decision:** DATA_LIMITED — no profitability conclusion; no strategy approved.
 
 ## Run and dataset
 
-Workflow [#39712854501](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39712854501) analyzed 1,241 sessions, 92,510 underlying rows, and 2,588,918 option rows after conflict filtering. Four islands evaluated 600 unique candidates over nine generations. Pre-run and post-run automated tests each passed (11 tests).
+Corrected workflow [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754) analyzed 1,241 sessions, 92,510 underlying rows, and 2,600,975 option rows. After including rolling ATM offset in the duplicate key, there were 0 duplicate groups, 0 conflicting groups, and 0 rows dropped. Timestamp coverage was 99.772%; row-grid coverage was 100%. Automated tests passed (11 tests). Four islands evaluated 600 unique candidates over nine generations. Pre-run and post-run automated tests each passed (11 tests).
 
 ## Main finding
 
@@ -21,7 +21,7 @@ These are exploratory simulated results based on rolling option OHLC, not verifi
 
 ## Data and execution limitations
 
-- 471 duplicate groups were detected, 453 of which conflicted (96.18% of duplicate groups); 906 rows were excluded. This caused the basic data-quality gate to fail despite row-grid coverage of 99.947%.
+- Corrected duplicate identity includes the source ATM offset; this reduced the detected duplicate groups from 471 (453 conflicting) to zero. This resolves the prior duplicate-key diagnostic but does not validate exact exchange contract identity.
 - Dhan rolling ATM-relative option OHLC does not provide historical best bid/ask/depth for execution validation.
 - Exact historical expiry, stable strike/contract identity and lot-size mapping have not been reconciled to dated instrument-master evidence.
 - Cost assumptions are provisional and must be reconciled to the actual Paytm Money tariff effective on each date.
@@ -40,4 +40,4 @@ These are exploratory simulated results based on rolling option OHLC, not verifi
 - [Source and literature notes](LITERATURE_REVIEW.md)
 - [Run summary JSON](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v1-developer/reports/quant_evolve_nob_v1)
 
-The workflow uploaded the complete reports as an artifact. Its commit step failed during a rebase conflict in `INTERACTION_LOG.md`; the workflow is being corrected to commit a bounded allowlist and keep the large trade ledger only in the downloadable artifact.
+The corrected report artifact and bounded report files were committed by workflow #39741806754. A follow-up workflow #39741823249 was queued by the test change and is being monitored.
