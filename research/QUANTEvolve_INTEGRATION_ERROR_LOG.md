@@ -553,3 +553,11 @@ This log records visible technical findings and corrective actions. It does not 
 - Interpretation: a rolling ATM weekly series cannot be assumed to represent one fixed option contract across time. No fixed-contract P&L is valid from this response alone.
 - Action: accept sample retrieval as successful; stop API retries for this research phase; preserve `pnl_permitted=false` and `BLOCKED_NO_VERIFIED_CONTRACT_DATA` until a source with exact contract identity, historical lot sizes, full coverage and executable pricing is available.
 - Status: closed as a data-schema limitation, not a software failure. No credential or raw candle rows were saved.
+
+
+## QE-ERR-030 — adjacent NIFTY research workflow failed on empty result CSV
+- Date: 2026-10-22. Severity: MEDIUM (workflow robustness; separate from QuantEvolve P&L gate).
+- Workflow: [NIFTY prediction research run 39676907630](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39676907630).
+- Observation: result merge failed with `pandas.errors.EmptyDataError: No columns to parse from file` when an expected model output CSV existed but had no rows/headers. The run's report noted `oos_rows=0`; no valid new prediction result should be inferred.
+- Correction: `scripts/merge_results.py` now safely skips missing/empty/headerless CSVs and records the skipped file paths; regression coverage added to `tests/test_research.py`.
+- Status: fix committed; automated test and workflow rerun pending. This does not alter the blocked options gate.
