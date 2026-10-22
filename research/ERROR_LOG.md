@@ -118,3 +118,10 @@ Run #2 confirmed the actual blocker was upstream of options acquisition: `BLOCKE
 
 
 | ERR-VOL-024 | 2026-10-16 | VOL-REGIME-OPT C1 | MEDIUM | Earlier Dhan rolling-option response did not establish historical expiry-code mapping or fixed-contract continuity, while the HF fallback was interrupted. | The Dhan endpoint is rolling-relative strike data and the prior workflow did not finish its HF probe. | Located the already-used `thetrademarkk/india-index-options-1m` source in `vishnuvcr/Nifty`; added a cached exact-expiry/strike/type audit workflow on the continuation branch. Verify run #38807375042 and reconcile against official NSE evidence before P&L. | OPEN — WORKFLOW RUNNING / AUDIT PENDING |
+
+
+## Prediction research corrective audit — 2026-10-22
+
+| ID | First observed | Phase | Severity | Error / defect | Root cause | Correction and verification | Status |
+|---|---|---|---|---|---|---|---|
+| ERR-PRED-001 | 2026-10-22 | 5/7/8/9 | HIGH | Run #39699761966 emitted 798 out-of-sample prediction rows with missing `target_date` while `actual`, `prediction`, and `baseline` were populated: volatility h5=60, volatility h20=360, volatility-expansion h5=54, volatility-expansion h20=324. | `fr.std(axis=1, ddof=1)` skips missing values by default, allowing partial future windows near the dataset boundary to produce apparently valid h5/h20 volatility labels. | On developer commit `e8133a582cbe6c06ce46514f871d1393fc142f6f`, changed the multi-session target to `std(..., skipna=False)` and added boundary tests for h=1,5,20. Corrective workflow [#39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478) must finish; its artifact and tests remain to be independently reviewed on [tester branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/fresh-prediction-independent-tester). | OPEN — final scientific sign-off held pending corrected run/tester report |

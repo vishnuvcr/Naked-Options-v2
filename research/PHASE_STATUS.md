@@ -1,6 +1,6 @@
 # Phase status and gate decisions
 
-Last updated: 2026-10-14  
+Last updated: 2026-10-22  
 Research version: NIFTY-PRED-1.0
 
 | Phase | Branch | Status | Evidence / next action |
@@ -9,11 +9,11 @@ Research version: NIFTY-PRED-1.0
 | 2. Literature review | research/phase-2-literature | PARTIAL, ACCEPTED LIMITATION | First-pass review and source register are included; exhaustive review across all media/source families was not completed and is stated as a limitation. |
 | 3. Data collection/validation/cache | research/phase-3-data | PASS WITH LIMITATIONS | Run #49 validated cached NIFTY data and seven external series. Rejected series and unavailable options/FII-DII/PCR/breadth/news inputs are documented. Global timing/holiday alignment still needs audit. |
 | 4. Baselines | research/phase-4-baselines | COMPLETE FOR CURRENT DATA | Zero-return, persistence, historical-prevalence and ARIMA benchmark artifacts generated. Tester must review ARIMA artifact separately. |
-| 5. Model experiments | research/phase-5-models | RUN COMPLETE; TESTER PASS WITH SCOPE LIMITATIONS | Run #49 passed tests, feature construction, technical/global catalogues, ARIMA, merge and report steps. 491 metric rows, 143 OOS-evaluated rows, 208 budget-blocked rows. |
+| 5. Model experiments | research/phase-5-models | REOPENED — DEFECT-DRIVEN CORRECTION | Run #39699761966 has 798 invalid tail-label rows for 5-/20-session volatility tasks; corrected target construction committed; [run #39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478) pending. |
 | 6. Feature/horizon/regime analysis | research/phase-6-features-regimes | PARTIAL, ACCEPTED LIMITATION | Technical/global and horizon comparisons are complete within acquired data; full regime segmentation and option/FII-DII/PCR/breadth/news families remain untested. |
-| 7. Statistical validation | research/phase-7-validation | PASS FOR BOUNDED PREDICTION SCOPE | 91 regression skill metrics independently reproduced (max discrepancy ~2.04e-9); 140 non-ARIMA block CIs reproduced (max discrepancy <8e-9); HAC p-values within ~1.24e-5. Tester to review p-value/Holm families, ARIMA, probability calibration and dependence handling. |
-| 8. Independent tester | research/independent-tester | PASS WITH SCOPE LIMITATIONS | Tester report on run #49 confirms target-window correction, arithmetic, CIs, HAC/Holm and ARIMA checks. Calibration and unavailable data families are limitations. |
-| 9. Manuscript and conclusion | research/phase-9-manuscript | COMPLETE WITH SCOPE LIMITATIONS | Tester-reviewed manuscript and selected-results figure committed. The study is closed as prediction-only; unacquired data families and missing execution analysis are documented. No trading strategy is approved. |
+| 7. Statistical validation | research/phase-7-validation | REOPENED — RECOMPUTATION REQUIRED | Preserve prior-run metrics as historical only; recompute target-date completeness and selected volatility inference from the corrected run artifact. |
+| 8. Independent tester | research/fresh-prediction-independent-tester | PENDING CORRECTIVE-RUN REVIEW | Independent tester found 798 missing target_date rows in run #39699761966. Corrected run #39704420478 and its artifact must be reviewed before PASS. |
+| 9. Manuscript and conclusion | research/phase-9-publication | PROVISIONAL — FINAL SIGN-OFF HELD | Addendum records the defect and correction; reconcile current manuscript/results only after independent review of the corrected run. Prediction-only scope remains; no strategy approved. |
 
 ## Corrected workflow evidence
 

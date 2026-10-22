@@ -1,9 +1,17 @@
 # Predicting NIFTY 50: A preregistered comparison of statistical, machine-learning and sequence models
 
-**Manuscript status:** Tester-reviewed prediction-only study; PASS WITH SCOPE LIMITATIONS.  
+**Manuscript status:** Historical manuscript with a 2026-10-22 corrigendum; final sign-off for the latest rerun is on hold pending corrective artifact review.  
 **Version:** NIFTY-PRED-1.0. **Study start:** 14 October 2026.
 
-## Abstract
+## Corrigendum — 2026-10-22: target-window audit
+
+The later run [#39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966) completed successfully at workflow level, but a row-level audit found 798 emitted prediction rows with missing `target_date` values while their numeric actual/prediction/baseline fields were populated. These occur in h5/h20 volatility and volatility-expansion tasks. The prior implementation calculated standard deviation while skipping missing forward returns, allowing partial future windows near the sample boundary. Therefore the prior run cannot support final claims for those affected task/horizon cells, and the overall publication gate is reopened.
+
+A defect-specific correction uses `skipna=False` and adds tail-window regression tests in developer commit `e8133a582cbe6c06ce46514f871d1393fc142f6f`; corrective workflow [#39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478) must finish and be independently reviewed before the abstract/results are finalized. The previously reported one-session global ExtraTrees volatility-proxy result has no missing target-date rows in this particular defect family, but it remains a **replication candidate only** until the corrected artifact and multiple-testing calculation are checked. Return/direction results did not establish a robust edge. No trading strategy is approved.
+
+A genuinely untouched future-period replication is unavailable in the current data window. Reusing historical folds that were involved in model screening would not constitute an independent-period replication. This is recorded as a future research gate rather than represented as completed evidence. Detailed evidence: [current audit](FRESH_PREDICTION_AUDIT_2026-10-22.md), [results register](RESULTS.md), and [tester report](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/fresh-prediction-independent-tester).
+
+## Abstract (historical run #49; retain as prior result)
 
 This study tested NIFTY 50 forecasts at 1-, 5- and 20-session horizons using a bounded catalogue of statistical, machine-learning and sequence models. The corrected run evaluated 139,289 out-of-sample prediction rows. The selected global one-session return model improved MSE by only 0.17% over zero return (p=.579; Holm p=1); one-session direction accuracy was 54.08% but did not survive multiplicity correction (Holm p=.548). Selected global 5- and 20-session return models performed worse than zero return. The independent tester passed the bounded prediction-only study with scope limitations. No options strategy was tested.
 

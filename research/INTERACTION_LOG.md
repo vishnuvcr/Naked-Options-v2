@@ -220,3 +220,16 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Checked GitHub Actions run #38807375042: download/reuse of the NIFTY parquet dataset completed; audit step remains in progress, no report/artifact available yet.
 - Reviewed official NSE expiry circulars: FAOP66938 (2025-03-04), FAOP68685 (2025-06-23), FAOP68747 (2025-06-25). Historical expiry mapping must use dated contract evidence.
 - Updated continuation free-source audit and main README. No strategy P&L was computed or inferred.
+
+
+## 2026-10-22 — latest NIFTY prediction corrective audit
+
+- User asked to continue the bounded prediction-only research and supplied the prior-run handoff: no robust return/direction edge; one-session volatility-proxy result is only a replication candidate; options research remains blocked.
+- Inspected repository plan, README, phase gates, data catalog, experiment/error/interaction logs, manuscript, results, workflows, and current branch state before taking action.
+- Confirmed [run #39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966) succeeded at workflow level. Downloaded its saved artifact and inspected `predictions.csv`: 291,886 rows, 798 rows with missing `target_date` and populated numeric forecast fields. Counts: volatility h5 60; volatility h20 360; volatility expansion h5 54; volatility expansion h20 324.
+- Read `scripts/build_feature_matrix.py` and identified multi-session forward-volatility `std` skipping missing values by default at the sample edge.
+- Created developer branch `research/fresh-prediction-developer`; committed a defect-specific fix with `skipna=False` and regression tests in commit `e8133a582cbe6c06ce46514f871d1393fc142f6f`. Corrective [workflow #39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478) started automatically and was in progress at last check.
+- Created separate branch `research/fresh-prediction-independent-tester`. The tester report documents the prior-run defect and the exact gates to apply after the corrective run completes.
+- Updated the developer branch's README, results, phase status, manuscript corrigendum, error log, interaction log and dedicated audit file. The original plan remains frozen; only a defect-driven correction is permitted.
+- A truly untouched future-period replication cannot be claimed with only a short post-holdout extension in the current data; historic folds have already informed model screening. This is explicitly recorded as future work. No option P&L or strategy is approved.
+- Operational audit log only; it contains no secrets or hidden reasoning.

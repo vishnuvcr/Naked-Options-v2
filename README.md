@@ -1,9 +1,21 @@
 # Fresh NIFTY 50 Prediction Research
 
+## Current prediction audit — 2026-10-22
+
+A row-level inspection of the successful [run #39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966) artifact found **798 emitted forecast rows with a missing `target_date` but populated actual, prediction and baseline values**. All occurred in the 5- and 20-session volatility / volatility-expansion targets (114 rows at horizon 5 and 684 at horizon 20). The multi-session volatility label builder used a standard deviation that skipped missing future returns, admitting partial forward windows at the sample boundary. This finding supersedes the earlier unqualified sign-off for that run.
+
+- [Defect audit and bounded correction record](research/FRESH_PREDICTION_AUDIT_2026-10-22.md)
+- [Corrective developer branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/fresh-prediction-developer)
+- [Corrective workflow #39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478) — pending at the time of this update.
+- [Independent tester branch/report](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/fresh-prediction-independent-tester) — prior-run defect confirmed; corrected-run review pending.
+- [Error log](research/ERROR_LOG.md), [phase gates](research/PHASE_STATUS.md), [results register](research/RESULTS.md), [manuscript corrigendum](research/MANUSCRIPT.md).
+
+Return and direction forecasts still have no robust selected edge under the reported protocol. The previously reported one-session volatility-proxy result has no missing target dates in this specific defect family, but the corrected artifact and multiple-testing arithmetic must be independently reviewed before retaining it as a replication candidate. A genuinely untouched future-period replication is not yet available: new future sessions are too few, and reusing already-screened historical folds would not constitute an independent replication. Do not expand the frozen model catalogue or advance to trading-strategy work while the review gate is open.
+
 **Research version:** NIFTY-PRED-1.0  
 **Scope:** Prediction only. No trading strategy design, optimization, or recommendation in this study.  
 **Started:** 2026-10-14  
-**Status:** NIFTY-PRED-1.0 is closed with accepted limitations. Follow-on OPT-BUY-1.0 is also closed: no tested option-buying candidate passed the data-quality and profitability gates.
+**Status:** NIFTY-PRED-1.0 is prediction-only. The prior run #39699761966 has a confirmed target-label defect in 5-/20-session volatility tasks; a defect-only correction is committed on `research/fresh-prediction-developer` and corrective workflow #39704420478 is in progress. Final sign-off is held pending corrected artifacts and independent review. Follow-on options work remains blocked; no strategy is approved.
 
 ## Repository audit
 

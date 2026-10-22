@@ -1,8 +1,20 @@
 # Results and evidence register
 
 Version: NIFTY-PRED-1.0  
-Last updated: 2026-10-14  
-Status: Corrected run #49 independently reviewed; bounded prediction-only study closed with scope limitations.
+Last updated: 2026-10-22  
+Status: Prior bounded study results remain historical; latest run #39699761966 is under a defect-driven correction hold pending independent review.
+
+## Latest audit and corrective status — 2026-10-22
+
+- Prior run: [Actions #39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966), commit `cecac3a63878d3a189c94b143f875bcb9be33983`, artifact SHA-256 `6f2cd6bb302763e5e972fb54e447bfbd47bba0c8cd3cfe3fd024f9cf6062c8dc`.
+- Artifact reviewed locally: `predictions.csv`, 291,886 rows. 798 rows had missing `target_date` with otherwise populated forecast fields: volatility h5=60, volatility h20=360, volatility-expansion h5=54, volatility-expansion h20=324.
+- Root cause: h5/h20 forward-return standard deviation skipped NaNs, permitting partial boundary windows. The prior run's successful workflow did not detect this label-integrity issue. Multi-session volatility and volatility-expansion results from that run must not be accepted as final.
+- Code correction: commit `e8133a582cbe6c06ce46514f871d1393fc142f6f`, adding `skipna=False` and tail-window regression assertions. [Corrective run #39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478) was in progress at the last status check. Its final status and artifact are not yet claimed.
+- The previously reported one-session global ExtraTrees volatility-proxy result (MAE 0.0039515 versus baseline 0.0039671; QLIKE −8.7402 versus −8.4246; mean loss difference −0.3156; block-bootstrap 95% CI approximately [−0.4230, −0.2101]) is not in the subset of rows with missing target dates. Still, the previous result is not promoted beyond a replication candidate until its corrected artifact arithmetic and Holm family are independently checked.
+- Return/direction forecasts continue to show no robust edge in the reported holdout. The one-session volatility result is not a trading signal. No options P&L, brokerage/slippage simulation, or strategy approval is implied.
+- A genuinely independent future-period replication is not yet available from the current data horizon. Historical folds have already participated in screening; using them again must be labeled retrospective sensitivity analysis, not untouched replication.
+
+**Current gate:** HOLD final sign-off pending run #39704420478 and [independent tester review](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/fresh-prediction-independent-tester). See [audit detail](FRESH_PREDICTION_AUDIT_2026-10-22.md) and [error log](ERROR_LOG.md).
 
 ## Canonical run
 
