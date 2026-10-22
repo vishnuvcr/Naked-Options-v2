@@ -1,3 +1,11 @@
+## 2026-10-22 — execution-validation policy and dated lot-size correction
+- User explicitly directed that historical bid/ask/depth and a fully verified Paytm Money tariff should not block the research; continue with available OHLC price data and disclose assumptions.
+- Verified official NSE lot schedules from [FAOP47854](https://archives.nseindia.com/content/circulars/FAOP47854.pdf) (NIFTY 75→50 for monthly July-2021 and weekly August-2021 expiries onward), [FAOP61415](https://nsearchives.nseindia.com/content/circulars/FAOP61415.pdf) (50→25, first revised weekly 2-May-2024 and monthly 30-May-2024), [FAOP64672](https://nsearchives.nseindia.com/content/circulars/FAOP64672.pdf) (25→75; last old weekly 19-Dec-2024 / first new 2-Jan-2025; last old monthly 30-Jan-2025 / first new 27-Feb-2025), and [FAOP70616](https://nsearchives.nseindia.com/content/circulars/FAOP70616.pdf) (75→65; first revised weekly 6-Jan-2026 and monthly 27-Jan-2026).
+- Found QE-NOB-E006: the old proxy mistakenly used 25 units for all dates before 2024-11-20. Replaced it with an expiry-family/date-based proxy for WEEK1 vs MONTH1 and added transition tests.
+- Existing P&L metrics are superseded until corrected backtest reruns. The research will use next-bar option OHLC, ₹10/order primary brokerage per the current Paytm Money FAQ, ₹20/order cost stress, modeled adverse slippage, and date-based exchange/statutory-fee approximations. Missing spreads/depth remain a separate execution-readiness limitation.
+- Source commit: `3889440`; regression tests: `7ff4039`; concurrency update: `8523f51`. Corrected workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) is pending; older run #39741823249 is not treated as final.
+- No independent tester branch/report is created or awaited, as the user explicitly declined a tester.
+
 # Activity log — QE-NOB-1.0
 
 ## 2026-10-22 — duplicate-key correction and rerun
