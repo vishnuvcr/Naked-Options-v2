@@ -622,7 +622,7 @@ def backtest(u,o,expiry_flags,candidates_override=None,include_oos=True,bootstra
                 "raw_buy_premium_turnover_rupees":result["raw_buy_premium_turnover_rupees"],
                 "raw_sell_premium_turnover_rupees":result["raw_sell_premium_turnover_rupees"],
                 "stress100_fee20_net_pnl_rupees":stress100["net_pnl_rupees"],
-                "stress200_fee20_net_pnl_rupees":stress200["net_pnl_rupees"],"leg_count":len(legs),"expiry_code":1}
+                "stress200_fee20_net_pnl_rupees":stress200["net_pnl_rupees"],"leg_count":len(legs),"expiry_family":str(c["expiry"])[:-1],"expiry_code":int(str(c["expiry"])[-1])}
             trades.append(trade_rec)
         # All-calendar-session daily series; no signal is zero P&L.
         result_rec={"candidate_id":cidx,"candidate":c,"event_count":len(events),"trade_count":len(trades)}
