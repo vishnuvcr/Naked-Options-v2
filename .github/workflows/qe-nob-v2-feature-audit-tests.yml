@@ -28,7 +28,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Restore isolated QE-NOB cache when available
+        uses: actions/cache/restore@v4
+        with:
+          path: data/cache/quant_evolve_nob_v1
+          key: qe-nob-v1-Linux-audit-${{ hashFiles('research/quant-evolve-nob/run_research.py', 'research/quant-evolve-nob/config.json') }}
+          restore-keys: |
+            qe-nob-v1-Linux-${{ hashFiles('research/quant-evolve-nob/run_research.py', 'research/quant-evolve-nob/config.json') }}-
+            qe-nob-v1-Linux-
       - name: Install test dependency
         run: python -m pip install --upgrade pytest
       - name: Test feature audit
         run: pytest -q research/quant-evolve-nob/test_feature_audit_v2.py
+      - name: Audit restored local cache and write sanitized report
+        run: python research/quant-evolve-nob/feature_audit_v2.py
+      - name: Upload sanitized cache audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: qe-nob-v2-feature-availability-${{ github.run_id }}
+          path: reports/quant_evolve_nob_v2/feature_availability.json
+          if-no-files-found: error
+          retention-days: 90
