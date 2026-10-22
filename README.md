@@ -585,3 +585,13 @@ The eligible [weekly-only acquisition workflow #39838508682](https://github.com/
 The latest interrupted-run artifact audit refines the earlier statement that the monthly cache was empty: it actually contains **11 historical MONTH1 files, all in the first two 30-day chunks**. That is roughly 3% of the 366-file ATM/OTM1 five-year monthly grid and does not amount to usable full-period monthly coverage. The active protocol remains WEEK1-only for the bounded run, while acknowledging the partial monthly files rather than claiming none exist.
 
 The fresh weekly-only run [#39838508682](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39838508682) has restored the saved partial cache and passed the source-client plus active v2 grammar/candidate/feature/simulator/discovery test gates. It is now running the source-acquisition step. The actual acquisition summary and fresh cache audit have not yet been produced; Phase 2 remains open, discovery remains gated, and no profitability claim is supported.
+
+
+## Dhan access-token automation (QE-NOB-2.0)
+
+The active developer branch now includes a TOTP-based Dhan token bootstrap before QE-NOB-2.0 data acquisition. It requests a fresh 24-hour token and validates it against the Dhan profile endpoint; the token is scoped to that GitHub Actions job and is not printed or committed.
+
+- Implementation branch: [QE-NOB-2.0 developer](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v2-discovery-developer)
+- [Token helper](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/dhan_auth.py) · [RFC regression tests](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/test_dhan_auth.py) · [Acquisition workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/.github/workflows/qe-nob-v2-data-audit.yml) · [Phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md) · [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md)
+
+**Required setup:** enable TOTP in Dhan Web and add GitHub Actions repository secrets `DHAN_CLIENT_ID`, `DHAN_PIN`, and `DHAN_TOTP_SECRET`. Do not paste or commit these values. The live authentication test is pending those secrets; Phase 2 data acquisition remains blocked until the token/profile and market-data gates pass.
