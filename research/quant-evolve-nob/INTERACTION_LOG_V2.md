@@ -22,3 +22,10 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Static review identified that the study directory uses hyphens, so package imports using underscores could not resolve. Tests were switched to explicit file-path loading; the dataclass module is registered in `sys.modules` before execution.
 - Added the defect and correction to `ERROR_LOG_V2.md`; updated phase status to avoid claiming a successful CI result before it is verified.
 - The workflow is configured for push and manual dispatch. No run outcome is claimed in this checkpoint.
+
+## 2026-10-22 — resumed implementation after user confirmation
+- Added `feature_audit_v2.py` to inspect local JSON cache schema, timestamp counts, nulls, array lengths and SHA-256 hashes. It does not download licensed data or infer unavailable contract identity.
+- Added feature-audit regression tests and a dedicated automatic/manual GitHub Actions workflow.
+- Corrected tests to load Python files directly because the research directory name contains hyphens; registered dynamically loaded modules before dataclass initialization.
+- Updated phase status and error log. These fixes are source-level only; workflow execution and full-cache audit results remain unverified.
+- Still blocked from a discovery run: no integrated simulator, no confirmed Phase 2 feature matrix from runtime data, and no new strategy P&L. No tester branch/report created.
