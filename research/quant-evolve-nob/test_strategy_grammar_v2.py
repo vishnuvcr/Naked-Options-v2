@@ -1,24 +1,17 @@
 import importlib.util
-from pathlib import Path
 import random
-import sys
+from pathlib import Path
+
 import pytest
 
 MODULE_PATH = Path(__file__).with_name("strategy_grammar_v2.py")
 SPEC = importlib.util.spec_from_file_location("strategy_grammar_v2", MODULE_PATH)
 GRAMMAR = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader
-sys.modules[SPEC.name] = GRAMMAR
 SPEC.loader.exec_module(GRAMMAR)
-
-Predicate = GRAMMAR.Predicate
-ExitRule = GRAMMAR.ExitRule
-Strategy = GRAMMAR.Strategy
-canonical_signature = GRAMMAR.canonical_signature
-crossover = GRAMMAR.crossover
-mutate = GRAMMAR.mutate
-novelty_distance = GRAMMAR.novelty_distance
-validate_strategy = GRAMMAR.validate_strategy
+Predicate, ExitRule, Strategy = GRAMMAR.Predicate, GRAMMAR.ExitRule, GRAMMAR.Strategy
+canonical_signature, crossover, mutate = GRAMMAR.canonical_signature, GRAMMAR.crossover, GRAMMAR.mutate
+novelty_distance, validate_strategy = GRAMMAR.novelty_distance, GRAMMAR.validate_strategy
 
 
 def base():
