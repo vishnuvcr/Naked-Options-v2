@@ -1,7 +1,13 @@
+import importlib.util
 import json
 from pathlib import Path
 
-from research.quant_evolve_nob.feature_audit_v2 import audit, inspect_json
+MODULE_PATH = Path(__file__).with_name("feature_audit_v2.py")
+SPEC = importlib.util.spec_from_file_location("feature_audit_v2", MODULE_PATH)
+AUDIT = importlib.util.module_from_spec(SPEC)
+assert SPEC and SPEC.loader
+SPEC.loader.exec_module(AUDIT)
+audit, inspect_json = AUDIT.audit, AUDIT.inspect_json
 
 
 def test_inspect_json_reports_field_presence_nulls_and_hash(tmp_path):
