@@ -254,6 +254,19 @@ def mutate(s: Strategy, rng: random.Random, available_features: set[str] | None 
     )
     validate_strategy(child, set(available))
     if canonical_signature(child) == canonical_signature(s):
+        # Some type repairs (e.g. categorical replace_operator) can normalize back
+        # to the parent. Fall back to a deterministic, valid hold-horizon mutation.
+        hold_choices = (1, 2, 3, 6, 12, 24, 36, 48, 60)
+        fallback_hold = next(x for x in hold_choices if x != s.hold_bars)
+        child = Strategy(
+            entry_mode=child.entry_mode, predicates=child.predicates, logic=child.logic,
+            instrument=child.instrument, expiry=child.expiry, moneyness=child.moneyness,
+            hold_bars=fallback_hold, exits=child.exits,
+            hypothesis=f"Fallback hold mutation from {canonical_signature(s)[:12]}",
+            parents=(canonical_signature(s),),
+        )
+        validate_strategy(child, set(available))
+    if canonical_signature(child) == canonical_signature(s):
         raise RuntimeError("mutation produced structurally identical candidate")
     return child
 
