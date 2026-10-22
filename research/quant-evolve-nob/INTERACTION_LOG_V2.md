@@ -93,3 +93,12 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Discovered public option datasets on Hugging Face, but did not download or merge them: one listing uses license 'other' and another is CC BY-NC 4.0. Their source lineage/permissions are not approved for this trading-oriented study without further rights review.
 - Identified a GitHub NIFTY 1-minute OHLC set as a potential independent underlying-data cross-check only; repository MIT licensing is not treated as sufficient verification of market-data provenance, and its maintainer documents known missing/fixed-bar quirks.
 - Added [SOURCE_CATALOG_V2.md](SOURCE_CATALOG_V2.md) and updated phase status. This is source research only. No new experimental rows, candidate scores or P&L were produced. Phase 2 remains open while runtime acquisition is still in progress.
+
+
+## 2026-10-23 — stalled-acquisition remediation
+- User authorized continuation after receiving a status diagnosis of the stale acquisition job.
+- Re-inspected the current Actions run and source client. The source step had remained active since 2026-10-22 15:18:51 UTC; GitHub did not expose active job-log content through the available log endpoint, so the last API request could not be determined.
+- Committed a bounded client correction: supported offsets -2..+2 only, explicit progress logs, shorter HTTP timeouts, two attempts, stop after ten consecutive failed request groups, and underlying acquisition progress. Empty cached payloads are invalidated, and option data must be non-empty at least 80% of request groups with zero failures before source status can pass.
+- Made acquisition fail closed when either option or underlying source is partial/blocked so a successful prior step is required before candidate discovery can run.
+- Added unit tests for limits, no-progress stop, empty payloads and source-completeness gate. The automatic workflow's push filter is being expanded to include the client and regression tests. The live original run cannot be patched mid-execution; its queued successor is expected to check out the latest branch code after the current concurrency slot ends.
+- No cache was deleted wholesale, no parallel multi-year download was started, no tester branch/report was created, and no profitability conclusion was inferred from software tests.
