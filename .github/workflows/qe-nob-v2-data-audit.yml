@@ -77,10 +77,16 @@ jobs:
             research/quant-evolve-nob/test_feature_builder_v2.py \
             research/quant-evolve-nob/test_option_simulator_v2.py \
             research/quant-evolve-nob/test_run_discovery_v2.py
+      - name: Generate and validate fresh Dhan token (TOTP)
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+        run: python research/quant-evolve-nob/dhan_auth.py
       - name: Acquire source data without candidate fitness or P&L
         timeout-minutes: 160
         env:
-          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          DHAN_ACCESS_TOKEN: ${{ env.DHAN_ACCESS_TOKEN }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           REFRESH_DATA: ${{ inputs.refresh_data }}
           PYTHONUNBUFFERED: "1"
