@@ -64,3 +64,11 @@ def test_block_bootstrap_is_deterministic_and_detects_constant_positive_series()
 def test_bootstrap_is_reproducible_on_mixed_returns():
     x = np.asarray([2.0, -1.0, 3.0, 0.0, 4.0, -2.0, 1.0, 3.0])
     assert RUNNER.moving_block_bootstrap(x, 29, 200, 3) == RUNNER.moving_block_bootstrap(x, 29, 200, 3)
+
+
+def test_cache_audit_requires_both_source_families_and_zero_parse_failures():
+    good = {'status':'PASS','file_count':3,'parse_failures':0,'underlying_file_count':1,'option_file_count':2}
+    assert RUNNER.cache_audit_pass(good)
+    assert not RUNNER.cache_audit_pass({**good,'parse_failures':1})
+    assert not RUNNER.cache_audit_pass({**good,'option_file_count':0})
+    assert not RUNNER.cache_audit_pass({'status':'BLOCKED_NO_LOCAL_CACHE'})
