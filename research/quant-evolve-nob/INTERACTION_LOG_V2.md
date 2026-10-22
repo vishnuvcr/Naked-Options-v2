@@ -199,3 +199,12 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 ## 2026-10-23 — acquisition failure and stop condition
 
 Inspected completed weekly-only workflow #39838508682 and fresh artifact #12451299405. Regression gates passed, but Dhan returned HTTP 401 DH-901 (invalid/expired token). The acquisition client made partial progress and then bounded retries stopped because the source probe could not verify expiry support or retrieve 5-minute underlying bars. Audit: 745 parseable JSON files, 744 option-folder files, one underlying probe, zero parse failures; no verified contract identity or historical bid/ask/depth. The cache-save step succeeded. Discovery was skipped. Phase status and error log were updated (QE-NOB2-E033). Next action is not another identical retry: renew the token or verify and integrate a legally usable alternate source with historical underlying data and explicit expiry mapping.
+
+
+## 2026-10-23 — automated Dhan token generation implemented
+
+- Reviewed the DhanHQ official authentication documentation. The `RenewToken` endpoint only refreshes active web-generated tokens; it cannot renew an expired token. The documented TOTP-enabled `generateAccessToken` endpoint is a better fit for unattended scheduled acquisition.
+- Added `dhan_auth.py` to generate RFC 6238 TOTP codes from an Actions secret, request a fresh 24-hour token, validate the token through `/v2/profile`, and publish it only to the current job's `GITHUB_ENV`. The token is never printed or persisted to repository files.
+- Added `test_dhan_auth.py` with RFC test vectors and wired the test into the acquisition workflow's preflight. Added the new paths to the workflow push trigger.
+- Required user-side setup remains: add repository Actions secrets `DHAN_CLIENT_ID`, `DHAN_PIN`, and `DHAN_TOTP_SECRET`; enable TOTP on Dhan first. Do not paste these secrets into chat or commit them.
+- Verification limitation: the integration cannot inspect repository secret values. Live token generation and profile validation are unverified until the next workflow runs with the three secrets configured. The research data gate remains blocked until acquisition and cache audit pass.
