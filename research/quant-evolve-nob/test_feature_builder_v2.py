@@ -22,7 +22,7 @@ def bars():
         "2026-01-06 09:20:00+05:30", "2026-01-06 09:25:00+05:30",
         "2026-01-06 09:30:00+05:30", "2026-01-06 09:35:00+05:30",
     ], utc=True)
-    close = [100, 101, 102, 104, 103, 110, 111, 109, 112, 114]
+    close = [100, 101, 102, 104, 101, 110, 111, 109, 112, 114]
     return pd.DataFrame({
         "timestamp": [int(x.timestamp()) for x in times],
         "open": [x - 0.2 for x in close],
@@ -44,7 +44,7 @@ def test_opening_range_uses_only_first_three_bars_and_activates_afterward():
 def test_returns_reset_at_session_boundaries_and_gap_uses_previous_close():
     features, _ = BUILDER.build_features(bars(), minimum_coverage=0.50)
     assert pd.isna(features["nifty_return_1"].iloc[5])
-    assert features["opening_gap_pct"].iloc[5] == pytest.approx((109.8 - 103) / 103)
+    assert features["opening_gap_pct"].iloc[5] == pytest.approx((109.8 - 101) / 101)
 
 
 def test_vwap_is_not_fabricated_without_volume():
