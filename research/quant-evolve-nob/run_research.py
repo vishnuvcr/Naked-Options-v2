@@ -584,7 +584,9 @@ def backtest(u,o,expiry_flags,candidates_override=None,include_oos=True,bootstra
                 legs.append({"side":side,"strike":strike,"entry":entry,"exit":xt,"iv":iv})
             if entry_missing or not legs: continue
             result=cost_and_pnl(legs,day,50,10)
-            trades.append({"date":day,"family":c["family"],"expiry":c["expiry"],"entry_timestamp":int(ev["entry_timestamp"]),
+            stress100=reprice_premium_turnovers(result["raw_buy_premium_turnover_rupees"],result["raw_sell_premium_turnover_rupees"],day,100,20,len(legs))
+            stress200=reprice_premium_turnovers(result["raw_buy_premium_turnover_rupees"],result["raw_sell_premium_turnover_rupees"],day,200,20,len(legs))
+            trade_rec={"date":day,"family":c["family"],"expiry":c["expiry"],"entry_timestamp":int(ev["entry_timestamp"]),
                 "exit_timestamp":exit_ts,"direction":ev["direction"],"hold_bars":int(c["hold"]),
                 "structure":"straddle" if c["family"] in ("orb_straddle","always_straddle") else ("strangle" if c["family"] in ("orb_strangle","always_strangle") else ("CALL" if ev["direction"]>0 else "PUT")),
                 "gross_pnl_rupees":result["gross_pnl_rupees"],"net_pnl_rupees":result["net_pnl_rupees"],
@@ -592,7 +594,13 @@ def backtest(u,o,expiry_flags,candidates_override=None,include_oos=True,bootstra
                 "brokerage_rupees":result["brokerage_rupees"],"stt_rupees":result["stt_rupees"],
                 "exchange_fee_rupees":result["exchange_fee_rupees"],"stamp_rupees":result["stamp_rupees"],
                 "gst_rupees":result["gst_rupees"],"slippage_bps_per_side":50,"brokerage_per_order":10,
-                "lot_size_proxy":result["lot_size_proxy"],"expiry_code":1})
+                "lot_size_proxy":result["lot_size_proxy"],"stt_rate":result["stt_rate"],
+                "exchange_rate":result["exchange_rate"],
+                "raw_buy_premium_turnover_rupees":result["raw_buy_premium_turnover_rupees"],
+                "raw_sell_premium_turnover_rupees":result["raw_sell_premium_turnover_rupees"],
+                "stress100_fee20_net_pnl_rupees":stress100["net_pnl_rupees"],
+                "stress200_fee20_net_pnl_rupees":stress200["net_pnl_rupees"],"leg_count":len(legs),"expiry_code":1}
+            trades.append(trade_rec)
         # All-calendar-session daily series; no signal is zero P&L.
         result_rec={"candidate_id":cidx,"candidate":c,"event_count":len(events),"trade_count":len(trades)}
         for splitname,mask in (("train",lambda d:d<split1),("validation",lambda d:split1<=d<split2),("oos",lambda d:d>=split2)):
@@ -601,6 +609,10 @@ def backtest(u,o,expiry_flags,candidates_override=None,include_oos=True,bootstra
             splitdays=[d for d in days if mask(d)]
             arr=[sum(float(t["net_pnl_rupees"]) for t in st if t["date"]==d) for d in splitdays]
             for k,v in metrics(arr,st,bootstrap_reps=bootstrap_reps).items(): result_rec[splitname+"_"+k]=v
+            for stress_name,net_col in (("stress100_fee20","stress100_fee20_net_pnl_rupees"),("stress200_fee20","stress200_fee20_net_pnl_rupees")):
+                stress_arr=[sum(float(t.get(net_col,0)) for t in st if t["date"]==d) for d in splitdays]
+                for k,v in metrics(stress_arr,st,bootstrap_reps=0,net_column=net_col).items():
+                    result_rec[splitname+"_"+stress_name+"_"+k]=v
         result_rec["trades"]=trades
         result_rec["candidate_key"]=json.dumps(c,sort_keys=True)
         all_results.append(result_rec)
