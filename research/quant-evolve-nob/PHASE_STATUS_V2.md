@@ -81,3 +81,12 @@ The discovery-runner CI passed after adding the stricter cache audit gate: [run 
 - Empty option responses are no longer written as reusable cache files; any old cached empty response encountered will be deleted and re-requested. Acquisition must complete all planned response groups without failures and have at least 80% non-empty option responses; incomplete acquisition or incomplete underlying data exits non-zero so discovery is not run on an incomplete acquisition.
 - Regression tests added for the reduced supported offset domain, bounded retries, stop-on-consecutive-failure behavior, empty-data coverage gating, and the fail-closed acquisition gate. The acquisition workflow's push-path filter will be updated to run automatically when its source client/tests change.
 - **Phase gate is unchanged until a corrected workflow run produces evidence:** Phase 2 remains IN PROGRESS, Phase 5 empirical discovery remains BLOCKED, Phase 6–7 remain NOT STARTED, and execution remains FAIL. The existing active run uses its original checked-out code; the already-queued follow-up will be the first eligible run to use the repaired client. No test/market result is claimed before CI executes.
+
+
+## Latest recovery CI queue checkpoint — 2026-10-23 00:13 IST
+
+- The previous pending run #39808171927 was cancelled at 2026-10-22 18:41:39 UTC when later branch updates replaced the pending concurrency slot. Do not use that run as verification.
+- Current source/test checkpoint commit [9ef5f663](https://github.com/vishnuvcr/Naked-Options-v2/commit/9ef5f663122a8b802445a618e3bf91f022590d65) has GitHub Actions check suite [107963790987](https://github.com/vishnuvcr/Naked-Options-v2/commit/9ef5f663122a8b802445a618e3bf91f022590d65/checks), which is pending and has no check runs yet. It was created at 18:43:46 UTC on 2026-10-22.
+- Original acquisition run #39803647257 remained in progress at the latest check, with no update since 15:18:56 UTC. The corrected check suite is waiting for the concurrency slot. Its exact timeout/completion must be observed; do not assume it timed out or succeeded.
+- Source review caught and corrected a progress-accounting defect and an unchanged underlying timeout in the first patch. The correction is logged as QE-NOB2-E025, with a regression test in `test_run_research.py`. CI outcome remains pending.
+- **Current gate:** Phase 2 remains IN PROGRESS; empirical Phase 5 is BLOCKED pending the runtime cache gate; Phases 6–7 are NOT STARTED; execution remains FAIL. No strategy outcome is available.
