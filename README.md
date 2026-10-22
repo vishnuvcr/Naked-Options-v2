@@ -578,3 +578,10 @@ The source acquisition is now being restarted against the **weekly-only, ATM/OTM
 ### Current resume state — eligible WEEK1-only acquisition
 
 The eligible [weekly-only acquisition workflow #39838508682](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39838508682) has passed its pre-acquisition source-client and full grammar/feature/simulator/discovery regression gates, restored the cache, and is currently in the acquisition step. Its own fresh acquisition summary and feature audit have not yet completed, so there is no data-coverage conclusion or prediction result to report yet. Phase 2 remains IN PROGRESS; Phase 5 discovery remains blocked until the fresh source gate passes. The cancelled-run summary files were identified as stale v1 outputs and are explicitly disqualified from evidence (QE-NOB2-E031).
+
+
+### QE-NOB-2.0 monthly-cache evidence correction — 2026-10-23
+
+The latest interrupted-run artifact audit refines the earlier statement that the monthly cache was empty: it actually contains **11 historical MONTH1 files, all in the first two 30-day chunks**. That is roughly 3% of the 366-file ATM/OTM1 five-year monthly grid and does not amount to usable full-period monthly coverage. The active protocol remains WEEK1-only for the bounded run, while acknowledging the partial monthly files rather than claiming none exist.
+
+The fresh weekly-only run [#39838508682](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39838508682) has restored the saved partial cache and passed the source-client plus active v2 grammar/candidate/feature/simulator/discovery test gates. It is now running the source-acquisition step. The actual acquisition summary and fresh cache audit have not yet been produced; Phase 2 remains open, discovery remains gated, and no profitability claim is supported.
