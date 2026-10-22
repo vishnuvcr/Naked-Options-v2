@@ -643,7 +643,7 @@ def backtest(u,o,expiry_flags,candidates_override=None,include_oos=True,bootstra
                      "Only the latest 20% chronology is reserved for final confirmation; its full candidate-family p-values are Holm-adjusted."]}
 
 def genome_key(candidate):
-    return json.dumps(candidate,sort_keys=True,separators=(",",":"))
+    return json.dumps(candidate,sort_keys=True)
 
 EVOLVABLE_FAMILIES=("orb","trend","gap_cont","gap_fade","pullback","orb_straddle","orb_strangle")
 
@@ -693,7 +693,8 @@ def random_genome(rng, expiry_flags, family=None):
     return c
 
 def crossover_genome(a,b,rng,expiry_flags):
-    fam=str(rng.choice((a["family"],b["family"]))) if rng.random()<0.45 else str(rng.choice(EVOLVABLE_FAMILIES))
+    parent_families=[p["family"] for p in (a,b) if p["family"] in EVOLVABLE_FAMILIES]
+    fam=str(rng.choice(parent_families)) if parent_families and rng.random()<0.45 else str(rng.choice(EVOLVABLE_FAMILIES))
     child=random_genome(rng,expiry_flags,fam)
     for key in ("hold","expiry","money","range_bars","buffer","fast","slow","vwap_filter","gap"):
         if key in child:
@@ -852,7 +853,7 @@ def run_quant_evolve(u,o,expiry_flags):
             for record in child_origins[-made:] if made else []:
                 islands[island_id].append(record["key"])
                 meta[record["key"]]={"generation_created":generation,"island_created":island_id,
-                    "parent_key":record["parent"],"hypothesis":hypothesis_for(all_genomes.get(record["parent"],p1) if False else next(x for x in children if genome_key(x)==record["key"])),"origin":"mutation_crossover"}
+                    "parent_key":record["parent"],"hypothesis":hypothesis_for(next(x for x in children if genome_key(x)==record["key"])),"origin":"mutation_crossover"}
         if not children: break
         # Enforce the unique-candidate budget at insertion, before any evaluation.
         inserted=[]
