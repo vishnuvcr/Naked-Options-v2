@@ -33,7 +33,7 @@ ALLOWED_EXITS = {
 # These are the only exit primitives currently executed by the tested OHLC simulator.
 SIMULATOR_SUPPORTED_EXITS = {"time_exit", "premium_risk_stop", "premium_target"}
 ALLOWED_INSTRUMENTS = {"CALL", "PUT", "STRADDLE", "STRANGLE"}
-ALLOWED_EXPIRIES = {"WEEK1", "MONTH1"}
+ALLOWED_EXPIRIES = {"WEEK1"}
 ALLOWED_MONEYNESS = {"ATM", "OTM1"}
 CATEGORICAL_FEATURES = {"opening_range_break", "time_of_day_bucket", "fii_dii_regime"}
 NUMERIC_OPERATORS = {"gt", "lt", "cross_up", "cross_down", "in_bucket"}
