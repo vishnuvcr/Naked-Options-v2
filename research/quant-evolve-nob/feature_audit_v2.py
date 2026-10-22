@@ -45,11 +45,12 @@ def inspect_json(path: Path) -> dict[str, Any]:
     record.update({"parse_status": "PASS", "fields": fields, "sha256": sha256(path)})
     ts = data.get("timestamp")
     if isinstance(ts, list):
+        non_null_timestamps = [x for x in ts if x is not None]
         record["timestamp_count"] = len(ts)
-        record["timestamp_non_null"] = sum(x is not None for x in ts)
-        record["timestamp_unique"] = len({str(x) for x in ts if x is not None})
-        record["timestamp_min"] = min(ts) if ts else None
-        record["timestamp_max"] = max(ts) if ts else None
+        record["timestamp_non_null"] = len(non_null_timestamps)
+        record["timestamp_unique"] = len({str(x) for x in non_null_timestamps})
+        record["timestamp_min"] = min(non_null_timestamps) if non_null_timestamps else None
+        record["timestamp_max"] = max(non_null_timestamps) if non_null_timestamps else None
     for key, value in data.items():
         if isinstance(value, list) and key in OPTION_FIELDS | REQUIRED_UNDERLYING:
             record.setdefault("array_lengths", {})[key] = len(value)
