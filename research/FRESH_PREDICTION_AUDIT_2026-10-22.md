@@ -14,3 +14,19 @@ Current new data are insufficient for a meaningful untouched future-period repli
 
 ## Finalization gate
 Wait for the corrected workflow; verify tests, target-date completeness, model metrics, loss signs, CI/HAC, Holm family and manuscript consistency independently; then update all status records. Do not expand the frozen model catalogue.
+
+
+## Additional artifact sensitivity — same-holdout temporal and distribution diagnostics
+
+The selected global ExtraTrees h1 volatility-proxy result (n=981) was split into four equal-count chronological slices. The mean QLIKE loss difference stayed negative in each slice, with moving-block intervals and Holm-adjusted HAC tests across the four slices:
+
+| Slice | Dates | n | Mean QLIKE loss difference | 95% block CI | HAC p | Holm p |
+|---|---|---:|---:|---:|---:|---:|
+| 1 | 2022-11-04–2023-11-01 | 246 | −0.2640 | [−0.4370, −0.1046] | 0.001492 | 0.003871 |
+| 2 | 2023-11-02–2024-10-25 | 245 | −0.3516 | [−0.5893, −0.0959] | 0.006660 | 0.006660 |
+| 3 | 2024-10-28–2025-10-21 | 245 | −0.2770 | [−0.4582, −0.1261] | 0.000793 | 0.003174 |
+| 4 | 2025-10-23–2026-10-19 | 245 | −0.3700 | [−0.6041, −0.1589] | 0.001290 | 0.003871 |
+
+**Material qualification:** 50.97% of the daily model-minus-baseline loss differences are positive (higher model loss) and the median is +0.00662, while the mean remains −0.31560. A 10% winsorized mean is −0.10137. This indicates an average-score advantage with a skewed loss-differential distribution, not universal daily superiority. This is a post hoc partition of the same final holdout, not independent-period replication.
+
+Reproducible artifact utility: [`research/audits/audit_nifty_predictions.py`](audits/audit_nifty_predictions.py). Example after extracting a workflow artifact: `python research/audits/audit_nifty_predictions.py predictions.csv --metrics metrics.csv --output audit.json`.
