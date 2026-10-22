@@ -12,7 +12,9 @@ on:
     branches:
       - research/quant-evolve-nob-v1-developer
     paths:
-      - research/quant-evolve-nob/**
+      - research/quant-evolve-nob/run_research.py
+      - research/quant-evolve-nob/config.json
+      - research/quant-evolve-nob/test_run_research.py
       - .github/workflows/quant-evolve-nob.yml
 
 permissions:
@@ -95,7 +97,26 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports/quant_evolve_nob_v1 research/quant-evolve-nob/RESULTS.md
+          if [ -f reports/quant_evolve_nob_v1/RESULTS.md ]; then
+            cp reports/quant_evolve_nob_v1/RESULTS.md research/quant-evolve-nob/RESULTS.md
+          fi
+          export QE_RUN_ID="${{ github.run_id }}"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          phase = Path("research/quant-evolve-nob/PHASE_STATUS.md")
+          summary = Path("reports/quant_evolve_nob_v1/run_summary.json")
+          if summary.exists():
+              data = json.loads(summary.read_text())
+              status = data.get("decision", data.get("status", data.get("run_status", "UNKNOWN")))
+              text = phase.read_text()
+              text = text.replace("## Run rule", f"## Latest run update — {status}\\n- Workflow run id: {os.environ.get('QE_RUN_ID')}\\n- Updated at UTC: {data.get('generated_at_utc', 'unavailable')}\\n- Data status: {data.get('data_gate', data.get('acquisition_status', 'see run report'))}\\n\\n## Run rule")
+              phase.write_text(text)
+          log = Path("research/quant-evolve-nob/INTERACTION_LOG.md")
+          with log.open("a") as stream:
+              stream.write(f"\\n\\n## GitHub Actions run {os.environ.get('QE_RUN_ID')}\\n- Workflow completed its bounded run stage. See sanitized report files in reports/quant_evolve_nob_v1.\\n")
+          PY
+          git add reports/quant_evolve_nob_v1 research/quant-evolve-nob/RESULTS.md research/quant-evolve-nob/PHASE_STATUS.md research/quant-evolve-nob/INTERACTION_LOG.md
           if git diff --cached --quiet; then
             echo "No sanitized report files changed."
           else
