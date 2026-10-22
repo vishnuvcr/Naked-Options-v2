@@ -30,7 +30,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          RUN_ID="${INPUT_RUN_ID:-39803647257}"
+          RUN_ID="${INPUT_RUN_ID:-39838710148}"
           case "$RUN_ID" in
             ''|*[!0-9]*)
               echo "Invalid workflow run ID."
