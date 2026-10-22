@@ -40,3 +40,23 @@ def test_feature_values_do_not_depend_on_future_rows():
     cols=["ret_0","ret_1","mom_20","vol_20","range","gap"]
     for col in cols:
         assert np.allclose(full.loc[:69,col],prefix.loc[:69,col],equal_nan=True)
+
+
+def test_merge_results_skips_empty_or_headerless_csv(tmp_path):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+    from merge_results import read_csv_if_populated
+
+    empty = tmp_path / "empty.csv"
+    empty.write_text("", encoding="utf-8")
+    assert read_csv_if_populated(empty) is None
+
+    headerless = tmp_path / "headerless.csv"
+    headerless.write_text("\n", encoding="utf-8")
+    assert read_csv_if_populated(headerless) is None
+
+    valid = tmp_path / "valid.csv"
+    valid.write_text("metric,value\nmae,0.1\n", encoding="utf-8")
+    frame = read_csv_if_populated(valid)
+    assert frame is not None
+    assert list(frame.columns) == ["metric", "value"]
+    assert frame.iloc[0]["metric"] == "mae"
