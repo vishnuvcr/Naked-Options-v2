@@ -320,3 +320,16 @@ User explicitly declined an independent tester; no tester branch/report is await
 - [Sanitized run report](reports/quant_evolve_nob_v1/RESULTS.md) · [Run summary JSON](reports/quant_evolve_nob_v1/run_summary.json) · [Workflow artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025)
 
 The frozen-ledger reprice audit is a separate sensitivity check, not the final evolutionary run. No strategy is approved. User explicitly declined independent testing; no tester branch/report is claimed. The bounded study is closed; do not repeat unbounded search without materially better contract/execution data.
+
+
+## Follow-on: QE-NOB-2.0 open structural strategy discovery
+
+QE-NOB-1.0 is closed **NO-GO** for its tested restricted grammar. The follow-on protocol explicitly addresses the limitation that the earlier search mainly combined predefined signal families and fixed-time exits, rather than evolving structurally distinct entry/exit programs.
+
+- [QE-NOB-2.0 developer branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v2-discovery-developer)
+- [Open strategy discovery plan](research/quant-evolve-nob/OPEN_STRATEGY_DISCOVERY_PLAN.md)
+- [Phase status](research/quant-evolve-nob/PHASE_STATUS_V2.md)
+- [Feature/source feasibility audit](research/quant-evolve-nob/FEATURE_FEASIBILITY_V2.md)
+- [Activity log](research/quant-evolve-nob/INTERACTION_LOG_V2.md)
+
+**Current status:** Phase 1 protocol amendment complete; Phase 2 data/feature feasibility is pending runtime coverage checks. The plan caps the new study at 1,500 unique structurally distinct candidates and 20 generations, with novelty-aware multi-objective search, evolvable exit state machines, frozen chronological OOS, Holm correction, block bootstrap and after-cost stress tests. The budget is fixed; this is not an endless search. No new strategy has yet been implemented, run, or shown profitable. No tester branch/report will be created, per the user's explicit instruction.
