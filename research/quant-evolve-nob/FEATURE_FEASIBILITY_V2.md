@@ -9,8 +9,8 @@
 |---|---|---|
 | NIFTY 5-minute OHLC | Cached Dhan underlying bars used in prior run | Eligible after timestamp/session/coverage recheck |
 | Opening range / gap / trend / EMA / VWAP | Implemented in existing signal code | Keep as baselines; not considered novel by itself |
-| Option OHLC, spot, rolling strike, IV, volume, OI | Dhan rolling endpoint requests these fields; multi-year rows exist | Eligible with rolling-contract limitations and per-field missingness audit |
-| Exact option expiry/contract identity | Not reliably exposed by rolling endpoint | DATA-LIMITED; no exact contract claims |
+| Option OHLC, spot, rolling strike, IV, volume, OI | Dhan rolling endpoint requests these fields; partial multi-year WEEK1 files exist | Active run is weekly expiry only, ATM/OTM1 only; audit actual fields/coverage after fresh acquisition |
+| Exact option expiry/contract identity | Not reliably exposed by rolling endpoint | DATA-LIMITED; active WEEK1 family describes the requested source bucket, not exact exchange contract identity |
 | Historical bid/ask/depth | Not available in current cached feed | Execution gate remains FAIL; modeled slippage only |
 | Historical IV surface / skew / term structure | Single rolling IV observations may be available; complete fixed-contract surface not verified | Conditional only after coverage and identity tests |
 | Option-volume/OI changes | Requested by source, but completeness and source timestamp semantics require audit | Conditional; missing/zero distinction must be preserved |
@@ -21,7 +21,7 @@
 | Corporate actions | Not relevant to direct index price in the same way as single stocks, but constituent actions can affect index composition | Track index methodology/constituent changes if component-level data are used |
 | Scheduled news/events | No verified timestamped event dataset in current pipeline | Search free/licensed sources; otherwise omit from executable grammar |
 | Historical option chain PCR | Not verified as complete point-in-time dataset | Conditional; do not infer missing chain from rolling ATM observations |
-| Transaction fees / lot size | Dated fee and WEEK1/MONTH1 lot-size proxies exist | Keep explicit proxy label; exact historical contract master remains missing |
+| Transaction fees / lot size | Dated fee and weekly/monthly lot-size proxy code exists | Active v2 protocol uses WEEK1 only; keep the lot-size estimate labeled as a proxy until reconciled against exact dated contract master |
 | Broker fills / queue position | Not present | Cannot claim live execution realism |
 
 ## Initial source strategy
@@ -39,3 +39,8 @@ Create a machine-readable feature availability matrix containing source, field, 
 ## Decision
 
 The current data supports exploratory structural discovery primarily on 5-minute NIFTY bars and rolling option OHLC/IV/OI/volume. It does not yet support all proposed mechanism families. Before Phase 3, run a field-level cache audit and public-source catalogue refresh. The strategy grammar must be feature-gated: unsupported or lookahead-prone features are excluded, not replaced with fabricated values.
+
+
+## Current scope amendment — 2026-10-23
+
+The latest partial cache audit found 314 historical weekly-option files for the allowed ATM/OTM1 offset set, but no historical underlying bars and no historical monthly-option files. Therefore QE-NOB-2.0's active acquisition/candidate universe is restricted to WEEK1 weekly expiry and ATM/OTM1. This is a run-specific data-feasibility decision, not a conclusion that monthly options cannot be obtained from other sources. Fresh source coverage and field completeness remain unverified until the next bounded acquisition artifact is inspected.
