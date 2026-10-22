@@ -443,11 +443,38 @@ def load_frames(return_quality=False):
         quality["row_grid_coverage"]=float(min(1.0,observed/max(1,expected)))
     return (u,o,quality) if return_quality else (u,o)
 
-def lot_size_proxy(day):
-    # Exploratory proxy only: no result is strategy-approved without expiry-level lot master.
+def lot_size_proxy(day, expiry_flag="MONTH1"):
+    """Dated NSE lot-size proxy for the Dhan rolling nearest-weekly/monthly series.
+
+    The Dhan feed does not return a stable contract identifier/expiry date, so this
+    uses the published last-old / first-new expiry schedule as an entry-date proxy.
+    It corrects the prior invalid 25-lot assumption across the 2021-2024 period.
+    This improves sizing but does not turn rolling OHLC into an exact contract tape.
+    """
     d=pd.Timestamp(day).date()
-    if d < date(2024,11,20): return 25
-    if d < date(2025,11,20): return 75
+    family=str(expiry_flag).upper()
+    # NSE FAOP47854: 75 -> 50 for July-2021 monthly and Aug-2021 weekly
+    # expiries onward. The research sample starts after these transition dates.
+    if d < date(2024,4,26):
+        return 50
+    # NSE FAOP61415: 50 -> 25; nearest weekly 02-May-2024 and monthly
+    # 30-May-2024 are first revised expiries.
+    if family.startswith("WEEK"):
+        # NSE FAOP64672: last 25-lot weekly expiry 19-Dec-2024; first
+        # 75-lot weekly expiry 02-Jan-2025. NSE 2025 revision: last 75-lot
+        # weekly expiry 23-Dec-2025; first 65-lot expiry 06-Jan-2026.
+        if d < date(2024,12,20):
+            return 25
+        if d < date(2025,12,24):
+            return 75
+        return 65
+    # Monthly: last 25-lot expiry 30-Jan-2025; first 75-lot expiry
+    # 27-Feb-2025. The 2025 revision switches the monthly family after the
+    # 30-Dec-2025 expiry, with 27-Jan-2026 the first 65-lot monthly expiry.
+    if d < date(2025,1,31):
+        return 25
+    if d < date(2025,12,31):
+        return 75
     return 65
 
 def exchange_rate(day):
@@ -484,9 +511,9 @@ def reprice_premium_turnovers(raw_buy_turnover, raw_sell_turnover, day, slip_bps
             "turnover_rupees":turnover,"slippage_bps_per_side":float(slip_bps),
             "brokerage_per_order":float(brokerage),"leg_count":int(leg_count)}
 
-def cost_and_pnl(legs, day, slip_bps, brokerage):
+def cost_and_pnl(legs, day, slip_bps, brokerage, expiry_flag="MONTH1"):
     # One lot per long option leg; use the date-effective lot-size schedule as a labelled proxy.
-    lots=lot_size_proxy(day)
+    lots=lot_size_proxy(day, expiry_flag)
     raw_buy=sum(float(leg["entry"])*lots for leg in legs)
     raw_sell=sum(float(leg["exit"])*lots for leg in legs)
     result=reprice_premium_turnovers(raw_buy,raw_sell,day,slip_bps,brokerage,len(legs))
@@ -720,7 +747,7 @@ def backtest(u,o,expiry_flags,candidates_override=None,include_oos=True,bootstra
             if c["family"] in ("orb_straddle","orb_strangle","always_straddle","always_strangle") and len(legs)==2:
                 if c["family"] in ("orb_straddle","always_straddle") and round(float(legs[0]["strike"]),2)!=round(float(legs[1]["strike"]),2):
                     continue
-            result=cost_and_pnl(legs,day,50,10)
+            result=cost_and_pnl(legs,day,50,10,c["expiry"])
             stress100=reprice_premium_turnovers(result["raw_buy_premium_turnover_rupees"],result["raw_sell_premium_turnover_rupees"],day,100,20,len(legs))
             stress200=reprice_premium_turnovers(result["raw_buy_premium_turnover_rupees"],result["raw_sell_premium_turnover_rupees"],day,200,20,len(legs))
             trade_rec={"date":day,"family":c["family"],"expiry":c["expiry"],"entry_timestamp":int(ev["entry_timestamp"]),
