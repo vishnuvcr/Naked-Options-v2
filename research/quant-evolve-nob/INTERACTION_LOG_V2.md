@@ -154,3 +154,10 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 ## 2026-10-23 — source-client recovery regression passed
 - Automatic independent source-client workflow [#39836310701](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39836310701) passed after the two-chunk early-stop fixture correction. Its log shows 18 passed in 1.24 seconds; Python compilation also succeeded.
 - The same push queued acquisition workflow [#39836310700](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39836310700), but it is behind the stale recovery workflow tied to commit 706a27fa. The stale run must be cancelled with the explicit one-time recovery commit so the queue executes the latest ATM/OTM1 scope.
+
+
+## 2026-10-23 — cancellation-target mistake and restart
+- The first ATM/OTM1 recovery run #39836599391 made measurable progress, but the cancellation workflow triggered by later recovery commits used its unsafe default target #39836599391 and cancelled the new acquisition after 318/732 planned option request groups. The workflow audit, cache-save, and artifact upload completed; it recorded 313 cached requests, one downloaded file, four timeouts, and no historical underlying series.
+- Inspected .github/workflows/qe-nob-v2-recovery-cancel.yml, found its default RUN_ID pointed to the new acquisition rather than the original stale run. Corrected default to original run #39803647257; manual dispatch still takes an explicit ID. Logged as QE-NOB2-E029.
+- Updated the data workflow marker and triggered a new run with commit e02851ad. The new run should restore the saved cache and continue from valid files; do not delete the cache. The source-client regression CI remains passing at 18 tests.
+- The cache audit's parseability PASS is not an acquisition completeness pass. Phase 2 remains open until historical underlying and option data coverage are confirmed.
