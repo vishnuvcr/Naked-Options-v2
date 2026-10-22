@@ -801,3 +801,9 @@ The free options-source audit sampled three expiry partitions (986,041 rows tota
 - [Integration plan](research/QUANTEvolve_INTEGRATION_PLAN.md)
 - [Phase status](research/QUANTEvolve_INTEGRATION_STATUS.md)
 - [Error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md)
+
+
+### Latest bounded options-data result (22 October 2026)
+- [Dhan rolling-options API probe](reports/quantevolve/dhan_options_api_probe.json): one request succeeded (HTTP 200, 1,155 minute bars); response had aligned OHLC/volume/IV/OI/strike/spot/timestamps but no explicit expiry or lot-size identifiers.
+- [HF options source audit](reports/quantevolve/options_source_audit.json): three sampled expiry files (986,041 rows) passed sample-level checks and NSE circular-backed lot mappings; full-history and official contract-master reconciliation remain incomplete.
+- Final gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; `pnl_permitted=false`. No options P&L or trading recommendation is authorized. See [phase status](research/QUANTEvolve_INTEGRATION_STATUS.md), [error log](research/QUANTEvolve_INTEGRATION_ERROR_LOG.md), and [manuscript](research/manuscripts/QUANTEvolve_NIFTY_INTEGRATION_MANUSCRIPT.md).
