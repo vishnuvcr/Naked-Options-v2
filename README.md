@@ -3,7 +3,7 @@
 **Research version:** NIFTY-PRED-1.0  
 **Scope:** Prediction only. No trading strategy design, optimization, or recommendation in this study.  
 **Started:** 2026-10-14  
-**Status:** NIFTY-PRED-1.0 is closed with accepted limitations. Follow-on OPT-BUY-1.0 is also closed: no tested option-buying candidate passed the data-quality and profitability gates.
+**Status:** NIFTY-PRED-1.0 remains prediction-only with accepted limitations. Defect-driven rerun [39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966) completed successfully: no robust return/direction edge; one-session volatility-proxy result retained for independent replication. No strategy is approved.
 
 ## Repository audit
 
@@ -40,7 +40,7 @@ A separate weekly-options volatility-regime hypothesis is in protocol/source-gat
 
 - **Original prediction study (NIFTY-PRED-1.0): CLOSED WITH SCOPE LIMITATIONS.** Its corrected canonical run is [#49](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38533512128); see [results](research/RESULTS.md), [phase status](research/PHASE_STATUS.md), and [scientific manuscript](research/MANUSCRIPT.md).
 - **Follow-on option-buying validation (OPT-BUY-1.0): CLOSED — NO-GO for tested candidates; broader hypothesis inconclusive.** The completed [run #11](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38548437384) and independent review found strangle quote coverage of 69.18% (<80%), conflicting duplicate groups at 1.409% (>1%), and negative net daily P&L confidence intervals for all four candidates. No paper/live strategy is approved; details are in [the option-validation results](research/option-validation/RESULTS.md) and [tester report](research/option-validation/TESTER_REPORT.md).
-- Daily NIFTY data: 4,901 rows from 2007-01-02 to 2026-10-13; SHA-256 `b844c4847497ebf8aeb0a8f9fc64cf8c70fcf9ef7f6435f0ac3591b773706050`.
+- Latest validated NIFTY data: 4,906 Dhan daily rows from 2007-01-02 to 2026-10-21; SHA-256 `2a76714665754ec6371e92d8b9b56565606c0d1a4a2fc9cc9013291e233b2158` (the earlier 4,901-row run remains historical).
 - Data gaps remain documented: historical options features, FII/DII, PCR, breadth, point-in-time constituents/corporate actions, and timestamped news were not comprehensively verified for the original prediction study. These gaps limit the scope of inference.
 - Statistical integrity: the original study found no robust return/direction edge after multiple-testing correction. The option-buying follow-on did not demonstrate profitable net option P&L after modeled costs.
 - Audit trail: [error log](research/ERROR_LOG.md), [experiment log](research/EXPERIMENT_LOG.md), [interaction log](research/INTERACTION_LOG.md), [frozen option validation plan](research/OPTION_BUYING_VALIDATION_PLAN.md), [independent tester](research/option-validation/TESTER_REPORT.md), and [developer disposition](research/option-validation/DEVELOPER_DISPOSITION.md).
@@ -276,3 +276,12 @@ Repository inspection found that [`vishnuvcr/Nifty`](https://github.com/vishnuvc
 
 
 The free-source audit also records official NSE expiry-rule changes across 2025; see the [continuation source audit](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/vol-regime-options-continuation/research/VOL_REGIME_OPTIONS_FREE_SOURCE_AUDIT.md). These changes mean the research must use dated contract-file evidence rather than a weekday-only expiry heuristic. The HF audit run's download step completed, but its data-quality step remained in progress at the latest check; all strategy/P&L gates remain closed pending its report and official contract reconciliation.
+
+
+## Latest NIFTY prediction rerun — 2026-10-22
+
+- [Workflow #39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966) completed successfully. Artifact SHA-256: `6f2cd6bb302763e5e972fb54e447bfbd47bba0c8cd3cfe3fd024f9cf6062c8dc`.
+- [Sanitized aggregate run summary](reports/nifty_prediction_run_39699761966_summary.json) · [research results](research/RESULTS.md) · [structured manuscript](research/MANUSCRIPT.md) · [phase status](research/PHASE_STATUS.md).
+- Output: 647 metric rows, 299 OOS candidate comparisons, 296 CV-pass rows, 52 compute-budget-blocked rows.
+- No robust selected return/direction edge was established. One selected global ExtraTrees model improved the one-session volatility-proxy QLIKE loss; Holm p=4.26e-7 across all 299 candidate comparisons. This requires independent-period replication and is not a trading signal.
+- Options research remains **BLOCKED_NO_VERIFIED_CONTRACT_DATA**. No options P&L, trading recommendation, or live deployment is authorized.

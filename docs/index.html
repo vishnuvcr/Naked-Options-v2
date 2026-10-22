@@ -1,15 +1,54 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NIFTY 50 Prediction Research — NIFTY-PRED-1.0</title><style>body{font:16px/1.55 system-ui,sans-serif;max-width:1100px;margin:2rem auto;padding:0 1rem;color:#202124}h1,h2{line-height:1.25}table{border-collapse:collapse;width:100%;font-size:.92rem}th,td{border-bottom:1px solid #ddd;padding:.5rem;text-align:left;vertical-align:top}th{background:#f3f4f6}.note{border-left:3px solid #777;padding:.5rem 1rem;margin:1rem 0}img{max-width:100%;height:auto}a{color:#1558a6}</style></head><body>
-<h1>Fresh NIFTY 50 Prediction Research</h1><p><strong>Protocol:</strong> NIFTY-PRED-1.0 · <strong>Scope:</strong> forecasting only, not a trading strategy.</p>
-<div class="note"><strong>Final status: PASS WITH SCOPE LIMITATIONS.</strong> Corrected run #49 and independent tester checks passed for the bounded prediction-only study. The tested data/model set did not establish a robust return/direction edge. Phase 2 literature depth and Phase 6 source/regime coverage remain partial and are documented.</div>
-<p><strong>Canonical run:</strong> <a href="https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/38533512128">GitHub Actions #49</a> · <strong>Artifact SHA-256:</strong> <code>97858125f14344520f77dd503d2c0441005e6da4cfa12fc23fe7427680f932e7</code></p>
-<h2>Selected out-of-sample results</h2><table><thead><tr><th>Target</th><th>Horizon</th><th>Selected model</th><th>Result</th><th>Interpretation</th></tr></thead><tbody>
-<tr><td>Log return</td><td>1 session</td><td>Global CatBoost</td><td>MSE skill +0.17%; p=.579; Holm p=1.000</td><td>No useful gain over zero-return baseline.</td></tr>
-<tr><td>Log return</td><td>5 sessions</td><td>Global HistGradientBoosting</td><td>MSE skill −25.8%; Holm p=.0256</td><td>Worse than baseline.</td></tr>
-<tr><td>Log return</td><td>20 sessions</td><td>Global HistGradientBoosting</td><td>MSE skill −157.0%; Holm p=.000054</td><td>Worse than baseline.</td></tr>
-<tr><td>Direction</td><td>1 session</td><td>Global CatBoost</td><td>Accuracy 54.08%; Holm p=.5478</td><td>Does not survive multiplicity correction.</td></tr>
-<tr><td>Volatility</td><td>1/5/20 sessions</td><td>Global ElasticNet</td><td>MSE skill positive; QLIKE comparisons do not pass Holm correction</td><td>Metric-sensitive; no robust gain accepted.</td></tr>
-<tr><td>Volatility expansion</td><td>5/20 sessions</td><td>Technical Logistic</td><td>Log-loss Holm p=.0233/.0109</td><td>Exploratory single-holdout result, not a trading signal.</td></tr>
-</tbody></table><p><img src="selected_model_results.svg" alt="Selected model holdout diagnostics"></p>
-<h2>Data and method</h2><ul><li>4,901 NIFTY daily rows, 2007-01-02 through 2026-10-13.</li><li>Seven validated auxiliary series: S&amp;P 500, Nasdaq, Nikkei 225, Hang Seng, CBOE VIX, India VIX proxy and US 10-year yield proxy.</li><li>Chronological 80/20 split with two expanding validation folds.</li><li>Corrected forward-volatility labels; no null target dates in final OOS predictions.</li><li>Independent tester reproduced skill metrics, confidence intervals, Holm corrections and ARIMA benchmark calculations.</li></ul>
-<h2>Limitations</h2><p>Historical option chains, PCR, FII/DII, breadth, timestamped news, point-in-time constituents and corporate-action features were not verified as acquired. No options strategy, option-chain backtest, brokerage/spread/tax/slippage simulation, Paytm Money execution analysis or live deployment was performed. Results cover one holdout period only.</p>
-<h2>Research records</h2><ul><li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/RESEARCH_PLAN.md">Research plan</a></li><li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/RESULTS.md">Results and evidence register</a></li><li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/PHASE_STATUS.md">Phase status</a></li><li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/MANUSCRIPT.md">Structured manuscript</a></li><li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/research/independent-tester/research/TESTER_REPORT.md">Independent tester report</a></li><li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/ERROR_LOG.md">Error log</a></li><li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/EXPERIMENT_LOG.md">Experiment log</a></li></ul><p><small>The repository and linked run artifact are the sources of record.</small></p><p><small>Page status refreshed after independent tester approval; see the linked final results and phase gates.</small></p></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NIFTY 50 Prediction Research — NIFTY-PRED-1.0</title>
+<style>
+body{font:16px/1.55 system-ui,sans-serif;max-width:1100px;margin:2rem auto;padding:0 1rem;color:#202124}
+h1,h2{line-height:1.25}table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border-bottom:1px solid #ddd;padding:.55rem;text-align:left;vertical-align:top}
+th{background:#f3f4f6}.note{border-left:3px solid #777;padding:.5rem 1rem;margin:1rem 0}
+img{max-width:100%;height:auto}a{color:#1558a6}.muted{color:#555}
+</style>
+</head>
+<body>
+<h1>Fresh NIFTY 50 Prediction Research</h1>
+<p><strong>Protocol:</strong> NIFTY-PRED-1.0 · <strong>Scope:</strong> forecasting only; no trading strategy.</p>
+<div class="note"><strong>Latest run: 39699761966 — successful, with scope limitations.</strong> No robust selected return/direction edge was established. One selected one-session volatility-proxy model (global ExtraTrees) showed a significant QLIKE improvement after Holm correction across 299 OOS candidate comparisons (adjusted p=4.26×10⁻⁷). It requires independent-period replication and is not a trading signal.</div>
+<p><strong>Workflow:</strong> <a href="https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966">NIFTY prediction research #39699761966</a> · <strong>Artifact SHA-256:</strong> <code>6f2cd6bb302763e5e972fb54e447bfbd47bba0c8cd3cfe3fd024f9cf6062c8dc</code> · <a href="nifty_prediction_run_39699761966_summary.json">Sanitized aggregate summary</a></p>
+<h2>Selected out-of-sample results</h2>
+<table><thead><tr><th>Target</th><th>Horizon</th><th>Selected model</th><th>Result</th><th>Interpretation</th></tr></thead><tbody>
+<tr><td>Log return</td><td>1 session</td><td>Global CatBoost</td><td>MAE 0.005788 vs zero 0.005803; MSE skill −0.26%; Holm p=1.000</td><td>No supported improvement over zero-return baseline.</td></tr>
+<tr><td>Log return</td><td>5 sessions</td><td>Global CatBoost</td><td>MAE 0.013623 vs zero 0.013730; MSE skill +0.85%; Holm p=1.000</td><td>Small, statistically unsupported gain.</td></tr>
+<tr><td>Log return</td><td>20 sessions</td><td>Global CatBoost</td><td>MAE 0.027171 vs zero 0.026252; MSE skill −1.70%; Holm p=1.000</td><td>Worse than zero-return baseline by MAE/MSE skill.</td></tr>
+<tr><td>Direction</td><td>1 session</td><td>Global CatBoost</td><td>Accuracy 53.01%; balanced accuracy 52.82%; Brier skill −0.0009</td><td>No significant direction edge.</td></tr>
+<tr><td>Volatility proxy</td><td>1 session</td><td>Global ExtraTrees</td><td>QLIKE difference −0.3156; 95% block CI [−0.4230, −0.2101]; Holm p=4.26×10⁻⁷ across 299 comparisons</td><td>Strong single-holdout forecast result; replicate before any use.</td></tr>
+<tr><td>Volatility expansion</td><td>20 sessions</td><td>Technical Logistic</td><td>Accuracy 66.43%; Brier skill +0.133; Holm p=.0582 across 33 selected outcomes</td><td>Exploratory; does not pass the 0.05 familywise threshold.</td></tr>
+<tr><td>Index level</td><td>1/5/20 sessions</td><td>Global ElasticNet / ElasticNet / Ridge</td><td>MSE skill vs persistence −16.4% / −8.9% / −34.5%</td><td>Significantly worse than persistence after correction.</td></tr>
+</tbody></table>
+<p><img src="selected_model_results.svg" alt="Latest selected-model forecast diagnostics"></p>
+<h2>Data and method</h2>
+<ul>
+<li>4,906 Dhan daily NIFTY 50 rows from 2007-01-02 to 2026-10-21; target validation passed.</li>
+<li>Seven auxiliary series passed validation: S&amp;P 500, Nasdaq, Nikkei 225, Hang Seng, CBOE VIX, India VIX and a US 10-year yield proxy.</li>
+<li>Chronological 80/20 split; four expanding validation folds for tabular models and two for sequence models, with horizon purging.</li>
+<li>647 merged metric rows; 299 OOS candidate comparisons; 296 CV-pass rows; 52 compute-budget-blocked rows.</li>
+<li>Familywise Holm audit across all 299 OOS comparisons: 85 significant differences, 77 significantly worse than baseline and eight improvements, all for one-session volatility-proxy QLIKE.</li>
+</ul>
+<h2>Limitations</h2>
+<p>NSE official retrieval returned no recognized data rows; USD/INR and gold failed OHLC validation; WTI had non-positive OHLC and was excluded. Twenty weekend-dated target rows remain flagged for exchange-calendar review. Options, FII/DII, PCR, breadth, timestamped news and point-in-time corporate-action data were not verified as acquired. This is a single holdout and no independent-period replication has been run. No option-chain backtest, brokerage/spread/tax/slippage simulation, Paytm Money execution analysis or live deployment was performed.</p>
+<h2>Research records</h2>
+<ul>
+<li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/RESEARCH_PLAN.md">Research plan</a></li>
+<li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/RESULTS.md">Results and evidence register</a></li>
+<li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/PHASE_STATUS.md">Phase status</a></li>
+<li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/MANUSCRIPT.md">Structured manuscript</a></li>
+<li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/DATA_CATALOG.md">Data catalog and provenance</a></li>
+<li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/ERROR_LOG.md">Error log</a></li>
+<li><a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/EXPERIMENT_LOG.md">Experiment log</a></li>
+<li><a href="../reports/nifty_prediction_run_39699761966_summary.json">Sanitized run summary JSON</a></li>
+</ul>
+<p class="muted"><small>Repository records and the linked workflow artifact are the sources of record. The historical tester report refers to the earlier run #49, not this rerun.</small></p>
+</body>
+</html>
