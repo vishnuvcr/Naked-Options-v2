@@ -415,3 +415,14 @@ CI results are not yet verified. The simulator has not been run against the hist
 - [Phase status](research/quant-evolve-nob/PHASE_STATUS_V2.md) · [Error log](research/quant-evolve-nob/ERROR_LOG_V2.md) · [Activity log](research/quant-evolve-nob/INTERACTION_LOG_V2.md) · [Source catalogue](research/quant-evolve-nob/SOURCE_CATALOG_V2.md)
 
 **Next gate:** renew the Dhan token in GitHub Actions secrets or verify and integrate a legally usable alternate source with explicit expiry/contract mapping and historical underlying bars. Do not repeat acquisition with the same invalid credential. Phase 5 remains blocked; Phases 6–7 are not started; execution remains FAIL.
+
+
+### Dhan token renewal automation — 2026-10-23
+
+The QE-NOB-2.0 acquisition workflow now has a TOTP-based token bootstrap using Dhan's documented token-generation endpoint. Before source acquisition, it generates a fresh 24-hour access token, validates it with the Dhan profile endpoint, and places it only in the current GitHub Actions job environment. It does **not** print or commit the token.
+
+**Required one-time setup:** enable TOTP in Dhan Web → My Profile → Access DhanHQ APIs, then add these repository Actions secrets: `DHAN_CLIENT_ID`, `DHAN_PIN`, and `DHAN_TOTP_SECRET` (the authenticator's base32 secret). Do not paste them into chat or commit them. The existing `DHAN_ACCESS_TOKEN` is not sufficient for reliable unattended renewal after it expires.
+
+Implementation: [token helper](research/quant-evolve-nob/dhan_auth.py) · [RFC regression tests](research/quant-evolve-nob/test_dhan_auth.py) · [acquisition workflow](.github/workflows/qe-nob-v2-data-audit.yml) · [phase status](research/quant-evolve-nob/PHASE_STATUS_V2.md) · [error log](research/quant-evolve-nob/ERROR_LOG_V2.md).
+
+**Verification state:** implementation committed; live authentication is pending the three secrets and a successful workflow run. Research Phase 2 remains blocked until token/profile validation and the historical data acquisition/cache gate pass.
