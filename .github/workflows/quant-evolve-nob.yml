@@ -121,5 +121,8 @@ jobs:
             echo "No sanitized report files changed."
           else
             git commit -m "research(QE-NOB-1.0): save sanitized run $RUN_ID results"
-            git push
+            # Reconcile branch edits that may have landed while this data run was executing.
+            git fetch origin "$GITHUB_REF_NAME"
+            git rebase "origin/$GITHUB_REF_NAME"
+            git push origin "HEAD:$GITHUB_REF_NAME"
           fi
