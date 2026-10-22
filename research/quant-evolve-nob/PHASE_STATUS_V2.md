@@ -63,3 +63,12 @@ The discovery-runner CI passed after adding the stricter cache audit gate: [run 
 - Acquisition run #39803647257 remains in progress at the source-acquisition step. Cache audit, cache save, and report upload are still pending.
 - Automatic follow-up #39808171927 remains pending; no jobs or discovery results have been produced by that run yet.
 - No phase gate changed: Phase 2 remains in progress, Phase 5 empirical discovery remains blocked, Phases 6–7 remain not started, and execution remains FAIL pending exact contract and executable quote/fill evidence.
+
+
+## External source catalogue checkpoint — 2026-10-22
+
+- Completed a public-source review and recorded source capabilities, provenance concerns, licensing decisions and composite-data rules in [SOURCE_CATALOG_V2.md](SOURCE_CATALOG_V2.md).
+- Confirmed official/free source candidates for daily NIFTY index / India VIX and provisional FII/DII series; global daily volatility/macro candidates; and independent NIFTY underlying OHLC cross-check candidates.
+- Public option datasets were not imported: one Hugging Face listing gives only license 'other', and another is CC BY-NC 4.0; both remain unapproved for this trading-oriented evidence pipeline until rights are resolved.
+- The code-defined Dhan request loop implies approximately 1,708 option requests before retries for two expiry families across the five-year window. This is a request-count estimate, not evidence that the calls have completed.
+- **No gate change:** Phase 2 remains IN PROGRESS until live acquisition and cache audit evidence is available. Phase 5 empirical discovery remains blocked. No external dataset was added to candidate fitness, and the execution gate remains FAIL.
