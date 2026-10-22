@@ -69,11 +69,12 @@ def evaluate_signals(frame: pd.DataFrame, strategy: Strategy, available_features
             signal = signal | mask
     else:
         raise ValueError("unsupported logic")
-    out = data.loc[signal, ["timestamp"]].copy()
-    out["candidate_direction"] = 1 if strategy.instrument in {"CALL", "STRADDLE", "STRANGLE"} else -1
+    data["next_bar_timestamp"] = data["timestamp"].shift(-1)
+    out = data.loc[signal, ["timestamp", "next_bar_timestamp"]].copy()
+    out["candidate_direction" = 1 if strategy.instrument in {"CALL", "STRADDLE", "STRANGLE"} else -1
     out["instrument"] = strategy.instrument
     out["hold_bars"] = int(strategy.hold_bars)
-    out["entry_timestamp"] = out["timestamp"].shift(-1)
-    # Last signal has no known next bar and is excluded rather than filled with a fabricated time.
+    out = out.rename(columns={"next_bar_timestamp": "entry_timestamp"})
+    # Last available market bar has no known next bar and is excluded rather than fabricated.
     out = out[out["entry_timestamp"].notna()].reset_index(drop=True)
     return out
