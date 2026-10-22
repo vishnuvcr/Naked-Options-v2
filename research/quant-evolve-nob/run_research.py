@@ -297,10 +297,15 @@ def retrieve_options(token, supported, refresh=False):
                     try:
                         payload = api_post("charts/rollingoption",body,token,timeout=OPTION_REQUEST_TIMEOUT_SECONDS)
                         state = validate_option_payload(payload,side)
-                        path.write_text(json.dumps(payload,separators=(",",":")),encoding="utf-8")
+                        if state == "PASS":
+                            path.write_text(json.dumps(payload,separators=(",",":")),encoding="utf-8")
+                            downloaded_count += 1
+                            saved_path = str(path.relative_to(ROOT))
+                        else:
+                            # Do not cache an empty response as a valid reusable source file.
+                            saved_path = None
                         reqs.append({"expiry_flag":flag,"expiry_code":code,"from":d0.isoformat(),"to_exclusive":d1.isoformat(),
-                                     "offset":offset,"side":side,"status":state,"path":str(path.relative_to(ROOT))})
-                        downloaded_count += 1
+                                     "offset":offset,"side":side,"status":state,"path":saved_path})
                         consecutive_failures = 0
                         error = None
                         break
@@ -329,12 +334,19 @@ def retrieve_options(token, supported, refresh=False):
                 if planned % 25 == 0 or error or planned == total_expected:
                     print(f"[QE-NOB-2.0] option progress {planned}/{total_expected}; cached={cached_count}; downloaded={downloaded_count}; failures={len(failures)}; elapsed_min={(time.monotonic()-started)/60:.1f}", flush=True)
                 time.sleep(0.15)
-    return {"status":"PASS" if reqs and not failures else ("PARTIAL" if reqs else "BLOCKED_NO_OPTION_DATA"),
+    status_counts = pd.Series([x["status"] for x in reqs]).value_counts().to_dict() if reqs else {}
+    nonempty_count = sum(int(x.get("status") in ("PASS", "CACHED_PASS")) for x in reqs)
+    data_response_fraction = nonempty_count / total_expected if total_expected else 0.0
+    complete = len(reqs) == total_expected and not failures and data_response_fraction >= 0.80
+    status = "PASS" if complete else ("PARTIAL" if reqs else "BLOCKED_NO_OPTION_DATA")
+    print(f"[QE-NOB-2.0] option acquisition finished: status={status}; responses={len(reqs)}/{total_expected}; nonempty_fraction={data_response_fraction:.3f}; failures={len(failures)}; elapsed_min={(time.monotonic()-started)/60:.1f}", flush=True)
+    return {"status":status,
             "range_start":start.isoformat(),"range_end_exclusive":end.isoformat(),
             "requests_expected":total_expected,"requests_processed":planned,"requests_recorded":len(reqs),
             "cached_files_reused":cached_count,"downloaded_files":downloaded_count,
+            "nonempty_response_count":nonempty_count,"data_response_fraction":data_response_fraction,
             "elapsed_seconds":round(time.monotonic()-started,2),"failures_count":len(failures),
-            "request_status_counts":pd.Series([x["status"] for x in reqs]).value_counts().to_dict(),
+            "request_status_counts":status_counts,
             "requests":reqs,"failures":failures}
 
 def retrieve_underlying(token, refresh=False):
