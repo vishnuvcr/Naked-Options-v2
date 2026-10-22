@@ -389,3 +389,12 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 - Missing identity fields: explicit expiry and lot size are absent. This is not a verified fixed-contract dataset; OHLC bars do not establish executable bid/ask fills.
 - HF options sample: 3 expiry files, 986,041 rows; row-level sample checks pass and lot-size circular mappings are recorded for 75, 50 and 65. Full-history and official contract-master gates remain incomplete.
 - Final result: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**, `pnl_permitted=false`; no options P&L or trading recommendation.
+
+
+### QE-DELIVERY-39699761966 — in-progress checkpoint
+- Target data validation: success.
+- Target construction/scoring tests: success, including the empty/headerless CSV merge helper regression test.
+- Feature matrix: success.
+- Technical-only model catalogue: completed successfully.
+- Global-augmented model catalogue: in progress at this checkpoint.
+- ARIMA benchmark, result merge, final run status and artifact publication: not yet verified. No forecast result is reported until those stages complete.
