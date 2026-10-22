@@ -33,6 +33,13 @@ ALLOWED_EXITS = {
 ALLOWED_INSTRUMENTS = {"CALL", "PUT", "STRADDLE", "STRANGLE"}
 ALLOWED_EXPIRIES = {"WEEK1", "MONTH1"}
 ALLOWED_MONEYNESS = {"ATM", "OTM1", "OTM2"}
+CATEGORICAL_FEATURES = {"opening_range_break", "time_of_day_bucket", "fii_dii_regime"}
+NUMERIC_OPERATORS = {"gt", "lt", "cross_up", "cross_down", "in_bucket"}
+CATEGORICAL_DEFAULTS = {
+    "opening_range_break": "up",
+    "time_of_day_bucket": "morning",
+    "fii_dii_regime": "neutral",
+}
 MAX_PREDICATES = 4
 MAX_HOLD_BARS = 60
 
@@ -83,8 +90,25 @@ def validate_strategy(s: Strategy, available_features: set[str] | None = None) -
             raise ValueError(f"operator not allowlisted: {p.operator}")
         if p.operator in {"gt", "lt", "cross_up", "cross_down", "in_bucket", "regime_is"} and p.value is None:
             raise ValueError("operator requires a value")
-        if p.operator == "in_bucket" and p.second_value is None:
-            raise ValueError("in_bucket requires lower and upper bounds")
+        if p.operator in NUMERIC_OPERATORS:
+            if p.feature in CATEGORICAL_FEATURES:
+                raise ValueError("numeric operator cannot be used on a categorical feature")
+            if not isinstance(p.value, (int, float)) or isinstance(p.value, bool):
+                raise ValueError("numeric operator requires a numeric threshold")
+        if p.operator == "in_bucket":
+            if p.second_value is None:
+                raise ValueError("in_bucket requires lower and upper bounds")
+            if not isinstance(p.second_value, (int, float)) or isinstance(p.second_value, bool):
+                raise ValueError("in_bucket upper bound must be numeric")
+            if p.second_value < p.value:
+                raise ValueError("in_bucket upper bound must be >= lower bound")
+        if p.operator == "regime_is":
+            if p.feature in CATEGORICAL_FEATURES and not isinstance(p.value, str):
+                raise ValueError("categorical regime_is requires a string label")
+            if p.feature not in CATEGORICAL_FEATURES and (
+                not isinstance(p.value, (int, float)) or isinstance(p.value, bool)
+            ):
+                raise ValueError("numeric regime_is requires a numeric value")
         if p.operator in {"and", "or", "not", "always"}:
             raise ValueError("logical operators must be represented by Strategy.logic or entry_mode")
     if s.instrument not in ALLOWED_INSTRUMENTS:
@@ -194,6 +218,27 @@ def mutate(s: Strategy, rng: random.Random, available_features: set[str] | None 
         i = rng.randrange(len(exits)); kind = rng.choice(sorted(ALLOWED_EXITS - {exits[i].kind}))
         value = 0.02 if kind in {"underlying_trailing_stop", "premium_risk_stop", "premium_target", "trail_after_target"} else None
         exits[i] = ExitRule(kind, value)
+    # Repair type mismatches introduced by feature/operator mutation instead of
+    # emitting invalid candidates that silently fail later during evaluation.
+    for j, p in enumerate(predicates):
+        if p.feature in CATEGORICAL_FEATURES:
+            op = "regime_is"
+            val = p.value if isinstance(p.value, str) else CATEGORICAL_DEFAULTS[p.feature]
+            predicates[j] = Predicate(p.feature, op, val, None)
+        else:
+            op = p.operator
+            val = p.value
+            second = p.second_value
+            if op in NUMERIC_OPERATORS and (not isinstance(val, (int, float)) or isinstance(val, bool)):
+                val = 0.0
+            if op == "in_bucket":
+                if not isinstance(second, (int, float)) or isinstance(second, bool) or second < val:
+                    second = val + 0.01
+            elif second is not None:
+                second = None
+            if op == "regime_is" and (not isinstance(val, (int, float)) or isinstance(val, bool)):
+                val = 0.0
+            predicates[j] = Predicate(p.feature, op, val, second)
     child = Strategy(
         entry_mode=locals().get("entry_mode", s.entry_mode),
         predicates=tuple(predicates),
