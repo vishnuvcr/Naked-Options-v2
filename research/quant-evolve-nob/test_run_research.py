@@ -42,7 +42,7 @@ def test_cache_filename_parser_loads_fresh_option_rows(tmp_path, monkeypatch):
     assert len(u) == 2
     assert len(o) == 2
     assert set(o["side"]) == {"CALL"}
-    assert set(o["expiry_flag"]) == {"WEEK"}
+    assert set(o["expiry_flag"]) == {"WEEK1"}
     assert set(o["strike"].astype(int)) == {25000}
 
 
