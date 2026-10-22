@@ -1,5 +1,15 @@
 # Activity log — QE-NOB-1.0
 
+## 2026-10-22 — duplicate-key correction and rerun
+- Investigated the duplicate diagnostics. The source request filename and request body encode ATM offset, while the prior deduplication key omitted it; identical strikes can occur across different rolling ATM offsets.
+- Added offset to the duplicate key and added a regression test ensuring same timestamp/strike rows from different offsets remain separate.
+- Workflow [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754) completed successfully: 2,600,975 option rows, 0 duplicate groups, 0 conflicting groups, 0 rows dropped, 99.772% timestamp coverage, 100% row-grid coverage; 11 automated tests passed.
+- The statistical result remains negative: 0/600 candidates passed the preregistered statistical gate. Best validation-selected candidate (ID 86) had OOS mean daily net ₹10.68, 95% block CI −₹188.62 to ₹237.43, Holm p=1.0, and −₹98.54/day under 100-bps/₹20-per-order stress. Execution/contract gate remains blocked.
+- Follow-up workflow [#39741823249](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741823249) was triggered by the regression-test commit and is still running at this log update.
+- User-facing instruction remains “No tester”; no independent tester is claimed.
+
+
+
 This is an audit of user-facing scope decisions and concrete work. It is not a verbatim transcript and does not store private hidden reasoning.
 
 ## 2026-10-22 — fresh-start instruction
