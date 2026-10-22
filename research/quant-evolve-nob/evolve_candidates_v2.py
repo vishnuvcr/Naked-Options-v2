@@ -91,9 +91,18 @@ def _pareto_select(candidates: list[Strategy], fitness: dict[str, dict[str, Any]
     """Maximize all declared numeric fitness objectives, breaking ties by structural novelty."""
     if not candidates:
         return []
+    # Diagnostics such as trade count and missing rows must not become objectives
+    # merely because they are numeric. Explicitly maximize only declared fitness fields.
+    objective_allowlist = {
+        "mean_net_per_trade_rupees", "mean_daily_net_rupees",
+        "median_daily_net_rupees", "negative_max_drawdown_rupees",
+        "profit_factor_capped", "minimum_trade_gate",
+        # Compatibility names used by synthetic API-wiring tests.
+        "negative_drawdown_fraction", "stability_score",
+    }
     objective_names = sorted({
         key for item in fitness.values() for key, value in item.items()
-        if isinstance(value, (int, float)) and not isinstance(value, bool)
+        if key in objective_allowlist and isinstance(value, (int, float)) and not isinstance(value, bool)
     })
     if not objective_names:
         return _novelty_select(candidates, population_size)
