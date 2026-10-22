@@ -173,6 +173,8 @@ def simulate_strategy(underlying: pd.DataFrame, options: pd.DataFrame, features:
     if u["timestamp"].isna().any():
         raise ValueError("underlying timestamp must be numeric epoch seconds")
     u["timestamp"] = u["timestamp"].astype("int64")
+    u["session_day"] = pd.to_datetime(u["timestamp"], unit="s", utc=True).dt.tz_convert("Asia/Kolkata").dt.strftime("%Y-%m-%d")
+    session_end_idx = u.groupby("session_day", sort=False).apply(lambda part: int(part.index[-1])).to_dict()
     u["open"] = pd.to_numeric(u["open"], errors="coerce")
     if u["open"].isna().any() or (u["open"] <= 0).any():
         raise ValueError("underlying open prices must be positive and non-null")
@@ -198,11 +200,16 @@ def simulate_strategy(underlying: pd.DataFrame, options: pd.DataFrame, features:
         entry_idx = idx[entry_ts]
         if entry_idx <= last_exit_idx:
             continue
-        time_exit_idx = entry_idx + int(strategy.hold_bars)
-        if time_exit_idx >= len(u):
-            missing_exits += 1
-            continue
         local_day = pd.to_datetime(entry_ts, unit="s", utc=True).tz_convert("Asia/Kolkata").date()
+        day_key = local_day.isoformat()
+        day_end_idx = session_end_idx.get(day_key)
+        if day_end_idx is None or entry_idx >= day_end_idx:
+            # Refuse entries without a same-session exit bar.
+            missing_entries += 1
+            continue
+        desired_exit_idx = entry_idx + int(strategy.hold_bars)
+        session_close_exit = desired_exit_idx > day_end_idx
+        time_exit_idx = min(desired_exit_idx, day_end_idx)
         lot = dated_lot_size(local_day, strategy.expiry)
 
         if strategy.instrument == "CALL":
@@ -249,12 +256,14 @@ def simulate_strategy(underlying: pd.DataFrame, options: pd.DataFrame, features:
         exit_idx = time_exit_idx
         exit_ts = int(u["timestamp"].iloc[exit_idx])
         exit_price_by_leg = None
-        exit_reason = "time_exit"
+        exit_reason = "session_close" if session_close_exit else "time_exit"
         path_failed = False
-        # Entry occurs at bar open; inspect that bar and later completed bars before
-        # the scheduled time-exit open. If stop and target both touch, assume stop first.
+        # Entry occurs at bar open. Inspect completed bars before scheduled next-bar
+        # exit. If holding would cross the session, force exit at the final bar close;
+        # include that bar's range and assume stop before target if both were touched.
+        stop_scan_end = time_exit_idx + 1 if session_close_exit else time_exit_idx
         if has_stops:
-            for bar_idx in range(entry_idx, time_exit_idx):
+            for bar_idx in range(entry_idx, stop_scan_end):
                 bar_ts = int(u["timestamp"].iloc[bar_idx])
                 marks = []
                 for leg in legs:
@@ -291,14 +300,16 @@ def simulate_strategy(underlying: pd.DataFrame, options: pd.DataFrame, features:
             last_exit_idx = time_exit_idx
             continue
         if exit_price_by_leg is None:
-            # Time exit is explicitly filled at the scheduled bar open.
+            # Normal time exits use the scheduled bar open. Forced session-close exits
+            # use that bar's close and therefore require close data for every leg.
             exit_contracts = []
+            exit_price_field = "close" if session_close_exit else "open"
             for leg in legs:
                 contract = contract_lookup.get((family, leg["side"], exit_ts, leg["strike"]))
-                if contract is None or pd.isna(contract.get("open")):
+                if contract is None or pd.isna(contract.get(exit_price_field)):
                     failed = True
                     break
-                exit_contracts.append(float(contract["open"]))
+                exit_contracts.append(float(contract[exit_price_field]))
             if failed:
                 missing_exits += 1
                 continue
@@ -344,7 +355,8 @@ def simulate_strategy(underlying: pd.DataFrame, options: pd.DataFrame, features:
         "execution_gate_pass": False,
         "execution_gate_reason": "Rolling OHLC proxy does not verify exact exchange contract identity, historical bid/ask/depth or actual broker fills.",
         "limitations": [
-            "OHLC open is a proxy, not an executable quote.",
+            "No position is held overnight; if requested hold bars cross session close, the simulator forces an exit at the final bar close.",
+            "OHLC open/close are proxies, not executable quotes.",
             "Premium stops/targets use conservative bar-level range checks; an intrabar gap, spread or queue is not observed.",
             "If a stop/target path has missing contract OHLC, that trade is rejected and entries remain blocked until its scheduled time exit.",
             "No overlapping-position policy is enforced across independent candidates.",
