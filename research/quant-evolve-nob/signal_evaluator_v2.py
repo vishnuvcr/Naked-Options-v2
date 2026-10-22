@@ -2,22 +2,15 @@
 
 Input is a timestamp-sorted feature DataFrame with one row per completed bar.
 This module creates signal timestamps only; it does not simulate option fills or P&L.
-The caller must shift execution to the next available bar and provide a verified feature set.
+Only entry_mode='signal' is implemented here. Other modes fail closed until their
+state-machine semantics and tests are implemented, rather than silently becoming
+identical to a simple predicate signal.
 """
 from __future__ import annotations
-from typing import Any
-import math
 import pandas as pd
 
 from strategy_grammar_v2 import Predicate, Strategy, validate_strategy
 
-NUMERIC_FEATURES = {
-    "nifty_return_1", "nifty_return_3", "nifty_return_6", "opening_gap_pct",
-    "opening_range_position", "ema_fast_slow_sign", "vwap_distance_pct",
-    "realized_vol_percentile", "india_vix_percentile", "option_iv_percentile",
-    "iv_minus_realized", "option_volume_change", "option_oi_change",
-    "implied_move_edge", "global_lead_return",
-}
 CATEGORICAL_FEATURES = {"opening_range_break", "time_of_day_bucket", "fii_dii_regime"}
 
 
@@ -26,7 +19,7 @@ def _predicate_mask(frame: pd.DataFrame, predicate: Predicate) -> pd.Series:
         raise ValueError(f"feature column absent: {predicate.feature}")
     series = frame[predicate.feature]
     op, value = predicate.operator, predicate.value
-    if op in {"gt", "lt", "cross_up", "cross_down"} and predicate.feature in CATEGORICAL_FEATURES:
+    if op in {"gt", "lt", "cross_up", "cross_down", "in_bucket"} and predicate.feature in CATEGORICAL_FEATURES:
         raise ValueError(f"numeric operator applied to categorical feature: {predicate.feature}")
     if op == "gt":
         return series.gt(value) & series.notna()
@@ -48,8 +41,10 @@ def _predicate_mask(frame: pd.DataFrame, predicate: Predicate) -> pd.Series:
 
 
 def evaluate_signals(frame: pd.DataFrame, strategy: Strategy, available_features: set[str]) -> pd.DataFrame:
-    """Return signal rows; signal uses only current/past feature rows, never future rows."""
+    """Return signal rows from current/past feature bars; map each to the next market bar."""
     validate_strategy(strategy, available_features)
+    if strategy.entry_mode != "signal":
+        raise ValueError(f"entry_mode is not implemented by the signal evaluator: {strategy.entry_mode}")
     if "timestamp" not in frame.columns:
         raise ValueError("timestamp column required")
     data = frame.copy()
@@ -71,10 +66,10 @@ def evaluate_signals(frame: pd.DataFrame, strategy: Strategy, available_features
         raise ValueError("unsupported logic")
     data["next_bar_timestamp"] = data["timestamp"].shift(-1)
     out = data.loc[signal, ["timestamp", "next_bar_timestamp"]].copy()
-    out["candidate_direction" = 1 if strategy.instrument in {"CALL", "STRADDLE", "STRANGLE"} else -1
+    out["candidate_direction"] = 1 if strategy.instrument in {"CALL", "STRADDLE", "STRANGLE"} else -1
     out["instrument"] = strategy.instrument
     out["hold_bars"] = int(strategy.hold_bars)
     out = out.rename(columns={"next_bar_timestamp": "entry_timestamp"})
-    # Last available market bar has no known next bar and is excluded rather than fabricated.
+    # The last observed bar has no known next bar; exclude it instead of fabricating one.
     out = out[out["entry_timestamp"].notna()].reset_index(drop=True)
     return out
