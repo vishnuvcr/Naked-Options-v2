@@ -22,7 +22,7 @@ permissions:
 
 concurrency:
   group: quant-evolve-nob-v1-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true # Corrected-source runs supersede stale in-flight runs on this isolated branch.
 
 jobs:
   fresh-option-buying-research:
