@@ -17,3 +17,8 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Added `.github/workflows/qe-nob-v2-grammar-tests.yml` for automatic tests on relevant pushes and manual dispatch.
 - Updated phase status and implementation log. CI success has not yet been verified; this grammar is not integrated into the backtester and no new strategy has been backtested.
 - User's instruction “No tester” remains in force. No tester branch/report was created or awaited.
+
+## 2026-10-22 — test import defect corrected
+- Static review identified that the study directory uses hyphens, so package imports using underscores could not resolve. Tests were switched to explicit file-path loading; the dataclass module is registered in `sys.modules` before execution.
+- Added the defect and correction to `ERROR_LOG_V2.md`; updated phase status to avoid claiming a successful CI result before it is verified.
+- The workflow is configured for push and manual dispatch. No run outcome is claimed in this checkpoint.
