@@ -124,7 +124,7 @@ def audit_open_dataset_catalog(hf_token=""):
                     seen.add(name)
                     tags=obj.get("tags",[]) or []
                     lic=next((str(tag).split(":",1)[1].lower() for tag in tags if str(tag).startswith("license:")),"unknown")
-                                    search_text=(name+" "+" ".join(map(str,tags))).lower()
+                    search_text=(name+" "+" ".join(map(str,tags))).lower()
                     is_india_index=any(term in search_text for term in ("nifty","nse","india","index-options"))
                     is_options=any(term in search_text for term in ("option","options")) and is_india_index
                     eligible=bool(is_options and lic in allow)
