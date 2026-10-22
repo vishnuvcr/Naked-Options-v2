@@ -15,6 +15,8 @@ on:
       - .github/workflows/qe-nob-v2-data-audit.yml
       - research/quant-evolve-nob/feature_audit_v2.py
       - research/quant-evolve-nob/FEATURE_FEASIBILITY_V2.md
+      - research/quant-evolve-nob/run_research.py
+      - research/quant-evolve-nob/test_run_research.py
       - research/quant-evolve-nob/config.json
 
 permissions:
@@ -54,16 +56,43 @@ jobs:
       - name: Validate source client before acquisition
         run: pytest -q research/quant-evolve-nob/test_run_research.py
       - name: Acquire source data without candidate fitness or P&L
+        timeout-minutes: 160
         env:
           DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           REFRESH_DATA: ${{ inputs.refresh_data }}
+          PYTHONUNBUFFERED: "1"
         run: |
-          if [ "$REFRESH_DATA" = "true" ]; then
-            python research/quant-evolve-nob/run_research.py --stage acquire --refresh-data
-          else
-            python research/quant-evolve-nob/run_research.py --stage acquire
-          fi
+          set -u
+          cache_state() {
+            find data/cache/quant_evolve_nob_v1 -type f -name '*.json' -printf '%P %s %T@\\n' 2>/dev/null | sort | sha256sum | cut -d ' ' -f1
+          }
+          for pass in 1 2 3; do
+            echo "[QE-NOB-2.0] bounded acquisition pass $pass/3"
+            before="$(cache_state)"
+            if [ "$REFRESH_DATA" = "true" ] && [ "$pass" -eq 1 ]; then
+              if python research/quant-evolve-nob/run_research.py --stage acquire --refresh-data; then
+                exit 0
+              else
+                rc=$?
+              fi
+            else
+              if python research/quant-evolve-nob/run_research.py --stage acquire; then
+                exit 0
+              else
+                rc=$?
+              fi
+            fi
+            after="$(cache_state)"
+            echo "[QE-NOB-2.0] pass $pass ended rc=$rc; cache fingerprint before=$before after=$after"
+            if [ "$before" = "$after" ]; then
+              echo "[QE-NOB-2.0] no cache progress detected; stopping retries to avoid an unproductive loop."
+              break
+            fi
+            if [ "$pass" -lt 3 ]; then sleep 2; fi
+          done
+          echo "[QE-NOB-2.0] acquisition did not pass after bounded resumption; downstream discovery must remain blocked."
+          exit 2
       - name: Audit acquired or restored local cache
         if: always()
         run: python research/quant-evolve-nob/feature_audit_v2.py
