@@ -227,3 +227,34 @@ def test_empty_option_payloads_do_not_pass_source_coverage_gate(tmp_path, monkey
     assert result["nonempty_response_count"] == 0
     assert result["data_response_fraction"] == 0.0
     assert not list(opt_cache.glob("*.json"))
+
+
+def test_option_request_progress_counts_each_pair_once(tmp_path, monkeypatch):
+    opt_cache = tmp_path / "options"
+    opt_cache.mkdir()
+    monkeypatch.setattr(qe, "ROOT", tmp_path)
+    monkeypatch.setattr(qe, "OPT_CACHE", opt_cache)
+    monkeypatch.setattr(qe.time, "sleep", lambda _: None)
+    monkeypatch.setattr(qe, "chunks", lambda start, end, days: iter([(qe.date(2026, 1, 1), qe.date(2026, 1, 31))]))
+
+    side = {
+        "timestamp": [1767258900], "open": [100], "high": [105],
+        "low": [95], "close": [102], "strike": [25000], "spot": [25005]
+    }
+    payload = {"data": {"ce": dict(side), "pe": dict(side)}}
+    cached = opt_cache / "week1_20260101_20260131_+0_call.json"
+    cached.write_text(json.dumps(payload))
+    calls = {"n": 0}
+
+    def valid_api(*args, **kwargs):
+        calls["n"] += 1
+        return payload
+
+    monkeypatch.setattr(qe, "api_post", valid_api)
+    result = qe.retrieve_options("not-a-real-token", [{"flag": "WEEK", "code": 1}])
+    assert result["status"] == "PASS"
+    assert result["requests_processed"] == result["requests_expected"] == 10
+    assert result["requests_recorded"] == 10
+    assert result["cached_files_reused"] == 1
+    assert result["downloaded_files"] == 9
+    assert calls["n"] == 9
