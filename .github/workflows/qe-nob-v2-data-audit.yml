@@ -24,7 +24,8 @@ permissions:
 
 concurrency:
   group: qe-nob-v2-data-audit-${{ github.ref }}
-  cancel-in-progress: false
+  # Only an explicitly named recovery commit may cancel a stale acquisition; routine pushes preserve it.
+  cancel-in-progress: ${{ contains(github.event.head_commit.message, 'Recover stuck acquisition') }}
 
 jobs:
   bounded-source-audit:
