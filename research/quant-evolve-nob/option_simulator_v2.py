@@ -126,17 +126,25 @@ def prepare_option_index(options: pd.DataFrame) -> dict:
             collision_bad.add(tuple(values if isinstance(values, tuple) else (values,)))
     if collision_bad:
         o = o[~o[contract_key].apply(tuple, axis=1).isin(collision_bad)]
-    o = o.drop_duplicates(contract_key, keep="first")
+    # Preserve each offset-specific entry key when offsets alias an identical strike.
+    # Deduplicate only the offset-independent contract path needed by later bars.
+    entry_rows = o.copy()
+    contract_rows = o.drop_duplicates(contract_key, keep="first")
     entry_lookup = {}
     contract_lookup = {}
     price_cols = ["open"] + [col for col in ("high", "low", "close") if col in o.columns]
-    for row in o.itertuples(index=False):
+    for row in entry_rows.itertuples(index=False):
+        family = str(row.expiry_key)
+        side = str(row.side).upper()
+        ts = int(row.timestamp)
+        strike = round(float(row.strike), 2)
+        entry_lookup[(family, side, int(row.offset), ts)] = (strike, float(row.open))
+    for row in contract_rows.itertuples(index=False):
         family = str(row.expiry_key)
         side = str(row.side).upper()
         ts = int(row.timestamp)
         strike = round(float(row.strike), 2)
         vals = {col: getattr(row, col) for col in price_cols}
-        entry_lookup[(family, side, int(row.offset), ts)] = (strike, float(row.open))
         contract_lookup[(family, side, ts, strike)] = vals
     return {
         "entry_lookup": entry_lookup, "contract_lookup": contract_lookup,
