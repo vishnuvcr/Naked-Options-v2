@@ -219,3 +219,10 @@ Developer instruction: do not start P&L unless expiry mapping and fixed-contract
 - Parquet quality audit: **in progress** at latest status check; no report/artifact yet.
 - Official NSE circular review: confirms expiry schedule revisions during 2025; dated contract-file evidence is required, not a weekday-only heuristic. See [free-source audit](VOL_REGIME_OPTIONS_FREE_SOURCE_AUDIT.md).
 - C1 contract identity: **BLOCKED / OPEN** until the audit report and official sample contract reconciliation are complete. C2–C7 remain not started. No P&L or strategy claim.
+
+
+## Corrected artifact numerical stability gate — 2026-10-22
+- Target-date defect: PASS for corrected workflow #39704420478 (277,633 predictions, zero missing target dates).
+- Return/direction predictive edge: NOT ESTABLISHED after multiple-testing correction.
+- Volatility proxy: EXPLORATORY ONLY. QLIKE instability in MLP/Ridge identified; ERR-PRED-004 remains open. Need prespecified floor sensitivity/calibration and future untouched-period replication.
+- Independent tester: not required per user's explicit instruction. Developer-led validation continues; no strategy/P&L gate is opened.
