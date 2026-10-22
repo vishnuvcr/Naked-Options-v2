@@ -17,9 +17,9 @@ ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / "data" / "cache" / "quant_evolve_nob_v1"
 OPT_CACHE = CACHE / "options_rolling"
 IDX_CACHE = CACHE / "underlying_intraday"
-OUT = ROOT / "reports" / "quant_evolve_nob_v1"
+OUT = ROOT / "reports" / "quant_evolve_nob_v2"
 SEED = 20261022
-# The v2 grammar supports ATM and up to two-step OTM instruments only.
+# QE-NOB-2.0 protocol: weekly expiry only, ATM and one-step OTM only.
 OPTION_OFFSETS = (-1, 0, 1)
 OPTION_REQUEST_TIMEOUT_SECONDS = 25
 OPTION_REQUEST_ATTEMPTS = 2
@@ -174,7 +174,7 @@ def audit_open_dataset_catalog(hf_token=""):
     ):
         item={"source":source_name,"status":"UNKNOWN","records":[]}
         try:
-            response=requests.get(url,params=params,timeout=20,headers={"Accept":"application/json","User-Agent":"QE-NOB-1.0 research source audit"})
+            response=requests.get(url,params=params,timeout=20,headers={"Accept":"application/json","User-Agent":"QE-NOB-2.0 research source audit"})
             if not response.ok:
                 item.update({"status":"FAIL","http_status":response.status_code})
             else:
@@ -223,7 +223,7 @@ def probe_sources(token):
         report["status"] = "BLOCKED_NO_DHAN_ACCESS_TOKEN"
         report["notes"] = ["No token was present in the action environment; credentials were not logged."]
         return report
-    for flag, code in (("WEEK",1), ("WEEK",2), ("MONTH",1)):
+    for flag, code in (("WEEK",1),):
         record = {"source":"Dhan rolling expired options", "expiry_flag":flag, "expiry_code":code}
         try:
             body = option_request_body(flag, code, 0, "CALL", start, end)
@@ -235,7 +235,7 @@ def probe_sources(token):
             cache_path.write_text(json.dumps(payload, separators=(",",":")), encoding="utf-8")
             if state == "PASS" and record["rows"] > 0:
                 record["supported"] = True
-                if (flag,code) in (("WEEK",1),("MONTH",1)):
+                if (flag,code) == ("WEEK",1):
                     report["supported_expiries"].append({"flag":flag,"code":code})
             else:
                 record["supported"] = False
@@ -260,7 +260,19 @@ def probe_sources(token):
     report["status"] = "PASS" if report["supported_expiries"] and report.get("underlying_probe",{}).get("status") == "PASS" else "BLOCKED_SOURCE_PROBE"
     return report
 
+def active_expiry_families(supported):
+    """QE-NOB-2.0 is preregistered to weekly expiry only; exclude all other families."""
+    return [
+        item for item in supported
+        if str(item.get("flag", "")).upper() == "WEEK" and int(item.get("code", -1)) == 1
+    ]
+
+
 def retrieve_options(token, supported, refresh=False):
+    supported = active_expiry_families(supported)
+    if not supported:
+        return {"status": "BLOCKED_NO_SUPPORTED_WEEKLY_EXPIRY", "requests_planned": 0,
+                "requests_recorded": 0, "failures_count": 0, "requests": [], "failures": []}
     end = date.today()
     start = max(date(2021,10,22), end - timedelta(days=365*5))
     reqs, failures = [], []
@@ -1221,11 +1233,11 @@ def write_outputs(probe, acquisition, underlying, summary, errors):
     (OUT/"underlying_summary.json").write_text(json.dumps(underlying,indent=2,default=str),encoding="utf-8")
     pd.DataFrame(errors).to_csv(OUT/"source_failures.csv",index=False)
     if summary is None:
-        report={"research_id":"QE-NOB-1.0","run_status":"DATA_BLOCKED","generated_at_utc":utc_now(),
+        report={"research_id":"QE-NOB-2.0","run_status":"DATA_BLOCKED","generated_at_utc":utc_now(),
                 "source_probe_status":probe.get("status"),"acquisition_status":acquisition.get("status"),
                 "summary":"No profitability result because source acquisition/coverage did not pass."}
         (OUT/"run_summary.json").write_text(json.dumps(report,indent=2,default=str),encoding="utf-8")
-        (OUT/"RESULTS.md").write_text("# QE-NOB-1.0 fresh run\n\n**Decision: DATA-LIMITED / NOT RUN.**\n\nNo valid full dataset was available, so no profitability result is claimed. See source_probe.json, acquisition_summary.json and source_failures.csv.\n",encoding="utf-8")
+        (OUT/"RESULTS.md").write_text("## QE-NOB-2.0 fresh run\n\n**Decision: DATA-LIMITED / NOT RUN.**\n\nNo valid full dataset was available, so no profitability result is claimed. See source_probe.json, acquisition_summary.json and source_failures.csv.\n",encoding="utf-8")
         return
     candidates=pd.DataFrame([{k:v for k,v in r.items() if k not in ("candidate","trades")} for r in summary["results"]])
     candidates.to_csv(OUT/"candidate_results.csv",index=False)
@@ -1263,14 +1275,14 @@ def write_outputs(probe, acquisition, underlying, summary, errors):
     else:
         decision="NO_STATISTICAL_CANDIDATE — no candidate met the preregistered after-cost statistical and baseline gates; executable profitability remains unverified."
     best=selected.iloc[0].to_dict() if not selected.empty else {}
-    report.update({"research_id":"QE-NOB-1.0","generated_at_utc":utc_now(),
+    report.update({"research_id":"QE-NOB-2.0","generated_at_utc":utc_now(),
                    "statistical_candidate_count":statistical_candidates,"promotion_candidate_count":promoted,
                    "basic_data_quality_gate_pass":basic_quality_pass,"execution_data_gate_pass":execution_ready,
                    "decision":decision,
                    "data_gate":"Historical bid/ask/depth not validated; rolling ATM-relative OHLC and date-based lot-size proxy cannot prove executable fills.",
                    "best_validation_finalist":{k:(v.item() if hasattr(v,"item") else v) for k,v in best.items() if k in keep}})
     (OUT/"run_summary.json").write_text(json.dumps(report,indent=2,default=str),encoding="utf-8")
-    title="# QE-NOB-1.0 — fresh QuantEvolve-style naked option buying"
+    title="# QE-NOB-2.0 — bounded weekly-option structural discovery"
     body=[title,"",f"**Run status:** {report['status']}  ",f"**Date range:** {report.get('start_date')} to {report.get('end_date')}  ",
           f"**Candidates tested:** {report.get('candidate_count')}  ",f"**Candidates meeting statistical gate:** {statistical_candidates}  ",
           f"**Candidates meeting strict execution/promotion gate:** {promoted}  ",
