@@ -121,5 +121,13 @@ The discovery-runner CI passed after adding the stricter cache audit gate: [run 
 ## Scope-amendment regression checkpoint — 2026-10-23
 
 - Grammar CI passed on [check suite #107968717033](https://github.com/vishnuvcr/Naked-Options-v2/commit/ada4d63039e4449465d6c7c4bb23230b844df240/checks), including the explicit test that OTM2 is rejected and mutations remain within ATM/OTM1.
-- Source-client CI initially failed with 17 passing tests and one failure: the fail-fast fixture provided only six request failures in one chunk, below the ten-failure threshold. The first diagnosis incorrectly attributed this to stale request-count assertions. The fixture now supplies two chunks in commit [e9982ddc](https://github.com/vishnuvcr/Naked-Options-v2/commit/e9982ddc1ee7cabb0a5aa3a581c1441df16b5cfb); its source-client rerun must pass before claiming verification.
+- Source-client CI initially failed because the fail-fast fixture only provided six request failures in one chunk, below the ten-failure threshold. The corrected fixture now supplies two chunks in commit [e9982ddc](https://github.com/vishnuvcr/Naked-Options-v2/commit/e9982ddc1ee7cabb0a5aa3a581c1441df16b5cfb). The re-run [#39836310701](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39836310701) passed: 18 tests in 1.24 seconds.
 - The in-progress data-workflow check at this checkpoint still originates from recovery commit [706a27fa](https://github.com/vishnuvcr/Naked-Options-v2/commit/706a27fa6c1d464eebd06b50b54894ec6da97e64), which predates the ATM/OTM1 amendment. It must be replaced by the specifically gated recovery commit so the restarted acquisition uses the current amended code and retained cache.
+
+
+## Latest recovery handoff checkpoint — 2026-10-23
+
+- Independent source-client workflow [#39836310701](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39836310701) completed SUCCESS on commit [e9982ddc](https://github.com/vishnuvcr/Naked-Options-v2/commit/e9982ddc1ee7cabb0a5aa3a581c1441df16b5cfb): Python compile passed and all 18 pytest cases passed (1.24s).
+- The acquisition workflow triggered by the same push, [#39836310700](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39836310700), is pending behind the in-progress old recovery run from commit #706a27fa, which predates the strike-scope amendment.
+- Next action: make one final recovery handoff commit that satisfies the workflow's explicit commit-message guard; it should cancel the stale in-progress data run and run the latest ATM/OTM1 code. The partial cache from #39803647257 was saved and should be restored. No strategy or market-data result is implied by the passing unit tests.
+- Gates remain: Phase 2 IN PROGRESS, Phase 5 empirical discovery BLOCKED pending new cache audit, Phases 6–7 NOT STARTED, execution FAIL.
