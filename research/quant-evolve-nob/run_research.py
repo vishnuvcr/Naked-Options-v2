@@ -1277,6 +1277,11 @@ def write_outputs(probe, acquisition, underlying, summary, errors):
              "", "## Notes"] + ["- "+x for x in summary.get("notes",[])]
     (OUT/"RESULTS.md").write_text("\n".join(body)+"\n",encoding="utf-8")
 
+def acquisition_ready(acquisition, underlying):
+    """Only complete, error-free source acquisition may unlock downstream discovery."""
+    return acquisition.get("status") == "PASS" and underlying.get("status") == "PASS"
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--stage",choices=["probe","acquire","full","analyze","status"],default="full")
@@ -1310,7 +1315,12 @@ def main():
         failures=acquisition.get("failures",[])+underlying.get("failures",[])
         pd.DataFrame(failures).to_csv(OUT/"source_failures.csv",index=False)
         if args.stage=="acquire":
-            print(json.dumps({"probe":probe.get("status"),"acquisition":acq_public,"underlying_status":underlying.get("status")},indent=2,default=str)); return
+            print(json.dumps({"probe":probe.get("status"),"acquisition":acq_public,"underlying_status":underlying.get("status")},indent=2,default=str), flush=True)
+            if not acquisition_ready(acquisition, underlying):
+                print("[QE-NOB-2.0] acquisition incomplete; exit non-zero so downstream discovery stays blocked. Valid cache files are preserved for the next run.", flush=True)
+                raise SystemExit(2)
+            print("[QE-NOB-2.0] acquisition passed; cache audit may now decide whether discovery is eligible.", flush=True)
+            return
     if args.stage in ("full","analyze"):
         u,o,data_quality=load_frames(return_quality=True)
         expiry_flags=sorted(o.expiry_flag.dropna().unique().tolist()) if not o.empty else []
