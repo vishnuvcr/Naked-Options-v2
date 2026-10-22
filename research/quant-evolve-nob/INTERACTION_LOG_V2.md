@@ -108,3 +108,9 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Before treating the recovery patch as CI-ready, reviewed the final acquisition functions and caught an accounting defect: request progress was incremented both at loop entry and after processing. Also caught an underlying timeout replacement mismatch (the actual call used the variable name obj, not payload).
 - Removed duplicate request counter increments, changed the actual underlying call timeout to 45 seconds, and added a unit test covering one valid cached payload plus nine fetched payloads. The expected request count is ten, with one cache reuse and nine source calls.
 - Added entry QE-NOB2-E025 to the error log. Automated verification is pending on GitHub Actions; no test outcome is assumed.
+
+
+## 2026-10-23 — cache fingerprint review
+- Reviewed the shell retry loop before its first automated run and noticed the initial cache fingerprint included probe JSON files rewritten at every new source-probe pass. That could falsely count the probe rewrite as historical cache progress.
+- Corrected the fingerprint to exclude probe_* metadata JSON, and logged the risk as QE-NOB2-E026. The run still stops after at most three acquisition passes and stops earlier if the historical data cache does not change.
+- Updated workflow commit d55fa380. Its automatic check remains pending behind the old in-progress acquisition job; no recovery-run test result is available yet.
