@@ -1,6 +1,6 @@
 {
   "research_id": "QE-NOB-1.0",
-  "probed_at_utc": "2026-10-22T07:38:32.993453+00:00",
+  "probed_at_utc": "2026-10-22T11:55:33.359031+00:00",
   "fresh_cache_namespace": "data/cache/quant_evolve_nob_v1",
   "sources": [
     {
@@ -8,7 +8,7 @@
       "expiry_flag": "WEEK",
       "expiry_code": 1,
       "status": "PASS",
-      "rows": 740,
+      "rows": 770,
       "supported": true
     },
     {
@@ -16,7 +16,7 @@
       "expiry_flag": "WEEK",
       "expiry_code": 2,
       "status": "PASS",
-      "rows": 740,
+      "rows": 770,
       "supported": true
     },
     {
@@ -24,7 +24,7 @@
       "expiry_flag": "MONTH",
       "expiry_code": 1,
       "status": "PASS",
-      "rows": 740,
+      "rows": 770,
       "supported": true
     }
   ],
@@ -48,7 +48,7 @@
           {
             "repo_id": "artist-23/nifty-options-data",
             "license": "unknown",
-            "downloads": 686,
+            "downloads": 690,
             "last_modified": "2025-12-31T05:23:48.000Z",
             "candidate_relevant": true,
             "license_allowlisted": false,
@@ -57,7 +57,7 @@
           {
             "repo_id": "manishbaliii/nifty-options-data",
             "license": "unknown",
-            "downloads": 72,
+            "downloads": 73,
             "last_modified": "2026-10-14T02:16:10.000Z",
             "candidate_relevant": true,
             "license_allowlisted": false,
@@ -81,7 +81,7 @@
           {
             "repo_id": "rissin/nse-options-intraday",
             "license": "other",
-            "downloads": 2269,
+            "downloads": 2261,
             "last_modified": "2026-09-09T16:53:37.000Z",
             "candidate_relevant": true,
             "license_allowlisted": false,
@@ -96,7 +96,7 @@
           {
             "repo_id": "thetrademarkk/india-index-options-1m",
             "license": "cc-by-nc-4.0",
-            "downloads": 27723,
+            "downloads": 27764,
             "last_modified": "2026-07-12T18:21:26.000Z",
             "candidate_relevant": true,
             "license_allowlisted": false,
@@ -105,7 +105,7 @@
           {
             "repo_id": "codepyx23/india-index-options-1m",
             "license": "cc-by-nc-4.0",
-            "downloads": 1152,
+            "downloads": 1151,
             "last_modified": "2026-09-08T19:30:45.000Z",
             "candidate_relevant": true,
             "license_allowlisted": false,
@@ -275,7 +275,7 @@
   },
   "underlying_probe": {
     "status": "PASS",
-    "rows": 721
+    "rows": 750
   },
   "status": "PASS"
 }

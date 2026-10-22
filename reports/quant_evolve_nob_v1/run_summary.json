@@ -26,7 +26,7 @@
     "candidate_budget": 600,
     "unique_candidates": 600,
     "evaluated_candidates": 600,
-    "qd_archive_niches": 28,
+    "qd_archive_niches": 29,
     "offspring_per_island_per_generation": 12,
     "selection_metric": "validation-only composite of net P&L, Sharpe, profit factor and drawdown; no final OOS values used during discovery",
     "implementation_note": "Strategy generation is constrained and template-based, not arbitrary LLM-generated code. Multi-agent roles are implemented as deterministic research/hypothesis/coding/evaluation functions; no unverified LLM API key is required."
@@ -35,80 +35,115 @@
     {
       "generation": 1,
       "unique_candidates_evaluated": 234,
-      "qd_archive_niches": 26,
+      "qd_archive_niches": 27,
       "new_children": 48,
-      "best_validation_fitness": 0.17179250222556341,
-      "best_validation_mean_daily_net_rupees": 172.38017229599004
+      "best_validation_fitness": 0.211463602530106,
+      "best_validation_mean_daily_net_rupees": 116.79560009747699
     },
     {
       "generation": 2,
       "unique_candidates_evaluated": 282,
-      "qd_archive_niches": 27,
+      "qd_archive_niches": 28,
       "new_children": 48,
-      "best_validation_fitness": 0.17179250222556341,
-      "best_validation_mean_daily_net_rupees": 172.38017229599004
+      "best_validation_fitness": 0.211463602530106,
+      "best_validation_mean_daily_net_rupees": 116.79560009747699
     },
     {
       "generation": 3,
       "unique_candidates_evaluated": 330,
-      "qd_archive_niches": 27,
+      "qd_archive_niches": 28,
       "new_children": 48,
-      "best_validation_fitness": 0.17179250222556341,
-      "best_validation_mean_daily_net_rupees": 172.38017229599004
+      "best_validation_fitness": 0.2223046277629161,
+      "best_validation_mean_daily_net_rupees": 116.79560009747699
     },
     {
       "generation": 4,
       "unique_candidates_evaluated": 378,
-      "qd_archive_niches": 27,
+      "qd_archive_niches": 29,
       "new_children": 48,
-      "best_validation_fitness": 0.17179250222556341,
-      "best_validation_mean_daily_net_rupees": 172.38017229599004
+      "best_validation_fitness": 0.2223046277629161,
+      "best_validation_mean_daily_net_rupees": 116.79560009747699
     },
     {
       "generation": 5,
       "unique_candidates_evaluated": 426,
-      "qd_archive_niches": 27,
+      "qd_archive_niches": 29,
       "new_children": 48,
-      "best_validation_fitness": 0.17179250222556341,
-      "best_validation_mean_daily_net_rupees": 172.38017229599004
+      "best_validation_fitness": 0.23789473483978468,
+      "best_validation_mean_daily_net_rupees": 116.79560009747699
     },
     {
       "generation": 6,
       "unique_candidates_evaluated": 474,
-      "qd_archive_niches": 27,
+      "qd_archive_niches": 29,
       "new_children": 48,
-      "best_validation_fitness": 0.17179250222556341,
-      "best_validation_mean_daily_net_rupees": 172.38017229599004
+      "best_validation_fitness": 0.23789473483978468,
+      "best_validation_mean_daily_net_rupees": 116.79560009747699
     },
     {
       "generation": 7,
       "unique_candidates_evaluated": 522,
-      "qd_archive_niches": 28,
+      "qd_archive_niches": 29,
       "new_children": 48,
-      "best_validation_fitness": 0.17179250222556341,
-      "best_validation_mean_daily_net_rupees": 172.38017229599004
+      "best_validation_fitness": 0.23789473483978468,
+      "best_validation_mean_daily_net_rupees": 116.79560009747699
     },
     {
       "generation": 8,
       "unique_candidates_evaluated": 570,
-      "qd_archive_niches": 28,
+      "qd_archive_niches": 29,
       "new_children": 48,
-      "best_validation_fitness": 0.17179250222556341,
-      "best_validation_mean_daily_net_rupees": 172.38017229599004
+      "best_validation_fitness": 0.23789473483978468,
+      "best_validation_mean_daily_net_rupees": 116.79560009747699
     },
     {
       "generation": 9,
       "unique_candidates_evaluated": 600,
-      "qd_archive_niches": 28,
+      "qd_archive_niches": 29,
       "new_children": 30,
-      "best_validation_fitness": 0.17179250222556341,
-      "best_validation_mean_daily_net_rupees": 172.38017229599004
+      "best_validation_fitness": 0.23789473483978468,
+      "best_validation_mean_daily_net_rupees": 116.79560009747699
     }
   ],
   "qd_archive": [
     {
+      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"gap_cont\", \"gap\": 0.005, \"hold\": 3, \"money\": 0}",
+      "fitness": 0.23789473483978468,
+      "candidate": {
+        "family": "gap_cont",
+        "hold": 3,
+        "expiry": "WEEK1",
+        "money": 0,
+        "gap": 0.005
+      },
+      "validation_mean_daily_net_rupees": 54.09505799320048,
+      "validation_sharpe_ratio": 1.5926035589411083,
+      "validation_profit_factor": 2.084985631960065,
+      "validation_max_drawdown_fraction": 0.006062820867443574,
+      "validation_trade_count": 30,
+      "hypothesis": "An opening gap of at least 0.50% continues intraday; buy the gap-direction option after the opening bars."
+    },
+    {
+      "candidate_key": "{\"buffer\": 0.4, \"expiry\": \"MONTH1\", \"family\": \"orb\", \"hold\": 24, \"money\": 1, \"range_bars\": 6}",
+      "fitness": 0.1264696386633424,
+      "candidate": {
+        "family": "orb",
+        "hold": 24,
+        "expiry": "MONTH1",
+        "money": 1,
+        "range_bars": 6,
+        "buffer": 0.4
+      },
+      "validation_mean_daily_net_rupees": 52.142946498950224,
+      "validation_sharpe_ratio": 0.5745328247534286,
+      "validation_profit_factor": 1.150240305170783,
+      "validation_max_drawdown_fraction": 0.02657405301239774,
+      "validation_trade_count": 132,
+      "hypothesis": "Break the first 30-minute range with a 0.40 range-width buffer; buy the directional option and hold 120 minutes."
+    },
+    {
       "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"gap_cont\", \"gap\": 0.0015, \"hold\": 24, \"money\": 1}",
-      "fitness": 0.17179250222556341,
+      "fitness": 0.07953534004129886,
       "candidate": {
         "family": "gap_cont",
         "hold": 24,
@@ -116,117 +151,65 @@
         "money": 1,
         "gap": 0.0015
       },
-      "validation_mean_daily_net_rupees": 172.38017229599004,
-      "validation_sharpe_ratio": 1.3896946943981672,
-      "validation_profit_factor": 1.3855597630303575,
-      "validation_max_drawdown_fraction": 0.022314987742186123,
+      "validation_mean_daily_net_rupees": 116.79560009747699,
+      "validation_sharpe_ratio": 1.053842350254306,
+      "validation_profit_factor": 1.2951817133379577,
+      "validation_max_drawdown_fraction": 0.022895250748300885,
       "validation_trade_count": 130,
       "hypothesis": "An opening gap of at least 0.15% continues intraday; buy the gap-direction option after the opening bars."
     },
     {
-      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"gap_cont\", \"gap\": 0.005, \"hold\": 1, \"money\": 0}",
-      "fitness": 0.16763937120590416,
+      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"gap_cont\", \"gap\": 0.0025, \"hold\": 1, \"money\": 1}",
+      "fitness": 0.04309303152933652,
       "candidate": {
         "family": "gap_cont",
         "hold": 1,
-        "expiry": "WEEK1",
-        "money": 0,
-        "gap": 0.005
-      },
-      "validation_mean_daily_net_rupees": 37.20791060117068,
-      "validation_sharpe_ratio": 1.3202194661975073,
-      "validation_profit_factor": 1.879188468446536,
-      "validation_max_drawdown_fraction": 0.011476393582365569,
-      "validation_trade_count": 30,
-      "hypothesis": "An opening gap of at least 0.50% continues intraday; buy the gap-direction option after the opening bars."
-    },
-    {
-      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"gap_cont\", \"gap\": 0.0015, \"hold\": 3, \"money\": 1}",
-      "fitness": 0.0022157396971161925,
-      "candidate": {
-        "family": "gap_cont",
-        "hold": 3,
         "expiry": "WEEK1",
         "money": 1,
-        "gap": 0.0015
+        "gap": 0.0025
       },
-      "validation_mean_daily_net_rupees": 58.12087587304165,
-      "validation_sharpe_ratio": 0.7828050035205469,
-      "validation_profit_factor": 1.1976686763021467,
-      "validation_max_drawdown_fraction": 0.015029788557633508,
-      "validation_trade_count": 142,
-      "hypothesis": "An opening gap of at least 0.15% continues intraday; buy the gap-direction option after the opening bars."
-    },
-    {
-      "candidate_key": "{\"buffer\": 0.1, \"expiry\": \"WEEK1\", \"family\": \"orb\", \"hold\": 1, \"money\": 0, \"range_bars\": 6}",
-      "fitness": -0.03265248725534539,
-      "candidate": {
-        "family": "orb",
-        "hold": 1,
-        "expiry": "WEEK1",
-        "money": 0,
-        "range_bars": 6,
-        "buffer": 0.1
-      },
-      "validation_mean_daily_net_rupees": 56.88124227904,
-      "validation_sharpe_ratio": 0.7689651520120606,
-      "validation_profit_factor": 1.1581065025987738,
-      "validation_max_drawdown_fraction": 0.02754328318577402,
-      "validation_trade_count": 211,
-      "hypothesis": "Break the first 30-minute range with a 0.10 range-width buffer; buy the directional option and hold 5 minutes."
+      "validation_mean_daily_net_rupees": 43.43120638982924,
+      "validation_sharpe_ratio": 0.9230760067627899,
+      "validation_profit_factor": 1.3019673938628775,
+      "validation_max_drawdown_fraction": 0.012126638707986215,
+      "validation_trade_count": 103,
+      "hypothesis": "An opening gap of at least 0.25% continues intraday; buy the gap-direction option after the opening bars."
     },
     {
       "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"always_momentum\", \"hold\": 24, \"money\": 1}",
-      "fitness": -0.06566015691452498,
+      "fitness": -0.04077858952836638,
       "candidate": {
         "family": "always_momentum",
         "hold": 24,
         "expiry": "MONTH1",
         "money": 1
       },
-      "validation_mean_daily_net_rupees": 105.82060769479168,
-      "validation_sharpe_ratio": 0.6901514753837137,
-      "validation_profit_factor": 1.1288264439304219,
-      "validation_max_drawdown_fraction": 0.04565635563322335,
+      "validation_mean_daily_net_rupees": 110.24101405512653,
+      "validation_sharpe_ratio": 0.7807003092099135,
+      "validation_profit_factor": 1.1563470631976815,
+      "validation_max_drawdown_fraction": 0.045560706872427505,
       "validation_trade_count": 221,
       "hypothesis": "Always enter at 09:25 after the first two completed bars, buying the call or put matching the initial move; hold 120 minutes."
     },
     {
-      "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"always_call\", \"hold\": 24, \"money\": 1}",
-      "fitness": -0.09915227185252498,
+      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"always_call\", \"hold\": 24, \"money\": 1}",
+      "fitness": -0.10615944898455056,
       "candidate": {
         "family": "always_call",
         "hold": 24,
-        "expiry": "MONTH1",
+        "expiry": "WEEK1",
         "money": 1
       },
-      "validation_mean_daily_net_rupees": 106.57525254987335,
-      "validation_sharpe_ratio": 0.5860910012569156,
-      "validation_profit_factor": 1.1045289498405741,
-      "validation_max_drawdown_fraction": 0.04984339652748629,
-      "validation_trade_count": 229,
+      "validation_mean_daily_net_rupees": 95.09977508617904,
+      "validation_sharpe_ratio": 0.5541679025525081,
+      "validation_profit_factor": 1.1021926968537905,
+      "validation_max_drawdown_fraction": 0.047067543853173764,
+      "validation_trade_count": 230,
       "hypothesis": "Fixed-time long-call benchmark, 120-minute holding period, moneyness offset 1."
     },
     {
-      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"gap_cont\", \"gap\": 0.005, \"hold\": 6, \"money\": 0}",
-      "fitness": -0.22945005175827718,
-      "candidate": {
-        "family": "gap_cont",
-        "hold": 6,
-        "expiry": "WEEK1",
-        "money": 0,
-        "gap": 0.005
-      },
-      "validation_mean_daily_net_rupees": 2.8931129686059855,
-      "validation_sharpe_ratio": 0.052284163940400835,
-      "validation_profit_factor": 1.0233477399899134,
-      "validation_max_drawdown_fraction": 0.023636450338267254,
-      "validation_trade_count": 30,
-      "hypothesis": "An opening gap of at least 0.50% continues intraday; buy the gap-direction option after the opening bars."
-    },
-    {
       "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"trend\", \"fast\": 13, \"hold\": 6, \"money\": 1, \"slow\": 34, \"vwap_filter\": false}",
-      "fitness": -0.24833951317388914,
+      "fitness": -0.1989259126177113,
       "candidate": {
         "family": "trend",
         "hold": 6,
@@ -236,68 +219,16 @@
         "slow": 34,
         "vwap_filter": false
       },
-      "validation_mean_daily_net_rupees": 22.3896825189041,
-      "validation_sharpe_ratio": 0.1934466539701043,
-      "validation_profit_factor": 1.0339158638395873,
-      "validation_max_drawdown_fraction": 0.054792678144150286,
+      "validation_mean_daily_net_rupees": 39.039729046960986,
+      "validation_sharpe_ratio": 0.3500769710677333,
+      "validation_profit_factor": 1.0638637180202783,
+      "validation_max_drawdown_fraction": 0.05437224639638928,
       "validation_trade_count": 242,
       "hypothesis": "An EMA 13/34 cross, optionally confirmed by VWAP, predicts continuation over 30 minutes."
     },
     {
-      "candidate_key": "{\"buffer\": 0.4, \"expiry\": \"MONTH1\", \"family\": \"orb\", \"hold\": 6, \"money\": 1, \"range_bars\": 1}",
-      "fitness": -0.3400509861909094,
-      "candidate": {
-        "family": "orb",
-        "hold": 6,
-        "expiry": "MONTH1",
-        "money": 1,
-        "range_bars": 1,
-        "buffer": 0.4
-      },
-      "validation_mean_daily_net_rupees": 26.17691834152623,
-      "validation_sharpe_ratio": 0.23103863449662007,
-      "validation_profit_factor": 1.043898907879677,
-      "validation_max_drawdown_fraction": 0.10673421640314122,
-      "validation_trade_count": 215,
-      "hypothesis": "Break the first 5-minute range with a 0.40 range-width buffer; buy the directional option and hold 30 minutes."
-    },
-    {
-      "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"gap_fade\", \"gap\": 0.01, \"hold\": 6, \"money\": 1}",
-      "fitness": -0.8008589312835255,
-      "candidate": {
-        "family": "gap_fade",
-        "hold": 6,
-        "expiry": "MONTH1",
-        "money": 1,
-        "gap": 0.01
-      },
-      "validation_mean_daily_net_rupees": 24.08800969886922,
-      "validation_sharpe_ratio": 1.240643137109879,
-      "validation_profit_factor": 2.7291077449309276,
-      "validation_max_drawdown_fraction": 0.006826826373519147,
-      "validation_trade_count": 9,
-      "hypothesis": "An opening gap of at least 1.00% mean-reverts; buy the opposite-direction option after the opening bars."
-    },
-    {
-      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"gap_cont\", \"gap\": 0.0075, \"hold\": 3, \"money\": 0}",
-      "fitness": -0.9293032737313025,
-      "candidate": {
-        "family": "gap_cont",
-        "hold": 3,
-        "expiry": "WEEK1",
-        "money": 0,
-        "gap": 0.0075
-      },
-      "validation_mean_daily_net_rupees": 26.874135356806576,
-      "validation_sharpe_ratio": 0.8674482225069651,
-      "validation_profit_factor": 1.6542189904938707,
-      "validation_max_drawdown_fraction": 0.009733330666462309,
-      "validation_trade_count": 17,
-      "hypothesis": "An opening gap of at least 0.75% continues intraday; buy the gap-direction option after the opening bars."
-    },
-    {
       "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"gap_fade\", \"gap\": 0.0025, \"hold\": 24, \"money\": 1}",
-      "fitness": -1.085935163368767,
+      "fitness": -0.2503018480763439,
       "candidate": {
         "family": "gap_fade",
         "hold": 24,
@@ -305,16 +236,68 @@
         "money": 1,
         "gap": 0.0025
       },
-      "validation_mean_daily_net_rupees": -7.185454925754152,
-      "validation_sharpe_ratio": -0.06561176520550922,
-      "validation_profit_factor": 0.9818008974191408,
-      "validation_max_drawdown_fraction": 0.03195619703979794,
+      "validation_mean_daily_net_rupees": 3.947475190604725,
+      "validation_sharpe_ratio": 0.039942506170992306,
+      "validation_profit_factor": 1.0116172038022844,
+      "validation_max_drawdown_fraction": 0.031785679814560715,
       "validation_trade_count": 95,
       "hypothesis": "An opening gap of at least 0.25% mean-reverts; buy the opposite-direction option after the opening bars."
     },
     {
+      "candidate_key": "{\"buffer\": 0.4, \"expiry\": \"MONTH1\", \"family\": \"orb\", \"hold\": 6, \"money\": 0, \"range_bars\": 1}",
+      "fitness": -0.3251507337013579,
+      "candidate": {
+        "family": "orb",
+        "hold": 6,
+        "expiry": "MONTH1",
+        "money": 0,
+        "range_bars": 1,
+        "buffer": 0.4
+      },
+      "validation_mean_daily_net_rupees": 24.75681377551794,
+      "validation_sharpe_ratio": 0.21313998452383626,
+      "validation_profit_factor": 1.0428746722828124,
+      "validation_max_drawdown_fraction": 0.0968430375099246,
+      "validation_trade_count": 218,
+      "hypothesis": "Break the first 5-minute range with a 0.40 range-width buffer; buy the directional option and hold 30 minutes."
+    },
+    {
+      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"gap_cont\", \"gap\": 0.0075, \"hold\": 3, \"money\": 0}",
+      "fitness": -0.7971295695470884,
+      "candidate": {
+        "family": "gap_cont",
+        "hold": 3,
+        "expiry": "WEEK1",
+        "money": 0,
+        "gap": 0.0075
+      },
+      "validation_mean_daily_net_rupees": 37.82680592534115,
+      "validation_sharpe_ratio": 1.3080157586951824,
+      "validation_profit_factor": 2.255639742759545,
+      "validation_max_drawdown_fraction": 0.004382911415116136,
+      "validation_trade_count": 17,
+      "hypothesis": "An opening gap of at least 0.75% continues intraday; buy the gap-direction option after the opening bars."
+    },
+    {
+      "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"gap_fade\", \"gap\": 0.0075, \"hold\": 24, \"money\": 0}",
+      "fitness": -0.9028241671942363,
+      "candidate": {
+        "family": "gap_fade",
+        "hold": 24,
+        "expiry": "MONTH1",
+        "money": 0,
+        "gap": 0.0075
+      },
+      "validation_mean_daily_net_rupees": 34.50870222208844,
+      "validation_sharpe_ratio": 0.8866383995454264,
+      "validation_profit_factor": 1.8652895484538508,
+      "validation_max_drawdown_fraction": 0.009063990358984685,
+      "validation_trade_count": 16,
+      "hypothesis": "An opening gap of at least 0.75% mean-reverts; buy the opposite-direction option after the opening bars."
+    },
+    {
       "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"gap_fade\", \"gap\": 0.0075, \"hold\": 12, \"money\": 1}",
-      "fitness": -1.1264112113865412,
+      "fitness": -1.1182050668020787,
       "candidate": {
         "family": "gap_fade",
         "hold": 12,
@@ -322,16 +305,50 @@
         "money": 1,
         "gap": 0.0075
       },
-      "validation_mean_daily_net_rupees": 13.728905097121954,
-      "validation_sharpe_ratio": 0.3077559330023377,
-      "validation_profit_factor": 1.2187106756521744,
-      "validation_max_drawdown_fraction": 0.020514190264157805,
+      "validation_mean_daily_net_rupees": 13.633513051970032,
+      "validation_sharpe_ratio": 0.3232274392154476,
+      "validation_profit_factor": 1.2500536160237827,
+      "validation_max_drawdown_fraction": 0.020515140020640373,
       "validation_trade_count": 16,
       "hypothesis": "An opening gap of at least 0.75% mean-reverts; buy the opposite-direction option after the opening bars."
     },
     {
+      "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"gap_cont\", \"gap\": 0.005, \"hold\": 24, \"money\": 1}",
+      "fitness": -1.1271477148791054,
+      "candidate": {
+        "family": "gap_cont",
+        "hold": 24,
+        "expiry": "MONTH1",
+        "money": 1,
+        "gap": 0.005
+      },
+      "validation_mean_daily_net_rupees": 19.303241543762095,
+      "validation_sharpe_ratio": 0.324949419629522,
+      "validation_profit_factor": 1.1771040367217276,
+      "validation_max_drawdown_fraction": 0.02079849799274781,
+      "validation_trade_count": 29,
+      "hypothesis": "An opening gap of at least 0.50% continues intraday; buy the gap-direction option after the opening bars."
+    },
+    {
+      "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"gap_fade\", \"gap\": 0.005, \"hold\": 24, \"money\": 1}",
+      "fitness": -1.2330618763045125,
+      "candidate": {
+        "family": "gap_fade",
+        "hold": 24,
+        "expiry": "MONTH1",
+        "money": 1,
+        "gap": 0.005
+      },
+      "validation_mean_daily_net_rupees": 0.7109338856726429,
+      "validation_sharpe_ratio": 0.01614210978197996,
+      "validation_profit_factor": 1.00851920839062,
+      "validation_max_drawdown_fraction": 0.01937291154714441,
+      "validation_trade_count": 26,
+      "hypothesis": "An opening gap of at least 0.50% mean-reverts; buy the opposite-direction option after the opening bars."
+    },
+    {
       "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"trend\", \"fast\": 8, \"hold\": 24, \"money\": 1, \"slow\": 21, \"vwap_filter\": false}",
-      "fitness": -1.346185936547998,
+      "fitness": -1.3383626468567378,
       "candidate": {
         "family": "trend",
         "hold": 24,
@@ -341,16 +358,16 @@
         "slow": 21,
         "vwap_filter": false
       },
-      "validation_mean_daily_net_rupees": -81.24145296299335,
-      "validation_sharpe_ratio": -0.5242524788300497,
-      "validation_profit_factor": 0.9108441072466851,
-      "validation_max_drawdown_fraction": 0.08598445245139907,
+      "validation_mean_daily_net_rupees": -77.11846773031787,
+      "validation_sharpe_ratio": -0.5196610335747738,
+      "validation_profit_factor": 0.9100258488756011,
+      "validation_max_drawdown_fraction": 0.08347193108356295,
       "validation_trade_count": 223,
       "hypothesis": "An EMA 8/21 cross, optionally confirmed by VWAP, predicts continuation over 120 minutes."
     },
     {
       "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"gap_fade\", \"gap\": 0.005, \"hold\": 6, \"money\": 1}",
-      "fitness": -1.360022968449466,
+      "fitness": -1.3763412016902268,
       "candidate": {
         "family": "gap_fade",
         "hold": 6,
@@ -358,81 +375,81 @@
         "money": 1,
         "gap": 0.005
       },
-      "validation_mean_daily_net_rupees": -42.34003806670313,
-      "validation_sharpe_ratio": -0.9187514920344776,
-      "validation_profit_factor": 0.6690443528433581,
-      "validation_max_drawdown_fraction": 0.03463949183918486,
+      "validation_mean_daily_net_rupees": -44.46035319040798,
+      "validation_sharpe_ratio": -0.9726237549585517,
+      "validation_profit_factor": 0.6478791181554618,
+      "validation_max_drawdown_fraction": 0.03467560977875043,
       "validation_trade_count": 30,
       "hypothesis": "An opening gap of at least 0.50% mean-reverts; buy the opposite-direction option after the opening bars."
     },
     {
+      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"gap_fade\", \"gap\": 0.0025, \"hold\": 12, \"money\": 0}",
+      "fitness": -1.4460275074604236,
+      "candidate": {
+        "family": "gap_fade",
+        "hold": 12,
+        "expiry": "WEEK1",
+        "money": 0,
+        "gap": 0.0025
+      },
+      "validation_mean_daily_net_rupees": -163.65195537143384,
+      "validation_sharpe_ratio": -1.4801677651682112,
+      "validation_profit_factor": 0.6734843289763793,
+      "validation_max_drawdown_fraction": 0.10434145379001747,
+      "validation_trade_count": 99,
+      "hypothesis": "An opening gap of at least 0.25% mean-reverts; buy the opposite-direction option after the opening bars."
+    },
+    {
       "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"always_momentum\", \"hold\": 12, \"money\": 1}",
-      "fitness": -1.4584088033841651,
+      "fitness": -1.4837889644301632,
       "candidate": {
         "family": "always_momentum",
         "hold": 12,
         "expiry": "WEEK1",
         "money": 1
       },
-      "validation_mean_daily_net_rupees": -126.84709008687412,
-      "validation_sharpe_ratio": -0.9457540906290834,
-      "validation_profit_factor": 0.848783537805323,
-      "validation_max_drawdown_fraction": 0.08278889844590086,
+      "validation_mean_daily_net_rupees": -131.99620146349855,
+      "validation_sharpe_ratio": -1.0463139355949773,
+      "validation_profit_factor": 0.8314027920293003,
+      "validation_max_drawdown_fraction": 0.08335425297035648,
       "validation_trade_count": 235,
       "hypothesis": "Always enter at 09:25 after the first two completed bars, buying the call or put matching the initial move; hold 60 minutes."
     },
     {
-      "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"always_call\", \"hold\": 6, \"money\": 0}",
-      "fitness": -1.4900389512672167,
+      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"always_call\", \"hold\": 12, \"money\": 0}",
+      "fitness": -1.59109874379557,
       "candidate": {
         "family": "always_call",
-        "hold": 6,
-        "expiry": "MONTH1",
+        "hold": 12,
+        "expiry": "WEEK1",
         "money": 0
       },
-      "validation_mean_daily_net_rupees": -126.1784545788014,
-      "validation_sharpe_ratio": -0.840078583895646,
-      "validation_profit_factor": 0.868208738244782,
-      "validation_max_drawdown_fraction": 0.11077209483645041,
-      "validation_trade_count": 245,
-      "hypothesis": "Fixed-time long-call benchmark, 30-minute holding period, moneyness offset 0."
+      "validation_mean_daily_net_rupees": -190.12720677349557,
+      "validation_sharpe_ratio": -1.1894331563009586,
+      "validation_profit_factor": 0.8188984353581927,
+      "validation_max_drawdown_fraction": 0.11047762147016779,
+      "validation_trade_count": 243,
+      "hypothesis": "Fixed-time long-call benchmark, 60-minute holding period, moneyness offset 0."
     },
     {
       "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"always_put\", \"hold\": 3, \"money\": 1}",
-      "fitness": -1.5781832770635142,
+      "fitness": -1.6300433486037735,
       "candidate": {
         "family": "always_put",
         "hold": 3,
         "expiry": "WEEK1",
         "money": 1
       },
-      "validation_mean_daily_net_rupees": -121.28142066459606,
-      "validation_sharpe_ratio": -1.3053240264741093,
-      "validation_profit_factor": 0.8003046099304811,
-      "validation_max_drawdown_fraction": 0.10840894234623749,
+      "validation_mean_daily_net_rupees": -137.91690033169763,
+      "validation_sharpe_ratio": -1.5429138195665628,
+      "validation_profit_factor": 0.763336366472213,
+      "validation_max_drawdown_fraction": 0.10927377420540917,
       "validation_trade_count": 247,
       "hypothesis": "Fixed-time long-put benchmark, 15-minute holding period, moneyness offset 1."
     },
     {
-      "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"gap_fade\", \"gap\": 0.0025, \"hold\": 6, \"money\": 0}",
-      "fitness": -1.6642997243030366,
-      "candidate": {
-        "family": "gap_fade",
-        "hold": 6,
-        "expiry": "MONTH1",
-        "money": 0,
-        "gap": 0.0025
-      },
-      "validation_mean_daily_net_rupees": -163.77944296008314,
-      "validation_sharpe_ratio": -1.727529197926153,
-      "validation_profit_factor": 0.6152566808687331,
-      "validation_max_drawdown_fraction": 0.09043496664499714,
-      "validation_trade_count": 102,
-      "hypothesis": "An opening gap of at least 0.25% mean-reverts; buy the opposite-direction option after the opening bars."
-    },
-    {
       "candidate_key": "{\"buffer\": 0.25, \"expiry\": \"WEEK1\", \"family\": \"orb_strangle\", \"hold\": 3, \"range_bars\": 6}",
-      "fitness": -1.7130677585433443,
+      "fitness": -1.7417384734753356,
       "candidate": {
         "family": "orb_strangle",
         "hold": 3,
@@ -440,16 +457,16 @@
         "range_bars": 6,
         "buffer": 0.25
       },
-      "validation_mean_daily_net_rupees": -123.5004981129859,
-      "validation_sharpe_ratio": -2.701202548587176,
-      "validation_profit_factor": 0.5658899218059038,
-      "validation_max_drawdown_fraction": 0.0780891934185602,
+      "validation_mean_daily_net_rupees": -123.18799439479444,
+      "validation_sharpe_ratio": -3.145844228365741,
+      "validation_profit_factor": 0.5286755769053155,
+      "validation_max_drawdown_fraction": 0.07793419157433731,
       "validation_trade_count": 185,
       "hypothesis": "An opening-range break predicts enough realized movement to cover the cost of a one-step OTM long strangle over 15 minutes."
     },
     {
       "candidate_key": "{\"buffer\": 0.4, \"expiry\": \"WEEK1\", \"family\": \"orb_straddle\", \"hold\": 1, \"range_bars\": 6}",
-      "fitness": -1.766324402660634,
+      "fitness": -1.7727833994194957,
       "candidate": {
         "family": "orb_straddle",
         "hold": 1,
@@ -457,46 +474,46 @@
         "range_bars": 6,
         "buffer": 0.4
       },
-      "validation_mean_daily_net_rupees": -126.52666200422684,
-      "validation_sharpe_ratio": -3.8028875387704177,
-      "validation_profit_factor": 0.41068891377143363,
-      "validation_max_drawdown_fraction": 0.06587228190916437,
+      "validation_mean_daily_net_rupees": -122.84035540995396,
+      "validation_sharpe_ratio": -4.079540342080725,
+      "validation_profit_factor": 0.3803649761172011,
+      "validation_max_drawdown_fraction": 0.06404846983243848,
       "validation_trade_count": 158,
       "hypothesis": "An opening-range break predicts enough realized movement to cover the cost of a ATM long straddle over 5 minutes."
     },
     {
-      "candidate_key": "{\"buffer\": 0.25, \"expiry\": \"WEEK1\", \"family\": \"orb_straddle\", \"hold\": 3, \"range_bars\": 6}",
-      "fitness": -1.7860297884895904,
+      "candidate_key": "{\"buffer\": 0.1, \"expiry\": \"WEEK1\", \"family\": \"orb_straddle\", \"hold\": 1, \"range_bars\": 1}",
+      "fitness": -1.788604704173103,
       "candidate": {
         "family": "orb_straddle",
-        "hold": 3,
+        "hold": 1,
         "expiry": "WEEK1",
-        "range_bars": 6,
-        "buffer": 0.25
+        "range_bars": 1,
+        "buffer": 0.1
       },
-      "validation_mean_daily_net_rupees": -152.631614589668,
-      "validation_sharpe_ratio": -3.203257038448654,
-      "validation_profit_factor": 0.5183211482790764,
-      "validation_max_drawdown_fraction": 0.09092212845963298,
-      "validation_trade_count": 185,
-      "hypothesis": "An opening-range break predicts enough realized movement to cover the cost of a ATM long straddle over 15 minutes."
+      "validation_mean_daily_net_rupees": -153.9080093760608,
+      "validation_sharpe_ratio": -3.849287142579241,
+      "validation_profit_factor": 0.5160911767313737,
+      "validation_max_drawdown_fraction": 0.08344492824687243,
+      "validation_trade_count": 239,
+      "hypothesis": "An opening-range break predicts enough realized movement to cover the cost of a ATM long straddle over 5 minutes."
     },
     {
-      "candidate_key": "{\"buffer\": 0.25, \"expiry\": \"WEEK1\", \"family\": \"orb_strangle\", \"hold\": 3, \"range_bars\": 3}",
-      "fitness": -1.8533946930976914,
+      "candidate_key": "{\"buffer\": 0.4, \"expiry\": \"WEEK1\", \"family\": \"orb_strangle\", \"hold\": 6, \"range_bars\": 6}",
+      "fitness": -1.8432405268448235,
       "candidate": {
         "family": "orb_strangle",
-        "hold": 3,
+        "hold": 6,
         "expiry": "WEEK1",
-        "range_bars": 3,
-        "buffer": 0.25
+        "range_bars": 6,
+        "buffer": 0.4
       },
-      "validation_mean_daily_net_rupees": -191.4858202019599,
-      "validation_sharpe_ratio": -4.114224939541978,
-      "validation_profit_factor": 0.43776030786887715,
-      "validation_max_drawdown_fraction": 0.09543409057812097,
-      "validation_trade_count": 212,
-      "hypothesis": "An opening-range break predicts enough realized movement to cover the cost of a one-step OTM long strangle over 15 minutes."
+      "validation_mean_daily_net_rupees": -189.7495198105313,
+      "validation_sharpe_ratio": -3.2949535907635696,
+      "validation_profit_factor": 0.4397722812375294,
+      "validation_max_drawdown_fraction": 0.09983289379270759,
+      "validation_trade_count": 157,
+      "hypothesis": "An opening-range break predicts enough realized movement to cover the cost of a one-step OTM long strangle over 30 minutes."
     },
     {
       "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"pullback\", \"fast\": 8, \"hold\": 6, \"money\": 0, \"slow\": 21}",
@@ -517,15 +534,15 @@
       "hypothesis": "A 8/21 EMA trend resumes after a VWAP reclaim/rejection; hold 30 minutes."
     },
     {
-      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"trend\", \"fast\": 13, \"hold\": 24, \"money\": 1, \"slow\": 34, \"vwap_filter\": true}",
+      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"trend\", \"fast\": 5, \"hold\": 24, \"money\": 0, \"slow\": 13, \"vwap_filter\": true}",
       "fitness": -1.996039603960396,
       "candidate": {
         "family": "trend",
         "hold": 24,
         "expiry": "WEEK1",
-        "money": 1,
-        "fast": 13,
-        "slow": 34,
+        "money": 0,
+        "fast": 5,
+        "slow": 13,
         "vwap_filter": true
       },
       "validation_mean_daily_net_rupees": 0.0,
@@ -533,54 +550,54 @@
       "validation_profit_factor": null,
       "validation_max_drawdown_fraction": 0.0,
       "validation_trade_count": 0,
-      "hypothesis": "An EMA 13/34 cross, optionally confirmed by VWAP, predicts continuation over 120 minutes."
+      "hypothesis": "An EMA 5/13 cross, optionally confirmed by VWAP, predicts continuation over 120 minutes."
     },
     {
       "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"always_strangle\", \"hold\": 3, \"money\": 0}",
-      "fitness": -2.078958682319493,
+      "fitness": -2.0449295102302285,
       "candidate": {
         "family": "always_strangle",
         "hold": 3,
         "expiry": "WEEK1",
         "money": 0
       },
-      "validation_mean_daily_net_rupees": -341.41852448573854,
-      "validation_sharpe_ratio": -5.129595866887818,
-      "validation_profit_factor": 0.4155518175456331,
-      "validation_max_drawdown_fraction": 0.17240808339806352,
+      "validation_mean_daily_net_rupees": -317.1339787041482,
+      "validation_sharpe_ratio": -4.954523051824741,
+      "validation_profit_factor": 0.41917901545205477,
+      "validation_max_drawdown_fraction": 0.1603828566736789,
       "validation_trade_count": 245,
       "hypothesis": "Fixed-time one-step OTM long-strangle benchmark with 15-minute holding period."
     },
     {
-      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"always_straddle\", \"hold\": 3, \"money\": 0}",
-      "fitness": -2.110234934840795,
+      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"always_straddle\", \"hold\": 6, \"money\": 0}",
+      "fitness": -2.0719277226814814,
       "candidate": {
         "family": "always_straddle",
-        "hold": 3,
+        "hold": 6,
         "expiry": "WEEK1",
         "money": 0
       },
-      "validation_mean_daily_net_rupees": -362.8595591560387,
-      "validation_sharpe_ratio": -5.135371378805066,
-      "validation_profit_factor": 0.4175580975819604,
-      "validation_max_drawdown_fraction": 0.1848889562192374,
-      "validation_trade_count": 248,
-      "hypothesis": "Fixed-time ATM long-straddle benchmark with 15-minute holding period."
+      "validation_mean_daily_net_rupees": -353.12080537527356,
+      "validation_sharpe_ratio": -4.027274531042558,
+      "validation_profit_factor": 0.4907453768635172,
+      "validation_max_drawdown_fraction": 0.18162206745196752,
+      "validation_trade_count": 246,
+      "hypothesis": "Fixed-time ATM long-straddle benchmark with 30-minute holding period."
     },
     {
-      "candidate_key": "{\"expiry\": \"WEEK1\", \"family\": \"gap_cont\", \"gap\": 0.0075, \"hold\": 12, \"money\": 0}",
-      "fitness": -2.241305031308002,
+      "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"gap_cont\", \"gap\": 0.0075, \"hold\": 24, \"money\": 1}",
+      "fitness": -2.2318494809917535,
       "candidate": {
         "family": "gap_cont",
-        "hold": 12,
-        "expiry": "WEEK1",
-        "money": 0,
+        "hold": 24,
+        "expiry": "MONTH1",
+        "money": 1,
         "gap": 0.0075
       },
-      "validation_mean_daily_net_rupees": -24.763753526672932,
-      "validation_sharpe_ratio": -0.543001720594766,
-      "validation_profit_factor": 0.719019114523071,
-      "validation_max_drawdown_fraction": 0.02299678958971848,
+      "validation_mean_daily_net_rupees": -43.42505233316417,
+      "validation_sharpe_ratio": -1.164675218050431,
+      "validation_profit_factor": 0.4559708429417056,
+      "validation_max_drawdown_fraction": 0.021538825957249385,
       "validation_trade_count": 16,
       "hypothesis": "An opening gap of at least 0.75% continues intraday; buy the gap-direction option after the opening bars."
     }
@@ -597,7 +614,7 @@
     "row_grid_coverage": 1.0
   },
   "research_id": "QE-NOB-1.0",
-  "generated_at_utc": "2026-10-22T10:00:04.512797+00:00",
+  "generated_at_utc": "2026-10-22T14:11:22.525474+00:00",
   "statistical_candidate_count": 0,
   "promotion_candidate_count": 0,
   "basic_data_quality_gate_pass": true,
@@ -607,21 +624,21 @@
   "best_validation_finalist": {
     "candidate_id": 86,
     "validation_trade_count": 130,
-    "validation_mean_daily_net_rupees": 172.38017229599004,
+    "validation_mean_daily_net_rupees": 116.79560009747699,
     "oos_trade_count": 151,
-    "oos_mean_daily_net_rupees": 10.681524600625325,
+    "oos_mean_daily_net_rupees": 6.144874311785659,
     "oos_median_daily_net_rupees": 0.0,
-    "oos_daily_net_ci95_low": -188.61601831732625,
-    "oos_daily_net_ci95_high": 237.43152765212906,
+    "oos_daily_net_ci95_low": -195.69134429024234,
+    "oos_daily_net_ci95_high": 235.20970801802864,
     "oos_win_rate": 0.4966887417218543,
-    "oos_profit_factor": 1.0209190940306043,
-    "oos_total_net_rupees": 2659.6996255557005,
-    "oos_sharpe_ratio": 0.09694911938817505,
-    "oos_sortino_ratio": 0.15024959927390222,
-    "oos_max_drawdown_fraction": 0.06456112954213933,
-    "oos_stress100_fee20_mean_daily_net_rupees": -98.54225152811105,
-    "oos_stress200_fee20_mean_daily_net_rupees": -288.36651061289086,
-    "oos_part1_mean_daily_net_rupees": 109.75936157920214,
+    "oos_profit_factor": 1.0118235519295722,
+    "oos_total_net_rupees": 1530.0737036346272,
+    "oos_sharpe_ratio": 0.05527445577114904,
+    "oos_sortino_ratio": 0.08499575547810312,
+    "oos_max_drawdown_fraction": 0.06470141278373125,
+    "oos_stress100_fee20_mean_daily_net_rupees": -104.19360689009166,
+    "oos_stress200_fee20_mean_daily_net_rupees": -296.24727612115333,
+    "oos_part1_mean_daily_net_rupees": 100.64947511209668,
     "oos_part2_mean_daily_net_rupees": -87.60368968212295,
     "candidate_key": "{\"expiry\": \"MONTH1\", \"family\": \"gap_cont\", \"gap\": 0.0015, \"hold\": 24, \"money\": 1}",
     "oos_holm_p": 1.0,
@@ -629,16 +646,16 @@
     "family": "gap_cont",
     "baseline_family": "always_momentum",
     "oos_baseline_comparison_available": true,
-    "oos_baseline_paired_mean_daily_diff": 65.44544402784044,
-    "oos_baseline_paired_ci95_low": -250.1882199808365,
-    "oos_baseline_paired_ci95_high": 397.7093246193802,
-    "oos_baseline_hac_one_sided_p": 0.34963474354095464,
+    "oos_baseline_paired_mean_daily_diff": 69.24810902868735,
+    "oos_baseline_paired_ci95_low": -247.64543188892748,
+    "oos_baseline_paired_ci95_high": 399.9193114358125,
+    "oos_baseline_hac_one_sided_p": 0.3423652396799772,
     "oos_baseline_holm_p": 1.0,
     "hypothesis": "An opening gap of at least 0.15% continues intraday; buy the gap-direction option after the opening bars.",
     "generation_created": 0,
     "island_created": 0,
     "origin": "random_seed",
-    "evolution_fitness": 0.17179250222556341,
+    "evolution_fitness": 0.07953534004129886,
     "statistical_gate_pass": false,
     "execution_data_gate_pass": false,
     "execution_data_gate_reason": "No historical bid/ask/depth validation; contract-expiry and lot-size mapping not reconciled to dated instrument master.",
