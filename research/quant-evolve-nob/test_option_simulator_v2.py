@@ -60,3 +60,60 @@ def test_simulator_prevents_overlapping_positions_and_never_passes_execution_gat
     assert result["trades"][0]["entry_timestamp"] == 2
     assert result["trades"][0]["exit_timestamp"] == 3
     assert result["execution_gate_pass"] is False
+
+
+def _stop_fixture(exit_rules, option_rows):
+    strategy = grammar.Strategy("signal", (grammar.Predicate("nifty_return_1", "gt", 0),), "and",
+                                "CALL", "WEEK1", "ATM", 2, tuple(exit_rules),
+                                "OHLC stop fixture only; not market evidence.")
+    underlying = pd.DataFrame({"timestamp":[1,2,3,4], "open":[100]*4, "close":[100]*4})
+    features = pd.DataFrame({"timestamp":[1,2,3,4], "nifty_return_1":[1,-1,-1,-1]})
+    options = pd.DataFrame(option_rows)
+    return sim.simulate_strategy(underlying, options, features, strategy, {"nifty_return_1"})
+
+
+def test_premium_stop_triggers_at_gap_open_or_stop_level():
+    result = _stop_fixture([grammar.ExitRule("premium_risk_stop", 0.2), grammar.ExitRule("time_exit")], {
+        "timestamp":[2,3], "expiry_flag":["WEEK1"]*2, "side":["CALL"]*2,
+        "offset":[0]*2, "strike":[100.0]*2, "open":[10.0,7.5],
+        "high":[10.5,9.0], "low":[9.5,7.0],
+    })
+    assert result["trade_count"] == 1
+    assert result["trades"][0]["exit_reason"] == "premium_risk_stop"
+    assert result["trades"][0]["exit_timestamp"] == 3
+    assert result["trades"][0]["legs"][0]["exit_open"] == pytest.approx(7.5)
+
+
+def test_premium_target_triggers_at_target_when_touched_intrabar():
+    result = _stop_fixture([grammar.ExitRule("premium_target", 0.2), grammar.ExitRule("time_exit")], {
+        "timestamp":[2,3,4], "expiry_flag":["WEEK1"]*3, "side":["CALL"]*3,
+        "offset":[0]*3, "strike":[100.0]*3, "open":[10.0,10.5,11.0],
+        "high":[10.5,12.5,11.5], "low":[9.5,10.0,10.5],
+    })
+    assert result["trade_count"] == 1
+    assert result["trades"][0]["exit_reason"] == "premium_target"
+    assert result["trades"][0]["exit_timestamp"] == 3
+    assert result["trades"][0]["legs"][0]["exit_open"] == pytest.approx(12.0)
+
+
+def test_premium_stop_takes_priority_if_stop_and_target_hit_same_bar():
+    result = _stop_fixture([grammar.ExitRule("premium_risk_stop", 0.2), grammar.ExitRule("premium_target", 0.2)], {
+        "timestamp":[2,3], "expiry_flag":["WEEK1"]*2, "side":["CALL"]*2,
+        "offset":[0]*2, "strike":[100.0]*2, "open":[10.0,10.0],
+        "high":[13.0,13.0], "low":[7.0,7.0],
+    })
+    assert result["trade_count"] == 1
+    assert result["trades"][0]["exit_reason"] == "premium_risk_stop"
+    assert result["trades"][0]["legs"][0]["exit_open"] == pytest.approx(8.0)
+
+
+def test_unimplemented_exit_rules_fail_closed():
+    strategy = grammar.Strategy("signal", (grammar.Predicate("nifty_return_1", "gt", 0),), "and",
+                                "CALL", "WEEK1", "ATM", 1,
+                                (grammar.ExitRule("opposite_signal"),),
+                                "Unimplemented exit must not be ignored.")
+    u = pd.DataFrame({"timestamp":[1,2], "open":[100,100], "close":[100,100]})
+    f = pd.DataFrame({"timestamp":[1,2], "nifty_return_1":[1,-1]})
+    o = pd.DataFrame(columns=["timestamp","expiry_flag","side","offset","strike","open"])
+    with pytest.raises(ValueError, match="does not implement exit rule"):
+        sim.simulate_strategy(u, o, f, strategy, {"nifty_return_1"})
