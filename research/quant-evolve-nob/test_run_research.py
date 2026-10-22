@@ -186,7 +186,7 @@ def test_option_acquisition_stops_after_consecutive_failures_and_preserves_cache
     opt_cache.mkdir()
     monkeypatch.setattr(qe, "OPT_CACHE", opt_cache)
     monkeypatch.setattr(qe.time, "sleep", lambda _: None)
-    monkeypatch.setattr(qe, "chunks", lambda start, end, days: iter([(start, min(start + qe.timedelta(days=30), end))]))
+    monkeypatch.setattr(qe, "chunks", lambda start, end, days: iter([(start, min(start + qe.timedelta(days=30), end)), (min(start + qe.timedelta(days=30), end), min(start + qe.timedelta(days=60), end))]))
     calls = {"n": 0}
 
     def failing_api(*args, **kwargs):
