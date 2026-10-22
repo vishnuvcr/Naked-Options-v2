@@ -59,3 +59,10 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - The first runtime audit artifact #39803204747 showed `BLOCKED_NO_LOCAL_CACHE` with zero cached data files. This only establishes the cache was not present on that runner; it does not establish that Dhan/free data sources are unavailable.
 - Added `.github/workflows/qe-nob-v2-data-audit.yml` to run a bounded cache-first/acquisition-only stage using the existing Dhan source client and the configured `DHAN_ACCESS_TOKEN` / `HF_TOKEN` secrets, save a v2-namespaced local cache for future runs, and upload sanitized audit metadata without raw option payloads or credentials. Run #39803647257 was triggered automatically and is in progress at this log entry.
 - No historical QE-NOB-2.0 candidate fitness/P&L run was started, and no strategy profitability is claimed.
+
+
+## 2026-10-22 — session boundary and expiry-family corrections
+- Reviewed new feature-builder and simulator workflows as the implementation advanced. The point-in-time feature builder now gates feature availability by observed coverage and variation; its latest workflow #39805843560 passed.
+- Fixed the mismatch between candidate expiry names WEEK1/MONTH1 and cached source fields WEEK/MONTH plus expiry code by normalizing a canonical family key in the reusable option index. Added a targeted regression test; the run is pending at checkpoint.
+- Added same-session timing safeguards to prevent intraday signals from silently opening positions on the next session. Signal evaluator #39806277479 and simulator #39806376781 passed.
+- The bounded cache-acquisition workflow #39803647257 remains in progress. No candidate fitness, P&L, or profitability conclusion is claimed while it is running.
