@@ -6,7 +6,7 @@
 **Previous-run result (superseded):** 0/600 candidates passed the statistical gate; do not carry forward its P&L values after correcting lot sizing.  
 **Data integrity:** offset-aware duplicate/grid checks pass; exact contract IDs remain unavailable.  
 **Execution readiness:** quotes/depth not available; exploratory OHLC analysis proceeds with adverse-slippage and cost assumptions, but this is not a claim of executable fills.  
-**Interim decision:** no strategy approved; corrected metrics await the bounded rerun.
+**Interim decision:** no strategy approved; the frozen-candidate reprice audit found zero gate pass. The corrected full evolutionary rerun remains a single supplementary check.
 
 ## Run and dataset
 
@@ -58,3 +58,8 @@ The prior proxy was defective: it applied 25 units to every date before 2024-11-
 
 This uses last-old/first-new expiry dates as trade-date cutoffs because individual expiry IDs are absent in the Dhan rolling series. The additional regression test checks all proxy transitions. Corrected P&L and inference remain pending workflow #39774033025.
 
+
+
+## Latest reprice audit
+
+See [LOT_SIZE_REPRICE_AUDIT.md](LOT_SIZE_REPRICE_AUDIT.md). All 483,706 rows from the saved ledger were repriced using the corrected date/family lot schedule. No candidate from this frozen 600-candidate set met the joint median/validation/stress gates. The prior P&L result remains superseded; full corrected re-evolution workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) was in progress at last check.
