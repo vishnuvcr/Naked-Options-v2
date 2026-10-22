@@ -560,4 +560,4 @@ This log records visible technical findings and corrective actions. It does not 
 - Workflow: [NIFTY prediction research run 39676907630](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39676907630).
 - Observation: result merge failed with `pandas.errors.EmptyDataError: No columns to parse from file` when an expected model output CSV existed but had no rows/headers. The run's report noted `oos_rows=0`; no valid new prediction result should be inferred.
 - Correction: `scripts/merge_results.py` now safely skips missing/empty/headerless CSVs and records the skipped file paths; regression coverage added to `tests/test_research.py`.
-- Status: fix committed; automated test and workflow rerun pending. This does not alter the blocked options gate.
+- Status: regression test passed and end-to-end merge succeeded in [run 39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966). This does not alter the blocked options gate.
