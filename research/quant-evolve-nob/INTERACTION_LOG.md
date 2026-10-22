@@ -13,3 +13,9 @@ This is an audit of user-facing scope decisions and concrete work. It is not a v
 - User explicitly reiterated: “No tester.” The QE-NOB-1.0 work will proceed without creating, invoking, or waiting on an independent tester branch/report.
 - Quality controls remain automated developer-side gates: unit tests before/after the run, locked chronological OOS, family-wide multiple-testing correction, cost stress tests, and an explicit execution-data limitation. These are not described as independent testing.
 - At the latest check, GitHub Actions run 39712854501 remained in progress at “Run fresh QuantEvolve study”; the run had not yet produced a report that supports profitability conclusions. No strategy is approved at this point.
+
+
+## 2026-10-22 — tester explicitly declined
+- User clarified: “No tester”. This fresh QE-NOB study will proceed developer-led; do not create, invoke, or wait for an independent tester branch/report.
+- This changes the governance route only, not the statistical or data-quality gates. Developer-side validation and automated tests remain mandatory; limitations and unresolved execution-data gates must be disclosed.
+- At this update, workflow #39712854501 was still running in the QuantEvolve study step. No strategy result is inferred from an in-progress run.
