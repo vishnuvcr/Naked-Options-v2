@@ -507,7 +507,7 @@ def adjust_holm(pvals):
         run=max(run,min(1.0,(len(order)-rank)*arr[j])); out[j]=run
     return out.tolist()
 
-def backtest(u,o,expiry_flags):
+def backtest(u,o,expiry_flags,candidates_override=None,include_oos=True,bootstrap_reps=0):
     if u.empty or o.empty:
         return {"status":"BLOCKED_NO_VALID_BARS","reason":"No fresh-source underlying or option bars"}
     # Exact timestamp alignment is required; no nearest-bar substitution.
@@ -538,9 +538,11 @@ def backtest(u,o,expiry_flags):
     split1=days[int(len(days)*0.60)] if len(days)>20 else days[-1]
     split2=days[int(len(days)*0.80)] if len(days)>20 else days[-1]
     all_results=[]
-    candidates=candidates_for(expiry_flags)
+    candidates=candidates_override if candidates_override is not None else candidates_for(expiry_flags)
     for cidx,c in enumerate(candidates):
         events=signal_events(u,c)
+        if not include_oos:
+            events=[ev for ev in events if ev['date'] < split2]
         trades=[]
         for ev in events:
             day=ev["date"]
@@ -585,28 +587,25 @@ def backtest(u,o,expiry_flags):
         # All-calendar-session daily series; no signal is zero P&L.
         result_rec={"candidate_id":cidx,"candidate":c,"event_count":len(events),"trade_count":len(trades)}
         for splitname,mask in (("train",lambda d:d<split1),("validation",lambda d:split1<=d<split2),("oos",lambda d:d>=split2)):
+            if splitname=="oos" and not include_oos: continue
             st=[t for t in trades if mask(t["date"])]
             splitdays=[d for d in days if mask(d)]
             arr=[sum(float(t["net_pnl_rupees"]) for t in st if t["date"]==d) for d in splitdays]
-            for k,v in metrics(arr,st).items(): result_rec[splitname+"_"+k]=v
+            for k,v in metrics(arr,st,bootstrap_reps=bootstrap_reps).items(): result_rec[splitname+"_"+k]=v
         result_rec["trades"]=trades
         result_rec["candidate_key"]=json.dumps(c,sort_keys=True)
         all_results.append(result_rec)
     # Holm correction across complete OOS candidate family; do not rank by OOS alone.
-    raw=[x.get("oos_hac_one_sided_p",np.nan) for x in all_results]
-    adj=adjust_holm(raw)
-    for item,p in zip(all_results,adj): item["oos_holm_p"]=p
-    # Preselect by validation only; OOS confirms candidates but never tunes parameters.
-    ranked=sorted(all_results,key=lambda x:(x.get("validation_mean_daily_net_rupees",-1e99),x.get("validation_daily_net_ci95_low",-1e99)),reverse=True)
-    finalists={x["candidate_id"] for x in ranked[:20]}
+    if include_oos:
+        raw=[x.get("oos_hac_one_sided_p",np.nan) for x in all_results]
+        adj=adjust_holm(raw)
+        for item,p in zip(all_results,adj): item["oos_holm_p"]=p
+    # During evolution only training/validation values exist in results; the final block is not used.
+    ranked=sorted(all_results,key=lambda x:(x.get("validation_mean_daily_net_rupees",-1e99),x.get("validation_sharpe_ratio",0.0)),reverse=True)
+    finalists={x["candidate_id"] for x in ranked[:20]} if include_oos else set()
     for item in all_results:
         item["selected_by_validation"]=item["candidate_id"] in finalists
-        item["promotion_gate_pass"]=bool(
-            item.get("oos_trade_count",0)>=150 and
-            item.get("oos_mean_daily_net_rupees",0)>0 and item.get("oos_median_daily_net_rupees",0)>=0 and
-            item.get("oos_daily_net_ci95_low",0)>0 and item.get("oos_holm_p",1)<0.05 and
-            item.get("validation_mean_daily_net_rupees",0)>0
-        )
+        item["promotion_gate_pass"]=False
     flat=[]
     for item in all_results:
         for t in item.pop("trades"):
@@ -620,7 +619,7 @@ def backtest(u,o,expiry_flags):
             "notes":["Historical contract lot size is a date-based proxy pending exact expiry-level contract-master reconciliation.",
                      "Rolling-option OHLC has no historical best bid/ask; slippage is stress modeled, not observed spread.",
                      "Primary metrics use one-lot after-cost P&L, but not all execution quality can be proven with OHLC.",
-                     "Only the latest 20% chronology is OOS; its full candidate-family p-values are Holm-adjusted."]}
+                     "Only the latest 20% chronology is reserved for final confirmation; its full candidate-family p-values are Holm-adjusted."]}
 
 def write_outputs(probe, acquisition, underlying, summary, errors):
     OUT.mkdir(parents=True,exist_ok=True)
