@@ -28,6 +28,8 @@ img{max-width:100%;height:auto}a{color:#1558a6}.muted{color:#555}
 <tr><td>Index level</td><td>1/5/20 sessions</td><td>Global ElasticNet / ElasticNet / Ridge</td><td>MSE skill vs persistence −16.4% / −8.9% / −34.5%</td><td>Significantly worse than persistence after correction.</td></tr>
 </tbody></table>
 <p><img src="selected_model_results.svg" alt="Latest selected-model forecast diagnostics"></p>
+<p><img src="volatility_qlike_subperiod_sensitivity.svg" alt="One-session volatility-proxy QLIKE loss differences across four holdout slices, including block-bootstrap confidence intervals and distribution caveat"></p>
+<p class="muted"><small>The four slices partition the same holdout and are sensitivity diagnostics, not independent-period replication.</small></p>
 <h2>Data and method</h2>
 <ul>
 <li>4,906 Dhan daily NIFTY 50 rows from 2007-01-02 to 2026-10-21; target validation passed.</li>
