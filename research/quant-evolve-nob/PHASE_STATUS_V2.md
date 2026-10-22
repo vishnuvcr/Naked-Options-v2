@@ -6,24 +6,23 @@ Governance: developer-led; user explicitly said “No tester.” No tester branc
 | Phase | Status | Evidence / exit gate |
 |---|---|---|
 | 1. Protocol amendment and structural novelty specification | COMPLETE | [Open discovery plan](OPEN_STRATEGY_DISCOVERY_PLAN.md) freezes budget, grammar, gates and stop condition |
-| 2. Data and feature feasibility | PARTIAL — STATIC AUDIT COMPLETE | [Feature feasibility audit](FEATURE_FEASIBILITY_V2.md) maps prior-pipeline fields and gaps. Runtime field-level cache audit and refreshed free-source catalogue remain outstanding; no unsupported feature may enter candidate evaluation |
-| 3. Typed strategy grammar | IMPLEMENTED — AUTOMATED TEST TRIGGERED; RESULT NOT VERIFIED | [strategy_grammar_v2.py](strategy_grammar_v2.py) defines typed candidates, structural signatures, novelty distance, mutation and crossover. [Test file](test_strategy_grammar_v2.py) and [manual/automatic GitHub Actions workflow](../../.github/workflows/qe-nob-v2-grammar-tests.yml) committed. Test import defects were corrected; a successful workflow result has not yet been verified |
+| 2. Data and feature feasibility | PARTIAL — AUDIT TOOL ADDED, NOT RUN ON RESEARCH CACHE | [Feature feasibility audit](FEATURE_FEASIBILITY_V2.md), [audit utility](feature_audit_v2.py), and [audit tests](test_feature_audit_v2.py) committed. Runtime cache audit and refreshed free-source catalogue remain outstanding. |
+| 3. Typed strategy grammar | IMPLEMENTED — CI RESULT NOT VERIFIED | [strategy_grammar_v2.py](strategy_grammar_v2.py) defines typed candidates, signatures, novelty distance, mutation and crossover. Tests load the hyphenated directory by file path. Dedicated [grammar test workflow](../../.github/workflows/qe-nob-v2-grammar-tests.yml) added. No successful CI result has been observed. |
 | 4. Simulator and baselines | NOT STARTED | Hand-calculated fixtures; next-bar execution; conservative stop/target handling; fees/slippage tests |
 | 5. Bounded novelty-aware discovery | NOT STARTED | Reproducible run, max 1,500 unique structural candidates / 20 generations |
 | 6. Frozen OOS validation | NOT STARTED | Holm correction, block bootstrap, baseline comparison, regime stability and stress tests |
 | 7. Manuscript and bounded decision | NOT STARTED | Manuscript, tables/figures, limitations and final decision; stop after this phase |
 
-## Work completed in this checkpoint
-- Created branch `research/quant-evolve-nob-v2-discovery-developer` from QE-NOB-1.0 developer branch.
-- Recorded why the previous candidate grammar did not adequately search structural novelty.
-- Added typed, serializable candidate representation with entry logic, instrument, expiry/moneyness, holding horizon and up to three exit rules.
-- Added canonical structural signatures that ignore hypothesis wording and parent lineage, plus Jaccard novelty distance.
-- Added bounded mutation/crossover with parent lineage and feature allowlisting.
-- Added regression tests for identity, exit novelty, unsupported features, invalid stop values, deterministic mutation and crossover.
-- Added automatic push and manual workflow for grammar tests.
+## Checkpoint completed
+- Created new developer branch and froze a bounded open structural discovery protocol.
+- Added typed strategy grammar with candidate validation, canonical signatures, novelty distance, deterministic mutation, crossover and lineage.
+- Added feature/cache audit utility that reports file hashes, schema fields, timestamp counts, array lengths and null counts without exposing credentials or claiming contract identity.
+- Added unit tests for grammar and feature audit, plus two dedicated automatic/manual GitHub Actions workflows.
+- Identified and corrected test-import defects caused by the hyphenated research directory and dynamic module loading. This was a code review correction, not evidence of passing tests.
+- Added error log entries for unsupported features, pending CI and missing simulator integration.
 
-## Caveats / no overclaiming
-This is not yet an integrated backtester. The grammar's feature catalogue contains conditional features; Phase 2 runtime coverage and point-in-time availability must gate them before discovery. A passing grammar test proves only representation invariants, not trading profitability or execution realism. No new strategy has been backtested or shown profitable. The prior QE-NOB-1.0 NO-GO result remains unchanged.
+## Important status
+GitHub Actions workflows are configured to run on relevant pushes and manual dispatch, but their results have not been verified in this interaction. No test pass is claimed. The feature audit has not yet been run against the full research cache, the grammar is not integrated with the backtester, and no new strategy has been backtested or shown profitable. The prior QE-NOB-1.0 NO-GO result remains unchanged.
 
 ## Mandatory constraints
 - Never reuse QE-NOB-1.0 candidate fitness or OOS outcomes as seeds/labels.
