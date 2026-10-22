@@ -453,12 +453,12 @@ def candidates_for(expiry_flags):
     # deterministic cap; exact parameter universe is persisted with the run.
     return result[:600]
 
-def metrics(daily, trades):
+def metrics(daily, trades, bootstrap_reps=0, net_column="net_pnl_rupees"):
     x=np.asarray(daily,dtype=float)
     n=len(x)
     if n==0: return {"n_sessions":0,"trade_count":0}
     mean=float(np.mean(x)); med=float(np.median(x))
-    # Newey-West HAC standard error with Bartlett weights, 5-session lag.
+    # Newey-West HAC standard error with Bartlett weights, five-session lag.
     z=x-mean; lr=float(np.dot(z,z)/n)
     lag=min(5,n-1)
     for k in range(1,lag+1):
@@ -466,22 +466,37 @@ def metrics(daily, trades):
     se=math.sqrt(max(lr,0)/n)
     t=mean/se if se>0 else 0.0
     p=float(norm.sf(t)) if se>0 else 1.0
-    rng=np.random.default_rng(SEED)
-    boots=[]
-    block=min(5,n)
-    for _ in range(1500):
-        starts=rng.integers(0,n,size=int(math.ceil(n/block)))
-        sample=np.concatenate([x[(s+np.arange(block))%n] for s in starts])[:n]
-        boots.append(float(sample.mean()))
-    lo,hi=np.quantile(boots,[.025,.975])
-    profits=sum(max(0,float(t["net_pnl_rupees"])) for t in trades)
-    losses=sum(min(0,float(t["net_pnl_rupees"])) for t in trades)
-    ret=[float(t["net_pnl_rupees"]) for t in trades]
+    lo=hi=float("nan")
+    if bootstrap_reps > 0 and n >= 10:
+        rng=np.random.default_rng(SEED)
+        block=min(5,n); nblocks=int(math.ceil(n/block))
+        starts=rng.integers(0,n,size=(bootstrap_reps,nblocks))
+        offsets=np.arange(block)
+        indices=(starts[:,:,None]+offsets[None,None,:])%n
+        samples=x[indices].reshape(bootstrap_reps,-1)[:,:n]
+        means=samples.mean(axis=1)
+        lo,hi=np.quantile(means,[.025,.975])
+    profits=sum(max(0,float(t.get(net_column,0))) for t in trades)
+    losses=sum(min(0,float(t.get(net_column,0))) for t in trades)
+    ret=[float(t.get(net_column,0)) for t in trades]
+    std=float(np.std(x,ddof=1)) if n>1 else 0.0
+    downside=float(np.sqrt(np.mean(np.minimum(x,0.0)**2)))
+    sharpe=float(mean/std*np.sqrt(252)) if std>0 else 0.0
+    sortino=float(mean/downside*np.sqrt(252)) if downside>0 else 0.0
+    capital=500000.0
+    equity=capital+np.cumsum(x)
+    peaks=np.maximum.accumulate(np.concatenate(([capital],equity)))[1:]
+    drawdowns=np.maximum(peaks-equity,0.0)
+    mdd=float(drawdowns.max()) if len(drawdowns) else 0.0
+    mdd_fraction=float(np.max(drawdowns/np.maximum(peaks,1.0))) if len(drawdowns) else 0.0
+    cvar95=float(np.quantile(x[x<=np.quantile(x,.05)],.5)) if np.any(x<0) else 0.0
     return {"n_sessions":n,"trade_count":len(trades),"mean_daily_net_rupees":mean,
         "median_daily_net_rupees":med,"daily_net_ci95_low":float(lo),"daily_net_ci95_high":float(hi),
         "hac_one_sided_p":p,"win_rate":float(np.mean(np.asarray(ret)>0)) if ret else None,
         "mean_net_per_trade":float(np.mean(ret)) if ret else None,"median_net_per_trade":float(np.median(ret)) if ret else None,
         "profit_factor":(profits/abs(losses)) if losses<0 else None,"total_net_rupees":float(sum(ret)),
+        "sharpe_ratio":sharpe,"sortino_ratio":sortino,"max_drawdown_rupees":mdd,
+        "max_drawdown_fraction":mdd_fraction,"daily_cvar95_median":cvar95,
         "positive_trade_count":int(sum(v>0 for v in ret)),"negative_trade_count":int(sum(v<0 for v in ret))}
 
 def adjust_holm(pvals):
