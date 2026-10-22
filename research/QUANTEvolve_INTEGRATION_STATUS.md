@@ -430,3 +430,13 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 - No valid QuantEvolve prediction holdout result is claimed.
 
 Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. Options strategy P&L stays blocked until the source/contract gate passes.
+
+
+## QE-STEP-015 — Dhan rolling-options endpoint validated for sample retrieval; identity gate remains blocked
+- Date: 2026-10-22.
+- The bounded single-call workflow [39675422599](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39675422599) succeeded after correcting the Dhan `expiryCode` parameter from 0 to 1 based on the sanitized `DH-905` input exception.
+- Sanitized response report: [dhan_options_api_probe.json](../reports/quantevolve/dhan_options_api_probe.json). HTTP 200; 1,155 minute bars; timestamps from 2026-08-03 09:15 IST to 2026-08-05 15:39 IST; all required sample fields aligned and timestamps monotonic. Six rolling strikes were returned. No raw candles or credential values were persisted.
+- Critical limitation: the response contains CE/PE series arrays and no explicit row-level expiry or lot-size identifier. The requested class is rolling ATM weekly options, not a fixed-contract ledger. OHLC does not establish executable bid/ask prices.
+- Combined options evidence: three bounded HF files (986,041 rows) passed sample row-level expiry/strike/type/symbol checks and have circular-backed lot mappings 75 (2021-05-27), 50 (2024-01-04), and 65 (2026-08-04). This does not establish full-history coverage or full official MII contract-master matching.
+- Final phase disposition: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**. No options P&L, no strategy ranking, and no live-trading recommendation. The Dhan request field error is resolved for this probe; the remaining blocker is data identity/provenance and executable-price coverage, not an active API retry.
+- Automation config restored to offline prediction mode (`run_llm=false`); no additional model API call was requested.
