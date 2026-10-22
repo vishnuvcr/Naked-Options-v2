@@ -1,8 +1,18 @@
 # Results and evidence register
 
 Version: NIFTY-PRED-1.0  
-Last updated: 2026-10-14  
-Status: Corrected run #49 independently reviewed; bounded prediction-only study closed with scope limitations.
+Last updated: 2026-10-22  
+Status: Earlier results retained as history; latest run #39699761966 held for target-label correction and independent review.
+
+## Latest audit and corrective status — 2026-10-22
+
+- [Prior workflow #39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966) completed at workflow level; artifact SHA-256 `6f2cd6bb302763e5e972fb54e447bfbd47bba0c8cd3cfe3fd024f9cf6062c8dc`.
+- Its 291,886-row `predictions.csv` contained 798 rows with missing `target_date` but populated numeric forecast values: volatility h5=60, h20=360; volatility expansion h5=54, h20=324. Cause: the h5/h20 forward standard deviation skipped missing returns at the dataset boundary.
+- Affected h5/h20 volatility and volatility-expansion results from the prior run are not accepted for final inference. The code fix is in [commit e8133a5](https://github.com/vishnuvcr/Naked-Options-v2/commit/e8133a582cbe6c06ce46514f871d1393fc142f6f); [corrective run #39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478) was in progress at last check.
+- The one-session global ExtraTrees volatility result was independently reproduced from the prior artifact: n=981, QLIKE loss difference −0.31559705, HAC p=1.74758e−9, 95% block CI [−0.42298094, −0.21014542], Holm p=4.26410e−7 across 299 comparisons. No missing target dates occur in that h1 cell. It remains a replication candidate only, not a trading signal.
+- Return/direction forecasts have not established a robust edge. Truly untouched future-period replication is not available from the short current data extension. See [audit record](FRESH_PREDICTION_AUDIT_2026-10-22.md) and [tester branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/fresh-prediction-independent-tester).
+
+**Current gate: HOLD** pending corrected workflow output and independent review. No strategy approved.
 
 ## Canonical run
 

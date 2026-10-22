@@ -220,3 +220,13 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Checked GitHub Actions run #38807375042: download/reuse of the NIFTY parquet dataset completed; audit step remains in progress, no report/artifact available yet.
 - Reviewed official NSE expiry circulars: FAOP66938 (2025-03-04), FAOP68685 (2025-06-23), FAOP68747 (2025-06-25). Historical expiry mapping must use dated contract evidence.
 - Updated continuation free-source audit and main README. No strategy P&L was computed or inferred.
+
+
+## 2026-10-22 — NIFTY target-label correction
+
+- Continued the prediction-only work from the latest user-provided handoff. Inspected run #39699761966 artifact and confirmed 798 null target-date prediction rows (volatility h5=60, h20=360; volatility expansion h5=54, h20=324).
+- Confirmed the root cause in target construction and committed a fixed-window calculation with regression tests on `research/fresh-prediction-developer`, commit `e8133a582cbe6c06ce46514f871d1393fc142f6f`. Corrective workflow #39704420478 was running at last check.
+- Created separate developer and independent-tester branches. The tester independently reproduced the prior selected h1 volatility comparison and documented the correction gate; review of the corrected artifact remains pending.
+- Updated main status, Pages warning, sanitized JSON metadata, results, phases, error log, manuscript corrigendum and this interaction log to hold final sign-off. The study plan stays frozen; no strategy or options P&L was advanced.
+- A truly untouched future-period replication cannot be claimed using already-screened historical folds or the short current data extension.
+- Operational actions only; no secrets or hidden reasoning are stored.

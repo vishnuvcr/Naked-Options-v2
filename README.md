@@ -1,9 +1,16 @@
 # Fresh NIFTY 50 Prediction Research
 
+## Latest prediction audit — 2026-10-22
+
+The prior workflow completed operationally, but its artifact contains 798 forecast rows with missing `target_date` while numeric forecast fields are populated: volatility h5=60, h20=360; volatility-expansion h5=54, h20=324. Multi-session standard deviation skipped missing future observations at the sample boundary, admitting partial windows. Final scientific sign-off is held pending the correction and independent review.
+
+- [Audit record](research/FRESH_PREDICTION_AUDIT_2026-10-22.md) · [Developer branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/fresh-prediction-developer) · [Corrective workflow #39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478) · [Independent tester branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/fresh-prediction-independent-tester)
+- Return/direction forecasts have no robust selected edge. The one-session ExtraTrees volatility-proxy result was numerically reproduced from the prior artifact, but remains a replication candidate and not a trading signal. Options P&L and strategy development remain blocked.
+
 **Research version:** NIFTY-PRED-1.0  
 **Scope:** Prediction only. No trading strategy design, optimization, or recommendation in this study.  
 **Started:** 2026-10-14  
-**Status:** NIFTY-PRED-1.0 remains prediction-only with accepted limitations. Defect-driven rerun [39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966) completed successfully: no robust return/direction edge; one-session volatility-proxy result retained for independent replication. No strategy is approved.
+**Status:** Prediction-only; final sign-off for run [#39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966) is on hold. Artifact audit found 798 invalid missing-target-date rows in h5/h20 volatility and volatility-expansion outputs. Correction commit [e8133a5](https://github.com/vishnuvcr/Naked-Options-v2/commit/e8133a582cbe6c06ce46514f871d1393fc142f6f) is running through workflow [#39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478). No strategy is approved.
 
 ## Repository audit
 

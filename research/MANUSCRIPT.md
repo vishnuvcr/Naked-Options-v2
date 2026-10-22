@@ -1,9 +1,15 @@
 # Predicting NIFTY 50: A preregistered comparison of statistical, machine-learning and sequence models
 
-**Manuscript status:** Tester-reviewed prediction-only study; PASS WITH SCOPE LIMITATIONS.  
+**Manuscript status:** Historical manuscript with a 2026-10-22 corrigendum; current final sign-off is held pending corrected artifact review.  
 **Version:** NIFTY-PRED-1.0. **Study start:** 14 October 2026.
 
-## Abstract
+## Corrigendum — 2026-10-22: target-window audit
+
+Run [#39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966) succeeded operationally, but artifact inspection found 798 emitted predictions with missing `target_date` and populated forecast fields in h5/h20 volatility and volatility-expansion cells. The prior label calculation skipped missing future returns, admitting partial boundary windows. Results for these multi-session cells are blocked from final inference.
+
+A defect-specific correction is committed at `e8133a582cbe6c06ce46514f871d1393fc142f6f`; corrective [workflow #39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478) and [independent tester review](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/fresh-prediction-independent-tester) remain pending. The previously reported one-session ExtraTrees volatility-proxy result was independently reproduced from the saved artifact and has no missing target dates in that cell, but it remains a replication candidate only. Return/direction forecasting has no robust established edge. No strategy approved.
+
+## Abstract (historical earlier run; retained for audit trail)
 
 This study tested NIFTY 50 forecasts at 1-, 5- and 20-session horizons using a bounded catalogue of statistical, machine-learning and sequence models. The corrected run evaluated 139,289 out-of-sample prediction rows. The selected global one-session return model improved MSE by only 0.17% over zero return (p=.579; Holm p=1); one-session direction accuracy was 54.08% but did not survive multiplicity correction (Holm p=.548). Selected global 5- and 20-session return models performed worse than zero return. The independent tester passed the bounded prediction-only study with scope limitations. No options strategy was tested.
 
