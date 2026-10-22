@@ -1,0 +1,281 @@
+{
+  "research_id": "QE-NOB-1.0",
+  "probed_at_utc": "2026-10-22T05:52:58.452945+00:00",
+  "fresh_cache_namespace": "data/cache/quant_evolve_nob_v1",
+  "sources": [
+    {
+      "source": "Dhan rolling expired options",
+      "expiry_flag": "WEEK",
+      "expiry_code": 1,
+      "status": "PASS",
+      "rows": 719,
+      "supported": true
+    },
+    {
+      "source": "Dhan rolling expired options",
+      "expiry_flag": "WEEK",
+      "expiry_code": 2,
+      "status": "PASS",
+      "rows": 719,
+      "supported": true
+    },
+    {
+      "source": "Dhan rolling expired options",
+      "expiry_flag": "MONTH",
+      "expiry_code": 1,
+      "status": "PASS",
+      "rows": 719,
+      "supported": true
+    }
+  ],
+  "supported_expiries": [
+    {
+      "flag": "WEEK",
+      "code": 1
+    },
+    {
+      "flag": "MONTH",
+      "code": 1
+    }
+  ],
+  "open_dataset_audit": {
+    "status": "CATALOGUE_AUDITED",
+    "huggingface_queries": [
+      {
+        "query": "nifty options",
+        "status": "PASS",
+        "datasets": [
+          {
+            "repo_id": "artist-23/nifty-options-data",
+            "license": "unknown",
+            "downloads": 686,
+            "last_modified": "2025-12-31T05:23:48.000Z",
+            "candidate_relevant": true,
+            "license_allowlisted": false,
+            "eligible_for_review": false
+          },
+          {
+            "repo_id": "manishbaliii/nifty-options-data",
+            "license": "unknown",
+            "downloads": 72,
+            "last_modified": "2026-10-14T02:16:10.000Z",
+            "candidate_relevant": true,
+            "license_allowlisted": false,
+            "eligible_for_review": false
+          },
+          {
+            "repo_id": "ashoksdialect/nifty-options-analytics",
+            "license": "unknown",
+            "downloads": 4,
+            "last_modified": "2026-05-10T18:04:25.000Z",
+            "candidate_relevant": true,
+            "license_allowlisted": false,
+            "eligible_for_review": false
+          }
+        ]
+      },
+      {
+        "query": "nse options intraday",
+        "status": "PASS",
+        "datasets": [
+          {
+            "repo_id": "rissin/nse-options-intraday",
+            "license": "other",
+            "downloads": 2269,
+            "last_modified": "2026-09-09T16:53:37.000Z",
+            "candidate_relevant": true,
+            "license_allowlisted": false,
+            "eligible_for_review": false
+          }
+        ]
+      },
+      {
+        "query": "india index options",
+        "status": "PASS",
+        "datasets": [
+          {
+            "repo_id": "thetrademarkk/india-index-options-1m",
+            "license": "cc-by-nc-4.0",
+            "downloads": 27723,
+            "last_modified": "2026-07-12T18:21:26.000Z",
+            "candidate_relevant": true,
+            "license_allowlisted": false,
+            "eligible_for_review": false
+          },
+          {
+            "repo_id": "codepyx23/india-index-options-1m",
+            "license": "cc-by-nc-4.0",
+            "downloads": 1152,
+            "last_modified": "2026-09-08T19:30:45.000Z",
+            "candidate_relevant": true,
+            "license_allowlisted": false,
+            "eligible_for_review": false
+          }
+        ]
+      }
+    ],
+    "zenodo_queries": [
+      {
+        "query": "title:\"Nifty\" AND title:\"options\"",
+        "status": "PASS",
+        "records": [
+          {
+            "title": "Nifty spot, futures and options one-minute data from 2017 to 2020",
+            "license": "cc-zero",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": false
+          },
+          {
+            "title": "An Empirical Study on the Impact of Weekly Options Expiry on Market Volatility: Evidence from NIFTY and Bank NIFTY",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "Replication Package: Settlement-Mechanism Asymmetry in Indian Equity Derivatives \u2014 Evidence from Put-Call Parity and Expiry-Day Volume Patterns in NIFTY 50 Options",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "Supplementary Material for 'Regime-Conditional Intraday Theta Decay Dynamics in NIFTY Weekly Options",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "The Breeden Litzenberger Strike as a Leading Intraday Resistance Level in NSE NIFTY 50 Weekly Index Options",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "The Retail Trap in Derivatives Trading: A Longitudinal Study of Bank Nifty Options (2018\u20132024)",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          }
+        ]
+      },
+      {
+        "query": "title:\"index options\"",
+        "status": "PASS",
+        "records": [
+          {
+            "title": "Does Short-dated Options Introduction Mitigate Expiry Day Effects? Evidence from the Introduction of Weekly Index Options",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "Predictability and predictors of volatility smirk: a study on index options",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "The Breeden Litzenberger Strike as a Leading Intraday Resistance Level in NSE NIFTY 50 Weekly Index Options",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "The Use of Artificial Neural Network in Option Pricing: The Case of S and P 100 Index Options",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "Implied Adjusted Volatility by Leland Option Pricing Models: Evidence from Australian Index Options",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "VOLATILITY EFFECTS OF INDEX OPTIONS TRADING ON THE UNDERLYING SPOT INDEX",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "Implied Adjusted Volatility by Leland Option Pricing Models: Evidence from Australian Index Options",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "Replication Data for \" Contract Design, Measurement Distortion, and Market Concentration in Index Options \"",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "Towards a Context-Aware Automated Options Trading Engine: A Controlled Experimental Study of Entry Quality, Strike Expression, and Trade Management in Indian Index Options",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          },
+          {
+            "title": "Focal Strikes: Round-Number Coordination Without a Stable Pricing Premium in Index Options",
+            "license": "cc-by-4.0",
+            "url": null,
+            "relevant": true,
+            "license_allowlisted": true
+          }
+        ]
+      }
+    ],
+    "approved_candidate_count": 15,
+    "excluded_count": 8,
+    "notes": [
+      "Catalogue discovery is not permission to use data: inspect dataset card, provenance, schema, and redistribution rights before use. The audit never downloads data."
+    ],
+    "github_query": {
+      "source": "github",
+      "status": "PASS",
+      "records": []
+    },
+    "kaggle_query": {
+      "source": "kaggle",
+      "status": "PASS",
+      "records": [
+        {
+          "id": "djjain21/nse-bse-and-mcx-f-and-o-historical-data-1-min-and-tick",
+          "title": "NSE, BSE & MCX F&O Historical Data (1-Min & Tick)",
+          "license": "CC0: Public Domain",
+          "url": "https://www.kaggle.com/datasets/djjain21/nse-bse-and-mcx-f-and-o-historical-data-1-min-and-tick",
+          "relevant": true,
+          "license_allowlisted": false
+        },
+        {
+          "id": "kalyan197/nifty50-stocks1999-2026-daily-ohlcv-and-fundamentals",
+          "title": "Nifty50 Stocks(1999-2026) Daily OHLCV&Fundamentals",
+          "license": "CC0: Public Domain",
+          "url": "https://www.kaggle.com/datasets/kalyan197/nifty50-stocks1999-2026-daily-ohlcv-and-fundamentals",
+          "relevant": false,
+          "license_allowlisted": false
+        }
+      ]
+    }
+  },
+  "underlying_probe": {
+    "status": "PASS",
+    "rows": 700
+  },
+  "status": "PASS"
+}

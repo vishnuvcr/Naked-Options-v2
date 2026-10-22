@@ -1,0 +1,123 @@
+{
+  "status": "PASS",
+  "range_start": "2021-10-23",
+  "range_end_exclusive": "2026-10-22",
+  "requests": [
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20211023_20220111.json",
+      "rows": 4073
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20220111_20220401.json",
+      "rows": 4077
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20220401_20220620.json",
+      "rows": 4071
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20220620_20220908.json",
+      "rows": 4124
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20220908_20221127.json",
+      "rows": 3986
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20221127_20230215.json",
+      "rows": 4200
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20230215_20230506.json",
+      "rows": 3899
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20230506_20230725.json",
+      "rows": 4125
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20230725_20231013.json",
+      "rows": 4124
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20231013_20240101.json",
+      "rows": 3912
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20240101_20240321.json",
+      "rows": 4222
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20240321_20240609.json",
+      "rows": 3846
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20240609_20240828.json",
+      "rows": 4050
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20240828_20241116.json",
+      "rows": 4136
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20241116_20250204.json",
+      "rows": 4132
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20250204_20250425.json",
+      "rows": 3908
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20250425_20250714.json",
+      "rows": 4128
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20250714_20251002.json",
+      "rows": 4205
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20251002_20251221.json",
+      "rows": 3996
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20251221_20260311.json",
+      "rows": 4062
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20260311_20260530.json",
+      "rows": 3917
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20260530_20260818.json",
+      "rows": 4138
+    },
+    {
+      "status": "CACHED",
+      "path": "data/cache/quant_evolve_nob_v1/underlying_intraday/nifty_5m_20260818_20261022.json",
+      "rows": 3299
+    }
+  ],
+  "failures": []
+}
