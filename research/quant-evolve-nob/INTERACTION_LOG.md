@@ -58,3 +58,11 @@ This is an audit of user-facing scope decisions and concrete work. It is not a v
 - Best validation-selected gap-continuation candidate had OOS mean daily net ₹10.68, 95% block CI -₹188.62 to ₹237.43, Holm p=1.0, and stressed mean daily net -₹98.54 at 100-bps/₹20-order assumptions. No strategy is approved.
 - GitHub Actions tests passed (11 passed before and after the run), but the final commit step failed during rebase due to a concurrent INTERACTION_LOG.md conflict. A workflow correction is required; full report artifact remains available at [run #39712854501](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39712854501).
 - User reiterated “No tester”; this research proceeds developer-led and does not claim independent testing.
+
+
+## 2026-10-22 — corrected full evolution completed
+- Resumed and checked workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025). It completed successfully; all workflow steps including the fresh study, cache persistence, post-run mathematical tests, sanitized artifact upload and report commit succeeded.
+- Inspected the corrected report: 1,241 sessions; 92,510 underlying rows; 2,600,975 rolling option rows; 600 unique candidates; four islands; nine generations. All 1,708 planned acquisition requests were cache hits; no request failures in the corrected run.
+- Corrected run decision: NO_STATISTICAL_CANDIDATE; 0/600 statistical gate passes and 0 execution/promotion gate passes. Candidate 86 validation mean daily net ~₹116.80; OOS mean daily net ~₹6.14; 95% block-bootstrap CI lower bound ~−₹195.69; Holm p=1.0. The execution-data gate remains false because OHLC does not establish executable quotes or exact contract continuity.
+- Reconciled the final status in results, phase status, error log, manuscript, reprice audit and README. The frozen-ledger reprice audit remains a separate post-hoc sensitivity check; its approximate diagnostics are not substituted for the corrected full run's inference.
+- User explicitly declined independent testing. No tester branch/report was created or claimed. Research is closed at the bounded no-go conclusion; no unbounded search rerun is warranted.
