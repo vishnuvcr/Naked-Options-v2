@@ -59,3 +59,13 @@ Public source review identified the following usable or conditionally usable sou
 ## Actual acquisition status
 
 This document records sources researched, not sources successfully downloaded. The first data workflow run must populate a machine-readable manifest and update this section with actual outcomes, sample ranges, missing values and hashes. Until this happens, source availability remains unverified.
+
+
+## Latest verified acquisition — workflow 39699761966 (2026-10-22)
+
+- Target source: Dhan daily NIFTY 50; 4,906 rows from 2007-01-02 to 2026-10-21; SHA-256 `2a76714665754ec6371e92d8b9b56565606c0d1a4a2fc9cc9013291e233b2158`; target validation PASS.
+- Cross-check: Yahoo NIFTY proxy overlaps on 4,683 rows. Maximum absolute close difference recorded by the pipeline was 0.00078125; this is a diagnostic value, not proof of source equivalence.
+- Seven external series passed: S&P 500, Nasdaq, Nikkei 225, Hang Seng, CBOE VIX, India VIX, and US 10-year yield proxy. They were lagged using prior-date as-of joins.
+- Failed/excluded: NSE official endpoint (no recognized rows); USD/INR (237 invalid OHLC rows); gold futures (149 invalid OHLC rows); WTI crude (non-positive OHLC). See [error log](ERROR_LOG.md) and [sanitized run summary](../reports/nifty_prediction_run_39699761966_summary.json).
+- Twenty weekend-dated target observations were preserved and flagged for calendar review rather than silently deleted. The manifest lists all dates.
+- Historical options, FII/DII, PCR, breadth, timestamped news sentiment and point-in-time corporate actions were not verified as acquired.
