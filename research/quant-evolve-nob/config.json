@@ -28,11 +28,7 @@
   ],
   "entry_time_ist": "after_signal_bar_only",
   "exit_modes": [
-    "time_exit",
-    "underlying_stop",
-    "premium_stop",
-    "underlying_target",
-    "premium_target"
+    "time_exit"
   ],
   "holding_period_minutes": [
     5,
@@ -83,5 +79,5 @@
   "allow_synthetic_prices": false,
   "allow_live_orders": false,
   "fresh_findings_only": true,
-  "note": "Implementation uses 5-minute bars; source/contract execution gates remain explicit."
+  "note": "Evolution v1 uses fixed holding-period exits; stop/target variants are reserved for Phase 7 finalist robustness tests."
 }
