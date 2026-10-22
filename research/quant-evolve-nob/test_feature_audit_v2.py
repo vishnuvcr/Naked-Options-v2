@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 MODULE_PATH = Path(__file__).with_name("feature_audit_v2.py")
