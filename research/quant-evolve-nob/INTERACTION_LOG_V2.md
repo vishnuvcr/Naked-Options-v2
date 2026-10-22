@@ -102,3 +102,9 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Made acquisition fail closed when either option or underlying source is partial/blocked so a successful prior step is required before candidate discovery can run.
 - Added unit tests for limits, no-progress stop, empty payloads and source-completeness gate. The automatic workflow's push filter is being expanded to include the client and regression tests. The live original run cannot be patched mid-execution; its queued successor is expected to check out the latest branch code after the current concurrency slot ends.
 - No cache was deleted wholesale, no parallel multi-year download was started, no tester branch/report was created, and no profitability conclusion was inferred from software tests.
+
+
+## 2026-10-23 — pre-CI source review corrections
+- Before treating the recovery patch as CI-ready, reviewed the final acquisition functions and caught an accounting defect: request progress was incremented both at loop entry and after processing. Also caught an underlying timeout replacement mismatch (the actual call used the variable name obj, not payload).
+- Removed duplicate request counter increments, changed the actual underlying call timeout to 45 seconds, and added a unit test covering one valid cached payload plus nine fetched payloads. The expected request count is ten, with one cache reuse and nine source calls.
+- Added entry QE-NOB2-E025 to the error log. Automated verification is pending on GitHub Actions; no test outcome is assumed.
