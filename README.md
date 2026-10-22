@@ -474,3 +474,15 @@ The bounded discovery runner now has passing automated tests for compilation, ch
 The acquisition workflow is now wired to run the bounded QE-NOB-2.0 discovery/validation runner automatically after successful cache acquisition and audit; its queued follow-up is [run #39808171927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39808171927). The runner rejects caches with JSON parse failures or missing underlying/option files, and its cache-gate regression passed in [run #39808407294](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39808407294). A lighter CI dependency set is being applied to reduce unnecessary test setup time.
 
 **Current evidence boundary:** source acquisition [run #39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257) is still in progress. The discovery runner has passed software tests but has not produced a verified market-data result. No strategy is claimed profitable, and execution remains blocked by missing exact contract/quote/fill evidence.
+
+
+### QE-NOB-2.0 continuation checkpoint — 2026-10-22 21:24 IST
+
+The latest live workflow inspection confirms QE-NOB-2.0 is **still in progress, not complete**:
+
+- [Acquisition/cache-audit run #39803647257](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39803647257) remains in progress at source acquisition; cache audit and sanitized result upload have not run yet.
+- [Automatic follow-up #39808171927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39808171927) remains pending and has produced no discovery result.
+- [Discovery-runner tests #39808626484](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39808626484) passed. This is software-test evidence only, not evidence of market-data sufficiency, positive OOS P&L, or executability.
+- [QE-NOB-2.0 phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS_V2.md), [error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG_V2.md), and [activity log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/INTERACTION_LOG_V2.md) record this checkpoint.
+
+**Current disposition:** Phase 2 remains open; empirical discovery is blocked pending cache audit; execution remains FAIL until exact contract identity and executable quote/fill evidence are verified. No QE-NOB-2.0 profitability result is currently verified. No tester branch/report will be created, per the recorded instruction. The bounded workflow remains responsible for automatic handoff; manual workflow launch is not required.
