@@ -34,11 +34,9 @@ THRESHOLDS = {
 }
 EXIT_SEEDS = (
     (ExitRule("time_exit"),),
-    (ExitRule("opposite_signal"),),
-    (ExitRule("failed_breakout"),),
     (ExitRule("premium_risk_stop", 0.2), ExitRule("time_exit")),
     (ExitRule("premium_target", 0.35), ExitRule("time_exit")),
-    (ExitRule("underlying_trailing_stop", 0.003), ExitRule("time_exit")),
+    (ExitRule("premium_risk_stop", 0.2), ExitRule("premium_target", 0.35), ExitRule("time_exit")),
 )
 
 
@@ -53,7 +51,7 @@ def seed_population(features: set[str], rng: random.Random) -> list[Strategy]:
                         # Directional-only seed signals are not automatically treated as volatility signals.
                         continue
                     candidates.append(Strategy(
-                        entry_mode=rng.choice(("signal", "regime_then_signal", "breakout_then_retest", "volatility_expansion")),
+                        entry_mode="signal",
                         predicates=(predicate,), logic="and", instrument=instrument,
                         expiry=rng.choice(("WEEK1", "MONTH1")),
                         moneyness=rng.choice(("ATM", "OTM1", "OTM2")),
