@@ -91,3 +91,37 @@ def test_exchange_fee_schedule_is_date_effective():
     assert qe.exchange_rate("2023-07-01") == 0.000505
     assert qe.exchange_rate("2024-07-01") == 0.000500
     assert qe.exchange_rate("2025-01-01") == 0.0003553
+
+def test_genome_key_is_deterministic_and_order_independent():
+    a = {"family":"orb", "hold":3, "expiry":"WEEK1", "buffer":0.1}
+    b = {"buffer":0.1, "expiry":"WEEK1", "hold":3, "family":"orb"}
+    assert qe.genome_key(a) == qe.genome_key(b)
+
+
+def test_random_genome_outputs_only_supported_grammar():
+    rng = np.random.default_rng(20261022)
+    allowed = {"orb","trend","gap_cont","gap_fade","pullback","orb_straddle","orb_strangle"}
+    for _ in range(100):
+        c = qe.random_genome(rng, ["WEEK1","MONTH1"])
+        assert c["family"] in allowed
+        assert c["expiry"] in {"WEEK1","MONTH1"}
+        assert c["hold"] in {1,3,6,12,24}
+        if "fast" in c:
+            assert c["fast"] < c["slow"]
+
+
+def test_repricing_cost_stress_is_monotone_on_flat_premium():
+    raw_buy = 100 * 65
+    raw_sell = 100 * 65
+    zero = qe.reprice_premium_turnovers(raw_buy, raw_sell, "2026-10-20", 0, 10, 1)
+    stress = qe.reprice_premium_turnovers(raw_buy, raw_sell, "2026-10-20", 100, 20, 1)
+    assert zero["net_pnl_rupees"] < 0
+    assert stress["net_pnl_rupees"] < zero["net_pnl_rupees"]
+
+
+def test_oos_gate_requires_baseline_and_two_period_consistency():
+    source = SCRIPT.read_text()
+    assert "oos_baseline_holm_p" in source
+    assert "oos_part1_mean_daily_net_rupees" in source
+    assert "oos_part2_mean_daily_net_rupees" in source
+    assert "execution_data_gate_reason" in source
