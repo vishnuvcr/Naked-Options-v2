@@ -149,3 +149,8 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 ## 2026-10-23 — exact CI log reviewed
 - Retrieved the failed source-client run #39835953946 job log. Python compilation succeeded; pytest had 17 passed and 1 failed: test_option_acquisition_stops_after_consecutive_failures_and_preserves_cache raised KeyError because the mocked source loop only had six requests in one chunk and therefore could not reach ten consecutive failures.
 - Corrected the test's mocked chunks to provide two contiguous chunks, allowing the loop to reach ten consecutive failures. This is a test-fixture defect, not evidence that the real source client failed to stop in a multi-chunk failure sequence. Re-run CI is pending.
+
+
+## 2026-10-23 — source-client recovery regression passed
+- Automatic independent source-client workflow [#39836310701](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39836310701) passed after the two-chunk early-stop fixture correction. Its log shows 18 passed in 1.24 seconds; Python compilation also succeeded.
+- The same push queued acquisition workflow [#39836310700](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39836310700), but it is behind the stale recovery workflow tied to commit 706a27fa. The stale run must be cancelled with the explicit one-time recovery commit so the queue executes the latest ATM/OTM1 scope.
