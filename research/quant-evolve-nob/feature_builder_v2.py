@@ -87,7 +87,7 @@ def build_features(underlying: pd.DataFrame, minimum_coverage: float = 0.80) -> 
 
     # Session-reset EMA crossover sign; EWM only uses prices up to the row.
     fast = group["close"].transform(lambda x: x.ewm(span=8, adjust=False, min_periods=8).mean())
-    slow = group["close"].transform(lambda x: x.ewm(span=21, adjust=False, min_periods=21).mean())
+    slow = group["close"].transform(lambda x: x.ewm(span=21, adjust=False, min_periods=8).mean())
     data["ema_fast_slow_sign"] = np.sign(fast - slow).where(fast.notna() & slow.notna())
 
     # VWAP is enabled only when usable volume exists. No volume is fabricated.
