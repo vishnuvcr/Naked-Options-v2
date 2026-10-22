@@ -24,7 +24,7 @@ def bars():
     ], utc=True)
     close = [100, 101, 102, 104, 103, 110, 111, 109, 112, 114]
     return pd.DataFrame({
-        "timestamp": (times.astype("int64") // 10**9).tolist(),
+        "timestamp": [int(x.timestamp()) for x in times],
         "open": [x - 0.2 for x in close],
         "high": [x + 0.5 for x in close],
         "low": [x - 0.5 for x in close],
