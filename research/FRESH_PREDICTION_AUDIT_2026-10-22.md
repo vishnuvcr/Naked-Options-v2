@@ -30,3 +30,8 @@ The selected global ExtraTrees h1 volatility-proxy result (n=981) was split into
 **Material qualification:** 50.97% of the daily model-minus-baseline loss differences are positive (higher model loss) and the median is +0.00662, while the mean remains −0.31560. A 10% winsorized mean is −0.10137. This indicates an average-score advantage with a skewed loss-differential distribution, not universal daily superiority. This is a post hoc partition of the same final holdout, not independent-period replication.
 
 Reproducible artifact utility: [`research/audits/audit_nifty_predictions.py`](audits/audit_nifty_predictions.py). Example after extracting a workflow artifact: `python research/audits/audit_nifty_predictions.py predictions.csv --metrics metrics.csv --output audit.json`.
+
+
+## QLIKE interpretation caveat — 2026-10-22
+
+The pipeline trains the h1 volatility model on absolute next-session log return and then squares the target, forecast and baseline before applying QLIKE. This makes the scored realized quantity (r_{t+1}^2), but the model forecast is the square of a fitted absolute-return estimate, not a separately trained conditional-variance estimate. Therefore the reported improvement is metric-specific evidence for a variance-scaled volatility proxy; it should not be described as a fully calibrated conditional-variance forecast without additional validation.
