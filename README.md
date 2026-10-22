@@ -381,3 +381,16 @@ A leakage-aware predicate evaluator now converts strategy conditions into signal
 - [Updated error log](research/quant-evolve-nob/ERROR_LOG_V2.md)
 
 This component does not simulate option fills, transaction costs or P&L. The study must not progress to profitability conclusions until the option simulator and cost fixtures are implemented and tested.
+
+
+### QE-NOB-2.0 — OHLC option simulator added
+
+The research branch now includes an indicative long-option OHLC simulator with next-bar entries, same-strike exits, one-position-at-a-time enforcement per candidate, dated lot-size proxies, modeled fees and slippage. The execution gate remains hard-coded **FAIL** because rolling OHLC does not prove exact contract identity or executable quotes.
+
+- [Option simulator](research/quant-evolve-nob/option_simulator_v2.py)
+- [Simulator tests](research/quant-evolve-nob/test_option_simulator_v2.py)
+- [Simulator test workflow](.github/workflows/qe-nob-v2-option-simulator-tests.yml)
+- [Updated phase status](research/quant-evolve-nob/PHASE_STATUS_V2.md)
+- [Error log](research/quant-evolve-nob/ERROR_LOG_V2.md)
+
+CI results are not yet verified. The simulator has not been run against the historical cache; no strategy profitability is claimed.
