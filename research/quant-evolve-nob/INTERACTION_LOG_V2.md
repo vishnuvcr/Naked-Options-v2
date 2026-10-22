@@ -86,3 +86,10 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Acquisition run #39803647257 is still in progress at source acquisition; cache audit and sanitized report upload have not executed. Automatic follow-up #39808171927 remains pending and has not produced discovery results.
 - Updated the phase-status and error-log records. No data sufficiency, candidate fitness, OOS performance, or profitability result was inferred. Phase 2 remains open; empirical discovery and final validation remain blocked.
 - No tester branch/report was created, as instructed.
+
+
+## 2026-10-22 — external source catalogue review
+- Checked current public source information for Dhan's official rolling-options and intraday endpoints, NSE/Nifty Indices historical daily reports, FII/DII activity, Cboe VIX history and FRED series access.
+- Discovered public option datasets on Hugging Face, but did not download or merge them: one listing uses license 'other' and another is CC BY-NC 4.0. Their source lineage/permissions are not approved for this trading-oriented study without further rights review.
+- Identified a GitHub NIFTY 1-minute OHLC set as a potential independent underlying-data cross-check only; repository MIT licensing is not treated as sufficient verification of market-data provenance, and its maintainer documents known missing/fixed-bar quirks.
+- Added [SOURCE_CATALOG_V2.md](SOURCE_CATALOG_V2.md) and updated phase status. This is source research only. No new experimental rows, candidate scores or P&L were produced. Phase 2 remains open while runtime acquisition is still in progress.
