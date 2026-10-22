@@ -285,8 +285,18 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         audit = audit_module.audit(output=OUT / "feature_availability.json")
     except Exception as exc:
         audit = {"status": "AUDIT_ERROR", "error_type": type(exc).__name__}
-    if audit.get("status") != "PASS":
-        return output_blocked("No parseable local market-data cache found; source unavailability is not inferred.", cache, audit)
+    audit_pass = (
+        audit.get("status") == "PASS"
+        and int(audit.get("file_count", 0)) > 0
+        and int(audit.get("parse_failures", 0)) == 0
+        and int(audit.get("underlying_file_count", 0)) > 0
+        and int(audit.get("option_file_count", 0)) > 0
+    )
+    if not audit_pass:
+        return output_blocked(
+            "Cache audit gate failed: require parseable underlying and option files with zero JSON parse failures. Source unavailability is not inferred.",
+            cache, audit,
+        )
 
     u, o, quality = source_client.load_frames(return_quality=True)
     if len(u) < 500 or len(o) < 1000:
