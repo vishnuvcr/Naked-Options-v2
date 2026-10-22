@@ -1,6 +1,13 @@
+import importlib.util
 import json
 from pathlib import Path
-from research.quant_evolve_nob.audit_features_v2 import run
+
+MODULE_PATH = Path(__file__).with_name("audit_features_v2.py")
+SPEC = importlib.util.spec_from_file_location("audit_features_v2", MODULE_PATH)
+AUDIT = importlib.util.module_from_spec(SPEC)
+assert SPEC and SPEC.loader
+SPEC.loader.exec_module(AUDIT)
+run = AUDIT.run
 
 
 def test_audit_is_sanitized_and_handles_empty_cache(tmp_path):
