@@ -243,3 +243,11 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 
 - Corrective workflow [#39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478): target-construction/scoring tests and feature-matrix steps passed; technical-only model catalogue completed successfully; global-augmented catalogue is in progress.
 - This is operational progress only. No corrected artifact, final metric reconciliation or tester pass is claimed until the workflow completes and outputs are inspected.
+
+
+## Corrected QuantEvolve workflow reconciliation — 2026-10-22
+
+- User explicitly chose developer-only continuation: no independent tester branch/report/gate is required going forward.
+- Downloaded and inspected artifact for workflow [#39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478). Workflow completed successfully at `e8133a582cbe6c06ce46514f871d1393fc142f6f`; 277,633 prediction rows have zero missing target dates; 647 metric rows include 299 OOS evaluations.
+- Corrected artifact confirms no robust selected return/direction edge after Holm correction. Selected level Elastic Net models have negative MSE skill versus historical-mean baseline at h1/h5/h20. Several global h1 volatility models show significant mean-loss improvements, but these are screened-catalogue comparisons, not independent-period replication; extreme MLP/Ridge loss magnitudes were logged for stability diagnostics.
+- Updated README, RESULTS, MANUSCRIPT, PHASE_STATUS, ERROR_LOG and dated audit. No strategy development or options P&L was authorized.
