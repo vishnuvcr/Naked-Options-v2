@@ -544,3 +544,12 @@ This log records visible technical findings and corrective actions. It does not 
 - Reason/error classification: automatic workflow ran offline gate only; no model-generation API call was requested
 - Options data gate: BLOCKED_NO_VERIFIED_CONTRACT_DATA; P&L permitted=False.
 - No API key or credential value is persisted.
+
+
+## QE-ERR-029 — Dhan endpoint retrieval succeeded, but response schema is insufficient for fixed-contract backtesting
+- Date: 2026-10-22. Severity: HIGH (research validity blocker; not an API failure).
+- Workflow: [bounded Dhan probe run 39675422599](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39675422599).
+- Observation: after correcting the documented request's `expiryCode` from 0 to 1, Dhan returned HTTP 200 with 1,155 aligned minute bars. The response schema exposes timestamp, OHLC, volume, IV, OI, strike and spot, but no explicit expiry or lot-size field in the sampled response.
+- Interpretation: a rolling ATM weekly series cannot be assumed to represent one fixed option contract across time. No fixed-contract P&L is valid from this response alone.
+- Action: accept sample retrieval as successful; stop API retries for this research phase; preserve `pnl_permitted=false` and `BLOCKED_NO_VERIFIED_CONTRACT_DATA` until a source with exact contract identity, historical lot sizes, full coverage and executable pricing is available.
+- Status: closed as a data-schema limitation, not a software failure. No credential or raw candle rows were saved.
