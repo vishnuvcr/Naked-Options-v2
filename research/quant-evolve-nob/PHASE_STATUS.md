@@ -6,7 +6,7 @@ Governance note: User explicitly declined an independent tester. No tester branc
 
 ## Latest completed acquisition/discovery run
 
-- Latest completed data-quality run: [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754). A lot-size defect was identified and fixed in code; corrected source/test run is pending at [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025). Earlier stalled run [#39741823249](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741823249) is not final evidence.
+- Latest completed data-quality run: [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754). A lot-size defect was identified and fixed in code; corrected source/test run is in progress at [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025); its pre-run test step passed. Earlier stalled run [#39741823249](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741823249) is not final evidence.
 - Run status: `PASS_ANALYZED`; workflow and bounded report commit succeeded. Offset-aware duplicate identity reduced duplicate/conflicting groups to zero; no rows were removed by conflict filtering.
 - Data window: 2021-10-25 to 2026-10-21; 1,241 sessions; 92,510 underlying rows; 2,600,975 option rows. Timestamp coverage 99.772%; row-grid coverage 100%.
 - Evolution: 600 unique candidates, 4 islands, 9 generations completed.
@@ -24,7 +24,7 @@ Governance note: User explicitly declined an independent tester. No tester branc
 | 4. Cost model and baseline tests | COMPLETE WITH LIMITATIONS | Uses published ₹10/order primary brokerage, ₹20/order stress, date-effective statutory-fee approximations, 50-bps primary adverse slippage and higher slippage stresses; spreads are not observed. |
 | 5. Bounded QuantEvolve discovery | COMPLETE | 600 unique constrained candidates evaluated over 9 generations; selection used train/validation only. |
 | 6. Nested chronological and OOS testing | COMPLETE — NO PASS | Final chronology evaluated; Holm-adjusted p-values, block uncertainty, split-half checks and baseline comparisons did not clear the gates. |
-| 7. Robustness / execution gate | IN PROGRESS — CORRECTED RERUN | OHLC-based robustness analysis proceeds regardless of quote depth; exact execution readiness remains failed. Recompute results after dated-lot proxy correction, then report no-go/pass based on statistical gates. |
+| 7. Robustness / execution gate | IN PROGRESS — CORRECTED RERUN | OHLC-based robustness analysis proceeds regardless of quote depth; exact execution readiness remains failed. New workflow started after its pre-run tests passed; recompute results after dated-lot proxy correction. |
 | 8. Manuscript and final decision | IN PROGRESS — METRICS SUPERSEDED | Documentation records the discovered lot-size defect and the corrected bounded rerun. Final statistical conclusion is pending revised results; no tester branch per user instruction. |
 
 ## Run rule
