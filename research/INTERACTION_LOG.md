@@ -251,3 +251,11 @@ Log actions and outcomes rather than private reasoning or a word-for-word chat t
 - Downloaded and inspected artifact for workflow [#39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478). Workflow completed successfully at `e8133a582cbe6c06ce46514f871d1393fc142f6f`; 277,633 prediction rows have zero missing target dates; 647 metric rows include 299 OOS evaluations.
 - Corrected artifact confirms no robust selected return/direction edge after Holm correction. Selected level Elastic Net models have negative MSE skill versus historical-mean baseline at h1/h5/h20. Several global h1 volatility models show significant mean-loss improvements, but these are screened-catalogue comparisons, not independent-period replication; extreme MLP/Ridge loss magnitudes were logged for stability diagnostics.
 - Updated README, RESULTS, MANUSCRIPT, PHASE_STATUS, ERROR_LOG and dated audit. No strategy development or options P&L was authorized.
+
+
+## 2026-10-22 — new QE-NOB-1.0 fresh-start instruction
+
+- User instructed to disregard existing findings and begin fresh QuantEvolve research to find profitable naked option buying strategies. Prior result numbers are excluded from this track's evidence and search seeding; historical files remain archive-only.
+- Initialized an eight-phase protocol, research questions, literature/source register, config, result log, phase tracker and error log on `research/quant-evolve-nob-v1-phase-1` and created a dedicated developer branch `research/quant-evolve-nob-v1-developer`.
+- Implemented isolated Dhan source probe/cache and a bounded candidate engine for long calls, puts, straddles and strangles. Added unit checks for cache schema, costs, date-effective STT/exchange fees, bounded/unique catalogue and date chunk continuity.
+- Main README and GitHub Pages now point to the fresh track. Current initial Actions run: [#39710205711](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39710205711). No fresh strategy outcome or profitability claim yet. User requested no tester.
