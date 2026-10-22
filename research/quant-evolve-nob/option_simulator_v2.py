@@ -104,12 +104,15 @@ def simulate_strategy(underlying: pd.DataFrame, options: pd.DataFrame, features:
     trades = []
     missing_entries = 0
     missing_exits = 0
+    last_exit_idx = -1  # one open position per candidate; no overlapping trades
     for signal in signals.itertuples(index=False):
         entry_ts = int(signal.entry_timestamp)
         if entry_ts not in idx:
             missing_entries += 1
             continue
         entry_idx = idx[entry_ts]
+        if entry_idx <= last_exit_idx:
+            continue
         exit_idx = entry_idx + int(strategy.hold_bars)
         if exit_idx >= len(u):
             missing_exits += 1
@@ -131,11 +134,6 @@ def simulate_strategy(underlying: pd.DataFrame, options: pd.DataFrame, features:
         for side, off in sides:
             # Data uses family/code labels such as WEEK1 or MONTH1; only rolling family is known.
             family = strategy.expiry
-            candidates = [(k, v) for k, v in by_contract.items()
-                          if k[0] == family and k[1] == side and k[2] == entry_ts
-                          and int(next((r.offset for r in o.itertuples(index=False)
-                                        if str(r.expiry_flag) == family and str(r.side).upper() == side
-                                        and int(r.timestamp) == entry_ts and int(r.offset) == off), 999)) == off]
             # Use exact requested offset for entry.
             entry_row = o[(o.expiry_flag.astype(str) == family) &
                           (o.side.astype(str).str.upper() == side) &
@@ -151,9 +149,13 @@ def simulate_strategy(underlying: pd.DataFrame, options: pd.DataFrame, features:
         if failed or not legs:
             missing_entries += 1
             continue
+        if strategy.instrument == "STRADDLE" and len(legs) == 2 and round(legs[0][2], 2) != round(legs[1][2], 2):
+            missing_entries += 1
+            continue
         raw_buy = sum(x[0] for x in legs) * lot
         raw_sell = sum(x[1] for x in legs) * lot
         costs = reprice(raw_buy, raw_sell, local_day, slippage_bps, brokerage_per_order, len(legs))
+        last_exit_idx = exit_idx
         trades.append({"signal_timestamp": int(signal.timestamp), "entry_timestamp": entry_ts,
                        "exit_timestamp": exit_ts, "entry_date_ist": local_day.isoformat(),
                        "instrument": strategy.instrument, "expiry_family": strategy.expiry,
