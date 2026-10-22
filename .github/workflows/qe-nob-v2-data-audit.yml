@@ -65,7 +65,7 @@ jobs:
         run: |
           set -u
           cache_state() {
-            find data/cache/quant_evolve_nob_v1 -type f -name '*.json' -printf '%P %s %T@\\n' 2>/dev/null | sort | sha256sum | cut -d ' ' -f1
+            find data/cache/quant_evolve_nob_v1 -type f -name '*.json' -printf '%P %s %T@\n' 2>/dev/null | sort | sha256sum | cut -d ' ' -f1
           }
           for pass in 1 2 3; do
             echo "[QE-NOB-2.0] bounded acquisition pass $pass/3"
