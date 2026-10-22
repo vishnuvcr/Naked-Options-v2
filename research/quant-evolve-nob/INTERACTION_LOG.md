@@ -1,3 +1,11 @@
+## 2026-10-22 — corrected frozen-candidate reprice audit
+- User instructed that unavailable bid/ask/depth and fully reconciled broker tariffs must not block the analysis; use available OHLC with explicit cost/slippage assumptions.
+- Downloaded the saved sanitized artifact from [workflow #39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754/artifacts/12417631602) and re-priced all 483,706 rows using the corrected WEEK1/MONTH1 lot proxy and the same cost model.
+- Audit result: no candidate in the frozen prior 600-candidate set met the combined daily-median, validation and cost-stress prerequisites. Candidate 86 revised OOS mean/day about ₹6.14 and loses about ₹104/day at 100-bps/₹20-order stress; candidate 558 OOS mean/day about ₹70.37 but daily median is zero and 200-bps stress is about −₹80.53/day. Full table and method are in [LOT_SIZE_REPRICE_AUDIT.md](LOT_SIZE_REPRICE_AUDIT.md).
+- Because seven zero-trade session dates were omitted from the ledger export, the HAC/Holm reprice diagnostic inserted zero days evenly; the current full underlying-grid workflow remains the source for final exact inference. This is disclosed and not presented as an independent review.
+- Corrected full workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) was still running at last status check. It is a bounded supplementary confirmation; missing bid/ask/depth does not block the OHLC research conclusion.
+- User explicitly declined a tester; no tester branch/report is created or claimed.
+
 ## 2026-10-22 — corrected rerun started
 - Current corrected workflow [#39774033025](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025) is in progress. The pre-run automated test step passed with the dated-lot regression test included.
 - Stale workflow [#39741823249](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741823249) was canceled during the lot-size correction and its report commit hit rebase conflicts in `source_probe.json` and `acquisition_summary.json`. This is recorded as QE-NOB-E007; concurrency was updated to let corrected source supersede stale runs. The current run should be checked for clean report persistence.
