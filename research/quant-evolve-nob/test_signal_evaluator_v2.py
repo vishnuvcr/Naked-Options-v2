@@ -80,3 +80,17 @@ def test_unimplemented_entry_modes_fail_closed():
     )
     with pytest.raises(ValueError, match="entry_mode is not implemented"):
         evaluator.evaluate_signals(frame, s, {"nifty_return_1"})
+
+
+def test_last_bar_signal_does_not_enter_next_session_open():
+    timestamps = [
+        int(pd.Timestamp("2026-01-05 15:20:00", tz="Asia/Kolkata").timestamp()),
+        int(pd.Timestamp("2026-01-05 15:25:00", tz="Asia/Kolkata").timestamp()),
+        int(pd.Timestamp("2026-01-06 09:15:00", tz="Asia/Kolkata").timestamp()),
+        int(pd.Timestamp("2026-01-06 09:20:00", tz="Asia/Kolkata").timestamp()),
+    ]
+    frame = pd.DataFrame({"timestamp": timestamps, "nifty_return_1": [1.0, 1.0, -1.0, -1.0]})
+    result = evaluator.evaluate_signals(frame, strategy(), {"nifty_return_1"})
+    # A signal on 15:20 may enter at 15:25. A signal on 15:25 must not enter next day.
+    assert result["timestamp"].tolist() == [timestamps[0]]
+    assert result["entry_timestamp"].tolist() == [timestamps[1]]
