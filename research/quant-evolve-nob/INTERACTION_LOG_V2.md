@@ -132,3 +132,8 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - To finish within the fixed bounded run without optimizing on P&L, formally narrowed the protocol from OTM2+ to ATM/OTM1. Updated strategy_grammar_v2.py, evolve_candidates_v2.py, run_research.py and their regression tests; updated the frozen plan, source catalogue and phase status. Expected grid is 732 option request groups; cache filename counts suggest about 425 option requests and up to 23 underlying-history chunks remain.
 - Independent source-client CI on the earlier bounded-client revision passed; new tests for the current ATM/OTM1 version are expected to run automatically and must be checked again.
 - The workflow now uses a one-time conditional concurrency handoff, short request timeouts/two attempts, progress logging, cache-resume passes, and fail-closed source gating. Do not mark Phase 2 complete until the resumed job's artifact proves historical underlying and option coverage.
+
+
+## 2026-10-23 — corrected ATM/OTM1 progress-test expectation
+- The first source-client regression check after the moneyness amendment failed because one progress-counter fixture still expected ten option requests, inherited from the earlier five-offset universe.
+- Corrected the fixture to expect six groups and five API fetches after one cache hit. Recorded as QE-NOB2-E028. The automatic source-client CI was re-triggered by this test-file push; no pass is assumed until the latest check suite concludes.
