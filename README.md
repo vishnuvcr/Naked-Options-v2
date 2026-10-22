@@ -1,4 +1,22 @@
-# Fresh NIFTY 50 Prediction Research
+# Fresh QuantEvolve Research: Naked NIFTY Option Buying (QE-NOB-1.0)
+
+**Current research track:** [QE-NOB-1.0 isolated developer branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v1-developer) · [Research plan](research/quant-evolve-nob/RESEARCH_PLAN.md) · [Research questions](research/quant-evolve-nob/RESEARCH_QUESTIONS.md) · [Phase status](research/quant-evolve-nob/PHASE_STATUS.md) · [Literature review](research/quant-evolve-nob/LITERATURE_REVIEW.md) · [Results](research/quant-evolve-nob/RESULTS.md) · [Errors](research/quant-evolve-nob/ERROR_LOG.md)
+
+**Scope reset on 2026-10-22:** This is a fresh study. Existing prediction/option-buying results and scores are explicitly excluded from the new study’s evidence, candidate seeding and fitness. They remain in the repository for audit history only. No strategy has yet been demonstrated profitable by QE-NOB-1.0.
+
+The study uses bounded QuantEvolve-style candidate discovery for **long calls, long puts, long ATM straddles and long OTM strangles**, with the fresh cache under `data/cache/quant_evolve_nob_v1`, isolated from earlier caches. Only validated new-run outputs under `reports/quant_evolve_nob_v1` will count as evidence. Primary acquisition is Dhan’s rolling historical option API; official/free source checks, contract identity and data quality remain mandatory.
+
+The protocol has eight fixed phases, up to 600 candidates and 25 generations. It requires next-bar entries, date-effective Paytm Money brokerage and charges, adverse slippage sensitivity (0/25/50/100/200 bps per side), chronological validation, block-bootstrap uncertainty and Holm correction. Rolling OHLC without historical bid/ask is not considered execution-validated. The final decision must be **PASS for paper testing only**, **NO-GO**, or **DATA-LIMITED**—never an automatic live-trading recommendation.
+
+- [Fresh QE-NOB developer branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v1-developer)
+- [Fresh manual/automatic workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v1-developer/.github/workflows/quant-evolve-nob.yml)
+- [Current workflow run](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39710205711)
+
+**No tester branch/report is required**, per the user's instruction. No profitability claim is made until fresh data, costs, candidate results and validation gates are complete.
+
+---
+
+## Archived track: NIFTY-PRED-1.0 (historical; excluded from QE-NOB-1.0)
 
 ## Latest prediction audit — 2026-10-22
 
