@@ -442,10 +442,10 @@ Options data gate: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**; P&L permitted=False. O
 - Automation config restored to offline prediction mode (`run_llm=false`); no additional model API call was requested.
 
 
-## QE-STEP-016 — NIFTY prediction workflow progressing; final result merge pending
+## QE-STEP-016 — NIFTY prediction rerun completed
 - Date: 2026-10-22.
-- Active run: [NIFTY prediction research #39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966).
-- Completed: cached target restored, target data validation, target-construction/scoring tests, feature matrix, and technical-only model catalogue.
-- In progress at checkpoint: global-augmented model catalogue. The workflow's run-level metadata is stale while the job is executing, but step summaries confirm progression from technical-only to global-augmented models.
-- The newly added empty/headerless CSV helper regression test passed in this run's test step. The final merger step has not yet run, so end-to-end success and prediction metrics remain unverified.
+- Workflow: [NIFTY prediction research #39699761966](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39699761966) completed successfully.
+- Target validation, target/scoring tests, feature matrix, technical/global model catalogues, ARIMA benchmark, empty-CSV-safe merge, status generation and artifact publication all completed.
+- Aggregate result: no robust selected return/direction edge; one selected one-session volatility-proxy QLIKE result survived Holm correction across 299 candidate comparisons (p=4.26e-7), requiring independent-period replication.
+- Current report: [sanitized NIFTY run summary](../reports/nifty_prediction_run_39699761966_summary.json); [manuscript](MANUSCRIPT.md); [results register](RESULTS.md).
 - Options gate is unchanged: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**, `pnl_permitted=false`.
