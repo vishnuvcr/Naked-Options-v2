@@ -343,3 +343,16 @@ Phase 1 protocol and static Phase 2 feasibility audit are documented. A typed st
 - [Grammar implementation](research/quant-evolve-nob/strategy_grammar_v2.py)
 - [Grammar tests](research/quant-evolve-nob/test_strategy_grammar_v2.py)
 - [Implementation error log](research/quant-evolve-nob/ERROR_LOG_V2.md)
+
+
+### QE-NOB-2.0 checkpoint — feature audit tooling added
+
+A local-cache audit utility and tests are now committed, along with a second automatic/manual GitHub Actions test workflow. The audit reports schema fields, null counts, timestamp ranges and hashes, while explicitly refusing to claim exact contract identity or historical bid/ask/depth.
+
+- [Feature audit utility](research/quant-evolve-nob/feature_audit_v2.py)
+- [Feature audit tests](research/quant-evolve-nob/test_feature_audit_v2.py)
+- [Feature audit workflow](.github/workflows/qe-nob-v2-feature-audit-tests.yml)
+- [Updated phase status](research/quant-evolve-nob/PHASE_STATUS_V2.md)
+- [Updated error log](research/quant-evolve-nob/ERROR_LOG_V2.md)
+
+**Status:** workflows are configured but their results have not been verified; the cache audit has not been run on the research cache. Simulator integration and discovery remain pending. No strategy result is claimed.
