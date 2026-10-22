@@ -137,3 +137,9 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 ## 2026-10-23 — corrected ATM/OTM1 progress-test expectation
 - The first source-client regression check after the moneyness amendment failed because one progress-counter fixture still expected ten option requests, inherited from the earlier five-offset universe.
 - Corrected the fixture to expect six groups and five API fetches after one cache hit. Recorded as QE-NOB2-E028. The automatic source-client CI was re-triggered by this test-file push; no pass is assumed until the latest check suite concludes.
+
+
+## 2026-10-23 — pre-restart regression disposition
+- Grammar regression suite #107968717033 passed after OTM2 was removed from the allowed moneyness set and seed generator.
+- Source-client suite #107968585646 failed on stale fixture assertions that expected ten request groups after the protocol's offset set changed to (-1, 0, +1). Corrected the remaining two assertions to six; logged defect QE-NOB2-E028. The following source-client check suite #107969795697 is queued and its result is not yet known.
+- The recovery handoff still needs a fresh workflow push with the exact one-time phrase so an in-progress workflow that checked out the older five-offset client is cancelled. The restarted run must test the latest branch state before attempting acquisition.
