@@ -207,3 +207,23 @@ def test_acquisition_ready_requires_complete_option_and_underlying():
     assert not qe.acquisition_ready({"status": "PARTIAL_NO_PROGRESS"}, {"status": "PASS"})
     assert not qe.acquisition_ready({"status": "PASS"}, {"status": "PARTIAL"})
     assert not qe.acquisition_ready({"status": "PASS"}, {"status": "BLOCKED_NO_UNDERLYING"})
+
+
+def test_empty_option_payloads_do_not_pass_source_coverage_gate(tmp_path, monkeypatch):
+    opt_cache = tmp_path / "options"
+    opt_cache.mkdir()
+    monkeypatch.setattr(qe, "OPT_CACHE", opt_cache)
+    monkeypatch.setattr(qe.time, "sleep", lambda _: None)
+    monkeypatch.setattr(qe, "chunks", lambda start, end, days: iter([(start, min(start + qe.timedelta(days=30), end))]))
+
+    empty_side = {key: [] for key in ("timestamp", "open", "high", "low", "close", "strike", "spot")}
+    def empty_api(*args, **kwargs):
+        return {"data": {"ce": dict(empty_side), "pe": dict(empty_side)}}
+
+    monkeypatch.setattr(qe, "api_post", empty_api)
+    result = qe.retrieve_options("not-a-real-token", [{"flag": "WEEK", "code": 1}])
+    assert result["status"] == "PARTIAL"
+    assert result["requests_recorded"] == result["requests_expected"] == 10
+    assert result["nonempty_response_count"] == 0
+    assert result["data_response_fraction"] == 0.0
+    assert not list(opt_cache.glob("*.json"))
