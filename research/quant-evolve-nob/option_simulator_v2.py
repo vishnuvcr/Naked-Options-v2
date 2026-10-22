@@ -90,9 +90,20 @@ def prepare_option_index(options: pd.DataFrame) -> dict:
     o["timestamp"] = o["timestamp"].astype("int64")
     o["offset"] = o["offset"].astype("int64")
     o["side"] = o["side"].astype(str).str.upper()
-    o["expiry_flag"] = o["expiry_flag"].astype(str)
+    o["expiry_flag"] = o["expiry_flag"].astype(str).str.upper()
+    # Dhan cache rows use expiry_flag (WEEK/MONTH) plus expiry_code (1/2);
+    # candidate grammar uses canonical names WEEK1/MONTH1.
+    if "expiry_code" in o.columns:
+        code = pd.to_numeric(o["expiry_code"], errors="coerce")
+        base_family = o["expiry_flag"].str.replace("1", "", regex=False).str.replace("2", "", regex=False)
+        is_base = base_family.isin(["WEEK", "MONTH"])
+        o["expiry_key"] = o["expiry_flag"]
+        valid = code.notna() & is_base
+        o.loc[valid, "expiry_key"] = base_family.loc[valid] + code.loc[valid].astype("int64").astype(str)
+    else:
+        o["expiry_key"] = o["expiry_flag"]
     o = o[o["offset"].between(-2, 2)].copy()
-    key = ["expiry_flag", "side", "offset", "timestamp"]
+    key = ["expiry_key", "side", "offset", "timestamp"]
     compare_cols = ["strike", "open"] + [name for name in ("high", "low", "close") if name in o.columns]
     bad_keys = set()
     duplicate_groups = o[o.duplicated(key, keep=False)]
@@ -107,7 +118,7 @@ def prepare_option_index(options: pd.DataFrame) -> dict:
 
     # Equal strikes can appear under more than one rolling offset. Do not choose
     # arbitrarily when their same-timestamp OHLC values disagree.
-    contract_key = ["expiry_flag", "side", "timestamp", "strike_key"]
+    contract_key = ["expiry_key", "side", "timestamp", "strike_key"]
     collision_bad = set()
     collision_rows = o[o.duplicated(contract_key, keep=False)]
     for values, group in collision_rows.groupby(contract_key, dropna=False):
@@ -120,7 +131,7 @@ def prepare_option_index(options: pd.DataFrame) -> dict:
     contract_lookup = {}
     price_cols = ["open"] + [col for col in ("high", "low", "close") if col in o.columns]
     for row in o.itertuples(index=False):
-        family = str(row.expiry_flag)
+        family = str(row.expiry_key)
         side = str(row.side).upper()
         ts = int(row.timestamp)
         strike = round(float(row.strike), 2)
