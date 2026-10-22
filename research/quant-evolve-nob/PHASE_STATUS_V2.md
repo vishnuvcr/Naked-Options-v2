@@ -35,5 +35,5 @@ Governance: developer-led; user explicitly said “No tester.” No tester branc
 
 - Point-in-time feature builder tests passed in run #39805843560.
 - Same-session signal timing tests passed in run #39806277479; simulator same-session handling passed in run #39806376781.
-- Expiry-family normalization and a focused regression test were committed; run #39806440507 was queued at checkpoint.
+- Expiry-family normalization and the focused regression test passed in simulator workflow #39806477859 (12 tests).
 - Bounded source acquisition run #39803647257 remains in progress. Phase 2 stays open until its audit artifact is inspected. Phase 5 discovery stays blocked: no fitness run or candidate P&L has been verified.
