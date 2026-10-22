@@ -35,3 +35,12 @@ Reproducible artifact utility: [`research/audits/audit_nifty_predictions.py`](au
 ## QLIKE interpretation caveat — 2026-10-22
 
 The pipeline trains the h1 volatility model on absolute next-session log return and then squares the target, forecast and baseline before applying QLIKE. This makes the scored realized quantity (r_{t+1}^2), but the model forecast is the square of a fitted absolute-return estimate, not a separately trained conditional-variance estimate. Therefore the reported improvement is metric-specific evidence for a variance-scaled volatility proxy; it should not be described as a fully calibrated conditional-variance forecast without additional validation.
+
+
+## Corrected workflow completion — 2026-10-22
+
+Corrective workflow [#39704420478](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478) completed successfully at commit `e8133a582cbe6c06ce46514f871d1393fc142f6f`. Artifact: `nifty-prediction-reports-39704420478`. Its `predictions.csv` has 277,633 rows and zero null target dates; `metrics.csv` has 647 rows, including 299 OOS_EVALUATED comparisons. NIFTY data quality passed for 4,683 rows from 2007-09-17 to 2026-10-19, with one weekend-dated observation (2025-02-01) retained for calendar/source cross-check.
+
+Corrected artifact findings: selected return and direction models do not have significant Holm-adjusted evidence of a useful edge. Selected direction balanced accuracy is approximately 0.50 for horizons 1, 5 and 20. Selected level forecasts underperform the historical-mean baseline on MSE skill. Some non-selected global h1 volatility models show strong corrected average-loss differences, led by CatBoost (n=936; MSE skill +7.45%; model-minus-baseline mean loss −0.33325; 95% CI [−0.46212, −0.23389]; raw p=1.66e−9; Holm p=3.33e−8). This is a screened-catalogue comparison, not untouched replication; extreme MLP/Ridge volatility loss values require numerical diagnostics. Cross-source reconciliation remains empty and option-data gates remain separate and blocked.
+
+User explicitly selected developer-only continuation: no tester branch/report is required. Scientific conclusion remains prediction-only, no robust return/direction edge, volatility proxy candidate for future untouched replication, and no strategy approval.
