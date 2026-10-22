@@ -1063,6 +1063,9 @@ def write_outputs(probe, acquisition, underlying, summary, errors):
           "oos_part1_mean_daily_net_rupees","oos_part2_mean_daily_net_rupees","oos_win_rate","oos_profit_factor",
           "oos_sharpe_ratio","oos_sortino_ratio","oos_max_drawdown_fraction","oos_total_net_rupees","oos_holm_p",
           "oos_stress100_fee20_mean_daily_net_rupees","oos_stress200_fee20_mean_daily_net_rupees",
+          "baseline_family","baseline_candidate_id","oos_baseline_comparison_available",
+          "oos_baseline_paired_mean_daily_diff","oos_baseline_paired_ci95_low","oos_baseline_paired_ci95_high",
+          "oos_baseline_hac_one_sided_p","oos_baseline_holm_p",
           "statistical_gate_pass","execution_data_gate_pass","execution_data_gate_reason","promotion_gate_pass"]
     for col in keep:
         if col not in selected.columns: selected[col]=np.nan
@@ -1079,8 +1082,10 @@ def write_outputs(probe, acquisition, underlying, summary, errors):
         decision="PASS_FOR_FURTHER_PAPER_TEST_ONLY"
     elif statistical_candidates:
         decision="DATA_LIMITED — statistical candidate(s) found, but execution/contract gate remains unproven"
+    elif not basic_quality_pass:
+        decision="DATA_LIMITED — minimum quote-grid coverage or duplicate-conflict gate failed; no profitability conclusion."
     else:
-        decision="NO_STATISTICAL_CANDIDATE — profitability not established; execution data limitations remain"
+        decision="NO_STATISTICAL_CANDIDATE — no candidate met the preregistered after-cost statistical and baseline gates; executable profitability remains unverified."
     best=selected.iloc[0].to_dict() if not selected.empty else {}
     report.update({"research_id":"QE-NOB-1.0","generated_at_utc":utc_now(),
                    "statistical_candidate_count":statistical_candidates,"promotion_candidate_count":promoted,
