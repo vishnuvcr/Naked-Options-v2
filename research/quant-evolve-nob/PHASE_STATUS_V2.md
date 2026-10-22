@@ -131,3 +131,12 @@ The discovery-runner CI passed after adding the stricter cache audit gate: [run 
 - The acquisition workflow triggered by the same push, [#39836310700](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39836310700), is pending behind the in-progress old recovery run from commit #706a27fa, which predates the strike-scope amendment.
 - Next action: make one final recovery handoff commit that satisfies the workflow's explicit commit-message guard; it should cancel the stale in-progress data run and run the latest ATM/OTM1 code. The partial cache from #39803647257 was saved and should be restored. No strategy or market-data result is implied by the passing unit tests.
 - Gates remain: Phase 2 IN PROGRESS, Phase 5 empirical discovery BLOCKED pending new cache audit, Phases 6–7 NOT STARTED, execution FAIL.
+
+
+## Resume checkpoint — cancellation-target correction
+
+- The amended acquisition run [#39836599391](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39836599391) was cancelled at 318/732 planned option request groups by the one-time cancellation workflow. Its cache save and sanitized artifact upload succeeded. The log showed 313 cache hits, one newly downloaded valid option file, and four timed-out requests before cancellation; no historical underlying data was acquired.
+- Root cause: the cancellation workflow default target was mistakenly set to run #39836599391, the new acquisition, instead of the original stale run #39803647257. This was logged as QE-NOB2-E029. The default target is now corrected to #39803647257, which is already cancelled; any future manual cancellation requires an explicit run ID.
+- New data workflow commit [e02851ad](https://github.com/vishnuvcr/Naked-Options-v2/commit/e02851ad7736c111398bb7d2903cc3f0cb9891c0) triggers a fresh acquisition under the amended ATM/OTM1 scope and will restore cached data. Source-client CI has passed (18/18); acquisition completeness remains unverified.
+- Audit PASS means files parse and expected field names exist; it does not establish sufficient non-empty historical underlying bars or monthly/weekly option coverage. Keep Phase 2 open until acquisition summary and feature availability prove source coverage.
+- Current gates: Phase 2 IN PROGRESS, Phase 5 discovery BLOCKED, Phases 6–7 NOT STARTED, execution FAIL.
