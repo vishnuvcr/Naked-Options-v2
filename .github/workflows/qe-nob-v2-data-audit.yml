@@ -16,6 +16,8 @@ on:
       - research/quant-evolve-nob/feature_audit_v2.py
       - research/quant-evolve-nob/FEATURE_FEASIBILITY_V2.md
       - research/quant-evolve-nob/run_research.py
+      - research/quant-evolve-nob/dhan_auth.py
+      - research/quant-evolve-nob/test_dhan_auth.py
       - research/quant-evolve-nob/test_run_research.py
       - research/quant-evolve-nob/acquire_public_underlying.py
       - research/quant-evolve-nob/test_public_underlying_fallback.py
