@@ -498,7 +498,7 @@ def metrics(daily, trades, bootstrap_reps=0, net_column="net_pnl_rupees"):
     drawdowns=np.maximum(peaks-equity,0.0)
     mdd=float(drawdowns.max()) if len(drawdowns) else 0.0
     mdd_fraction=float(np.max(drawdowns/np.maximum(peaks,1.0))) if len(drawdowns) else 0.0
-    cvar95=float(np.quantile(x[x<=np.quantile(x,.05)],.5)) if np.any(x<0) else 0.0
+    cvar95=float(np.mean(x[x<=np.quantile(x,.05)])) if np.any(x<0) else 0.0
     return {"n_sessions":n,"trade_count":len(trades),"mean_daily_net_rupees":mean,
         "median_daily_net_rupees":med,"daily_net_ci95_low":float(lo),"daily_net_ci95_high":float(hi),
         "hac_one_sided_p":p,"win_rate":float(np.mean(np.asarray(ret)>0)) if ret else None,
@@ -613,6 +613,15 @@ def backtest(u,o,expiry_flags,candidates_override=None,include_oos=True,bootstra
                 stress_arr=[sum(float(t.get(net_col,0)) for t in st if t["date"]==d) for d in splitdays]
                 for k,v in metrics(stress_arr,st,bootstrap_reps=0,net_column=net_col).items():
                     result_rec[splitname+"_"+stress_name+"_"+k]=v
+        if include_oos:
+            oos_days=[d for d in days if d>=split2]
+            midpoint=max(1,len(oos_days)//2)
+            oos_segments=(("oos_part1",set(oos_days[:midpoint])),("oos_part2",set(oos_days[midpoint:])))
+            for part_name,part_days in oos_segments:
+                st=[t for t in trades if t["date"] in part_days]
+                arr=[sum(float(t["net_pnl_rupees"]) for t in st if t["date"]==d) for d in sorted(part_days)]
+                for k,v in metrics(arr,st,bootstrap_reps=0).items():
+                    result_rec[part_name+"_"+k]=v
         result_rec["trades"]=trades
         result_rec["candidate_key"]=json.dumps(c,sort_keys=True)
         all_results.append(result_rec)
@@ -911,8 +920,15 @@ def run_quant_evolve(u,o,expiry_flags):
             row.get("oos_mean_daily_net_rupees",0)>0 and row.get("oos_median_daily_net_rupees",0)>0 and
             row.get("oos_daily_net_ci95_low",0)>0 and row.get("oos_holm_p",1)<0.05 and
             row.get("validation_mean_daily_net_rupees",0)>0 and
-            row.get("oos_stress100_fee20_mean_daily_net_rupees",0)>0)
+            row.get("oos_stress100_fee20_mean_daily_net_rupees",0)>0 and
+            row.get("oos_part1_trade_count",0)>=40 and row.get("oos_part2_trade_count",0)>=40 and
+            row.get("oos_part1_mean_daily_net_rupees",0)>0 and
+            row.get("oos_part2_mean_daily_net_rupees",0)>0)
+        # Strict execution gate: rolling relative-strike OHLC and a lot-size proxy are not
+        # sufficient for strategy promotion, irrespective of a nominal statistical win.
         row["promotion_gate_pass"]=False
+        row["execution_data_gate_pass"]=False
+        row["execution_data_gate_reason"]="No historical bid/ask/depth validation; contract-expiry and lot-size mapping not reconciled to dated instrument master."
     archive_rows=sorted(archive.values(),key=lambda x:x["fitness"],reverse=True)
     final.update({"evolution":{"method":"bounded QuantEvolve-inspired quality-diversity island evolution",
         "generations_completed":generations_done,"islands":n_islands,"population_size_per_island":pop_size,
