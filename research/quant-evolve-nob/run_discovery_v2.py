@@ -248,6 +248,17 @@ def holm_adjust(pvalues: dict[str, float]) -> dict[str, float]:
     return adjusted
 
 
+def cache_audit_pass(audit: dict[str, Any]) -> bool:
+    """Fail closed unless both source families are present and every JSON parses."""
+    return bool(
+        audit.get("status") == "PASS"
+        and int(audit.get("file_count", 0)) > 0
+        and int(audit.get("parse_failures", 0)) == 0
+        and int(audit.get("underlying_file_count", 0)) > 0
+        and int(audit.get("option_file_count", 0)) > 0
+    )
+
+
 def output_blocked(reason: str, cache: dict[str, Any], quality: dict[str, Any] | None = None) -> dict[str, Any]:
     OUT.mkdir(parents=True, exist_ok=True)
     result = {
@@ -285,14 +296,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         audit = audit_module.audit(output=OUT / "feature_availability.json")
     except Exception as exc:
         audit = {"status": "AUDIT_ERROR", "error_type": type(exc).__name__}
-    audit_pass = (
-        audit.get("status") == "PASS"
-        and int(audit.get("file_count", 0)) > 0
-        and int(audit.get("parse_failures", 0)) == 0
-        and int(audit.get("underlying_file_count", 0)) > 0
-        and int(audit.get("option_file_count", 0)) > 0
-    )
-    if not audit_pass:
+    if not cache_audit_pass(audit):
         return output_blocked(
             "Cache audit gate failed: require parseable underlying and option files with zero JSON parse failures. Source unavailability is not inferred.",
             cache, audit,
