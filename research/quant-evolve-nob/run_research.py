@@ -329,30 +329,39 @@ def exchange_rate(day):
     # NSE 27-Sep-2024 true-to-label revision plus IPFT; 27-Feb-2026 revision retains approx total outflow.
     return 0.0003553
 
-def cost_and_pnl(legs, day, slip_bps, brokerage):
-    # Each leg is dict(entry, exit); one lot per leg; long-option transaction charges.
-    lots=lot_size_proxy(day)
-    gross=0.0; turnover=0.0; buy_turnover=0.0; sell_turnover=0.0
-    for leg in legs:
-        buy=leg["entry"]*(1+slip_bps/10000.0)
-        sell=max(0.0,leg["exit"]*(1-slip_bps/10000.0))
-        gross+=(sell-buy)*lots
-        buy_turnover+=buy*lots; sell_turnover+=sell*lots
-        turnover+=buy*lots+sell*lots
+def reprice_premium_turnovers(raw_buy_turnover, raw_sell_turnover, day, slip_bps, brokerage, leg_count):
+    # Reprice aggregate un-slipped premium turnover under a different cost stress.
+    slip=float(slip_bps)/10000.0
+    buy=float(raw_buy_turnover)*(1+slip)
+    sell=max(0.0,float(raw_sell_turnover)*(1-slip))
+    gross=sell-buy
+    turnover=buy+sell
     d=pd.Timestamp(day).date()
     stt_rate=0.000625 if d < date(2024,10,1) else (0.001 if d < date(2026,4,1) else 0.0015)
-    brokerage_total=brokerage*2*len(legs)
     exchange_rate_value=exchange_rate(day)
+    brokerage_total=float(brokerage)*2*int(leg_count)
     exchange=turnover*exchange_rate_value
     sebi=turnover*SEBI_RATE
-    stamp=buy_turnover*STAMP_RATE
-    stt=sell_turnover*stt_rate
+    stamp=buy*STAMP_RATE
+    stt=sell*stt_rate
     gst=GST_RATE*(brokerage_total+exchange+sebi)
     fees=brokerage_total+exchange+sebi+stamp+stt+gst
-    return {"gross_pnl_rupees":gross,"net_pnl_rupees":gross-fees,"entry_debit_rupees":buy_turnover,
-            "brokerage_rupees":brokerage_total,"exchange_fee_rupees":exchange,"sebi_fee_rupees":sebi,
-            "stamp_rupees":stamp,"stt_rupees":stt,"gst_rupees":gst,"total_cost_rupees":fees,
-            "lot_size_proxy":lots,"stt_rate":stt_rate,"exchange_rate":exchange_rate_value,"turnover_rupees":turnover}
+    return {"gross_pnl_rupees":gross,"net_pnl_rupees":gross-fees,"entry_debit_rupees":buy,
+            "exit_credit_rupees":sell,"brokerage_rupees":brokerage_total,"exchange_fee_rupees":exchange,
+            "sebi_fee_rupees":sebi,"stamp_rupees":stamp,"stt_rupees":stt,"gst_rupees":gst,
+            "total_cost_rupees":fees,"stt_rate":stt_rate,"exchange_rate":exchange_rate_value,
+            "turnover_rupees":turnover,"slippage_bps_per_side":float(slip_bps),
+            "brokerage_per_order":float(brokerage),"leg_count":int(leg_count)}
+
+def cost_and_pnl(legs, day, slip_bps, brokerage):
+    # One lot per long option leg; use the date-effective lot-size schedule as a labelled proxy.
+    lots=lot_size_proxy(day)
+    raw_buy=sum(float(leg["entry"])*lots for leg in legs)
+    raw_sell=sum(float(leg["exit"])*lots for leg in legs)
+    result=reprice_premium_turnovers(raw_buy,raw_sell,day,slip_bps,brokerage,len(legs))
+    result.update({"lot_size_proxy":lots,"raw_buy_premium_turnover_rupees":raw_buy,
+                   "raw_sell_premium_turnover_rupees":raw_sell})
+    return result
 
 def signal_events(frame, candidate):
     # Return one signal event per session; signal is evaluated using the just-closed bar.
