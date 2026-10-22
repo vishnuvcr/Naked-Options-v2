@@ -23,7 +23,7 @@ def totp(secret: str, now: float | None = None) -> str:
     return f"{number:06d}"
 
 def request_json(url: str, headers: dict[str, str] | None = None) -> dict:
-    req = Request(url, headers=headers or {}, method="POST" if "generateAccessToken" in url else "GET")
+    req = Request(url, headers=headers or {}, method="GET")
     try:
         with urlopen(req, timeout=20) as response:
             raw = response.read()
