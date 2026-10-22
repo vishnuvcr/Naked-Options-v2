@@ -195,3 +195,12 @@ The full audit artifact from run #39837698610 includes 11 MONTH1 cache files in 
 - Fresh audit reports 745 parseable JSON files, 744 option-folder files, one underlying probe, zero parse failures, no verified contract identity, and no historical bid/ask/depth. Parseability is not time-series coverage. Acquisition cache was saved for future resumption.
 - The Hugging Face/Zenodo catalogue probe ran, but no dataset was automatically admitted: Hugging Face candidates had unknown/other licenses or CC-BY-NC restrictions; the Zenodo search returned relevant records but no usable direct download URL/verified expiry mapping in this run. These are source-screening results, not proof that all free data are unavailable.
 - Gate decision: Phase 2 remains BLOCKED on source credentials plus a valid historical underlying series and verified expiry/contract continuity. Phase 5 discovery was correctly skipped; Phases 6–7 remain NOT STARTED. No candidate fitness, OOS result, or profitability conclusion exists. Do not rerun the same workflow loop until the Dhan token is renewed or an alternate source is explicitly verified and wired in.
+
+
+## Acquisition result — run #39838508682 (2026-10-23)
+
+- The eligible WEEK1-only acquisition workflow completed with FAIL at source acquisition; all pre-acquisition regression gates passed.
+- Fresh artifact: [audit artifact #12451299405](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39838508682/artifacts/12451299405). Dhan returned HTTP 401 DH-901 (access token invalid or expired). Historical option acquisition did not complete; it logged five request timeouts and a bounded retry stopped because the source probe could not verify expiry support or retrieve 5-minute underlying bars.
+- Fresh audit reports 745 parseable JSON files, 744 option-folder files, one underlying probe, zero parse failures, no verified contract identity, and no historical bid/ask/depth. Parseability is not time-series coverage. The cache was saved.
+- Hugging Face/Zenodo discovery did not admit an alternate dataset: candidate licenses were unknown/other or CC-BY-NC, and this run did not verify a usable direct download plus expiry mapping. This does not prove all free data are unavailable.
+- Phase 2 is BLOCKED; Phase 5 discovery was correctly skipped; Phases 6–7 remain NOT STARTED. No candidate fitness, OOS result, or profitability conclusion exists. Do not rerun with the same credential until it is renewed or a verified alternate source is integrated.
