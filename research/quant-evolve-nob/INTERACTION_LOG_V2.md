@@ -73,3 +73,8 @@ This is a concise audit log, not a verbatim conversation transcript and not a re
 - Added a standalone chronological training-only fitness utility with leakage tests and ensured numeric diagnostics are not automatically treated as Pareto objectives. The production discovery runner retains its own multi-objective fitness implementation because it also scores stability across time blocks.
 - Added automated tests for discovery statistical utilities and connected them to the candidate-generator CI workflow. CI result is pending at this checkpoint.
 - The long-running bounded data acquisition job remains in progress; no market candidate has yet been scored or claimed profitable.
+
+## 2026-10-22 — automatic post-acquisition discovery wiring
+- Updated the bounded acquisition workflow so that, after successful acquisition and feature-cache audit, it automatically runs the bounded four-island discovery/validation runner with frozen seeds and limits.
+- Expanded the downloadable artifact allowlist to include sanitized QE-NOB-2.0 candidate, validation, OOS, cost-stress and result summaries; raw licensed cache files remain excluded.
+- GitHub Actions run #39808171927 is queued behind the current acquisition job using the workflow concurrency group. It should reuse the saved cache rather than require the user to start a workflow manually.
