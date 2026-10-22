@@ -302,3 +302,10 @@ The free-source audit also records official NSE expiry-rule changes across 2025;
 - User explicitly declined a tester; this is a developer-led analysis with automated unit checks, not an independently audited result. The workflow's final repository commit failed on a documentation rebase conflict and is being corrected; the run artifact uploaded successfully.
 
 - [Structured research manuscript](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v1-developer/research/quant-evolve-nob/MANUSCRIPT.md) · [Workflow correction](https://github.com/vishnuvcr/Naked-Options-v2/commit/4191d5a0cbbbd703867d5b0f5e7474d8b13f825e)
+
+
+## QE-NOB-1.0 latest status — 2026-10-22
+
+Corrected run [#39741806754](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741806754) completed successfully. Including rolling ATM offset in the duplicate key reduced detected duplicate groups from 471 (453 conflicting) to zero; 2,600,975 option rows retained, 99.772% timestamp coverage, 100% row-grid coverage. Automated tests passed. **No strategy passed the statistical gate (0/600); execution/contract validation remains blocked. Final disposition: DATA-LIMITED / NO-GO.** Follow-up workflow [#39741823249](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39741823249) is running to validate the added regression test.
+
+- [Plan](research/quant-evolve-nob/PLAN.md) · [Results](research/quant-evolve-nob/RESULTS.md) · [Phase status](research/quant-evolve-nob/PHASE_STATUS.md) · [Error log](research/quant-evolve-nob/ERROR_LOG.md) · [Manuscript](research/quant-evolve-nob/MANUSCRIPT.md) · [Activity log](research/quant-evolve-nob/INTERACTION_LOG.md)
