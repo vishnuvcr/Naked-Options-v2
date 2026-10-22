@@ -28,9 +28,9 @@
     ]
   },
   "experiment_counts": {
-    "technical_catalogue_experiments": 356,
+    "technical_metric_rows": 356,
     "technical_oos_prediction_rows": 148407,
-    "global_catalogue_experiments": 288,
+    "global_metric_rows": 288,
     "global_oos_prediction_rows": 140559,
     "arima_return_benchmark_rows": 3,
     "merged_metric_rows": 647,
