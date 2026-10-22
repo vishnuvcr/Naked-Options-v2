@@ -289,7 +289,7 @@ def load_frames():
         if path.name.startswith("probe_"): continue
         # Filename: flag_code_YYYYMMDD_YYYYMMDD_offset_side.json
         parts=path.stem.split("_")
-        if len(parts)<6: continue
+        if len(parts) != 5: continue
         try: flag=parts[0][:-1].upper(); code=int(parts[0][-1]); d0=parts[1]; d1=parts[2]; off=int(parts[3]); side=parts[4].upper()
         except Exception: continue
         if flag not in ("WEEK","MONTH") or side not in ("CALL","PUT"): continue
@@ -477,17 +477,27 @@ def backtest(u,o,expiry_flags):
     # Exact timestamp alignment is required; no nearest-bar substitution.
     opt_entries={}
     opt_exits={}
+    conflicted_entries=set()
+    conflicted_exits=set()
     for r in o.itertuples(index=False):
         fam=r.expiry_flag
         entry_key=(fam,r.side,int(r.offset),int(r.timestamp))
         val=(float(r.strike),float(r.open),float(r.iv) if math.isfinite(r.iv) else np.nan)
-        if entry_key not in opt_entries: opt_entries[entry_key]=val
-        else:
-            prev=opt_entries[entry_key]
-            if prev[0]!=val[0] or abs(prev[1]-val[1])>0.001: opt_entries.pop(entry_key,None)
+        if entry_key not in conflicted_entries:
+            if entry_key not in opt_entries:
+                opt_entries[entry_key]=val
+            else:
+                prev=opt_entries[entry_key]
+                if prev[0]!=val[0] or abs(prev[1]-val[1])>0.001:
+                    opt_entries.pop(entry_key,None)
+                    conflicted_entries.add(entry_key)
         exit_key=(fam,r.side,int(r.timestamp),round(float(r.strike),2))
-        if exit_key not in opt_exits: opt_exits[exit_key]=float(r.open)
-        elif abs(opt_exits[exit_key]-float(r.open))>0.001: opt_exits.pop(exit_key,None)
+        if exit_key not in conflicted_exits:
+            if exit_key not in opt_exits:
+                opt_exits[exit_key]=float(r.open)
+            elif abs(opt_exits[exit_key]-float(r.open))>0.001:
+                opt_exits.pop(exit_key,None)
+                conflicted_exits.add(exit_key)
     days=sorted(u.date.unique())
     split1=days[int(len(days)*0.60)] if len(days)>20 else days[-1]
     split2=days[int(len(days)*0.80)] if len(days)>20 else days[-1]
