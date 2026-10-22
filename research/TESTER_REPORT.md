@@ -86,3 +86,8 @@ As a sensitivity check only (not an untouched replication), the 981-row h1 holdo
 This average-loss improvement is not uniform day by day: 50.97% of daily QLIKE loss differences are positive (the model loss is worse than baseline on those days), and the overall median loss difference is +0.00662 even though the mean is -0.31560. A 10% winsorized mean remains negative (-0.10137), so the mean result is not explained by a single outlier; however, the sign of the median and the highly dispersed tails are material qualifications. The selected h1 finding should be described as an average QLIKE improvement with a skewed loss-differential distribution, not consistent daily superiority.
 
 The subperiod split is post hoc and partitions the same final holdout; these results are descriptive sensitivity evidence, not independent-period replication. Preserve the original p-values and do not upgrade the final gate until the corrected run's artifact has been reviewed.
+
+
+## QLIKE interpretation caveat — 2026-10-22
+
+The pipeline trains the h1 volatility model on absolute next-session log return and then squares the target, forecast and baseline before applying QLIKE. This makes the scored realized quantity (r_{t+1}^2), but the model forecast is the square of a fitted absolute-return estimate, not a separately trained conditional-variance estimate. Therefore the reported improvement is metric-specific evidence for a variance-scaled volatility proxy; it should not be described as a fully calibrated conditional-variance forecast without additional validation.
