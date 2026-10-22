@@ -76,3 +76,6 @@ The selected global ExtraTrees h1 volatility-proxy model was evaluated in four e
 All four mean differences are negative in this diagnostic. However, the daily loss differential is skewed: its median is +0.00662 and 50.97% of days have positive model-minus-baseline loss (worse model score), despite the mean of −0.31560. The 10% winsorized mean remains negative (−0.10137). Therefore the selected average QLIKE result is not consistent daily superiority; it is sensitive to the magnitude of tail outcomes. The within-holdout splits do not replace a future untouched-period replication.
 
 These checks were calculated from run #39699761966's saved predictions, before the corrected artifact was available. The artifact-level reproduction utility is [`research/audits/audit_nifty_predictions.py`](audits/audit_nifty_predictions.py).
+
+
+Supplemental figure: [`volatility_qlike_subperiod_sensitivity.svg`](figures/volatility_qlike_subperiod_sensitivity.svg).
