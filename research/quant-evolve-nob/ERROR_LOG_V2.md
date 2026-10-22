@@ -60,3 +60,12 @@ This log records concrete defects, workflow outcomes and protocol deviations. It
 The eligible weekly-only acquisition run #39838508682 failed closed. Dhan returned HTTP 401 with error code DH-901, indicating an invalid or expired access token. The bounded retry could not verify expiry support or retrieve historical 5-minute underlying bars. Historical acquisition is incomplete.
 
 **Remediation:** preserve the partial cache; renew the token or integrate a legally usable alternate source with explicit expiry/contract fields and underlying history. Do not run candidate fitness until the Phase 2 data gate passes. Status: source blocker confirmed for this run; remediation required.
+
+
+### QE-NOB2-E034 — 2026-10-23 — HIGH
+
+The bounded acquisition used a manually generated `DHAN_ACCESS_TOKEN`, which expired and caused Dhan HTTP 401 DH-901. The RenewToken endpoint only refreshes active web-generated tokens, so it cannot recover an already expired token, and a renewed token stored only inside one job would not persist into future jobs.
+
+**Correction:** added a TOTP-based token-generation helper using Dhan's documented `/app/generateAccessToken` endpoint and a profile validation request; the data workflow runs it before acquisition and exports the fresh token only to that job's environment. Required repository secrets: `DHAN_CLIENT_ID`, `DHAN_PIN`, `DHAN_TOTP_SECRET`. Tokens and secret values must never be logged or committed.
+
+**Verification:** code and workflow committed; RFC test workflow result and live Dhan credential/profile verification are pending. Do not claim automated renewal works until those gates pass. Status: IMPLEMENTED; VALIDATION PENDING.
