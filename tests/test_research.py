@@ -60,3 +60,9 @@ def test_merge_results_skips_empty_or_headerless_csv(tmp_path):
     assert frame is not None
     assert list(frame.columns) == ["metric", "value"]
     assert frame.iloc[0]["metric"] == "mae"
+
+
+def test_sequence_model_metadata_matches_actual_epoch_budget():
+    source = (Path(__file__).resolve().parents[1] / "scripts" / "run_experiments.py").read_text(encoding="utf-8")
+    assert "model.set_params(epochs=3)" in source
+    assert '"epochs":3' in source
