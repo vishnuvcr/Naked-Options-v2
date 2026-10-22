@@ -203,8 +203,8 @@ def simulate_strategy(underlying: pd.DataFrame, options: pd.DataFrame, features:
         local_day = pd.to_datetime(entry_ts, unit="s", utc=True).tz_convert("Asia/Kolkata").date()
         day_key = local_day.isoformat()
         day_end_idx = session_end_idx.get(day_key)
-        if day_end_idx is None or entry_idx >= day_end_idx:
-            # Refuse entries without a same-session exit bar.
+        if day_end_idx is None or entry_idx > day_end_idx:
+            # Refuse entries outside a session's valid bar grid.
             missing_entries += 1
             continue
         desired_exit_idx = entry_idx + int(strategy.hold_bars)
