@@ -391,10 +391,8 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 - Final result: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**, `pnl_permitted=false`; no options P&L or trading recommendation.
 
 
-### QE-DELIVERY-39699761966 — in-progress checkpoint
-- Target data validation: success.
-- Target construction/scoring tests: success, including the empty/headerless CSV merge helper regression test.
-- Feature matrix: success.
-- Technical-only model catalogue: completed successfully.
-- Global-augmented model catalogue: in progress at this checkpoint.
-- ARIMA benchmark, result merge, final run status and artifact publication: not yet verified. No forecast result is reported until those stages complete.
+### QE-DELIVERY-39699761966 — completed prediction run
+- Workflow: success; data validation, target/scoring tests, feature matrix, technical catalogue, global catalogue, ARIMA benchmark, merge, status page and report artifact publication completed.
+- Outputs: 647 metric rows; 299 OOS candidate comparisons; 291,886 merged prediction rows including ARIMA.
+- Familywise audit: eight improvements survived Holm across all 299 comparisons; all were one-session volatility-proxy QLIKE comparisons. Selected global ExtraTrees p=4.26e-7 after this correction.
+- No robust return/direction edge; no strategy or options P&L is authorized. See [run summary](../reports/nifty_prediction_run_39699761966_summary.json) and [results](RESULTS.md).
