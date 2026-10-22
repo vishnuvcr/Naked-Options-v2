@@ -59,3 +59,11 @@ def test_categorical_feature_rejects_numeric_comparison():
     frame = pd.DataFrame({"time_of_day_bucket": ["open", "morning"]})
     with pytest.raises(ValueError):
         evaluator._predicate_mask(frame, p)
+
+
+def test_sparse_signals_still_enter_on_next_market_bar():
+    frame = pd.DataFrame({"timestamp": [1, 2, 3, 4, 5],
+                          "nifty_return_1": [0.1, -0.1, -0.2, 0.2, -0.1]})
+    result = evaluator.evaluate_signals(frame, strategy(), {"nifty_return_1"})
+    assert result["timestamp"].tolist() == [1, 4]
+    assert result["entry_timestamp"].tolist() == [2, 5]
