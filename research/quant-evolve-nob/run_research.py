@@ -977,7 +977,7 @@ def write_outputs(probe, acquisition, underlying, summary, errors):
     pd.DataFrame(summary["ledger"]).to_csv(OUT/"trade_ledger_sanitized.csv",index=False)
     selected=candidates[candidates.selected_by_validation==True]
     if "validation_mean_daily_net_rupees" in selected.columns:
-        selected=selected.sort_values("validation_mean_daily_net_rupees",ascending=False)
+        selected=selected.sort_values(["validation_mean_daily_net_rupees","validation_sharpe_ratio"],ascending=False)
     keep=["candidate_id","candidate_key","family","hypothesis","generation_created","island_created","origin","evolution_fitness",
           "validation_mean_daily_net_rupees","validation_trade_count","oos_trade_count",
           "oos_mean_daily_net_rupees","oos_median_daily_net_rupees","oos_daily_net_ci95_low","oos_daily_net_ci95_high",
@@ -1012,7 +1012,9 @@ def write_outputs(probe, acquisition, underlying, summary, errors):
     (OUT/"run_summary.json").write_text(json.dumps(report,indent=2,default=str),encoding="utf-8")
     title="# QE-NOB-1.0 — fresh QuantEvolve-style naked option buying"
     body=[title,"",f"**Run status:** {report['status']}  ",f"**Date range:** {report.get('start_date')} to {report.get('end_date')}  ",
-          f"**Candidates tested:** {report.get('candidate_count')}  ",f"**Candidates passing the preliminary statistical gate:** {passing}  ",
+          f"**Candidates tested:** {report.get('candidate_count')}  ",f"**Candidates meeting statistical gate:** {statistical_candidates}  ",
+          f"**Candidates meeting strict execution/promotion gate:** {promoted}  ",
+          f"**Basic data quality gate:** {basic_quality_pass}  ",f"**Execution data gate:** {execution_ready}  ",
           f"**Decision:** {report['decision']}","",
           "## Important execution-quality limitation",
           "The Dhan rolling endpoint supplies OHLC/IV/OI/volume/spot in an ATM-relative layout, not historical bid/ask depth. P&L therefore uses next-bar open with prespecified adverse slippage; this is not proof of executable fills. Historical expiry-level lot-size mapping still requires a contract-master reconciliation. The full promotion gate cannot pass until historical execution quotes and contract identity are verified. Even a future PASS only permits prospective paper testing, never automatic live trading.",
