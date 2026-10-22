@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NIFTY 50 Prediction Research — NIFTY-PRED-1.0</title>
+<title>QuantEvolve Naked Option Buying Research — QE-NOB-1.0</title>
 <style>
 body{font:16px/1.55 system-ui,sans-serif;max-width:1100px;margin:2rem auto;padding:0 1rem;color:#202124}
 h1,h2{line-height:1.25}table{border-collapse:collapse;width:100%;font-size:.92rem}
@@ -13,6 +13,14 @@ img{max-width:100%;height:auto}a{color:#1558a6}.muted{color:#555}
 </style>
 </head>
 <body>
+<section id="qe-nob" class="note">
+<h2>Fresh study: QuantEvolve naked NIFTY option buying (QE-NOB-1.0)</h2>
+<p><strong>Scope reset: 22 October 2026.</strong> This is a new, isolated research track. Earlier prediction and option-buying scores are excluded from candidate seeding, fitness, and evidence. The research tests long calls, long puts, long ATM straddles and long OTM strangles only; no short-option legs.</p>
+<p>Protocol: maximum 600 candidates, 25 generations, distinct data cache, Paytm Money costs and date-effective taxes, 0/25/50/100/200 bps slippage stress, chronological out-of-sample evaluation, block-bootstrap intervals and Holm correction. Rolling option OHLC without historical bid/ask is not treated as execution-validated. No strategy is yet proven profitable.</p>
+<p><a href="https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v1-developer">Developer branch</a> · <a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v1-developer/research/quant-evolve-nob/RESEARCH_PLAN.md">Research plan</a> · <a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v1-developer/research/quant-evolve-nob/RESULTS.md">Results</a> · <a href="https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39710205711">Current workflow</a></p>
+<p><strong>Status:</strong> Fresh source/data acquisition and integrity checks in progress. The prior NIFTY prediction page below is retained as an archive only, not evidence for QE-NOB-1.0.</p>
+</section>
+
 <h1>Fresh NIFTY 50 Prediction Research</h1>
 <p><strong>Protocol:</strong> NIFTY-PRED-1.0 · <strong>Scope:</strong> forecasting only; no trading strategy.</p>
 <div class="note"><strong>Corrective workflow #39704420478 completed — 2026-10-22.</strong> Corrective workflow <a href="https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39704420478">#39704420478</a> completed with 277,633 prediction rows and zero missing target dates. Corrected metrics show no robust return/direction edge after Holm correction; selected level forecasts underperform the historical-mean baseline. Global h1 volatility-proxy comparisons are promising within the screened holdout but require future-period replication and stability diagnostics. No trading signal or strategy is approved. See the <a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/FRESH_PREDICTION_AUDIT_2026-10-22.md">audit</a> and <a href="https://github.com/vishnuvcr/Naked-Options-v2/blob/main/research/audits/audit_nifty_predictions.py">artifact-audit utility</a>.</div>
