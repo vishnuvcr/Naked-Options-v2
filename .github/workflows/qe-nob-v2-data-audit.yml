@@ -86,7 +86,6 @@ jobs:
       - name: Acquire source data without candidate fitness or P&L
         timeout-minutes: 160
         env:
-          DHAN_ACCESS_TOKEN: ${{ env.DHAN_ACCESS_TOKEN }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           REFRESH_DATA: ${{ inputs.refresh_data }}
           PYTHONUNBUFFERED: "1"
