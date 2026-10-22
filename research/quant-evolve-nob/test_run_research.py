@@ -176,8 +176,8 @@ def test_oos_gate_requires_baseline_and_two_period_consistency():
 
 def test_v2_acquisition_offsets_and_timeout_budget_are_bounded():
     assert qe.OPTION_OFFSETS == (-1, 0, 1)
-    assert qe.OPTION_REQUEST_TIMEOUT_SECONDS == 25
-    assert qe.OPTION_REQUEST_ATTEMPTS == 2
+    assert qe.OPTION_REQUEST_TIMEOUT_SECONDS == 40
+    assert qe.OPTION_REQUEST_ATTEMPTS == 4
     assert qe.MAX_CONSECUTIVE_OPTION_FAILURES == 10
 
 
