@@ -88,3 +88,36 @@ def test_crossover_records_both_parents_and_is_valid():
 def test_mutation_respects_feature_gate():
     with pytest.raises(ValueError):
         mutate(base(), random.Random(1), available_features={"nifty_return_3"})
+
+
+def test_numeric_operator_rejects_string_threshold():
+    invalid = Strategy(**{**base().__dict__, "predicates": (
+        Predicate("nifty_return_3", "gt", "up"),
+    )})
+    with pytest.raises(ValueError, match="numeric threshold"):
+        validate_strategy(invalid)
+
+
+def test_categorical_feature_rejects_numeric_operator():
+    invalid = Strategy(**{**base().__dict__, "predicates": (
+        Predicate("time_of_day_bucket", "gt", 1.0),
+    )})
+    with pytest.raises(ValueError, match="categorical feature"):
+        validate_strategy(invalid)
+
+
+def test_bucket_bounds_must_be_ordered():
+    invalid = Strategy(**{**base().__dict__, "predicates": (
+        Predicate("nifty_return_3", "in_bucket", 1.0, -1.0),
+    )})
+    with pytest.raises(ValueError, match="upper bound"):
+        validate_strategy(invalid)
+
+
+def test_mutation_repairs_feature_type_mismatches():
+    categorical = Strategy("signal", (Predicate("time_of_day_bucket", "regime_is", "morning"),),
+                           "and", "CALL", "WEEK1", "ATM", 6,
+                           (ExitRule("time_exit"),), "categorical seed")
+    for seed in range(50):
+        child = mutate(categorical, random.Random(seed))
+        validate_strategy(child)
