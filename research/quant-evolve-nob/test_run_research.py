@@ -172,3 +172,30 @@ def test_oos_gate_requires_baseline_and_two_period_consistency():
     assert "oos_part1_mean_daily_net_rupees" in source
     assert "oos_part2_mean_daily_net_rupees" in source
     assert "execution_data_gate_reason" in source
+
+
+def test_v2_acquisition_offsets_and_timeout_budget_are_bounded():
+    assert qe.OPTION_OFFSETS == (-2, -1, 0, 1, 2)
+    assert qe.OPTION_REQUEST_TIMEOUT_SECONDS == 25
+    assert qe.OPTION_REQUEST_ATTEMPTS == 2
+    assert qe.MAX_CONSECUTIVE_OPTION_FAILURES == 10
+
+
+def test_option_acquisition_stops_after_consecutive_failures_and_preserves_cache(tmp_path, monkeypatch):
+    opt_cache = tmp_path / "options"
+    opt_cache.mkdir()
+    monkeypatch.setattr(qe, "OPT_CACHE", opt_cache)
+    monkeypatch.setattr(qe.time, "sleep", lambda _: None)
+    monkeypatch.setattr(qe, "chunks", lambda start, end, days: iter([(start, min(start + qe.timedelta(days=30), end))]))
+    calls = {"n": 0}
+
+    def failing_api(*args, **kwargs):
+        calls["n"] += 1
+        raise RuntimeError("simulated temporary source failure")
+
+    monkeypatch.setattr(qe, "api_post", failing_api)
+    result = qe.retrieve_options("not-a-real-token", [{"flag": "WEEK", "code": 1}])
+    assert result["status"] == "BLOCKED_NO_OPTION_DATA"
+    assert result["consecutive_failures"] == qe.MAX_CONSECUTIVE_OPTION_FAILURES
+    assert calls["n"] == qe.MAX_CONSECUTIVE_OPTION_FAILURES * qe.OPTION_REQUEST_ATTEMPTS
+    assert not list(opt_cache.glob("*.json"))
