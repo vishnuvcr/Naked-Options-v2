@@ -381,3 +381,11 @@ Initial workflow failure was an infrastructure configuration error (setup-python
 ### QE-DELIVERY-39676907604 — 2026-10-21T21:14:46.559363+00:00
 - Prediction run status: **LLM_EVOLUTION_NOT_REQUESTED**; sanitized reason: automatic workflow ran offline gate only; no model-generation API call was requested.
 - No valid QuantEvolve prediction holdout result is claimed.
+
+
+### QE-DELIVERY-39675422599 — Dhan sample retrieved, fixed-contract gate remains blocked
+- Workflow status: success. One API request; no retries.
+- Dhan: HTTP 200, 1,155 minute bars, aligned OHLC/volume/IV/OI/strike/spot/timestamps; six distinct strikes across the rolling ATM series; timestamp order monotonic.
+- Missing identity fields: explicit expiry and lot size are absent. This is not a verified fixed-contract dataset; OHLC bars do not establish executable bid/ask fills.
+- HF options sample: 3 expiry files, 986,041 rows; row-level sample checks pass and lot-size circular mappings are recorded for 75, 50 and 65. Full-history and official contract-master gates remain incomplete.
+- Final result: **BLOCKED_NO_VERIFIED_CONTRACT_DATA**, `pnl_permitted=false`; no options P&L or trading recommendation.
