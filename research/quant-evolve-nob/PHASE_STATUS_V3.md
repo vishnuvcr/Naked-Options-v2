@@ -51,3 +51,10 @@ No new strategy has been empirically tested. QE-NOB-2.0 OOS outcomes must not be
 - Corrected the test to assert the exact preregistered wording already present in `STRATEGY_HYPOTHESIS_LAB_V3.md` (commit `79a81636803ba56f2aea638368a91e703504809e`). Added the event to `ERROR_LOG_V3.md` (commit `92f62c371be7f25f8497b0a8929048e62d5a058e`).
 - Waiting for the branch push-triggered regression workflow to rerun; pass is not claimed until the new run is green.
 - Phase 1 fresh-data feasibility remains BLOCKED / NOT RUN, independent of this test correction.
+
+
+## Verified workflow results — 2026-10-23
+
+- Regression workflow run [39913031868](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39913031868) completed SUCCESS. All compile steps and the pytest step passed after the assertion wording correction.
+- Fresh-data probe workflow run [39912434371](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39912434371) completed SUCCESS and uploaded sanitized artifact `qe-nob-v3-sanitized-data-probe` (artifact ID `12482469675`). Probe reported status `PASS`, one supported weekly expiry source (728 rows), and underlying probe `PASS` with 709 rows.
+- Important limitation: this was only a small credential/schema probe, not full fresh historical acquisition or stable dated contract/quote validation. Therefore Phase 1 remains BLOCKED pending complete data-coverage, timestamp and contract-identity checks. No empirical strategy testing has started.
