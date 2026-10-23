@@ -41,3 +41,5 @@ No new strategy has been empirically tested. QE-NOB-2.0 OOS outcomes must not be
 - This workflow runs Python compilation and the source-client pytest suite, including the two QE-NOB-3.0 plan-gate assertions.
 - Workflow execution status could not be retrieved through the available GitHub integration, so passing tests are not claimed.
 - Fresh data gate remains BLOCKED. No new strategy has been empirically tested; do not start acquisition until auth and source-client gates are verified.
+
+- Added `.github/workflows/qe-nob-v3-data-probe.yml` (commit `7858c6b9b0fe0507a128989b6ff809c5e91d71a1`). It runs only the source credential/schema probe, not bulk acquisition, and uploads the sanitized probe JSON as a short-retention artifact. Secrets are passed as environment variables and must never be printed. The workflow run/result remains unverified through the current integration.
