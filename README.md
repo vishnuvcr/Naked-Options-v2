@@ -896,3 +896,8 @@ The latest [data-probe workflow](https://github.com/vishnuvcr/Naked-Options-v2/a
 - [NSE daily bhavcopy feasibility workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009611140): **SUCCESS**. Three daily UDiFF archives passed schema checks (5,865–5,941 NIFTY option rows per sample day); one candidate date was not found.
 - [Regression checks](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009667755): **SUCCESS**.
 - This establishes a feasible daily contract/date/OHLC/volume/OI source, not intraday execution. Strategy discovery remains blocked pending defensible Dhan-to-contract mapping and quote/fill evidence. See [phase status](research/quant-evolve-nob/PHASE_STATUS_V3.md), [error log](research/quant-evolve-nob/ERROR_LOG_V3.md), and [alternative-source audit](research/quant-evolve-nob/ALTERNATIVE_DATA_SOURCE_AUDIT_V3.md).
+
+
+### QE-NOB-3.0 final disposition (2026-10-24)
+
+**Disposition: DATA-LIMITED.** The bounded public NSE daily archive schema probe passed for three sample sessions, and regression checks passed. However, stable dated mapping of Dhan rolling option bars and historical executable bid/ask/fill evidence remain unresolved. In accordance with the preregistered stopping rule, no strategy search or performance evaluation was started. Read the [final research disposition manuscript](research/quant-evolve-nob/FINAL_RESEARCH_MANUSCRIPT_V3.md), [phase status](research/quant-evolve-nob/PHASE_STATUS_V3.md), [error log](research/quant-evolve-nob/ERROR_LOG_V3.md), and [alternative source audit](research/quant-evolve-nob/ALTERNATIVE_DATA_SOURCE_AUDIT_V3.md).
