@@ -853,3 +853,10 @@ The QE-NOB-2.0 acquisition workflow now has a TOTP-based token bootstrap using D
 Implementation: [token helper](research/quant-evolve-nob/dhan_auth.py) · [RFC regression tests](research/quant-evolve-nob/test_dhan_auth.py) · [acquisition workflow](.github/workflows/qe-nob-v2-data-audit.yml) · [phase status](research/quant-evolve-nob/PHASE_STATUS_V2.md) · [error log](research/quant-evolve-nob/ERROR_LOG_V2.md).
 
 **Verification state:** implementation committed; live authentication is pending the three secrets and a successful workflow run. Research Phase 2 remains blocked until token/profile validation and the historical data acquisition/cache gate pass.
+
+
+## QE-NOB-2.0 final manuscript — 2026-10-23
+
+The bounded evolutionary discovery run is now documented in the [final research manuscript](research/quant-evolve-nob/FINAL_RESEARCH_MANUSCRIPT.md). The report includes research questions, aims/objectives, chronological methodology, feature definitions, cost assumptions, statistical methods, OOS results, cost sensitivity table/chart, discussion, strengths, limitations, conclusion, future directions and appendices.
+
+**Final disposition: DATA-LIMITED.** Of 20 frozen finalists, 12 passed the statistical gate after Holm correction and 0 passed the execution gate. Historical rolling option bars do not establish stable dated contract identity or executable bid/ask/depth/fills. No paper/live trading is approved. See [artifact integrity decision](research/quant-evolve-nob/ARTIFACT_INTEGRITY_DECISION.md), [simulator/feature audit](research/quant-evolve-nob/SIMULATOR_FEATURE_AUDIT.md), [phase status](research/quant-evolve-nob/PHASE_STATUS.md), and [error log](research/quant-evolve-nob/ERROR_LOG.md).
