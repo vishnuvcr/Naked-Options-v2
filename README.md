@@ -875,3 +875,8 @@ A new bounded research branch proposes six falsifiable strategy families, with a
 - [Fresh-data probe](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39912434371): **SUCCESS**; sanitized artifact uploaded. Probe reports weekly source availability and a small underlying schema sample.
 - This probe is **not** full historical data validation: stable dated option-contract identity, complete coverage and quote-level execution data are not yet verified. Strategy discovery remains blocked pending those checks.
 - Details: [QE-NOB-3.0 phase status](research/quant-evolve-nob/PHASE_STATUS_V3.md) and [error log](research/quant-evolve-nob/ERROR_LOG_V3.md).
+
+
+### Strict data-gate result (2026-10-23)
+
+The latest [data-probe workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39933612441) completed successfully as a workflow, but the research gate correctly returned **BLOCKED_DATA_LIMITED**: 746 underlying probe rows and 765 rolling option rows were available in the small probe, but stable dated contract identity and executable bid/ask fields were absent. This is not a complete historical data validation and no strategy discovery has started. See [QE-NOB-3.0 phase status](research/quant-evolve-nob/PHASE_STATUS_V3.md) and [error log](research/quant-evolve-nob/ERROR_LOG_V3.md).
