@@ -86,3 +86,12 @@ No new strategy has been empirically tested. QE-NOB-2.0 OOS outcomes must not be
 - Compressed public sample files and manifest were uploaded as artifact [12526450061](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009611140/artifacts/12526450061). This is a recent 3-session schema sample, not historical coverage validation.
 - [Regression workflow 40009667755](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009667755) completed SUCCESS including Python compile check for the NSE probe.
 - Decision: NSE daily contract identity/schema route is feasible. However daily data do not establish 5-minute fills or historical bid/ask, and Dhan rolling option records still lack explicit stable dated identity. Do a bounded contract-mapping check only if exact Dhan mapping semantics can be established; otherwise close Phase 1 DATA-LIMITED and do not start the 600-candidate search.
+
+
+## Final bounded disposition — 2026-10-24
+
+- Phase 1 (fresh data feasibility): **CLOSED — DATA-LIMITED** for QE-NOB-3.0. Official NSE daily schema feasibility passed on three recent archives, but full historical coverage, exact Dhan rolling-series-to-expiry mapping and historical executable bid/ask/fill evidence remain unverified/unavailable in this bounded study.
+- Phases 2–6: **NOT STARTED**. No feature grammar, simulator, candidate discovery, frozen OOS evaluation or strategy-performance analysis was run. This avoids false claims and does not reuse the sealed QE-NOB-2.0 OOS period.
+- Final manuscript: [FINAL_RESEARCH_MANUSCRIPT_V3.md](FINAL_RESEARCH_MANUSCRIPT_V3.md). It records methods, results, statistics not performed, discussion, strengths, limitations, conclusion, and future directions.
+- Workflow checks: [NSE probe](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009611140) SUCCESS; [regression workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009667755) SUCCESS.
+- Protocol stopping rule applied. Any future effort to acquire historical intraday quotes must be a new data-feasibility/protocol version; no strategy search is authorized under QE-NOB-3.0 without passing the data gate.
