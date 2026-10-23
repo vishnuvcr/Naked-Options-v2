@@ -867,3 +867,11 @@ The bounded evolutionary discovery run is now documented in the [final research 
 A new bounded research branch proposes six falsifiable strategy families, with a strict fresh-data gate and no reuse of QE-NOB-2.0's examined OOS period. See [hypothesis plan](research/quant-evolve-nob/STRATEGY_HYPOTHESIS_LAB_V3.md), [phase status](research/quant-evolve-nob/PHASE_STATUS_V3.md), and [v3 error log](research/quant-evolve-nob/ERROR_LOG_V3.md). Regression workflow: [.github/workflows/qe-nob-v3-hypothesis-tests.yml](.github/workflows/qe-nob-v3-hypothesis-tests.yml). Empirical testing remains blocked until authentication, fresh-data coverage and stable dated contract identity pass. No new strategy has been tested or approved for trading.
 
 - [Fresh-data eligibility probe workflow](.github/workflows/qe-nob-v3-data-probe.yml): bounded manual/push probe using repository secrets, sanitized artifact only, no bulk acquisition. Its execution has not yet been verified.
+
+
+### Latest QE-NOB-3.0 verification (2026-10-23)
+
+- [Regression workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39913031868): **SUCCESS** after fixing a brittle plan-text assertion.
+- [Fresh-data probe](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39912434371): **SUCCESS**; sanitized artifact uploaded. Probe reports weekly source availability and a small underlying schema sample.
+- This probe is **not** full historical data validation: stable dated option-contract identity, complete coverage and quote-level execution data are not yet verified. Strategy discovery remains blocked pending those checks.
+- Details: [QE-NOB-3.0 phase status](research/quant-evolve-nob/PHASE_STATUS_V3.md) and [error log](research/quant-evolve-nob/ERROR_LOG_V3.md).
