@@ -1,3 +1,13 @@
+# Naked Options v2 — Research status
+
+**Latest active track:** QE-NOB-2.0 bounded acquisition and discovery. [Developer branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v2-discovery-developer) · [Phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS.md) · [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG.md) · [Acquisition/discovery workflow #39865627143](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39865627143) · [Sanitized reports artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39865627143/artifacts/12464009881)
+
+**Latest status (2026-10-23): DATA-LIMITED.** TOTP-based Dhan authentication and bounded acquisition completed successfully. Cache has 819 JSON files (25 underlying, 794 option); audit read 92,891 underlying rows and 467,834 option rows, with zero duplicate groups, 99.9897% option timestamp coverage, and 100% row-grid coverage. Bounded discovery evaluated 1,185 candidates and found 12 statistical-screen candidates. This is **not** a verified profitable or executable strategy: exact exchange contract identity, historical bid/ask/depth and actual broker fills remain unverified; macro/regime and sentiment feature coverage is incomplete. Execution gate is false. Do not authorize paper/live trading from this result.
+
+The primary cost assumptions are 50 bps adverse slippage per side and ₹10 brokerage per order, with stress cases up to 200 bps and ₹20/order. They are model assumptions, not observed fills. Review candidate-level OOS and cost-stress reports in the linked artifact before any further promotion decision. The timeout recovery is recorded as closed in the error log; execution-data limitations remain open.
+
+---
+
 # Fresh QuantEvolve Research: Naked NIFTY Option Buying (QE-NOB-1.0)
 
 **Current research track:** [QE-NOB-1.0 isolated developer branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v1-developer) · [Research plan](research/quant-evolve-nob/RESEARCH_PLAN.md) · [Research questions](research/quant-evolve-nob/RESEARCH_QUESTIONS.md) · [Phase status](research/quant-evolve-nob/PHASE_STATUS.md) · [Literature review](research/quant-evolve-nob/LITERATURE_REVIEW.md) · [Results](research/quant-evolve-nob/RESULTS.md) · [Errors](research/quant-evolve-nob/ERROR_LOG.md)
