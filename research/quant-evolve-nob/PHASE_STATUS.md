@@ -109,3 +109,14 @@ Last updated: 2026-10-23 after source audit.
 - **Decision unchanged: DATA-LIMITED.** Exact dated contract identity and executable historical bid/ask/depth/fill evidence are not established. Do not approve paper/live trading or continue unbounded parameter search.
 
 Last updated: 2026-10-23 after artifact integrity checks.
+
+
+## Final bounded research disposition — 2026-10-23
+
+- [FINAL_RESEARCH_MANUSCRIPT.md](FINAL_RESEARCH_MANUSCRIPT.md) published with abstract, research questions, aims/objectives, methods, statistical analysis, OOS tables, cost sensitivity chart, discussion, strengths/limitations, conclusion, future work and appendices.
+- Bounded source feasibility finding: the active Dhan rolling WEEK endpoint and cached OHLC data support the completed proxy experiment, but the audit did not establish stable dated exchange-contract identity or historical executable bid/ask/depth/fill data. Public catalogue hits with unclear/non-allowlisted licensing were not accepted as replacement data. This does not prove no compatible source exists; it means none was verified by this run.
+- Search and OOS analysis are complete for the predeclared bounded run. Statistical gate: 12/20; execution gate: 0/20. The 200-row cost-stress grid and all 20 finalist signature joins were verified.
+- **Final status: DATA-LIMITED / execution gate FAIL.** No paper or live trading approval. Do not continue optimizing against the existing OOS block. Reopen only under a separately bounded plan if contract-level executable historical data become available.
+- README and error log updated. No tester branch/report was created, in accordance with the explicit no-tester instruction.
+
+Last updated: 2026-10-23; final manuscript published.
