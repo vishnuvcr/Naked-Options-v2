@@ -294,3 +294,27 @@ def test_weekly_option_cache_window_requires_all_six_files_per_chunk(tmp_path, m
     audit = qe.audit_weekly_option_window(start, end)
     assert audit["status"] == "DATA_LIMITED"
     assert audit["missing_file_count"] == 1
+
+
+def test_qe_nob_v3_hypothesis_plan_has_six_families_and_fresh_data_gate():
+    plan = Path(__file__).with_name("STRATEGY_HYPOTHESIS_LAB_V3.md").read_text()
+    for heading in (
+        "### H1 — Failed opening-range breakout and reclaim",
+        "### H2 — Trend pullback and reclaim",
+        "### H3 — Volatility compression then expansion",
+        "### H4 — Opening-gap fade conditioned on regime",
+        "### H5 — Time-of-day conditional signal",
+        "### H6 — Option premium breakeven filter",
+    ):
+        assert heading in plan
+    assert "Do not substitute the old OOS period." in plan
+    assert "0/25/50/100/200 bps" in plan
+    assert "execution-data gates" in plan
+
+
+def test_qe_nob_v3_plan_keeps_empirical_testing_blocked_until_data_gate():
+    plan = Path(__file__).with_name("STRATEGY_HYPOTHESIS_LAB_V3.md").read_text()
+    status = Path(__file__).with_name("PHASE_STATUS_V3.md").read_text()
+    assert "Empirical testing: NOT STARTED" in plan
+    assert "Phase 1. Fresh data feasibility | BLOCKED / NOT RUN" in status
+    assert "No new strategy has been empirically tested." in plan
