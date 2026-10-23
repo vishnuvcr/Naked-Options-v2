@@ -12,6 +12,7 @@ on:
       - research/quant-evolve-nob/test_run_research.py
       - research/quant-evolve-nob/run_research.py
       - research/quant-evolve-nob/validate_fresh_data_gate.py
+      - research/quant-evolve-nob/probe_nse_bhavcopy.py
 
 permissions:
   contents: read
@@ -39,6 +40,7 @@ jobs:
         run: |
           python -m py_compile research/quant-evolve-nob/run_research.py
           python -m py_compile research/quant-evolve-nob/validate_fresh_data_gate.py
+          python -m py_compile research/quant-evolve-nob/probe_nse_bhavcopy.py
           python -m py_compile research/quant-evolve-nob/test_run_research.py
           python -m py_compile research/quant-evolve-nob/acquire_public_underlying.py
           python -m py_compile research/quant-evolve-nob/test_public_underlying_fallback.py
