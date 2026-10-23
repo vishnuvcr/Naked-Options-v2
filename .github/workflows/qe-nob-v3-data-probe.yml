@@ -43,6 +43,6 @@ jobs:
         with:
           name: qe-nob-v3-sanitized-data-probe
           path: |
-            research/quant-evolve-nob/output/source_probe.json
+            reports/quant_evolve_nob_v2/source_probe.json
           if-no-files-found: warn
           retention-days: 30
