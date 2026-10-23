@@ -77,3 +77,12 @@ No new strategy has been empirically tested. QE-NOB-2.0 OOS outcomes must not be
 - The probe checks dated symbol/expiry/strike/call-put/OHLC/volume/OI fields and NIFTY option row presence. It does not claim that daily data supports intraday fills.
 - The regression workflow now compiles the new probe. Workflow results are pending at the time of this commit; no success is claimed until checked.
 - Phase 1 remains BLOCKED pending this probe plus contract mapping and execution-data adequacy. No strategy discovery started.
+
+
+## Official NSE archive sample outcome — 2026-10-24
+
+- [NSE feasibility workflow 40009611140](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009611140) completed SUCCESS. It fetched three official daily F&O UDiFF ZIP archives for 2026-10-22, 2026-10-21 and 2026-10-19; 2026-10-20 was not found (likely no archive/holiday/source miss; not inferred as a market holiday).
+- Validated 39,343; 38,777; and 38,485 total CSV rows, including 5,941; 5,865; and 5,879 rows detected as NIFTY option rows. Required daily fields were present in all three fetched samples: symbol, trade date, expiry, strike, option type, OHLC, volume and OI.
+- Compressed public sample files and manifest were uploaded as artifact [12526450061](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009611140/artifacts/12526450061). This is a recent 3-session schema sample, not historical coverage validation.
+- [Regression workflow 40009667755](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009667755) completed SUCCESS including Python compile check for the NSE probe.
+- Decision: NSE daily contract identity/schema route is feasible. However daily data do not establish 5-minute fills or historical bid/ask, and Dhan rolling option records still lack explicit stable dated identity. Do a bounded contract-mapping check only if exact Dhan mapping semantics can be established; otherwise close Phase 1 DATA-LIMITED and do not start the 600-candidate search.
