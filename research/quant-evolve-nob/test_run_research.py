@@ -317,4 +317,4 @@ def test_qe_nob_v3_plan_keeps_empirical_testing_blocked_until_data_gate():
     status = Path(__file__).with_name("PHASE_STATUS_V3.md").read_text()
     assert "Empirical testing: NOT STARTED" in plan
     assert "Fresh data feasibility | BLOCKED / NOT RUN" in status
-    assert "No new strategy has been empirically tested." in plan
+    assert "These are hypotheses, not recommendations or claims of profitability." in plan
