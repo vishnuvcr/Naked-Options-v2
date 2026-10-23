@@ -74,3 +74,14 @@ Last updated: 2026-10-23 after completed run #39865627143.
 - No independent tester branch/report is created, per user's instruction.
 
 Last updated: 2026-10-23 after candidate artifact audit.
+
+
+## Exact finalist rule extraction and archive diagnosis correction — 2026-10-23
+
+- Re-opened the actual sanitized ZIP from workflow #39865627143. `candidate_archive.json` contains 1,185 candidate records; the earlier claim that it contained only 300 was due to an incorrect local dictionary keyed on repeating island-local candidate IDs.
+- Correct join is by the finalist's `signature`; all 20 finalists resolve uniquely. The missing-definition claim QE-NOB2-E012 is withdrawn and marked closed in the error log.
+- Added [EXACT_FINALIST_RULES.md](EXACT_FINALIST_RULES.md) with exact predicates, ordered exit definitions, and stored OOS/cost-stress metrics for all 12 statistical-gate candidates.
+- Remaining review items: candidates 496 and 264 contain duplicate exit kinds; verify simulator exit handling and feature formulas/timestamps. These do not automatically invalidate the aggregate results, but their mechanics must be clarified before implementation.
+- Execution gate remains false for all finalists because stable dated contract identity and credible executable quote/fill evidence are not established. Do not promote to paper/live trading.
+
+Last updated: 2026-10-23 after exact finalist archive re-audit.
