@@ -50,3 +50,16 @@ A phase changes status only after its exit evidence exists. Workflow success alo
 - Final output: 600 unique candidates, four islands, nine generations; 0/600 statistical gate passes and 0 execution/promotion gate passes. Basic OHLC data-quality gate passed; execution-data gate failed due missing historical bid/ask/depth and unverified exact contract identity.
 - Final research decision: **NO_STATISTICAL_CANDIDATE / NO-GO for strategy approval**. No additional search expansion is authorized. See [corrected run results](../../reports/quant_evolve_nob_v1/RESULTS.md), [workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39774033025), and [frozen-candidate reprice audit](LOT_SIZE_REPRICE_AUDIT.md).
 - Independent tester: not performed, as explicitly declined by the user. This is developer-led research with automated checks only.
+
+
+## QE-NOB-2.0 acquisition/discovery checkpoint — 2026-10-23
+
+- Corrected bounded acquisition workflow [#39865627143](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39865627143) completed successfully after increasing Dhan request timeout to 40s and attempts to four with bounded backoff. Fresh TOTP authentication and profile validation passed.
+- Cache: 819 JSON files (25 underlying, 794 option); 92,891 underlying rows and 467,834 option rows read. Duplicate groups/conflicts: 0. Option timestamp coverage: 99.9897%; row-grid coverage: 100%.
+- Feature panel: 46,443 rows across 621 sessions. Seven price/time-derived features passed the coverage/variation gates; VWAP distance was excluded because no usable volume-derived values were present. Global markets, India VIX, option IV/OI, FII/DII, news/event and contract-level features are still absent.
+- Bounded discovery ran: 1,185 unique candidates, 4 islands, 20 generations, 20 finalists; 12 candidates passed the statistical screen. This is not evidence of executable profitability. `execution_gate_pass=false` because rolling OHLC cannot establish stable exchange contract identity, historical bid/ask/depth, or actual broker fills.
+- Chronology report in the run summary uses 621 training sessions, 207 validation sessions, and 208 OOS sessions (OOS dates 2025-02-25 to 2025-12-30). Verify candidate-level OOS statistics, cost-stress tables, and source failures in artifact [12464009881](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39865627143/artifacts/12464009881) before any promotion decision.
+- Primary modelled costs: 50 bps adverse slippage per side and ₹10/order brokerage; stress grid covers 0–200 bps and ₹10/₹20 per order. These are assumptions, not observed fills. Statistical gate allows further simulation only; no paper/live authorization.
+- Decision: **DATA-LIMITED; statistical candidate(s) found, executable profitability unverified**. Do not treat workflow success as strategy validation. Preserve this boundary in all downstream summaries.
+
+Last updated: 2026-10-23 after completed run #39865627143.
