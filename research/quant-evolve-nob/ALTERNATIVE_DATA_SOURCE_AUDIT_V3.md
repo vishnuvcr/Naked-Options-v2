@@ -27,3 +27,10 @@ Do not lower the standard by substituting daily settlement/close data for intrad
 3. Check whether the contract master can map Dhan rolling series to stable contracts for each timestamp. If not, explicitly reject this composite.
 4. Preserve cache checksums, source URLs, retrieval dates, and missingness summaries.
 5. Stop after this source feasibility gate if there is no lawful, reproducible route to adequate data; do not launch the 600-candidate search prematurely.
+
+
+## Automated NSE daily archive sample result — 2026-10-24
+
+The repository's bounded probe fetched three official NSE F&O UDiFF archives for 22, 21 and 19 October 2026. Each passed daily schema checks, with 5,865–5,941 NIFTY option rows per session and the expected date/expiry/strike/type/OHLC/volume/OI fields. One candidate date (20 October) was not found and is left as a source gap rather than assumed to be a holiday. See [workflow run](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009611140) and artifact [12526450061](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009611140/artifacts/12526450061).
+
+This supports daily contract/date schema feasibility only. It does not solve historical intraday bid/ask, order-book depth, executable fills, or stable mapping from Dhan's rolling ATM-relative series to a specific dated contract. The strategy execution gate remains blocked.
