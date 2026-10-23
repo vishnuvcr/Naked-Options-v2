@@ -33,3 +33,11 @@ No new strategy has been empirically tested. QE-NOB-2.0 OOS outcomes must not be
 - Existing GitHub Actions workflow is configured to run on pushes changing `test_run_research.py`; the workflow result has not been independently retrieved in this turn, so test pass is **not claimed**.
 - Dhan auth remains a prerequisite: repository secret values are not visible through this integration. Prior QE-NOB-2.0 status says the TOTP bootstrap still requires configured `DHAN_CLIENT_ID`, `DHAN_PIN`, and `DHAN_TOTP_SECRET` plus a successful profile-validation run. Do not start a long acquisition before auth tests pass.
 - Empirical strategy testing remains BLOCKED until fresh data coverage and stable contract mapping pass. Old OOS remains sealed.
+
+
+## Workflow wiring checkpoint — 2026-10-23
+
+- Added `.github/workflows/qe-nob-v3-hypothesis-tests.yml` (commit `1659953641a16d50778dfc05fedd87562e7a89d4`). It has `workflow_dispatch` and push triggers limited to this research branch and the relevant plan/test/source paths.
+- This workflow runs Python compilation and the source-client pytest suite, including the two QE-NOB-3.0 plan-gate assertions.
+- Workflow execution status could not be retrieved through the available GitHub integration, so passing tests are not claimed.
+- Fresh data gate remains BLOCKED. No new strategy has been empirically tested; do not start acquisition until auth and source-client gates are verified.
