@@ -1,0 +1,44 @@
+name: QE-NOB-3.0 hypothesis lab regression gates
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/qe-nob-v3-hypothesis-lab
+    paths:
+      - .github/workflows/qe-nob-v3-hypothesis-tests.yml
+      - research/quant-evolve-nob/STRATEGY_HYPOTHESIS_LAB_V3.md
+      - research/quant-evolve-nob/PHASE_STATUS_V3.md
+      - research/quant-evolve-nob/test_run_research.py
+      - research/quant-evolve-nob/run_research.py
+
+permissions:
+  contents: read
+
+jobs:
+  hypothesis-and-source-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout this branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-research.txt
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-research.txt scipy pandas numpy requests pytest
+      - name: Compile source and test modules
+        run: |
+          python -m py_compile research/quant-evolve-nob/run_research.py
+          python -m py_compile research/quant-evolve-nob/test_run_research.py
+          python -m py_compile research/quant-evolve-nob/acquire_public_underlying.py
+          python -m py_compile research/quant-evolve-nob/test_public_underlying_fallback.py
+      - name: Run source and QE-NOB-3.0 plan tests
+        run: pytest -q research/quant-evolve-nob/test_run_research.py research/quant-evolve-nob/test_public_underlying_fallback.py
