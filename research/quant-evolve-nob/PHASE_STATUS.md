@@ -63,3 +63,14 @@ A phase changes status only after its exit evidence exists. Workflow success alo
 - Decision: **DATA-LIMITED; statistical candidate(s) found, executable profitability unverified**. Do not treat workflow success as strategy validation. Preserve this boundary in all downstream summaries.
 
 Last updated: 2026-10-23 after completed run #39865627143.
+
+
+## Candidate reproducibility audit — 2026-10-23
+
+- Reviewed the sanitized artifact from run #39865627143 and extracted all 12 rows whose Holm-adjusted statistical gate is true. Candidate-level metrics and the 100 bps / ₹20 stress values are documented in [CANDIDATE_REPRODUCIBILITY_AUDIT.md](CANDIDATE_REPRODUCIBILITY_AUDIT.md).
+- **New blocker QE-NOB2-E012:** `candidate_archive.json` declares 1,185 unique candidates but includes only 300 candidate strategy objects. Fifteen of the 20 finalists cannot be matched to full strategy JSON. The OOS metrics CSV preserves predicates and exit *kinds*, but not all exact exit thresholds or exit priority.
+- The 12 candidates remain statistical-screen candidates only. All finalists have `execution_gate_pass=false`; historical contract identity, executable quote/fill evidence, and broker execution remain unverified.
+- Phase disposition remains **DATA-LIMITED**. Do not advance to paper/live trading. Next developer step is to repair archive serialization and add regression tests for candidate count, finalist coverage and complete exit definitions. Do not tune to the existing OOS period.
+- No independent tester branch/report is created, per user's instruction.
+
+Last updated: 2026-10-23 after candidate artifact audit.
