@@ -889,3 +889,10 @@ The latest [data-probe workflow](https://github.com/vishnuvcr/Naked-Options-v2/a
 - [Official NSE bhavcopy feasibility workflow](.github/workflows/qe-nob-v3-nse-bhavcopy.yml): checks up to three recent official F&O daily archives, caches small public sample ZIPs as a workflow artifact, and reports schema/row counts without treating daily prices as intraday execution data.
 - Probe code: [probe_nse_bhavcopy.py](research/quant-evolve-nob/probe_nse_bhavcopy.py). Regression workflow also compile-checks the probe.
 - Results are pending; strategy testing remains blocked until contract identity, historical coverage, and executable-price evidence are sufficient.
+
+
+### NSE public-source check — 2026-10-24
+
+- [NSE daily bhavcopy feasibility workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009611140): **SUCCESS**. Three daily UDiFF archives passed schema checks (5,865–5,941 NIFTY option rows per sample day); one candidate date was not found.
+- [Regression checks](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40009667755): **SUCCESS**.
+- This establishes a feasible daily contract/date/OHLC/volume/OI source, not intraday execution. Strategy discovery remains blocked pending defensible Dhan-to-contract mapping and quote/fill evidence. See [phase status](research/quant-evolve-nob/PHASE_STATUS_V3.md), [error log](research/quant-evolve-nob/ERROR_LOG_V3.md), and [alternative-source audit](research/quant-evolve-nob/ALTERNATIVE_DATA_SOURCE_AUDIT_V3.md).
