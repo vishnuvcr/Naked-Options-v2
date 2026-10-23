@@ -24,3 +24,12 @@ No new strategy has been empirically tested. QE-NOB-2.0 OOS outcomes must not be
 - Chronological train/inner validation, frozen candidates, one untouched OOS evaluation.
 - Session-block bootstrap, Holm correction, 0/25/50/100/200 bps slippage per side, ₹10/₹20 brokerage assumptions, dated statutory fees.
 - No live order placement, no paper-trading authorization, no tester branch.
+
+
+## Implementation checkpoint — 2026-10-23
+
+- Added two regression tests to the existing source-client test module to verify the six hypothesis families are present and that empirical testing remains blocked until the fresh-data gate passes.
+- Commit: `21fd5c9d9583d0259cc1ddaf6122aeae38095768`.
+- Existing GitHub Actions workflow is configured to run on pushes changing `test_run_research.py`; the workflow result has not been independently retrieved in this turn, so test pass is **not claimed**.
+- Dhan auth remains a prerequisite: repository secret values are not visible through this integration. Prior QE-NOB-2.0 status says the TOTP bootstrap still requires configured `DHAN_CLIENT_ID`, `DHAN_PIN`, and `DHAN_TOTP_SECRET` plus a successful profile-validation run. Do not start a long acquisition before auth tests pass.
+- Empirical strategy testing remains BLOCKED until fresh data coverage and stable contract mapping pass. Old OOS remains sealed.
