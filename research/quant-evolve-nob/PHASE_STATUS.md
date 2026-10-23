@@ -120,3 +120,14 @@ Last updated: 2026-10-23 after artifact integrity checks.
 - README and error log updated. No tester branch/report was created, in accordance with the explicit no-tester instruction.
 
 Last updated: 2026-10-23; final manuscript published.
+
+
+## Final bounded research disposition — 2026-10-23
+
+- Final manuscript: [FINAL_RESEARCH_MANUSCRIPT.md](FINAL_RESEARCH_MANUSCRIPT.md), including research questions, aims/objectives, methods, statistical analysis, OOS tables, cost sensitivity chart, discussion, strengths/limitations, conclusion, future directions and appendices.
+- The active Dhan rolling WEEK endpoint and cached OHLC data supported the proxy experiment, but stable dated contract identity and historical executable bid/ask/depth/fill data were not established. Public catalogue hits with unclear/non-allowlisted licensing were not adopted. This does not prove no compatible source exists; it means none was verified in this run.
+- Statistical gate: 12/20; execution gate: 0/20. The 200-row cost-stress grid and all 20 finalist signature joins were verified.
+- **Final status: DATA-LIMITED / execution gate FAIL.** No paper or live trading approval. Do not optimize against the existing OOS block. Reopen only under a separately bounded plan if contract-level executable historical data become available.
+- No tester branch/report was created, in accordance with the explicit no-tester instruction.
+
+Last updated: 2026-10-23; final manuscript published.
