@@ -69,3 +69,11 @@ No new strategy has been empirically tested. QE-NOB-2.0 OOS outcomes must not be
 - Next step: investigate lawful free/public and Dhan-supported routes for dated contract-level history with stable contract IDs and quote/fill evidence; validate provenance, completeness, timestamp integrity, and licensing before changing the gate.
 
 - Alternative-source audit added: [ALTERNATIVE_DATA_SOURCE_AUDIT_V3.md](ALTERNATIVE_DATA_SOURCE_AUDIT_V3.md). Official NSE daily contract-wise and bhavcopy data may help establish dated daily contract identity, while Dhan rolling history may support rolling OHLC/IV/OI research. Neither is assumed to supply historical intraday executable bid/ask. Next bounded step is schema/coverage feasibility, then stop if requirements remain unmet.
+
+
+## Next bounded public-source step — 2026-10-24
+
+- Added `probe_nse_bhavcopy.py` and `.github/workflows/qe-nob-v3-nse-bhavcopy.yml`. The workflow is manual and push-triggered, samples up to three recent official NSE F&O UDiFF bhavcopy archives, caches the small public ZIP samples, and uploads a schema/coverage report.
+- The probe checks dated symbol/expiry/strike/call-put/OHLC/volume/OI fields and NIFTY option row presence. It does not claim that daily data supports intraday fills.
+- The regression workflow now compiles the new probe. Workflow results are pending at the time of this commit; no success is claimed until checked.
+- Phase 1 remains BLOCKED pending this probe plus contract mapping and execution-data adequacy. No strategy discovery started.
