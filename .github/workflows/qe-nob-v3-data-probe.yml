@@ -8,6 +8,7 @@ on:
     paths:
       - .github/workflows/qe-nob-v3-data-probe.yml
       - research/quant-evolve-nob/run_research.py
+      - research/quant-evolve-nob/validate_fresh_data_gate.py
 
 permissions:
   contents: read
@@ -37,6 +38,9 @@ jobs:
       - name: Run credential and source schema probe only
         run: |
           python research/quant-evolve-nob/run_research.py --stage probe
+      - name: Audit stable contract identity and executable quote fields
+        if: always()
+        run: python research/quant-evolve-nob/validate_fresh_data_gate.py
       - name: Upload sanitized probe report
         if: always()
         uses: actions/upload-artifact@v4
@@ -44,5 +48,6 @@ jobs:
           name: qe-nob-v3-sanitized-data-probe
           path: |
             reports/quant_evolve_nob_v2/source_probe.json
+            reports/quant_evolve_nob_v2/fresh_data_gate_audit.json
           if-no-files-found: warn
           retention-days: 30
