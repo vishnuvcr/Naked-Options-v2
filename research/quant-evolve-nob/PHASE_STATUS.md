@@ -85,3 +85,15 @@ Last updated: 2026-10-23 after candidate artifact audit.
 - Execution gate remains false for all finalists because stable dated contract identity and credible executable quote/fill evidence are not established. Do not promote to paper/live trading.
 
 Last updated: 2026-10-23 after exact finalist archive re-audit.
+
+
+## Simulator and feature-timing audit — 2026-10-23
+
+- Added [SIMULATOR_FEATURE_AUDIT.md](SIMULATOR_FEATURE_AUDIT.md). Reviewed the actual feature builder, signal evaluator, option simulator and existing simulator tests.
+- Confirmed the opening-gap feature is signed: `(first_open - previous observed session close) / previous close`. Therefore `opening_gap_pct < 0.0025` includes negative gaps and small positive gaps; it is not an absolute-gap filter.
+- Confirmed `ema_fast_slow_sign` is {-1, 0, +1}; candidate 1008's `> -1` admits neutral and positive signs, not just bullish crossovers.
+- Confirmed features use current/past rows, opening-range values are withheld until the fourth row, and signals enter on the next bar within the same IST session. Timestamp units/bar-label semantics still require source validation.
+- Simulator reduces duplicate exit rules by the minimum threshold within each exit kind and gives stop priority if stop and target are both touched in the same OHLC bar. Existing tests cover stop, target and stop-over-target priority; duplicate-kind-specific regression coverage remains recommended.
+- Execution gate remains false: stable dated contract identity, historical bid/ask/depth and plausible executable fills are not established. Research disposition remains **DATA-LIMITED**; no paper/live approval.
+
+Last updated: 2026-10-23 after source audit.
