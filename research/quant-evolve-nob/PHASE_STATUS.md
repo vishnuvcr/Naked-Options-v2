@@ -97,3 +97,15 @@ Last updated: 2026-10-23 after exact finalist archive re-audit.
 - Execution gate remains false: stable dated contract identity, historical bid/ask/depth and plausible executable fills are not established. Research disposition remains **DATA-LIMITED**; no paper/live approval.
 
 Last updated: 2026-10-23 after source audit.
+
+
+## Artifact integrity checkpoint — 2026-10-23
+
+- Re-read the actual sanitized artifact: archive count 1,185/1,185 declared; 1,185 unique signatures; all 20 finalist signatures resolve exactly once.
+- Cost-stress grid contains 200 rows (20 finalists × 10 scenarios); every finalist has exactly one 100-bps-per-side / ₹20-per-order row.
+- Statistical gate: 12/20 finalists pass. Execution gate: 0/20 pass.
+- Full bounded findings and stopping rule: [ARTIFACT_INTEGRITY_DECISION.md](ARTIFACT_INTEGRITY_DECISION.md).
+- Source-level feature/simulator interpretation: [SIMULATOR_FEATURE_AUDIT.md](SIMULATOR_FEATURE_AUDIT.md). Exact stored finalist predicates and exit definitions: [EXACT_FINALIST_RULES.md](EXACT_FINALIST_RULES.md).
+- **Decision unchanged: DATA-LIMITED.** Exact dated contract identity and executable historical bid/ask/depth/fill evidence are not established. Do not approve paper/live trading or continue unbounded parameter search.
+
+Last updated: 2026-10-23 after artifact integrity checks.
