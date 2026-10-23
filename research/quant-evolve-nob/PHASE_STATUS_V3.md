@@ -58,3 +58,12 @@ No new strategy has been empirically tested. QE-NOB-2.0 OOS outcomes must not be
 - Regression workflow run [39913031868](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39913031868) completed SUCCESS. All compile steps and the pytest step passed after the assertion wording correction.
 - Fresh-data probe workflow run [39912434371](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39912434371) completed SUCCESS and uploaded sanitized artifact `qe-nob-v3-sanitized-data-probe` (artifact ID `12482469675`). Probe reported status `PASS`, one supported weekly expiry source (728 rows), and underlying probe `PASS` with 709 rows.
 - Important limitation: this was only a small credential/schema probe, not full fresh historical acquisition or stable dated contract/quote validation. Therefore Phase 1 remains BLOCKED pending complete data-coverage, timestamp and contract-identity checks. No empirical strategy testing has started.
+
+
+## Strict data gate result — 2026-10-23
+
+- [Regression workflow run 39933633753](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39933633753): SUCCESS.
+- [Fresh-data probe and strict audit run 39933612441](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39933612441): workflow SUCCESS; research eligibility decision **BLOCKED_DATA_LIMITED**.
+- The sanitized audit reported 746 underlying probe rows and 765 rolling option probe rows. Basic endpoint/schema checks passed, but stable dated contract identity was absent and executable bid/ask quote fields were absent.
+- These counts are small schema-probe samples only, not a complete historical dataset or proof of backtest eligibility. Phase 1 remains BLOCKED / NOT RUN. No strategy search or empirical evaluation was started.
+- Next step: investigate lawful free/public and Dhan-supported routes for dated contract-level history with stable contract IDs and quote/fill evidence; validate provenance, completeness, timestamp integrity, and licensing before changing the gate.
