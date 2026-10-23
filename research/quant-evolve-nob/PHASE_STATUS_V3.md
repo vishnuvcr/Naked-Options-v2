@@ -43,3 +43,11 @@ No new strategy has been empirically tested. QE-NOB-2.0 OOS outcomes must not be
 - Fresh data gate remains BLOCKED. No new strategy has been empirically tested; do not start acquisition until auth and source-client gates are verified.
 
 - Added `.github/workflows/qe-nob-v3-data-probe.yml` (commit `7858c6b9b0fe0507a128989b6ff809c5e91d71a1`). It runs only the source credential/schema probe, not bulk acquisition, and uploads the sanitized probe JSON as a short-retention artifact. Secrets are passed as environment variables and must never be printed. The workflow run/result remains unverified through the current integration.
+
+
+## Regression failure correction — 2026-10-23
+
+- Reviewed user-provided GitHub Actions log: 25 tests passed and one QE-NOB-3.0 plan assertion failed because the test expected a sentence absent verbatim from the plan.
+- Corrected the test to assert the exact preregistered wording already present in `STRATEGY_HYPOTHESIS_LAB_V3.md` (commit `79a81636803ba56f2aea638368a91e703504809e`). Added the event to `ERROR_LOG_V3.md` (commit `92f62c371be7f25f8497b0a8929048e62d5a058e`).
+- Waiting for the branch push-triggered regression workflow to rerun; pass is not claimed until the new run is green.
+- Phase 1 fresh-data feasibility remains BLOCKED / NOT RUN, independent of this test correction.
