@@ -100,7 +100,7 @@ def main():
     args = ap.parse_args()
     required = args.required.split(",")
     reports = {"required": required, "datasets": {}, "warnings": [], "errors": [], "derived": [],
-               "cleaning_policy": "Raw downloads are preserved. Invalid OHLC rows are excluded only from *_validated.csv outputs and listed with full OHLC values; structural issues remain fatal."}
+               "cleaning_policy": "Raw downloads are preserved. Invalid OHLC rows are excluded only from source-specific *_validated.csv outputs and listed with full OHLC values; structural issues remain fatal."}
     labels = list(dict.fromkeys(required + ["5"] if "5" in required else required))
     selected_5m_path = resolve_5m_source()
     selected_5m_clean_path = None
@@ -143,7 +143,7 @@ def main():
                 reports["errors"].extend([label + ": " + x for x in issues])
         except Exception as exc:
             reports["errors"].append(f"{label}: {type(exc).__name__}: {exc}")
-    five_clean = ROOT / "nifty50_5m_validated.csv"
+    five_clean = selected_5m_clean_path or ROOT / "nifty50_5m_validated.csv"
     if five_clean.exists():
         try:
             rows = read_rows(five_clean)
