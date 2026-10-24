@@ -114,3 +114,9 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Static findings: Python >=3.11; upstream CI includes pytest, Ruff and clean-install import. Backtest is decision-quality evaluation, not portfolio simulation; Yahoo `^NSEI` and required 10:00 IST intraday data remain unverified. No forecast score or test pass claimed.
 - Added `research/tradingagents/FEASIBILITY_REPORT.md`, `research/tradingagents/TEST_PLAN.md`, and `.github/workflows/tradingagents-compatibility.yml` to run upstream tests at the pinned SHA.
 - Next: inspect the triggered Actions run and logs; then test NIFTY data compatibility and a structured forecast contract. If Actions does not trigger, use the workflow's manual dispatch button; do not treat configuration as an execution result.
+
+
+## 2026-10-25 — First TradingAgents workflow attempt and self-correction
+- Inspected GitHub Actions run [#40129671248](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129671248) and its full job log.
+- The run failed in `actions/setup-python` before cloning upstream because `cache: pip` expected a root-level `requirements.txt` or `pyproject.toml` in this research repository. This is our workflow defect, not an upstream TradingAgents test failure.
+- Removed pip caching from the workflow in commit `93c6f58360276259f702c61fecc3d29756bb857d`; logged as TA-001 in ERROR_LOG.md. A successful rerun and upstream test outcome remain pending.
