@@ -36,3 +36,14 @@
 - **Evidence:** NSE current product page says NIFTY weekly expiry is Tuesday, moved to the previous trading day for a holiday. NSE circular FAOP/68747 dated 2025-06-25 revised NIFTY weekly expiry from Thursday to Tuesday and states existing contracts expiring on/before 2025-08-31 remained unchanged (with specified long-dated exceptions). Earlier 2025 Monday change was withheld/modified, so announcement dates cannot be treated as simple effective dates without circular-level mapping.
 - **Risk:** Wrong target endpoint for historical intervals.
 - **Mitigation:** Build and test a date-by-date expiry schedule from official circulars and contract masters; retain source references per row.
+
+
+## ZZD-007 — Scoring harness exists but has no validated input dataset
+- **Severity:** High; open
+- **Issue:** A leakage-guarded CSV scoring utility was added, but the repository's main-branch tree contains no canonical NIFTY spot dataset suitable for this experiment; prior research documents unresolved provenance. No signal rows have been scored.
+- **Mitigation:** Supply a validated dataset/export with cutoff and signal-availability timestamps, or acquire and cache one with documented provenance before evaluation.
+
+## ZZD-008 — Wrapper source mirror is not the library source
+- **Severity:** Medium; open
+- **Issue:** A public GitHub mirror reproduces the indicator wrapper and repaint toggle, but does not expose DevLucem/ZigLib/1 internals and may not match the currently published revision exactly.
+- **Mitigation:** Use it only to inspect wrapper logic; do not treat it as proof of imported library semantics.
