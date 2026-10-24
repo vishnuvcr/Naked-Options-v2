@@ -79,3 +79,60 @@ class DataValidationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+parity = load_module("zigzag_parity", "audit_5m_source_parity.py")
+
+
+class SourceParityTests(unittest.TestCase):
+    def _write_source(self, path, rows):
+        fields = ["timestamp_ist", "date_ist", "open", "high", "low", "close", "volume"]
+        with path.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows(rows)
+
+    def test_source_parity_reports_close_differences_without_merging(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            dhan = root / "dhan.csv"
+            public = root / "public.csv"
+            self._write_source(dhan, [
+                {"timestamp_ist": "2024-01-02T09:15:00+05:30", "date_ist": "2024-01-02",
+                 "open": 100, "high": 102, "low": 99, "close": 101, "volume": 0},
+                {"timestamp_ist": "2024-01-02T09:20:00+05:30", "date_ist": "2024-01-02",
+                 "open": 101, "high": 103, "low": 100, "close": 102, "volume": 0},
+            ])
+            self._write_source(public, [
+                {"timestamp_ist": "2024-01-02T09:15:00+05:30", "date_ist": "2024-01-02",
+                 "open": 100, "high": 102, "low": 99, "close": 101.02, "volume": 0},
+                {"timestamp_ist": "2024-01-02T09:20:00+05:30", "date_ist": "2024-01-02",
+                 "open": 101, "high": 103, "low": 100, "close": 104, "volume": 0},
+            ])
+            report = parity.audit(dhan, public)
+            self.assertEqual(report["overlap"]["rows"], 2)
+            self.assertEqual(report["absolute_differences"]["close"]["within_0_05"], 1)
+            self.assertEqual(report["absolute_differences"]["close"]["over_1"], 1)
+            self.assertTrue(report["does_not_authorize_prediction_scoring"])
+            self.assertEqual(report["status"], "OVERLAP_AVAILABLE_WITH_UNRESOLVED_DISCREPANCIES")
+
+    def test_source_parity_missing_input_is_a_nonfatal_diagnostic(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            report = parity.audit(Path(tmp) / "absent.csv", Path(tmp) / "also_absent.csv")
+            self.assertEqual(report["status"], "SKIPPED_SOURCE_MISSING")
+            self.assertEqual(report["overlap_rows"], 0)
+
+    def test_5m_source_selection_prefers_public_then_dhan_then_legacy(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with patch.object(prep, "ROOT", root):
+                legacy = root / "nifty50_5m.csv"
+                dhan = root / "nifty50_5m_dhan.csv"
+                public = root / "nifty50_5m_public_archive.csv"
+                legacy.touch()
+                self.assertEqual(prep.resolve_5m_source(), legacy)
+                dhan.touch()
+                self.assertEqual(prep.resolve_5m_source(), dhan)
+                public.touch()
+                self.assertEqual(prep.resolve_5m_source(), public)
