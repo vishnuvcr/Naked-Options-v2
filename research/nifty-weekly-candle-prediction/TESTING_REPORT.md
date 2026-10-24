@@ -58,3 +58,8 @@ Run [#14](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40104096953
 
 **Correction:** elite carry-forward now unwraps each record to its `candidate` object; mutation and crossover use those candidate dictionaries directly. Added a regression test that runs evolution across multiple generations. Defect logged as NWCP-E011. A new push-triggered workflow run is expected from the commits; end-to-end success is not yet established.
 
+
+
+## Corrective end-to-end run #18 — 2026-10-24
+
+[Run #18](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40109273486) completed with CI conclusion **success**. All **14 tests passed in 2.12 seconds**. The full runner completed and reported `valid labels=398, features=398, decision status=OOS_GATE_NOT_PASSED_OR_INSUFFICIENT`. The evolutionary-search wrapper bug is therefore resolved for this execution. The OOS gate did not pass (or did not have sufficient evidence), so this run does not support a predictive edge or a winning method. The sanitized report artifact is [available here](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40109273486/artifacts/12566991817). Remaining limitations include official expiry coverage, source licensing/provenance, timestamp semantics and primary-source overlap validation. Do not promote any candidate or start trading-strategy work.
