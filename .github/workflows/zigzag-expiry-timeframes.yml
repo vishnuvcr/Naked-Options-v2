@@ -54,7 +54,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: data/cache/zigzag_expiry_direction
-          key: zigzag-dhan-v1-${{ runner.os }}-${{ inputs.start_date || '2021-10-25' }}-${{ inputs.end_date || '2026-10-25' }}-${{ inputs.intervals || '1,5,15,60' }}
+          key: zigzag-dhan-v1-${{ runner.os }}-${{ inputs.start_date || '2021-10-25' }}-${{ inputs.end_date || '2026-10-25' }}
       - name: Acquire missing or requested Dhan datasets
         env:
           DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
