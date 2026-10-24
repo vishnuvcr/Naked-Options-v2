@@ -13,11 +13,12 @@ The user directed that ZigZag testing should not delay broader NIFTY prediction 
 - [Walk-forward model benchmark](research/nifty-prediction/evaluate_daily_models.py)
 - [Benchmark tests](tests/test_nifty_prediction_benchmark.py)
 - [Error log](research/nifty-prediction/ERROR_LOG.md)
+- [Preliminary historical diagnostic results](reports/nifty-prediction/preliminary_historical_diagnostic.md)
 - [Automated workflow](.github/workflows/nifty-prediction-benchmark.yml)
 
 Models currently specified: majority-class, previous-direction and zero-return baselines, logistic regression, random forest and histogram gradient boosting. Primary metric is balanced accuracy with chronological holdout and block-bootstrap uncertainty. ARCH/MAPIE package checks are optional workflow steps; GARCH, MAPIE, PySR and agent-framework integrations are not yet empirical results.
 
-**Current evidence status:** code and workflow committed; no verified benchmark output has yet been inspected. No model winner, accuracy claim or trading strategy is reported. Daily Yahoo data is a free starting point, not exchange-certified; this track does not yet evaluate weekly-expiry or intraday prediction.
+**Current evidence status (2026-10-25):** a preliminary historical diagnostic is now recorded for a third-party daily CSV mirror (2000–2019). On a chronological 2014–2019 holdout, custom logistic regression achieved 52.78% balanced accuracy versus 52.60% for previous-session direction; approximate block-bootstrap intervals overlap. This is not evidence of a robust edge, does not cover current market conditions, and is not the production scikit-learn benchmark. The main workflow artifact remains unverified; no model winner or trading strategy is reported. See [preliminary results](reports/nifty-prediction/preliminary_historical_diagnostic.md) and [literature review](docs/research-literature/nifty_prediction_literature_review.md).
 
 ---
 
