@@ -265,3 +265,10 @@
 - **Finding:** A public release claims five-year NIFTY 50 spot 5-minute data; acquisition and OHLC/schema audit passed in [run #40131891819](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131891819). Archive digest: `0c1f3de848a4e8c05e233c195685e7ae560d56d08df8baba8b2ffcfac699d3f8`; normalized CSV digest: `a36106d04852bedc95019f3fc480e858961e654373a65108d4963bc9233c56cb`.
 - **Residual risk:** publisher provenance is third-party; session coverage and bar-start semantics are not independently certified. The automated audit explicitly remains `NOT_VERIFIED` for official NSE sessions. Keep model scoring blocked until overlap comparison and session-calendar checks pass.
 
+
+
+## ZZD-017 — Public 5-minute archive has nonstandard session rows and no overlap with Yahoo fallback
+- **Severity:** Medium; validation gate remains open.
+- **Evidence:** Local inspection of artifact 12575426805 found 92,876 rows across 1,244 dates, sorted/unique timestamps, and zero invalid OHLC rows. 1,236 dates have 75 bars from 09:15 through 15:25. Six weekend-dated dates and 48 rows outside the regular 09:15–15:25 clock window were observed. Public archive ends 2026-04-21; Yahoo fallback begins later, yielding zero overlapping timestamps in current artifacts.
+- **Interpretation:** Weekend/special-session records may be legitimate or erroneous; do not silently delete them. The absence of overlap means independent price parity is not established.
+- **Mitigation:** Added `research/zigzag-expiry-direction/audit_public_5m.py` and integrated it into the acquisition workflow to persist a full diagnostic report. Classify candidate sessions against official exchange records and establish timestamp semantics before any evaluation.
