@@ -75,3 +75,8 @@ The Dhan and independent public five-minute sources have 82,451 exact timestamp 
 The pipeline now writes Dhan, public archive, and Yahoo five-minute data to distinct paths, quarantines the old ambiguous cache with a hash record, validates a source-selected copy, and includes a cross-source report. The public archive is cached unless refresh is explicitly requested. The malformed token-renewal shell block has been replaced, but the new workflow run is not yet verified.
 
 No prediction performance result exists. Exact ZigLib v1 signal timing, official session/expiry mapping, and candle timestamp semantics remain open, so forecast scoring is still blocked. This indicates insufficient evidence for the registered experiment, not absence of predictive value.
+
+
+## Additional data diagnostic (2026-10-25)
+
+A Dhan-only check compared native five-minute OHLC with five-minute aggregates of the one-minute bars. With timestamps provisionally assumed to label bar starts, 6 timestamps were off-grid and 2 OHLC groups differed among 92,696 complete groups. The maximum component difference was 15.4 points on the high; another row differed by 8.5 points on the low and 2.9512 points on the close. Dhan's timestamp semantics are not yet certified. This is a data-quality finding, not a prediction result. The exact ZigLib v1 timing and official session/expiry labels remain unverified, so no forecast score is reported.
