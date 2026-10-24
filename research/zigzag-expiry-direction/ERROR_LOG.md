@@ -214,3 +214,9 @@
 - **Risk:** Wrong expiry targets or a one-bar timing shift can change both the label and whether a ZigZag signal was knowable at cutoff.
 - **Mitigation:** Added OFFICIAL_CALENDAR_PROTOCOL.md with required source fields, expiry-regime handling, row-level eligibility ledger, and unit-test cases. Continue sourcing the official session table and verify timestamp convention independently; do not score until both gates pass.
 - **Status:** Open. No prediction metrics exist.
+
+
+## TA-001 — Compatibility workflow setup failed before upstream tests
+- **Severity:** Medium; corrective change committed, rerun pending.
+- **Evidence:** GitHub Actions run [#40129671248](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129671248) failed in `actions/setup-python` because pip caching searched the research repository root for `requirements.txt` or `pyproject.toml`; neither is present at that root. The upstream repository had not yet been cloned, so this is a workflow configuration failure, not an upstream TradingAgents test failure.
+- **Correction:** Removed `cache: pip` from `.github/workflows/tradingagents-compatibility.yml` in commit `93c6f58360276259f702c61fecc3d29756bb857d`. No test pass is claimed until a subsequent run executes the upstream suite.
