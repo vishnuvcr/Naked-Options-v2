@@ -116,13 +116,16 @@ def main():
     if any(x not in {1,5,15,25,60} for x in intervals):
         ap.error("Dhan intervals supported here are 1, 5, 15, 25 and 60")
     ROOT.mkdir(parents=True,exist_ok=True); MANIFEST.parent.mkdir(parents=True,exist_ok=True)
-    manifest={"source":"DhanHQ v2 historical charts API","instrument":{"name":"NIFTY 50","security_id":SECURITY_ID,"segment":SEGMENT,"instrument":"INDEX"},
+    manifest={"source":"DhanHQ v2 historical charts API","five_minute_cache_path":"data/cache/zigzag_expiry_direction/nifty50_5m_dhan.csv","instrument":{"name":"NIFTY 50","security_id":SECURITY_ID,"segment":SEGMENT,"instrument":"INDEX"},
               "requested_start":start.isoformat(),"requested_end":end.isoformat(),"timezone":"Asia/Kolkata",
               "retrieved_at_utc":dt.datetime.now(dt.timezone.utc).isoformat(),"intraday_chunk_max_days":90,
               "intervals":{},"daily":None,"errors":[]}
     for interval in intervals:
         try:
-            target=ROOT/f"nifty50_{interval}m.csv"
+            # Keep the Dhan 5-minute source distinct from the independent public archive.
+            # Older workflow versions reused nifty50_5m.csv for both and could silently
+            # contaminate the Dhan cache. Never reuse that legacy mixed-source path.
+            target = ROOT / ("nifty50_5m_dhan.csv" if interval == 5 else f"nifty50_{interval}m.csv")
             if target.exists() and not args.refresh:
                 raw=list(csv.DictReader(target.open(newline="",encoding="utf-8")))
                 stamps=[row["timestamp_ist"] for row in raw]
@@ -130,7 +133,8 @@ def main():
                       "first_timestamp_ist":min(stamps) if stamps else None,
                       "last_timestamp_ist":max(stamps) if stamps else None,
                       "duplicate_timestamps":len(stamps)-len(set(stamps)),
-                      "interval_minutes":interval,"reused_cache":True}
+                      "interval_minutes":interval,"reused_cache":True,
+                      "source":"DhanHQ v2 historical charts API"}
                 manifest["intervals"][str(interval)]=info
                 print(f"interval={interval} reusing cached file rows={len(raw)}",flush=True)
                 continue
