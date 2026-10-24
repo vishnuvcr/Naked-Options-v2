@@ -61,3 +61,15 @@ Dhan documents daily and intraday OHLC endpoints; minute bars include 1, 5, 15, 
 ## 6. Literature review gaps
 
 Continue targeted review on: NIFTY direction classification and expiry-related returns; technical indicators with strict temporal validation; financial model calibration and purged/embargo validation; quality-diversity/symbolic evolution on small samples; and event/regime-conditioned forecasts. For each source record instrument/period/frequency/sample size, features, split design, baseline, metric, statistical test, code and limitations. Clearly label peer-reviewed articles, preprints, repositories and vendor claims separately.
+
+
+## 6. Additional source checks completed during resume — 2026-10-24
+
+- **NSE current NIFTY 50 F&O specification:** [official product page](https://www.nseindia.com/static/products-services/equity-derivatives-nifty50) states weekly contracts expire on Tuesday of the expiry week and move to the previous trading day when Tuesday is a holiday. This confirms the *current* convention only; it must not be back-applied to earlier years. [Source](https://www.nseindia.com/static/products-services/equity-derivatives-nifty50)
+- **Expiry-rule transition:** secondary exchange-announcement summaries report NIFTY weekly expiry moved from Thursday to Tuesday starting September 2025, with the first Tuesday expiry on 2 September 2025. The primary NSE circular and actual historical contract dates remain the preferred audit source. [Zerodha bulletin](https://zerodha.com/marketintel/bulletin/417370/revision-in-expiry-day-of-index-and-stock-derivatives-contracts) · [Upstox summary](https://upstox.com/announcements/updates/nse-bse-to-revise-expiry-days-for-select-indices-stock-derivatives/)
+- **TradingView repainting and look-ahead:** official documentation explains that unconfirmed realtime bars can differ from historical confirmed bars, higher-timeframe `request.security()` can return unconfirmed values, and `lookahead_on` without a prior-bar offset can leak future values into historical bars. NWCP therefore requires confirmed observations as of the 10:00 cutoff and audits every Pine script's timeframe/security/lookahead behavior. [Official repainting guide](https://www.tradingview.com/pine-script-docs/concepts/repainting/) · [Other timeframes and data](https://www.tradingview.com/pine-script-docs/v5/faq/other-data-and-timeframes/)
+- **Evidence boundary:** source pages and paper abstracts establish methods and risks; they do not demonstrate that any candidate predicts this exact NIFTY target. Empirical claims must come from NWCP's own frozen out-of-sample experiment.
+
+## 7. Review gaps still open
+
+This remains an initial rather than exhaustive systematic review. Before Phase 1 can pass, the bibliography needs a dated search ledger (databases/query strings/date searched/inclusion-exclusion decisions), more India-specific peer-reviewed prediction studies, and documented source-rights review. No paper's reported accuracy should be directly compared unless its target horizon, sample, data availability, split method and leakage controls are comparable.
