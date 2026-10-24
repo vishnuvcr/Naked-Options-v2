@@ -12,8 +12,8 @@ from zoneinfo import ZoneInfo
 
 URL="https://github.com/voletiramu/nse-fno-1min-data/releases/download/indices-v1.0.0/nifty_indices_5yr.zip"
 ROOT=Path("data/cache/zigzag_expiry_direction")
-OUT=ROOT/"nifty50_5m.csv"
-FALLBACK=ROOT/"nifty50_5m_yahoo_fallback.csv"
+# Source-specific output: never overwrite the Dhan or Yahoo source file.
+OUT=ROOT/"nifty50_5m_public_archive.csv"
 MANIFEST=Path("reports/public_intraday_sources.json")
 IST=ZoneInfo("Asia/Kolkata")
 
@@ -65,8 +65,6 @@ def main():
     if len(rows)<50000: raise RuntimeError(f"Unexpectedly few rows in five-year archive: {len(rows)}")
     ROOT.mkdir(parents=True,exist_ok=True);MANIFEST.parent.mkdir(parents=True,exist_ok=True)
     fields=["timestamp_ist","date_ist","open","high","low","close","volume"]
-    if OUT.exists():
-        FALLBACK.write_bytes(OUT.read_bytes())
     with OUT.open("w",newline="",encoding="utf-8") as f:
         w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(rows)
     filehash=hashlib.sha256(OUT.read_bytes()).hexdigest()
