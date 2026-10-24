@@ -126,3 +126,33 @@ python research/nifty-prediction/evaluate_daily_models.py
 ## Appendix B. Decision gate
 
 A model can be considered for further study only after the workflow and data artifacts are verified, data-source quality is documented, and the out-of-sample advantage over naive baselines is stable enough to warrant a preregistered robustness phase. This manuscript is not a financial recommendation.
+
+
+## 12. Verified production benchmark update (2026-10-25)
+
+GitHub Actions run [#34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710) completed successfully. The main job's unit tests, data acquisition, second-source OHLC audit, chronological benchmark, result persistence, and artifact upload all passed. The optional ARCH/MAPIE environment audit also passed.
+
+### Data and evaluation
+
+The primary dataset was acquired from Yahoo Finance via `yfinance` for `^NSEI`: 4,686 rows from 2007-09-17 to 2026-10-23, with no invalid OHLC rows or duplicate dates reported by the loader. SHA-256: `8d73f2b98d2109a5ccf6bfc6e85927de9f5c59ced889c188f6aa59a340079ab0`. It is a third-party source and is not exchange-certified. The chronological holdout has 1,157 observations from 2022-02-14 to 2026-10-22; predictions use daily OHLC-derived lagged/rolling features and expanding walk-forward refits every 20 test rows.
+
+### Results
+
+| Model | Accuracy | Balanced accuracy | 95% circular block-bootstrap interval for balanced accuracy | Brier | Log loss |
+|---|---:|---:|---:|---:|---:|
+| Majority-class baseline | 52.20% | 50.00% | 50.00–50.00% | — | — |
+| Previous-session direction | 54.19% | 54.10% | 51.30–56.81% | — | — |
+| Zero-return forecast (DOWN convention) | 47.80% | 50.00% | 50.00–50.00% | — | — |
+| Logistic regression | 52.46% | 52.53% | 49.75–55.34% | 0.2495 | 0.6923 |
+| Random forest | 50.56% | 50.44% | 47.67–53.03% | 0.2518 | 0.6971 |
+| Histogram gradient boosting | 53.15% | 52.82% | 50.12–55.58% | 0.2554 | 0.7055 |
+
+The naive previous-session direction baseline has the highest balanced accuracy (54.10%). All three learned models are lower. The intervals overlap and the bootstrap intervals are approximate; no paired, preregistered test of model-vs-baseline differences was performed. Thus this experiment does **not** establish a reliable advantage from the tested learned models. The baseline's modest direction signal is not evidence of stable, actionable predictability and does not establish trading profitability.
+
+### Cross-source audit
+
+The public parquet mirror and Yahoo series were exactly identical for Open, High, Low, and Close across 4,686 dates (all reported absolute-error summaries zero). This is a parity result, not independent validation: the sources may share an upstream data provider or one may mirror the other. Official exchange/index confirmation remains outstanding.
+
+### Updated conclusion
+
+The fixed baseline experiment is operational and reproducible, but its current result is **no demonstrated predictive edge from the tested machine-learning models over the naive previous-direction baseline**. Stop model complexity escalation at this planned benchmark gate. Further research within the plan should prioritize source independence, statistical paired comparisons and regime stability, not unconstrained tuning. Do not develop a trading strategy from these results. No slippage, brokerage, taxes, option payoff, or P&L was assessed because this phase is prediction-only.
