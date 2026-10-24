@@ -27,3 +27,9 @@ This experiment's target uses NIFTY 50 spot at 10:00 IST on the first trading se
 
 ## Current status
 No source export has been acquired and validated for this experiment in the current branch. These are prioritized source leads, not claims of data acquisition.
+
+
+## Dhan acquisition implementation update (2026-10-25)
+Dhan v2 documentation supports `/charts/intraday` with 1, 5, 15, 25 and 60-minute intervals, a last-five-years intraday horizon, and up to 90 days per request. NIFTY 50 is listed in Dhan's public instrument reference as security ID `13` in `IDX_I`; request instrument type is `INDEX`. Sources: [Dhan historical-data API](https://dhanhq.co/docs/v2/historical-data/), [Dhan instrument reference](https://github.com/dhan-oss/dhanhq-skills/blob/main/skills/dhanhq/references/instruments.md).
+
+Added `acquire_dhan_timeframes.py`, `prepare_timeframes.py`, and `.github/workflows/zigzag-expiry-timeframes.yml`. The workflow stores data in an Actions cache and uploads CSVs plus SHA-256/provenance and validation manifests as a 30-day artifact; raw data is not committed to Git. The script can reuse an exact-key cached dataset or force a refresh. Dhan token is passed only through `DHAN_ACCESS_TOKEN` secret. Acquisition success remains unverified until run logs and the artifact are inspected.
