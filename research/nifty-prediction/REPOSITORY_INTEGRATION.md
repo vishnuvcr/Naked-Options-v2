@@ -19,6 +19,32 @@ The production daily benchmark workflow completed successfully in GitHub Actions
 | [X-DataInitiative/tick](https://github.com/X-DataInitiative/tick) | Time-dependent statistical learning, regularized GLMs and point-process tools | Inspect a regularized logistic/linear model as an alternative to sklearn if install and Python compatibility permit. Only use point-process components if timestamped event/order-flow data is acquired. | **Reviewed; compatibility gate required.** Do not force a fragile dependency into the core workflow. If unavailable, log the install/runtime evidence and retain sklearn equivalent as a transparent comparator. |
 | [scikit-learn-contrib/MAPIE](https://github.com/scikit-learn-contrib/MAPIE) | Conformal prediction intervals/sets and risk control | Evaluate a classification prediction set / abstention policy with strictly chronological calibration, reporting coverage, set size and conditional performance. | **Reviewed; conditional uncertainty experiment.** Check current API/version and exchangeability assumptions. No IID coverage guarantee is claimed for serially dependent market data without qualification. |
 
+## Pipeline integration implementation (2026-10-25)
+
+All seven upstream repositories are now pinned as Git submodules under [vendor/research-repositories](../../vendor/research-repositories). The submodule-vendoring workflow succeeded in [Actions run #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40143722351), and GitHub's contents API confirms seven pinned commit references.
+
+Added `research/nifty-prediction/audit_repository_integrations.py` and [the integration audit workflow](../../.github/workflows/repository-integration-audit.yml). The workflow checks out pinned submodules, installs the stable `arch` and `MAPIE` pipeline dependencies, and records a machine-readable integration audit. This is an integration/provenance smoke audit—not a claim that every upstream project is executed in the forecasting model.
+
+Pipeline boundaries:
+- `arch`: active GARCH volatility experiment in `evaluate_volatility_forecast.py`; volatility remains separate from direction prediction.
+- `MAPIE`: dependency included for the next chronological calibration/abstention experiment; not yet used to make predictions.
+- `PySR` and `tick`: pinned and audited, but must pass dedicated runtime/API compatibility experiments before joining model comparisons.
+- `Quantevolve` and `TradingAgents`: their bounded search and evidence synthesis concepts inform research orchestration; agent outputs cannot create labels or override deterministic scores. No paid LLM calls are made by the audit.
+- `Astra Quant Agent`: risk-control design reference only. Its crypto exchange execution is deliberately excluded from NSE/NFO.
+- No live trading, order submission, or holdout-driven tuning is enabled.
+
+### Pipeline integration status
+| Component | Wired into automation | Empirical model experiment | Status |
+|---|---|---|---|
+| Seven pinned submodules | Yes | N/A | Vendoring verified |
+| `arch` | Yes | GARCH forecast run completed in workflow logs | Active, volatility-only |
+| `MAPIE` | Dependency check/audit | Not yet | Pending chronological calibration |
+| `PySR` | Audit/provenance only | Not yet | Compatibility gate pending |
+| `tick` | Audit/provenance only | Not yet | Compatibility gate pending |
+| `Quantevolve` | Bounded-search design only | Not yet | No autonomous holdout search |
+| `TradingAgents` | Evidence-workflow design only | Not yet | No API/LLM execution |
+| `Astra Quant Agent` | Risk checklist only | Not applicable to NSE execution | Exchange executor excluded |
+
 ## Work completed vs. pending
 
 ### Completed
