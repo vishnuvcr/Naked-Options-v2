@@ -1,0 +1,60 @@
+name: TradingAgents compatibility tests
+
+on:
+  push:
+    branches:
+      - research/tradingagents-feasibility-developer
+    paths:
+      - "research/tradingagents/**"
+      - ".github/workflows/tradingagents-compatibility.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tradingagents-compatibility-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  upstream-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout research repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Checkout pinned upstream TradingAgents source
+        run: |
+          git clone https://github.com/TauricResearch/TradingAgents.git /tmp/TradingAgents
+          git -C /tmp/TradingAgents checkout e8f5503e9b86d5c2710b0c76b1f686703968c9df
+          git -C /tmp/TradingAgents rev-parse HEAD | tee tradingagents-upstream-sha.txt
+      - name: Install upstream package and test dependencies
+        working-directory: /tmp/TradingAgents
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+      - name: Run upstream unit suite
+        working-directory: /tmp/TradingAgents
+        run: pytest -q
+      - name: Run upstream lint
+        working-directory: /tmp/TradingAgents
+        run: ruff check .
+      - name: Clean-install import smoke test
+        working-directory: /tmp/TradingAgents
+        run: |
+          python -m pip uninstall -y tradingagents
+          pip install .
+          python -c "import tradingagents, cli.main; print('clean-install import OK')"
+      - name: Upload test provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tradingagents-compatibility-test-provenance
+          path: tradingagents-upstream-sha.txt
+          if-no-files-found: warn
+          retention-days: 30
