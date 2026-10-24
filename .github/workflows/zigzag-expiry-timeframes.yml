@@ -164,9 +164,14 @@ jobs:
             if [ "$REFRESH_DATA" = "true" ]; then ARGS+=(--refresh); fi
             python research/zigzag-expiry-direction/acquire_dhan_timeframes.py "${ARGS[@]}"
           fi
-      - name: Acquire independent public five-year NIFTY 5-minute archive
+      - name: Acquire or reuse independent public five-year NIFTY 5-minute archive
         if: always() && steps.acquire.outcome == 'success'
-        run: python research/tradingagents/acquire_public_intraday_archive.py
+        env:
+          REFRESH_DATA: ${{ inputs.refresh_data || 'false' }}
+        run: |
+          ARGS=()
+          if [ "$REFRESH_DATA" = "true" ]; then ARGS+=(--refresh); fi
+          python research/tradingagents/acquire_public_intraday_archive.py "${ARGS[@]}"
       - name: Audit exact-timestamp Dhan vs public five-minute price parity
         if: always() && steps.acquire.outcome == 'success'
         run: python research/zigzag-expiry-direction/audit_5m_source_parity.py
@@ -193,5 +198,6 @@ jobs:
             reports/public_5m_diagnostic_audit.json
             reports/zigzag_cross_source_audit.json
             reports/zigzag_legacy_5m_cache_migration.json
+            data/cache/zigzag_expiry_direction/nifty50_5m_public_archive_manifest.json
           if-no-files-found: warn
           retention-days: 30
