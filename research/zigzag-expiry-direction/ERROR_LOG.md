@@ -178,3 +178,11 @@
 - **Fix:** Changed the assertion to check `Path(info).exists()` in commit `1b6845b3b0d81b333ede7be9071ecd6ebbff2d10`.
 - **Impact:** This was a test defect, not evidence of market-data failure. Because the test gate stopped the job, no new data were acquired in that run; downstream validation/audit steps correctly reported missing files.
 - **Status:** Fix committed; confirm the next Actions run before calling it resolved.
+
+
+## ZZD-024 — CI path filters initially omitted audit/test files
+- **Severity:** Medium; fixed, run pending
+- **Date:** 2026-10-25
+- **Evidence:** After fixing the failing 30m test, the commit triggered the separate NIFTY research workflow but did not trigger the ZigZag acquisition workflow because its push path filters did not include `tests/test_zigzag_data_pipeline.py` or `audit_sessions.py`.
+- **Fix:** Added both paths to the ZigZag workflow's push filters in commit `2f2719e99f7159a2121d0d745b111c07249d3bd2`, which should trigger the intended CI run.
+- **Status:** Fix committed; await and inspect the resulting ZigZag Actions run.
