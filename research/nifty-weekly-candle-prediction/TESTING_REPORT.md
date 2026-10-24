@@ -1,0 +1,53 @@
+# NWCP-1.0 Test and Defect Review
+
+Date: 24 October 2026  
+Review mode: developer self-test / code review  
+Status: **INCOMPLETE — automated tests not yet executed successfully**
+
+## Scope
+
+Reviewed the target-construction path, expiry-calendar selection, feature timing, evolutionary candidate grammar, chronological split and test helpers. No market-performance conclusion is supported by this review.
+
+## Findings
+
+### CRITICAL — Fallback expiry dates could create labels
+
+**Finding:** `get_expiry_calendar()` constructs weekday-derived fallback expiry dates when the official NSE expiry endpoint is unavailable or insufficiently complete. The pipeline previously passed the resulting list directly to `make_target_rows()`, which could accept labels whose expiry date was inferred rather than officially verified. That risks silent errors around holiday shifts and expiry-regime changes.
+
+**Correction committed:** `expiry_calendar_is_verified()` now requires a non-empty selected calendar, zero fallback dates, provenance for every selected expiry, and `nse_expiry_api` provenance for every selected date. The main runner blocks label construction when this gate fails.
+
+**Regression tests added:** reject fallback dates, accept complete official provenance only, reject incomplete provenance.
+
+**Status:** code correction committed; test execution pending.
+
+### HIGH — Target-bar rejection and provenance coverage were insufficient
+
+**Finding:** Existing tests did not explicitly verify that missing 09:59 anchor bars and missing 15:29 expiry-close bars are rejected, or that fallback expiry provenance blocks the pipeline.
+
+**Correction committed:** tests now cover those cases and basic Holm-adjustment monotonicity/bounds.
+
+**Status:** tests added; test execution pending.
+
+## Checks inspected
+
+- **Anchor timing:** with start-labelled one-minute bars, 09:59–10:00 is used as the last completed bar at 10:00. The adapter assumes public timestamps are bar-start timestamps; that assumption still needs overlap/primary-source verification.
+- **Expiry close:** 15:29–15:30 bar is used for the regular-session close. This needs exchange session/timezone verification against accepted source data.
+- **Features:** current-session features are restricted to bars starting no later than 09:59; daily aggregates for prior sessions are used for lagged indicators. Point-in-time availability of any future external feature groups remains unimplemented/conditional.
+- **Chronology:** current split is 50% train / 20% validation / 30% sealed test. Model selection is by validation balanced accuracy/MCC; final test block is not used for model choice.
+- **Evolutionary search:** candidate fitness uses training balanced accuracy with a small complexity penalty; validation is used for selection. The candidate archive is retained in the report.
+- **Statistical inference:** bootstrap is approximate and needs robustness checks for block lengths and seeds; a positive metric alone is not enough. Minimum test sample/class-count gates remain mandatory.
+
+## Execution evidence and limitations
+
+A local clone/test command was attempted, but the environment could not resolve `github.com`. The GitHub workflow run listing did not confirm a run for the relevant commits. Therefore, **no claim is made that pytest passes**. The source files have been committed, but they must be executed in GitHub Actions or another connected environment before the phase can advance.
+
+The source/data gates also remain unresolved:
+- official expiry endpoint coverage and provenance across every selected expiry;
+- public data licensing/provenance and source overlap;
+- bar timestamp semantics and missing-minute audit;
+- whether the available history yields at least 100 sealed test labels after warm-up;
+- point-in-time verification of any additional market/derivatives/news features.
+
+## Decision
+
+**Do not accept a predictive result yet.** The critical label-calendar failure mode is corrected in code, but Phase 2 stays blocked until the regression suite passes and the official expiry/source checks pass. If the official expiry feed is unavailable, the correct status is `DATA-LIMITED` / blocked labels—not silently accepting weekday-generated dates.
