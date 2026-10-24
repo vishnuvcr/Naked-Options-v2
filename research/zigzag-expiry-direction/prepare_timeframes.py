@@ -54,7 +54,9 @@ def structural_issues(rows):
 def resolve_5m_source():
     """Choose a documented 5m file without mutating vendor-specific raw files."""
     for candidate in (ROOT / "nifty50_5m_public_archive.csv",
-                      ROOT / "nifty50_5m_dhan.csv", ROOT / "nifty50_5m.csv"):
+                      ROOT / "nifty50_5m_dhan.csv",
+                      ROOT / "nifty50_5m_yahoo_fallback.csv",
+                      ROOT / "nifty50_5m.csv"):
         if candidate.exists():
             return candidate
     return None
