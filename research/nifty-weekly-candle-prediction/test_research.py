@@ -74,3 +74,65 @@ def test_rule_prediction_is_binary_and_length_preserving():
     prediction = mod._rule_prediction(x, candidate)
     assert len(prediction) == len(x)
     assert set(np.unique(prediction)).issubset({0, 1})
+
+
+def test_expiry_calendar_gate_rejects_weekday_fallback():
+    audit = {
+        "selected_expiry_count": 3,
+        "fallback_dates": 1,
+        "provenance": {
+            "2025-09-02": "nse_expiry_api",
+            "2025-09-09": "nse_expiry_api",
+            "2025-09-16": "calendar_fallback",
+        },
+    }
+    assert mod.expiry_calendar_is_verified(audit) is False
+
+
+def test_expiry_calendar_gate_accepts_only_complete_official_provenance():
+    audit = {
+        "selected_expiry_count": 2,
+        "fallback_dates": 0,
+        "provenance": {
+            "2025-09-02": "nse_expiry_api",
+            "2025-09-09": "nse_expiry_api",
+        },
+    }
+    assert mod.expiry_calendar_is_verified(audit) is True
+
+
+def test_expiry_calendar_gate_rejects_missing_provenance():
+    audit = {
+        "selected_expiry_count": 2,
+        "fallback_dates": 0,
+        "provenance": {"2025-09-02": "nse_expiry_api"},
+    }
+    assert mod.expiry_calendar_is_verified(audit) is False
+
+
+def test_target_builder_rejects_missing_0959_anchor():
+    bars = _make_bars([date(2025, 9, 3), date(2025, 9, 9)], [100, 110])
+    bars = bars[bars.bar_start.dt.strftime("%H:%M") != "09:59"]
+    expiries = [date(2025, 9, 2), date(2025, 9, 9)]
+    labels, audit = mod.make_target_rows(bars, expiries, {"provenance": {}})
+    assert labels.empty
+    assert audit["excluded_intervals"] == 1
+    assert audit["excluded_examples"][0]["reason"] == "missing_or_duplicate_0959_bar"
+
+
+def test_target_builder_rejects_missing_1529_expiry_close():
+    bars = _make_bars([date(2025, 9, 3), date(2025, 9, 9)], [100, 110])
+    bars = bars[bars.bar_start.dt.strftime("%H:%M") != "15:29"]
+    expiries = [date(2025, 9, 2), date(2025, 9, 9)]
+    labels, audit = mod.make_target_rows(bars, expiries, {"provenance": {}})
+    assert labels.empty
+    assert audit["excluded_intervals"] == 1
+    assert audit["excluded_examples"][0]["reason"] == "missing_or_duplicate_1529_bar"
+
+
+def test_holm_adjustment_is_monotonic_and_bounded():
+    adjusted = mod._holm_adjust({"a": 0.01, "b": 0.04, "c": 0.03, "missing": None})
+    vals = [adjusted[k] for k in ("a", "c", "b")]
+    assert all(0 <= v <= 1 for v in vals)
+    assert vals == sorted(vals)
+    assert adjusted["missing"] is None
