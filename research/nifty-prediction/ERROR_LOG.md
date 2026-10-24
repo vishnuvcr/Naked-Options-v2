@@ -69,3 +69,11 @@
 - **Fix:** Narrowed push paths to the three executable research scripts, the benchmark test, and the workflow definition. Manual `workflow_dispatch` remains available.
 - **Commit:** `f2ede8957f3bc2ba7cb557be04cc5c6ba04bafd4`.
 - **Important:** The screenshot shows the visible runs failing, but the overview does not reveal the failing step or root cause. The underlying run failure remains open until logs are inspected; no CI pass is claimed.
+
+
+## NP-013 — GitHub Actions setup-python failed before tests (fix committed; rerun pending)
+- **Severity:** High for execution.
+- **Evidence:** GitHub Actions run #33 (run ID `40137118438`) shows the `daily-direction` job failed at step 3, `Run actions/setup-python@v5`; dependency installation and all research steps were skipped. The optional package audit job succeeded.
+- **Likely cause:** `setup-python` had `cache: pip` configured, but this repository path does not contain a recognized pip dependency manifest (`requirements.txt`, `pyproject.toml`, etc.) for cache key discovery. This matches the failure step, but full log text was not available through the run summary, so label this a high-confidence diagnosis rather than a confirmed error string.
+- **Fix:** Removed `cache: pip` from the setup-python step, avoiding automatic dependency-file discovery. Commit: `3ba7e1e9d79a2a4a7323bc555a7e8ae76dc06f0b`.
+- **Verification:** The fix push should trigger a new run. Do not claim success until a run shows setup-python, tests, acquisition, benchmark, and artifact steps completed.
