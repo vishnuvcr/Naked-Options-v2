@@ -160,3 +160,12 @@
 - **Risk:** Unfiltered out-of-session rows can distort ZigZag pivots; incomplete/missing 10:00 bars or sessions can corrupt target labels. A basic monotonic timestamp check alone is insufficient.
 - **Mitigation:** Preserve raw data. Add a separate session-audit report; filter regular-session observations only in derived data, document the rule, enumerate affected dates, and cross-check 10:00 and expiry close against an independent source before target construction. Do not score the raw 1m series.
 - **Status:** Open. No prediction metrics exist.
+
+
+## ZZD-022 — Session diagnostic is not official calendar certification
+- **Severity:** High; open
+- **Date:** 2026-10-25
+- **Change:** Added `research/zigzag-expiry-direction/audit_sessions.py` and workflow artifact `reports/zigzag_session_audit.json`. The diagnostic audits timestamps, duplicates/order, OHLC, weekends and broad clock-time flags across 1m/5m/15m/30m/60m/daily files. It deliberately does not remove rows.
+- **Remaining limitation:** No official NSE session calendar is yet ingested or reconciled, and Dhan timestamp labeling (bar start vs bar end) is not independently confirmed. Weekend dates can be valid special sessions; broad clock bounds are diagnostic only.
+- **Mitigation:** Add official session-day evidence and test Dhan timestamp conventions before creating a final eligible dataset.
+- **Status:** Open; no scoring permitted.
