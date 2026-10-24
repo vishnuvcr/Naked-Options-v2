@@ -165,3 +165,10 @@ The automated workflow now runs six predeclared candidates on the same chronolog
 The existing benchmark result is verified: on 1,157 observations from 2022-02-14 through 2026-10-22, previous-session direction achieved 54.19% accuracy and 54.10% balanced accuracy; logistic regression achieved 52.46% and 52.53%, random forest 50.56% and 50.44%, and histogram gradient boosting 53.15% and 52.82%, respectively. None of the learned models establishes a reliable improvement over the simple baseline.
 
 Any reported long/short index-return proxy from the candidate script is gross and illustrative only. It excludes implementable instrument selection, basis, leverage, brokerage, taxes/charges, slippage, liquidity, margin and execution timing. A candidate is not a usable strategy until these costs are included with sourced assumptions.
+
+
+## Preliminary candidate-rule results
+
+A preliminary calculation over the same 1,157 sessions (2022-02-14 through 2026-10-22) compared six fixed rules. The previous-session-direction baseline scored 54.10% balanced accuracy; 3-session momentum scored 53.18%, 5-session momentum 51.42%, 1-session reversal 45.99%, 3-session reversal 46.82%, a 20-session trend filter 53.90%, and the lagged-volatility-conditioned rule 51.22%. Thus, no new candidate beats the baseline on balanced accuracy in this diagnostic. The trend filter is the strongest new candidate but does not clear the baseline.
+
+The diagnostic report is [candidate_rules_preliminary.json](../../reports/nifty-prediction/candidate_rules_preliminary.json). These numbers are marked preliminary until the automated Python run confirms them. Gross long/short index-proxy returns in the report are not executable net returns and exclude instrument selection, brokerage, taxes/charges, slippage, margin, basis, liquidity and execution timing. No usable strategy or profitability claim is established.
