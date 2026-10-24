@@ -17,3 +17,18 @@ Updated: 2026-10-25
 - TradingView general ZigZag explanation: https://www.tradingview.com/support/solutions/43000591664-zigzag-indicator/ — explains confirmation lag and that the latest displayed line may be revised. This is general background, not a substitute for ZigLib v1 source.
 
 **Current decision:** DATA-LIMITED / NO PERFORMANCE CLAIM. This run did not produce an empirical accuracy estimate. No tester gate was added because the user explicitly waived independent tester review for this experiment.
+
+
+## Timeframe sensitivity update — 2026-10-25
+Phase 1 protocol amendment: user requested “Test various timeframes.” Added TIMEFRAME_SENSITIVITY.md with a predeclared 5m, 15m, 30m, 60m and 1-day panel; 1m is conditional on validated data completeness. This resolves the protocol ambiguity by testing variants rather than silently picking one. It does not resolve source parity or data blockers.
+
+| Phase | Updated status | Evidence / blocker |
+|---|---|---|
+| 1. Protocol/source audit | TIMEFRAME PANEL PRE-REGISTERED; SOURCE BLOCKED | Multi-timeframe variants documented; exact ZigLib v1 causality remains unverified. |
+| 2. Data audit | BLOCKED | Validated intraday spot data and date-specific expiry schedule still not acquired. |
+| 3. Causal reconstruction | BLOCKED | Must verify exact imported-library semantics for each timeframe. |
+| 4. Evaluation | NOT STARTED | No eligible forecasts scored. |
+| 5. Robustness/inference | NOT STARTED | Multi-timeframe comparisons require multiple-testing controls. |
+| 6. Manuscript/decision | PROTOCOL DRAFTED | No empirical results. |
+
+Current result remains DATA-LIMITED / NO PERFORMANCE CLAIM.
