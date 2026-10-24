@@ -169,3 +169,12 @@
 - **Remaining limitation:** No official NSE session calendar is yet ingested or reconciled, and Dhan timestamp labeling (bar start vs bar end) is not independently confirmed. Weekend dates can be valid special sessions; broad clock bounds are diagnostic only.
 - **Mitigation:** Add official session-day evidence and test Dhan timestamp conventions before creating a final eligible dataset.
 - **Status:** Open; no scoring permitted.
+
+
+## ZZD-023 — Existing 30-minute resampling unit test used wrong return type
+- **Severity:** Medium; fix committed, CI rerun pending
+- **Date:** 2026-10-25
+- **Evidence:** Actions run [#40127961418](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127961418) failed in the unit-test step before acquisition. The test treated the third return value from `derive_30m` as a dictionary, but the function returns the output path as a `Path` object.
+- **Fix:** Changed the assertion to check `Path(info).exists()` in commit `1b6845b3b0d81b333ede7be9071ecd6ebbff2d10`.
+- **Impact:** This was a test defect, not evidence of market-data failure. Because the test gate stopped the job, no new data were acquired in that run; downstream validation/audit steps correctly reported missing files.
+- **Status:** Fix committed; confirm the next Actions run before calling it resolved.
