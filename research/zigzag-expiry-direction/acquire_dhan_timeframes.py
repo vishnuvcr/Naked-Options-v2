@@ -104,6 +104,7 @@ def main():
     ap.add_argument("--start",default=(dt.date.today()-dt.timedelta(days=5*365)).isoformat())
     ap.add_argument("--end",default=dt.date.today().isoformat())
     ap.add_argument("--intervals",default="1,5,15,60",help="Dhan-supported intraday intervals")
+    ap.add_argument("--refresh",action="store_true",help="Refetch even when a cached interval file exists")
     args=ap.parse_args()
     token=os.environ.get("DHAN_ACCESS_TOKEN")
     if not token:
@@ -121,17 +122,41 @@ def main():
               "intervals":{},"daily":None,"errors":[]}
     for interval in intervals:
         try:
+            target=ROOT/f"nifty50_{interval}m.csv"
+            if target.exists() and not args.refresh:
+                raw=list(csv.DictReader(target.open(newline="",encoding="utf-8")))
+                stamps=[row["timestamp_ist"] for row in raw]
+                info={"path":str(target),"rows":len(raw),"sha256":hashlib.sha256(target.read_bytes()).hexdigest(),
+                      "first_timestamp_ist":min(stamps) if stamps else None,
+                      "last_timestamp_ist":max(stamps) if stamps else None,
+                      "duplicate_timestamps":len(stamps)-len(set(stamps)),
+                      "interval_minutes":interval,"reused_cache":True}
+                manifest["intervals"][str(interval)]=info
+                print(f"interval={interval} reusing cached file rows={len(raw)}",flush=True)
+                continue
             rows=fetch_intraday(token,interval,start,end)
-            info=write_csv(ROOT/f"nifty50_{interval}m.csv",rows)
-            info["interval_minutes"]=interval; info["valid_ohlc_rows"]=sum(
+            info=write_csv(target,rows)
+            info["interval_minutes"]=interval; info["reused_cache"]=False
+            info["valid_ohlc_rows"]=sum(
                 1 for r in rows if r["low"]<=min(r["open"],r["close"])<=max(r["open"],r["close"])<=r["high"])
             manifest["intervals"][str(interval)]=info
         except Exception as exc:
             manifest["errors"].append({"dataset":f"{interval}m","error":str(exc)})
             print(f"ERROR interval={interval}: {exc}",file=sys.stderr)
     try:
-        daily=fetch_daily(token,start,end)
-        manifest["daily"]=write_csv(ROOT/"nifty50_daily.csv",daily)
+        daily_path=ROOT/"nifty50_daily.csv"
+        if daily_path.exists() and not args.refresh:
+            raw=list(csv.DictReader(daily_path.open(newline="",encoding="utf-8")))
+            stamps=[row["timestamp_ist"] for row in raw]
+            manifest["daily"]={"path":str(daily_path),"rows":len(raw),
+                "sha256":hashlib.sha256(daily_path.read_bytes()).hexdigest(),
+                "first_timestamp_ist":min(stamps) if stamps else None,
+                "last_timestamp_ist":max(stamps) if stamps else None,
+                "duplicate_timestamps":len(stamps)-len(set(stamps)),"reused_cache":True}
+        else:
+            daily=fetch_daily(token,start,end)
+            manifest["daily"]=write_csv(daily_path,daily)
+            manifest["daily"]["reused_cache"]=False
     except Exception as exc:
         manifest["errors"].append({"dataset":"daily","error":str(exc)})
         print(f"ERROR daily: {exc}",file=sys.stderr)
