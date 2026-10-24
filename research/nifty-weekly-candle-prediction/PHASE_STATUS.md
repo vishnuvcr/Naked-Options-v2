@@ -37,3 +37,11 @@ Current decision: **IN PROGRESS — NO EMPIRICAL PREDICTION CLAIM**
 - Regression suite: **14 passed in 2.12 seconds**.
 - Runner reported **398 valid labels, 398 features**, with final status `OOS_GATE_NOT_PASSED_OR_INSUFFICIENT`.
 - This confirms the prior evolutionary-search crash is corrected and the bounded pipeline executes. It does **not** pass the prediction gate. Phase 2 is operational but remains scientifically conditional on public-source license/provenance, timestamp convention, official expiry-calendar completeness and source-overlap audit. Phases 3–7 remain blocked for accepted prediction claims pending detailed OOS metric/sample-size report review.
+
+
+## Run #18 evidence audit — 2026-10-24
+
+- Downloaded and inspected the sanitized artifact. Dataset: 884,552 one-minute bars / 2,362 sessions; 398 binary labels (224 UP, 174 DOWN), 10 exclusions, 28 features; final test has 120 labels (67 DOWN, 53 UP).
+- Test metrics: majority balanced accuracy 0.500; logistic 0.558; Random Forest 0.542; Extra Trees 0.526; evolved rule 0.577. The evolved rule's Holm-adjusted p is 0.1159, so it does not pass 0.05. Logistic's reported Holm-adjusted p is 0.0107, but it is not accepted as a finding while source/timestamp gates are open.
+- Critical unresolved audit findings: Dhan security master mapping failed and source overlap is unavailable; public source license/upstream provenance and timestamp semantics remain unverified; expiry audit reports 409 official and 402 fallback calendar dates and needs reconciliation; evolved-rule bootstrap raw p-value differs across artifact fields (0.04397 vs 0.03864).
+- Added [RESULTS.md](RESULTS.md) and [MANUSCRIPT.md](MANUSCRIPT.md). Decision remains **DATA-LIMITED / NO CONFIRMATORY CLAIM**. Do not tune further on the sealed test.
