@@ -1,3 +1,24 @@
+# NIFTY 50 prediction — current research status
+
+## Replacement track started — 2026-10-25
+
+The user directed that ZigZag testing should not delay broader NIFTY prediction research. ZigZag-specific scoring is therefore parked as a non-blocking side study. A new daily next-session direction benchmark has been added using free-source daily NIFTY 50 data and leakage-controlled chronological evaluation.
+
+- [Replacement research plan](research/nifty-prediction/RESEARCH_PLAN.md)
+- [Phase status](research/nifty-prediction/PHASE_STATUS.md)
+- [Repository integration plan for Quantevolve, TradingAgents, astra-quant-agent, PySR, arch, tick and MAPIE](research/nifty-prediction/REPOSITORY_INTEGRATION.md)
+- [Daily data acquisition](research/nifty-prediction/acquire_daily_data.py)
+- [Walk-forward model benchmark](research/nifty-prediction/evaluate_daily_models.py)
+- [Benchmark tests](tests/test_nifty_prediction_benchmark.py)
+- [Error log](research/nifty-prediction/ERROR_LOG.md)
+- [Automated workflow](.github/workflows/nifty-prediction-benchmark.yml)
+
+Models currently specified: majority-class and previous-direction baselines, logistic regression, random forest and histogram gradient boosting. Primary metric is balanced accuracy with chronological holdout and block-bootstrap uncertainty. ARCH/MAPIE package checks are optional workflow steps; GARCH, MAPIE, PySR and agent-framework integrations are not yet empirical results.
+
+**Current evidence status:** code and workflow committed; no verified benchmark output has yet been inspected. No model winner, accuracy claim or trading strategy is reported. Daily Yahoo data is a free starting point, not exchange-certified; this track does not yet evaluate weekly-expiry or intraday prediction.
+
+---
+
 # ZigZag++ NIFTY 50 expiry-direction study — current status
 
 ## Latest execution status — 2026-10-25
