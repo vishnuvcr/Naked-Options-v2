@@ -30,6 +30,8 @@ on:
     paths:
       - "research/zigzag-expiry-direction/acquire_dhan_timeframes.py"
       - "research/zigzag-expiry-direction/prepare_timeframes.py"
+      - "research/zigzag-expiry-direction/audit_sessions.py"
+      - "tests/test_zigzag_data_pipeline.py"
       - ".github/workflows/zigzag-expiry-timeframes.yml"
 
 permissions:
