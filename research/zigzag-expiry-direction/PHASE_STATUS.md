@@ -202,3 +202,9 @@ Forecast record schema and deterministic validator are implemented; unit tests w
 - New frozen market snapshot validation and tests added; CI pending.
 - No end-to-end model adapter or prediction score yet. Historical evaluation blocked on frozen data provenance, session/timestamp verification and isolation from unrestricted vendor tools.
 
+
+
+### TradingAgents benchmark — snapshot validator result
+
+[Run #40131047411](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131047411) passed with snapshot validator tests included. Code checks are passing; real historical source/session validation and isolated model adapter are still pending. Formal out-of-sample evaluation remains blocked.
+
