@@ -11,6 +11,7 @@ on:
   push:
     branches:
       - research/nifty-weekly-candle-prediction-developer
+      - research/nifty-weekly-candle-prediction-tester
     paths:
       - .github/workflows/nifty-weekly-candle-prediction.yml
       - research/nifty-weekly-candle-prediction/run_research.py
