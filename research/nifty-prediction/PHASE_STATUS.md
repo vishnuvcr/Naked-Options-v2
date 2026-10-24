@@ -63,3 +63,11 @@ The Actions overview screenshot confirms the benchmark workflow is triggering an
 - Inspected GitHub Actions run #33 (ID `40137118438`) through the GitHub run/job API. The `daily-direction` job failed at step 3, `Run actions/setup-python@v5`; dependency installation, unit tests, data acquisition, parity audit, and benchmark were skipped. The optional ARCH/MAPIE package audit job succeeded.
 - Likely cause: `cache: pip` was enabled in setup-python without a recognized dependency manifest for cache key discovery. Removed the pip cache setting in commit `3ba7e1e9d79a2a4a7323bc555a7e8ae76dc06f0b`. This diagnosis is based on the failed step; exact error text was not available in the run summary.
 - Await the newly triggered run before marking tests/data/benchmark as passed. No new performance result is claimed yet.
+
+
+## Production benchmark verified — 2026-10-25
+- GitHub Actions run [#34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710) completed successfully. Both `daily-direction` and `optional-model-stack-audit` jobs passed; unit tests, data acquisition, second-source audit, benchmark, persistence, and artifact upload all passed.
+- Primary data: Yahoo Finance `^NSEI`, 4,686 daily rows, 2007-09-17 to 2026-10-23; SHA-256 `8d73f2b98d2109a5ccf6bfc6e85927de9f5c59ced889c188f6aa59a340079ab0`. Third-party, not exchange-certified.
+- Benchmark holdout: 1,157 observations, 2022-02-14 to 2026-10-22. Balanced accuracy: previous-session direction 54.10% (95% block-bootstrap interval 51.30–56.81%); logistic regression 52.53% (49.75–55.34%); random forest 50.44% (47.67–53.03%); histogram gradient boosting 52.82% (50.12–55.58%); majority baseline 50.00% by balanced accuracy.
+- Cross-source OHLC parity reports exact equality across 4,686 rows and all OHLC fields. This is not independent correctness proof: both public sources may share upstream data dependencies.
+- **Interpretation:** The more complex models do not beat the simple previous-direction baseline on balanced accuracy. Intervals overlap; no robust predictive edge or trading conclusion is established. Next work is statistical comparison against the baseline and source independence review, within the fixed plan.
