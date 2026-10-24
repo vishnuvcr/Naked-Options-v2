@@ -83,6 +83,7 @@ if __name__ == "__main__":
 
 
 parity = load_module("zigzag_parity", "audit_5m_source_parity.py")
+migration = load_module("zigzag_legacy_migration", "migrate_legacy_5m_cache.py")
 
 
 class SourceParityTests(unittest.TestCase):
@@ -128,11 +129,35 @@ class SourceParityTests(unittest.TestCase):
             root = Path(tmp)
             with patch.object(prep, "ROOT", root):
                 legacy = root / "nifty50_5m.csv"
+                yahoo = root / "nifty50_5m_yahoo_fallback.csv"
                 dhan = root / "nifty50_5m_dhan.csv"
                 public = root / "nifty50_5m_public_archive.csv"
                 legacy.touch()
                 self.assertEqual(prep.resolve_5m_source(), legacy)
+                yahoo.touch()
+                self.assertEqual(prep.resolve_5m_source(), yahoo)
                 dhan.touch()
                 self.assertEqual(prep.resolve_5m_source(), dhan)
                 public.touch()
                 self.assertEqual(prep.resolve_5m_source(), public)
+
+
+
+class LegacyCacheMigrationTests(unittest.TestCase):
+    def test_legacy_mixed_cache_is_quarantined_with_matching_hash(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            legacy = root / "nifty50_5m.csv"
+            raw = b"timestamp_ist,open,high,low,close,volume\nlegacy\n"
+            legacy.write_bytes(raw)
+            report = migration.migrate(root)
+            quarantined = Path(report["quarantined_path"])
+            self.assertEqual(report["status"], "QUARANTINED")
+            self.assertFalse(legacy.exists())
+            self.assertEqual(quarantined.read_bytes(), raw)
+            self.assertEqual(report["legacy_sha256"], report["quarantined_sha256"])
+
+    def test_migration_without_legacy_file_is_a_noop(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            report = migration.migrate(Path(tmp))
+            self.assertEqual(report["status"], "NO_LEGACY_FILE")
