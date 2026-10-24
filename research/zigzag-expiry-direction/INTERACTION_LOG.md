@@ -105,3 +105,12 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Confirmed current Tuesday weekly expiry with previous-trading-session shift for Tuesday holidays, and a 2025 Thursday-to-Tuesday transition that has to be handled at contract level rather than with a single global weekday rule.
 - Reviewed Dhan v2 historical-data documentation: epoch timestamp and 90-day request limit are documented; candle start/end timestamp semantics remain unspecified in the docs reviewed.
 - Added OFFICIAL_CALENDAR_PROTOCOL.md. No session calendar has been certified and no prediction score was run.
+
+
+## 2026-10-25 — TradingAgents compatibility test initiated
+- User instruction: “Ok start testing that repo”.
+- Created isolated branch `research/tradingagents-feasibility-developer` from the active ZigZag developer branch; the primary experiment was not modified.
+- Reviewed upstream TauricResearch/TradingAgents at pinned commit `e8f5503e9b86d5c2710b0c76b1f686703968c9df` (v0.7.0 release merge): README, Apache-2.0 license, pyproject, CI, backtest harness, Yahoo OHLCV, symbol normalization, and selected point-in-time tests.
+- Static findings: Python >=3.11; upstream CI includes pytest, Ruff and clean-install import. Backtest is decision-quality evaluation, not portfolio simulation; Yahoo `^NSEI` and required 10:00 IST intraday data remain unverified. No forecast score or test pass claimed.
+- Added `research/tradingagents/FEASIBILITY_REPORT.md`, `research/tradingagents/TEST_PLAN.md`, and `.github/workflows/tradingagents-compatibility.yml` to run upstream tests at the pinned SHA.
+- Next: inspect the triggered Actions run and logs; then test NIFTY data compatibility and a structured forecast contract. If Actions does not trigger, use the workflow's manual dispatch button; do not treat configuration as an execution result.
