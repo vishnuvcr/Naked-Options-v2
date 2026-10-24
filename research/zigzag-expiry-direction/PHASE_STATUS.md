@@ -57,3 +57,7 @@ The accessible public wrapper mirror shows `repaint=true` as the default and a s
 - Dhan acquisition and 30m preparation scripts plus an Actions workflow are committed.
 - A local clone/syntax-check attempt failed because this execution environment could not resolve github.com. Available GitHub tools did not provide direct workflow dispatch or a confirmed run artifact.
 - Therefore workflow execution and data acquisition are **UNVERIFIED**, not complete. Exact ZigLib source/causal parity is still blocked. No predictions have been scored.
+
+
+## 2026-10-25 follow-up — unit tests added
+Added `tests/test_zigzag_data_pipeline.py` to test epoch-to-IST conversion, OHLC response parsing, mismatched array rejection, invalid OHLC detection, 30m resampling, and exclusion of incomplete bars. Updated the timeframe workflow to run these tests before attempting data acquisition. This is test coverage added, not a passing CI result; the run has not been confirmed. Data artifact, exact ZigLib parity, expiry mapping and prediction scoring remain open.
