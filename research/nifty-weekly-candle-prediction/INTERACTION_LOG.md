@@ -30,3 +30,11 @@ This log tracks visible research scope changes and decisions, not private hidden
 - Logged the defect as NWCP-E011. Corrected the evolutionary generation population to carry candidate dictionaries, adjusted mutation/crossover references, and added a multi-generation regression test.
 - Corrective push run [#18](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40109273486) completed successfully. The workflow reports **14 tests passed**, **398 valid labels**, **398 features**, and decision status `OOS_GATE_NOT_PASSED_OR_INSUFFICIENT`.
 - Operational pipeline completion is not a scientific pass. No accuracy edge or winning rule is accepted; source provenance, timestamp semantics, expiry completeness, and OOS gate details still require audit.
+
+
+## 2026-10-24 — Results artifact audit and manuscript
+
+- User said “Ok proceed.” Retrieved and inspected sanitized artifact from [run #18](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40109273486).
+- Results: 884,552 one-minute bars; 398 labels (224 UP / 174 DOWN); 10 excluded intervals; 28 features; 120 sealed test labels. Evolved rule balanced accuracy 0.577, Holm-adjusted p=0.1159; logistic balanced accuracy 0.558, reported Holm-adjusted p=0.0107. The evolved rule does not pass its adjusted significance gate. No method is accepted as a predictor.
+- New audit defects NWCP-E012–E015: Dhan security ID/source overlap failure, expiry aggregate count reconciliation, inconsistent evolved-rule bootstrap p-value, and unresolved public source provenance/timestamp semantics.
+- Added [RESULTS.md](RESULTS.md) and [MANUSCRIPT.md](MANUSCRIPT.md). Phase remains DATA-LIMITED / NO CONFIRMATORY CLAIM; no further tuning against the sealed test is permitted.
