@@ -12,7 +12,8 @@ The daily next-session direction benchmark completed successfully in [GitHub Act
 - [Daily data acquisition](research/nifty-prediction/acquire_daily_data.py)
 - [Walk-forward model benchmark](research/nifty-prediction/evaluate_daily_models.py)
 - [Candidate momentum/reversal rules](research/nifty-prediction/evaluate_candidate_rules.py)
-- [Candidate-rule results JSON](reports/nifty-prediction/candidate_rules.json)
+- [Preliminary candidate-rule diagnostic](reports/nifty-prediction/candidate_rules_preliminary.json)
+- [Automated candidate-rule results JSON](reports/nifty-prediction/candidate_rules.json) (pending the new Actions run)
 - [Two-source OHLC parity audit](research/nifty-prediction/audit_source_parity.py)
 - [Benchmark tests](tests/test_nifty_prediction_benchmark.py)
 - [Error log](research/nifty-prediction/ERROR_LOG.md)
@@ -52,3 +53,8 @@ The older ZigZag expiry-direction study remains a separate track and does not bl
 ## Candidate-rule experiment (2026-10-25)
 
 The existing workflow now evaluates 3-session momentum, 5-session momentum, 1-session reversal, 3-session reversal, a 20-session trend filter, and a lagged-volatility-conditioned rule. It writes a machine-readable report to `reports/nifty-prediction/candidate_rules.json`. The first verified benchmark still favors the previous-session direction baseline (54.10% balanced accuracy) over the three supervised models, none of which established a reliable improvement. Candidate results must be retrieved from an actual Actions run before a rule is selected. Gross index proxies are not net profitability; any viable candidate still needs instrument-specific execution and sourced brokerage, taxes/charges, slippage and turnover assumptions.
+
+
+### Preliminary candidate outcome
+
+A preliminary diagnostic on the same 1,157-session holdout found the 20-session trend filter at 53.90% balanced accuracy, below the previous-session-direction baseline at 54.10%. Three-session momentum scored 53.18%; five-session momentum 51.42%; one- and three-session reversal scored 45.99% and 46.82%; the volatility-conditioned rule scored 51.22%. These calculations are preliminary until confirmed by the automated Python report. Gross index proxy returns exclude trading costs and do not establish a usable strategy. The research remains active; no tester or tester branch.
