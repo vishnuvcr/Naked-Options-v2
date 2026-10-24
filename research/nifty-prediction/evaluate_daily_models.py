@@ -154,6 +154,8 @@ def main() -> int:
     results.append(score("majority_class_baseline", y_test, np.full(len(y_test), base_up)))
     prev_pred = frame["previous_direction"].to_numpy()[split:]
     results.append(score("previous_session_direction", y_test, prev_pred))
+    # Zero-return forecast is mapped to DOWN by the declared binary tie convention.
+    results.append(score("zero_return_forecast", y_test, np.zeros(len(y_test), dtype=int)))
     for name, factory in models.items():
         preds, probs = [], []
         model = None
