@@ -75,3 +75,20 @@ The frozen market snapshot validator and all its tests passed in [workflow run #
 
 **Gate decision:** continue to source/session certification, but do not start model evaluation. No validated immutable historical snapshot is currently available in this benchmark branch, and the primary study still flags Dhan timestamp semantics, official calendar and causal ZigLib timing as unresolved. The next phase must establish data provenance and official-session completeness before generating model forecasts.
 
+
+
+## Data acquisition outcome — 2026-10-25
+
+**Acquisition succeeded using the free-source fallback.** Dhan token validation returned HTTP 401, so the workflow fell back to Yahoo Finance `^NSEI`. See [run #40131619468](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131619468) and artifact `zigzag-nifty50-data-40131619468` (expires 2026-11-23).
+
+| Series | Rows | Coverage | Gate |
+|---|---:|---|---|
+| Daily | 1,235 | 2021-10-25–2026-10-23 | Acquired; timestamp is date label, not certified close time |
+| 1m | 2,611 | 2026-10-14–2026-10-23 | Acquired; only short recent window |
+| 5m | 4,496 | 2026-07-29–2026-10-23 | Acquired; only ~60-day window |
+| 15m | 1,500 | 2026-07-29–2026-10-23 | Acquired; only ~60-day window |
+| 30m derived | 719 | validation output | Derived; resampling/calendar completeness not yet certified |
+| 60m | 5,075 | 2023-11-08–2026-10-23 | Acquired; ~2-year window |
+
+This meets a data-acquisition fallback gate but not the full historical intraday coverage gate. Dhan credential refresh and free alternative-source search remain next actions. No forecast score is produced.
+
