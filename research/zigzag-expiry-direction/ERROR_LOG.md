@@ -54,3 +54,16 @@
 - **Evidence:** NSE/Nifty Indices publish historical NIFTY 50 index data via official historical-data portals (NSE and Nifty Indices reports pages). The public pages confirm the source exists, but no downloadable export has yet been validated and cached in this branch.
 - **Risk:** The source lead could be mistaken for an acquired dataset.
 - **Mitigation:** Acquire a dated CSV export, preserve retrieval date and source URL, validate OHLC/timestamps and cross-check overlapping dates before use.
+
+
+## ZZD-010 — Indicator timeframe was not pre-specified
+- **Severity:** High; open
+- **Issue:** The supplied Pine indicator does not specify an explicit timeframe; calculations use the active chart timeframe. The study protocol must pin a timeframe before historical reconstruction.
+- **Risk:** Results cannot be reproduced and signal labels differ across timeframes.
+- **Mitigation:** Treat timeframe as a protocol defect; do not score until resolved. Because user asked to proceed without further input, document the missing detail and prepare the data workflow, but do not silently choose a timeframe.
+
+## ZZD-011 — Target reference requires intraday data
+- **Severity:** High; open
+- **Issue:** The target protocol uses a 10:00 IST NIFTY 50 spot reference, which daily OHLC data cannot establish exactly.
+- **Risk:** Substituting daily open/close or futures prices would change the target definition.
+- **Mitigation:** Acquire validated intraday spot data or amend the protocol explicitly before scoring; no silent substitution.
