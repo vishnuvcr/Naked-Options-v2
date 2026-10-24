@@ -69,11 +69,15 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Sync before staging; retry if another writer advances the branch.
+          git fetch origin "$BRANCH_NAME"
+          git rebase "origin/$BRANCH_NAME"
           for output in \
             data/cache/nifty-prediction/nifty50_daily.csv \
             data/cache/nifty-prediction/source_manifest.json \
             reports/nifty-prediction/daily_benchmark.json \
             reports/nifty-prediction/candidate_rules.json \
+            reports/nifty-prediction/volatility_forecast.json \
             reports/nifty-prediction/source_parity_audit.json; do
             if [ -f "$output" ]; then
               git add "$output"
@@ -85,7 +89,17 @@ jobs:
             echo "No new reproducibility outputs to commit."
           else
             git commit -m "Record NIFTY prediction benchmark results"
-            git push origin "HEAD:${BRANCH_NAME}"
+            pushed=false
+            for attempt in 1 2 3; do
+              if git push origin "HEAD:${BRANCH_NAME}"; then pushed=true; break; fi
+              echo "Push attempt $attempt lost a branch race; rebasing and retrying."
+              git fetch origin "$BRANCH_NAME"
+              git rebase "origin/$BRANCH_NAME"
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "Could not persist results after three push attempts."
+              exit 1
+            fi
           fi
       - name: Upload reproducibility artifacts
         if: always()
