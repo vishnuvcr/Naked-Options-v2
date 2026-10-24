@@ -1,0 +1,84 @@
+{
+  "study": "NIFTY 50 next-session direction: preliminary candidate-rule diagnostic",
+  "status": "PRELIMINARY_DIAGNOSTIC_AUTOMATED_PYTHON_RUN_PENDING",
+  "data_source": "Committed daily OHLC CSV; third-party Yahoo Finance series, not exchange-certified",
+  "data_sha256": "8d73f2b98d2109a5ccf6bfc6e85927de9f5c59ced889c188f6aa59a340079ab0",
+  "holdout": {
+    "first_date": "2022-02-14",
+    "last_date": "2026-10-22",
+    "n": 1157
+  },
+  "method": "Fixed rules applied to the same date range as the verified benchmark; direction is based only on close through t; gross long/short index proxy equals predicted sign times next-session index return.",
+  "results": [
+    {
+      "rule": "previous_session_direction_baseline",
+      "n": 1157,
+      "accuracy": 0.5419187554019015,
+      "balanced_accuracy": 0.5410269690909308,
+      "gross_long_short_mean_daily_return": 0.0005514455923414606,
+      "gross_long_short_compounded_return": 0.8138821055901855,
+      "costs_included": false
+    },
+    {
+      "rule": "3_session_momentum",
+      "n": 1157,
+      "accuracy": 0.533275713050994,
+      "balanced_accuracy": 0.5318326886459169,
+      "gross_long_short_mean_daily_return": 0.00016731980055378331,
+      "gross_long_short_compounded_return": 0.16295620341836248,
+      "costs_included": false
+    },
+    {
+      "rule": "5_session_momentum",
+      "n": 1157,
+      "accuracy": 0.5159896283491789,
+      "balanced_accuracy": 0.5142075733805971,
+      "gross_long_short_mean_daily_return": 0.00010803700550501816,
+      "gross_long_short_compounded_return": 0.0859033467873096,
+      "costs_included": false
+    },
+    {
+      "rule": "1_session_mean_reversion",
+      "n": 1157,
+      "accuracy": 0.4589455488331893,
+      "balanced_accuracy": 0.4598771900410764,
+      "gross_long_short_mean_daily_return": -0.000524705544265567,
+      "gross_long_short_compounded_return": -0.4777736244742975,
+      "costs_included": false
+    },
+    {
+      "rule": "3_session_mean_reversion",
+      "n": 1157,
+      "accuracy": 0.46672428694900603,
+      "balanced_accuracy": 0.46816731135408307,
+      "gross_long_short_mean_daily_return": -0.00016731980055378331,
+      "gross_long_short_compounded_return": -0.21029093668863652,
+      "costs_included": false
+    },
+    {
+      "rule": "20_session_trend_filter",
+      "n": 1157,
+      "accuracy": 0.5419187554019015,
+      "balanced_accuracy": 0.538965665904219,
+      "gross_long_short_mean_daily_return": 0.0001990075005822751,
+      "gross_long_short_compounded_return": 0.2064235179135674,
+      "costs_included": false
+    },
+    {
+      "rule": "volatility_conditioned_momentum_reversal",
+      "n": 1157,
+      "accuracy": 0.5133967156439067,
+      "balanced_accuracy": 0.5121821970468127,
+      "gross_long_short_mean_daily_return": -0.00016798404527780788,
+      "gross_long_short_compounded_return": -0.21104893095252997,
+      "costs_included": false
+    }
+  ],
+  "conclusion": "No candidate improves balanced accuracy over the previous-session-direction baseline. The 20-session trend filter has the highest candidate balanced accuracy among new rules (53.90%) but remains below the baseline (54.10%). No strategy is validated.",
+  "limitations": [
+    "Preliminary independent calculation; automated Python script run must confirm the exact output before promotion to final result.",
+    "Gross index proxy, not a tradable instrument; no costs, slippage, brokerage, taxes, basis, margin, liquidity or execution timing included.",
+    "Volatility-conditioned rule uses an approximate expanding quantile calculation in this preliminary diagnostic; its exact Python result may differ slightly.",
+    "No parameter tuning was performed; these results do not establish a profitable strategy."
+  ]
+}
