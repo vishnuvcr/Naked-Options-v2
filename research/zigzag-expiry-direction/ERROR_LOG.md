@@ -220,3 +220,10 @@
 - **Severity:** Medium; corrective change committed, rerun pending.
 - **Evidence:** GitHub Actions run [#40129671248](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129671248) failed in `actions/setup-python` because pip caching searched the research repository root for `requirements.txt` or `pyproject.toml`; neither is present at that root. The upstream repository had not yet been cloned, so this is a workflow configuration failure, not an upstream TradingAgents test failure.
 - **Correction:** Removed `cache: pip` from `.github/workflows/tradingagents-compatibility.yml` in commit `93c6f58360276259f702c61fecc3d29756bb857d`. No test pass is claimed until a subsequent run executes the upstream suite.
+
+
+## TA-002 — First compatibility workflow configuration failure (resolved)
+- **Severity:** Medium; fixed.
+- **Evidence:** Run [#40129671248](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129671248) failed before upstream checkout because `actions/setup-python` pip caching searched the research repository root for `requirements.txt` or `pyproject.toml`.
+- **Correction:** Removed `cache: pip` from the workflow. The subsequent run [#40129883044](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129883044) passed dependency installation, upstream unit tests, Ruff, and clean-install import. The error is retained as a resolved issue to prevent recurrence.
+
