@@ -61,3 +61,11 @@
 - **Issue:** The workflow allowed the second-source parity audit to fail with `continue-on-error: true`, but the persistence step staged its JSON output unconditionally. If the audit failed before writing the file, `git add` could exit nonzero and fail the otherwise usable primary benchmark job.
 - **Fix:** Persistence now checks each expected output path and stages only files that exist, logging missing optional artifacts. This preserves primary benchmark output even if the independent parity audit is unavailable.
 - **Verification:** Workflow YAML updated in commit `dcce2fc65ee91d45544ac3779b9c08bf100d0c13`; actual GitHub Actions execution remains unverified, so CI confirmation is still required.
+
+
+## NP-012 — Documentation changes retriggered the full benchmark (fixed in code; failure cause still open)
+- **Severity:** Medium.
+- **Issue:** The push filter matched all files under `research/nifty-prediction/**`, including phase-status and error-log updates. This caused documentation commits to rerun the full acquisition/model workflow, making iterative recovery noisy and wasteful.
+- **Fix:** Narrowed push paths to the three executable research scripts, the benchmark test, and the workflow definition. Manual `workflow_dispatch` remains available.
+- **Commit:** `f2ede8957f3bc2ba7cb557be04cc5c6ba04bafd4`.
+- **Important:** The screenshot shows the visible runs failing, but the overview does not reveal the failing step or root cause. The underlying run failure remains open until logs are inspected; no CI pass is claimed.
