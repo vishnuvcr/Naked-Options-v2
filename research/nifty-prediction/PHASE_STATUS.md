@@ -2,72 +2,30 @@
 
 Updated: 2026-10-25
 
-| Phase | Status | Evidence / blocker |
+| Phase | Status | Evidence / next action |
 |---|---|---|
-| P0 Scope/provenance | PARTIAL | Added 4,954-row third-party historical CSV (2000-01-03 to 2019-12-02), with zero duplicate dates and zero basic OHLC invariant failures. It is not exchange-certified and is stale for current-market claims. Fresh-cache validation and a free public-parquet fallback are now implemented; production acquisition execution remains pending verification. |
-| P1 Leakage-safe benchmark | PARTIAL RESULTS | A custom Node.js expanding logistic diagnostic and naive baselines produced preliminary historical results. The production Python/scikit-learn benchmark, unit tests, random forest, and gradient boosting remain unverified. |
-| P2 Statistical evaluation | PRELIMINARY RESULTS RECORDED | Preliminary historical diagnostic: logistic balanced accuracy 52.78% (95% block-bootstrap interval 50.11–55.36%), versus previous-direction baseline 52.60% (49.72–55.56%). Intervals overlap; no robust edge established. Production results remain pending. |
-| P3 Volatility/uncertainty | DEFERRED | Optional ARCH/MAPIE dependency audit workflow added. No GARCH or conformal results yet. |
-| P4 Regime robustness/integration | DEFERRED | PySR, Quantevolve, TradingAgents, astra-quant-agent and tick integration is explicitly staged; avoid tuning before baseline and holdout validation. |
-| P5 Manuscript/decision | DRAFTED, EMPIRICAL DECISION PENDING | Structured manuscript is now in MANUSCRIPT.md; no conclusion or model winner until real artifacts are inspected. |
+| P0 Scope/provenance | COMPLETE WITH LIMITATION | Primary daily dataset: 4,686 rows, 2007-09-17 through 2026-10-23. SHA-256 and provenance are recorded. Yahoo and public-parquet mirror OHLC match exactly, but the mirror is not independent validation and neither source is exchange-certified. Seek official-source cross-check before strong conclusions. |
+| P1 Leakage-safe benchmark | COMPLETE | GitHub Actions run [#34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710) succeeded, including tests, acquisition, source parity audit, benchmark and artifact persistence. |
+| P2 Statistical evaluation | COMPLETE FOR INITIAL BASELINE; STRATEGY RESEARCH ACTIVE | Holdout: 1,157 observations, 2022-02-14 to 2026-10-22; up-rate 52.20%. Previous-session direction: 54.19% accuracy / 54.10% balanced accuracy (block-bootstrap CI 51.30–56.81%). Logistic regression: 52.46% accuracy / 52.53% balanced accuracy; random forest: 50.56% / 50.44%; histogram gradient boosting: 53.15% / 52.82%. Learned models do not establish a reliable improvement over the previous-direction rule. |
+| P3 Volatility and uncertainty | NOT RUN | Repository review completed for `arch` and MAPIE. Next: one GARCH-family volatility forecast with appropriate volatility loss, and a chronological calibration/coverage experiment only if compatible dependencies and data contracts pass. |
+| P4 Hypothesis-driven candidate rules | ACTIVE | Next: small predeclared momentum, short-horizon mean-reversion and one lagged-volatility-conditioned candidate. Compare on the same dates and against simple baselines; if any survives, evaluate realistic turnover and costs. |
+| P5 External repository integration | REVIEW COMPLETE; EXECUTION PARTIAL/PENDING | README review completed for Quantevolve, TradingAgents, astra-quant-agent, PySR, arch, tick and MAPIE. Their concrete use and scope restrictions are documented in [REPOSITORY_INTEGRATION.md](REPOSITORY_INTEGRATION.md). Do not claim all repositories have been installed/executed; each has its own compatibility or suitability gate. |
+| P6 Manuscript and decision | LIVING DRAFT | Manuscript needs benchmark results and the candidate-rule experiment added; no validated profitable strategy is claimed yet. |
 
-## Immediate next gate
-Confirm workflow tests pass, inspect the source manifest and daily benchmark JSON, verify train/test chronology and sample counts, then record actual results. If the free source acquisition or benchmark fails, log the error and repair the code without inventing scores.
+## What the benchmark says
 
-## Scope note
-This is a daily next-session direction benchmark. It does not yet evaluate expiry-specific direction, intraday predictions, option returns, or trading profitability. Daily Yahoo data is a free baseline, not an exchange-certified series.
+The initial models do not provide evidence of a reliable machine-learning edge over the previous-session direction rule. This does **not** prove that no strategy can work. It means the next bounded step is to test a small number of explicit, low-complexity rules and reject candidates that do not beat simple comparators after costs.
 
+## Verified workflow
 
-## CI check — 2026-10-25
-The GitHub commit-status endpoint returned no status entries for the new benchmark workflow commits, and the available commit-associated workflow-run query returned no runs. This does not prove the workflow did not trigger; it means the run could not be verified with the available interface. Keep benchmark result status as pending until a real artifact is inspected.
+- Run: [GitHub Actions #34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710)
+- Outcome: success for both jobs.
+- Output files: [daily benchmark JSON](../../reports/nifty-prediction/daily_benchmark.json), [source parity audit](../../reports/nifty-prediction/source_parity_audit.json), [source manifest](../../data/cache/nifty-prediction/source_manifest.json).
 
+## Repository review gate
 
-## Work performed — 2026-10-25
-- Added an explicit zero-return directional baseline to the benchmark.
-- Added a structured manuscript draft with research question, methodology, statistical analysis, results-pending section, strengths, limitations, conclusion gate, future work and reproducibility commands.
-- Updated README links and model list.
-- Attempted direct repository clone for local execution, but this environment could not resolve github.com. No local test/data run is claimed.
+All seven repository READMEs have been inspected. Integration is not assumed to mean direct installation: AstraQuant's OKX-native crypto executor is unsuitable for NSE/NFO execution; Quantevolve's Binance-oriented collector is not a NIFTY data source; `tick`, PySR and MAPIE require compatibility/calibration checks; `arch` is for volatility modeling; TradingAgents is research orchestration, not numeric ground truth.
 
+## Scope and safeguards
 
-## Preliminary results acquired — 2026-10-25
-- Dataset: 4,954 daily rows, 2000-01-03 to 2019-12-02, from a public third-party CSV mirror; not exchange-certified.
-- Eligible rows after rolling-feature construction: 4,893; chronological split 3,669 train / 1,224 test; test 2014-12-16 to 2019-11-29.
-- Custom logistic regression: 52.86% accuracy, 52.78% balanced accuracy, Brier 0.2494, log loss 0.6919.
-- Previous-session-direction baseline: 52.78% accuracy, 52.60% balanced accuracy.
-- Logistic balanced-accuracy improvement over previous-direction baseline is about 0.18 percentage points; bootstrap intervals overlap substantially.
-- This is a preliminary diagnostic from a custom Node.js implementation, not the production scikit-learn benchmark. No trading strategy or current-market edge is established.
-- Reproducible script: [preliminary_historical_diagnostic.js](preliminary_historical_diagnostic.js); report: [preliminary_historical_diagnostic.md](../../reports/nifty-prediction/preliminary_historical_diagnostic.md); JSON: [preliminary_historical_diagnostic.json](../../reports/nifty-prediction/preliminary_historical_diagnostic.json).
-
-- Added a preliminary balanced-accuracy SVG chart at [preliminary_balanced_accuracy.svg](../../reports/nifty-prediction/preliminary_balanced_accuracy.svg).
-- Added a free-source fallback to the public NIFTY 50 parquet dataset if Yahoo acquisition fails; the cache is considered reusable only when provenance/hash/schema are acceptable and the latest date is recent.
-- The workflow is configured to persist the cache, manifest, and benchmark JSON to the research branch. This session cannot confirm that the workflow executed, because no run/artifact result is visible through the available GitHub interface.
-
-
-## Multi-source audit gate — 2026-10-25
-- Identified a second public dataset repository whose index catalog lists NIFTY 50 daily OHLC from 2007-09-17 through 2026-10-23 (4,686 rows), plus India VIX, NIFTY Bank, SENSEX and macro/flow datasets. These coverage details are upstream metadata, not independent validation.
-- Added [audit_source_parity.py](audit_source_parity.py) to compare cached primary OHLC with the second free source and write [source_parity_audit.json](../../reports/nifty-prediction/source_parity_audit.json). The audit is non-blocking if the secondary source is unavailable.
-- The source audit and production benchmark are wired into GitHub Actions, but actual execution remains unverified from this interface. No parity numbers are claimed yet.
-
-
-## Workflow robustness correction — 2026-10-25
-- Reviewed the benchmark workflow and found a failure path: the parity audit is intentionally non-blocking, but its JSON had been staged unconditionally. A failed download/schema audit could therefore fail the persistence step after the primary model benchmark.
-- Corrected the persistence step to stage only output files that exist and log missing optional outputs. Commit: `dcce2fc65ee91d45544ac3779b9c08bf100d0c13`.
-- This is a code-level correction only. It does not prove the workflow or tests passed; production artifacts and Actions status remain unverified.
-
-
-## Automation trigger correction — 2026-10-25
-The Actions overview screenshot confirms the benchmark workflow is triggering and shows failed runs. The push path filter previously included all `research/nifty-prediction/**` files, so status/error-log documentation updates also retriggered data acquisition and model training. Narrowed the push trigger to executable scripts, tests, and the workflow file while retaining manual dispatch. Commit: `f2ede8957f3bc2ba7cb557be04cc5c6ba04bafd4`. The screenshot does not expose the failing step; root cause of the failed run remains unresolved and is not represented as fixed.
-
-
-## Actions failure diagnosed — 2026-10-25
-- Inspected GitHub Actions run #33 (ID `40137118438`) through the GitHub run/job API. The `daily-direction` job failed at step 3, `Run actions/setup-python@v5`; dependency installation, unit tests, data acquisition, parity audit, and benchmark were skipped. The optional ARCH/MAPIE package audit job succeeded.
-- Likely cause: `cache: pip` was enabled in setup-python without a recognized dependency manifest for cache key discovery. Removed the pip cache setting in commit `3ba7e1e9d79a2a4a7323bc555a7e8ae76dc06f0b`. This diagnosis is based on the failed step; exact error text was not available in the run summary.
-- Await the newly triggered run before marking tests/data/benchmark as passed. No new performance result is claimed yet.
-
-
-## Production benchmark verified — 2026-10-25
-- GitHub Actions run [#34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710) completed successfully. Both `daily-direction` and `optional-model-stack-audit` jobs passed; unit tests, data acquisition, second-source audit, benchmark, persistence, and artifact upload all passed.
-- Primary data: Yahoo Finance `^NSEI`, 4,686 daily rows, 2007-09-17 to 2026-10-23; SHA-256 `8d73f2b98d2109a5ccf6bfc6e85927de9f5c59ced889c188f6aa59a340079ab0`. Third-party, not exchange-certified.
-- Benchmark holdout: 1,157 observations, 2022-02-14 to 2026-10-22. Balanced accuracy: previous-session direction 54.10% (95% block-bootstrap interval 51.30–56.81%); logistic regression 52.53% (49.75–55.34%); random forest 50.44% (47.67–53.03%); histogram gradient boosting 52.82% (50.12–55.58%); majority baseline 50.00% by balanced accuracy.
-- Cross-source OHLC parity reports exact equality across 4,686 rows and all OHLC fields. This is not independent correctness proof: both public sources may share upstream data dependencies.
-- **Interpretation:** The more complex models do not beat the simple previous-direction baseline on balanced accuracy. Intervals overlap; no robust predictive edge or trading conclusion is established. Next work is statistical comparison against the baseline and source independence review, within the fixed plan.
+This track predicts daily next-session NIFTY spot direction first. It is not yet an expiry-specific or intraday evaluation. A candidate trading rule is not usable until point-in-time data, turnover, slippage, brokerage, taxes/charges and execution timing are evaluated. Do not optimize on the final holdout or report gross returns as net returns.
