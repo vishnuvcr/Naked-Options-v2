@@ -33,6 +33,7 @@ on:
       - "research/zigzag-expiry-direction/prepare_timeframes.py"
       - "research/zigzag-expiry-direction/audit_sessions.py"
       - "research/tradingagents/acquire_public_intraday_archive.py"
+      - "research/zigzag-expiry-direction/audit_public_5m.py"
       - "tests/test_zigzag_data_pipeline.py"
       - ".github/workflows/zigzag-expiry-timeframes.yml"
 
@@ -152,6 +153,9 @@ jobs:
       - name: Audit timestamps and session diagnostics (no silent exclusions)
         if: always()
         run: python research/zigzag-expiry-direction/audit_sessions.py
+      - name: Detailed public five-minute archive audit
+        if: always() && steps.acquire.outcome == 'success'
+        run: python research/zigzag-expiry-direction/audit_public_5m.py
       - name: Upload dataset and provenance manifest (no secrets)
         if: always()
         uses: actions/upload-artifact@v4
@@ -163,5 +167,6 @@ jobs:
             reports/zigzag_timeframe_validation.json
             reports/zigzag_session_audit.json
             reports/public_intraday_sources.json
+            reports/public_5m_diagnostic_audit.json
           if-no-files-found: warn
           retention-days: 30
