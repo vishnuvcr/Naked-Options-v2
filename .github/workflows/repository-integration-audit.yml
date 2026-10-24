@@ -1,0 +1,55 @@
+name: NIFTY research repository integration audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/tradingagents-feasibility-developer
+    paths:
+      - "research/nifty-prediction/audit_repository_integrations.py"
+      - ".github/workflows/repository-integration-audit.yml"
+      - ".gitmodules"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repository-integration-audit
+  cancel-in-progress: false
+
+jobs:
+  integration-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout with pinned research submodules
+        uses: actions/checkout@v4
+        with:
+          ref: research/tradingagents-feasibility-developer
+          fetch-depth: 0
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install stable pipeline libraries
+        run: python -m pip install --upgrade pip pandas numpy scikit-learn arch mapie
+      - name: Run deterministic repository integration audit
+        run: python research/nifty-prediction/audit_repository_integrations.py
+      - name: Persist audit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/nifty-prediction/repository_integration_audit.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Record research repository integration audit"
+          git fetch origin research/tradingagents-feasibility-developer
+          git rebase origin/research/tradingagents-feasibility-developer
+          git push origin HEAD:research/tradingagents-feasibility-developer
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: repository-integration-audit
+          path: reports/nifty-prediction/repository_integration_audit.json
+          if-no-files-found: warn
+          retention-days: 90
