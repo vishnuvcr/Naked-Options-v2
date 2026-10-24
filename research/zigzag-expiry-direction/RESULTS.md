@@ -25,3 +25,7 @@ Added tests for Dhan response parsing, timestamp conversion, OHLC validation, 30
 
 ## 2026-10-25 failed acquisition run
 The first observed run did not produce datasets. The Actions screenshot shows cache-key validation failure, followed by missing required 5m/15m/60m/daily files and no 30m derivation. This is pipeline failure evidence, not market evidence; no predictions were scored. A cache-key correction was committed (`907e05fc8de0363aecf9fa8e7790c9b63b683b9f`); awaiting rerun confirmation.
+
+
+## 2026-10-25 verified CI outcome — run #40126339052
+Pipeline unit tests passed; cache restore passed. Dhan returned HTTP 401 `DH-901` for all requested intraday intervals and daily history, stating the client ID or user-generated access token is invalid or expired. No usable candles were acquired; the tiny artifact contains only reports. No predictions were scored. The next dependency is a valid `DHAN_ACCESS_TOKEN` repository secret followed by a successful acquisition rerun.
