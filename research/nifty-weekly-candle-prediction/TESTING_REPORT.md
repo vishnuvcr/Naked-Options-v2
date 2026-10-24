@@ -2,7 +2,7 @@
 
 Date: 24 October 2026  
 Review mode: developer self-test / code review  
-Status: **IN PROGRESS — unit tests passed in run #14; end-to-end run failed and is being corrected**
+Status: **END-TO-END RUN COMPLETED; EMPIRICAL GATE NOT PASSED**
 
 ## Scope
 
