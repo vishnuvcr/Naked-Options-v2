@@ -135,3 +135,10 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Added `research/tradingagents/probe_nifty_yahoo.py` to test live Yahoo Finance `^NSEI` daily and 5-minute data shape/timezone/timestamps; added it to the compatibility workflow. It has not yet run in the latest workflow; no data result is claimed yet.
 - CI success only establishes the upstream package's basic software checks, not predictive performance or historical data suitability.
 
+
+
+## 2026-10-25 — Yahoo NIFTY probe completed
+- Compatibility workflow [#40130052739](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40130052739) passed all software checks and the live Yahoo data probe.
+- Probe output: 21 daily rows (2026-09-23 to 2026-10-23) and 375 five-minute rows (2026-10-16 09:15 IST to 2026-10-23 15:25 IST), timezone-aware timestamps, OHLC columns present, no missing close in sample.
+- Interpreted strictly as current short-window availability. No claim of historical coverage or predictive performance. Formal expiry evaluation remains blocked pending historical/cutoff/point-in-time validation.
+
