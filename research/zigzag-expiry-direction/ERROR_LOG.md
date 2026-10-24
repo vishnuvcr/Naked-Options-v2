@@ -96,3 +96,11 @@
 - **Evidence:** Public wrapper mirror https://github.com/rohitbhure65/pine-scripts/blob/master/zigzag.pine sets `repaint = input(true, 'Repaint Levels')`; the alternate branch draws only on direction changes using prior-bar points.
 - **Risk:** Using retrospective pivot labels in a historical prediction backtest leaks future information.
 - **Mitigation:** Primary comparison is explicitly non-repaint mode; use direction-change availability timestamp and prior-bar point values, and do not label results as default repaint-on performance. Still block scoring until the imported ZigLib v1 source behavior is verified or faithfully reproduced.
+
+
+## ZZD-016 — Local runtime could not retrieve repository for static execution
+- **Severity:** Medium; open
+- **Date:** 2026-10-25
+- **Issue:** Attempted a shallow clone of the active GitHub branch in the local container to run Python syntax checks; DNS/network access to github.com was unavailable. The GitHub integration in this session did not expose a direct workflow-dispatch action, and no successful workflow artifact was confirmed.
+- **Risk:** The acquisition and resampling scripts have not been executed end-to-end in this environment; potential API/schema or runtime errors remain possible.
+- **Mitigation:** The configured branch-push workflow should run the scripts and upload logs/data/validation manifests. Inspect its actual run/artifact before considering the data gate passed. No result is claimed in the absence of that evidence.
