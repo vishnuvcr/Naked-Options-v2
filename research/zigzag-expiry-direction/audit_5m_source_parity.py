@@ -9,12 +9,14 @@ from __future__ import annotations
 import csv
 import json
 import math
+from datetime import datetime, timedelta
 from collections import Counter
 from pathlib import Path
 
 ROOT = Path("data/cache/zigzag_expiry_direction")
 OUT = Path("reports/zigzag_cross_source_audit.json")
 DHAN = ROOT / "nifty50_5m_dhan.csv"
+DHAN_1M = ROOT / "nifty50_1m.csv"
 PUBLIC = ROOT / "nifty50_5m_public_archive.csv"
 FIELDS = ("open", "high", "low", "close")
 
@@ -162,6 +164,83 @@ def audit(dhan_path: Path = DHAN, public_path: Path = PUBLIC) -> dict:
     return report
 
 
+def audit_dhan_internal_consistency(one_path: Path = DHAN_1M, five_path: Path = DHAN) -> dict:
+    """Check whether native Dhan 5m bars agree with same-source 1m aggregation.
+
+    This diagnostic assumes timestamps label bar starts. That assumption is not
+    confirmed in the provider documentation and must be treated as provisional.
+    """
+    result = {
+        "audit_type": "dhan_1m_to_5m_ohlc_consistency",
+        "one_minute_path": str(one_path),
+        "five_minute_path": str(five_path),
+        "timestamp_semantics_assumption": "bars are start-labelled; not certified by provider docs",
+        "status": "SKIPPED_SOURCE_MISSING",
+        "complete_groups": 0,
+        "mismatch_groups": 0,
+        "misaligned_five_minute_timestamps": 0,
+        "does_not_authorize_prediction_scoring": True,
+    }
+    if not one_path.exists() or not five_path.exists():
+        result["missing_sources"] = [str(p) for p in (one_path, five_path) if not p.exists()]
+        return result
+
+    one, one_raw, one_duplicates = load_rows(one_path)
+    five, five_raw, five_duplicates = load_rows(five_path)
+    misaligned = []
+    incomplete = 0
+    compared = 0
+    mismatch_rows = []
+    max_diff = 0.0
+    for stamp, bar in sorted(five.items()):
+        start = datetime.fromisoformat(stamp)
+        offset = (start.hour * 60 + start.minute - (9 * 60 + 15)) % 5
+        if offset != 0:
+            if len(misaligned) < 20:
+                misaligned.append(stamp)
+            continue
+        minutes = [(start + timedelta(minutes=i)).isoformat() for i in range(5)]
+        if not all(ts in one for ts in minutes):
+            incomplete += 1
+            continue
+        rows = [one[ts] for ts in minutes]
+        aggregate = {
+            "open": float(rows[0]["open"]),
+            "high": max(float(row["high"]) for row in rows),
+            "low": min(float(row["low"]) for row in rows),
+            "close": float(rows[-1]["close"]),
+        }
+        observed = {field: float(bar[field]) for field in FIELDS}
+        deltas = {field: abs(aggregate[field] - observed[field]) for field in FIELDS}
+        compared += 1
+        max_diff = max(max_diff, max(deltas.values()))
+        if max(deltas.values()) > 0.001:
+            mismatch_rows.append({
+                "timestamp_ist": stamp,
+                "absolute_differences": deltas,
+                "aggregate_from_1m": aggregate,
+                "native_5m": observed,
+            })
+    result.update({
+        "status": "DIAGNOSTIC_COMPLETE",
+        "one_minute_rows": one_raw,
+        "one_minute_duplicate_timestamps": one_duplicates,
+        "native_five_minute_rows": five_raw,
+        "native_five_minute_duplicate_timestamps": five_duplicates,
+        "complete_groups": compared,
+        "incomplete_groups": incomplete,
+        "mismatch_groups": len(mismatch_rows),
+        "misaligned_five_minute_timestamps": five_raw - five_duplicates - len(misaligned) if False else sum(
+            1 for stamp in five if (datetime.fromisoformat(stamp).hour * 60 + datetime.fromisoformat(stamp).minute - (9 * 60 + 15)) % 5 != 0
+        ),
+        "misaligned_examples": misaligned,
+        "maximum_absolute_ohlc_difference": max_diff,
+        "mismatch_examples": mismatch_rows[:20],
+        "interpretation": "Any mismatch or timestamp-grid anomaly requires source-level review; no observations are merged or silently excluded.",
+    })
+    return result
+
+
 def main() -> int:
     import argparse
 
@@ -171,6 +250,7 @@ def main() -> int:
     parser.add_argument("--output", default=str(OUT))
     args = parser.parse_args()
     report = audit(Path(args.dhan), Path(args.public))
+    report["dhan_1m_to_5m_internal_consistency"] = audit_dhan_internal_consistency()
     out_path = Path(args.output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
