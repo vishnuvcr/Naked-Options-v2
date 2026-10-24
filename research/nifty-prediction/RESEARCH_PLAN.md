@@ -1,9 +1,11 @@
 # NIFTY 50 prediction benchmark — replacement research track
 
-**Status:** Initiated 2026-10-25. Replaces ZigZag-dependent scoring as the primary path. ZigZag remains parked; it is not a prerequisite for this track.
+**Status:** Active research mandate updated 2026-10-25. Replaces ZigZag-dependent scoring as the primary path. ZigZag remains parked; it is not a prerequisite for this track.
+
+**Updated success criterion (user-directed):** Continue beyond the initial benchmark until a candidate prediction/trading strategy is discovered or developed and evaluated. A fixed benchmark phase may be complete while the broader strategy-discovery objective remains active. Do not endlessly add models: each experiment must answer a named hypothesis, compare against a baseline, and stop if evidence fails to justify further work. Never label an unvalidated candidate profitable or production-ready.
 
 ## Research question
-Can simple, leakage-controlled statistical and machine-learning models predict next-session NIFTY 50 direction or returns better than naive baselines on chronological out-of-sample data, after accounting for data provenance and uncertainty?
+Can a leakage-controlled NIFTY 50 forecasting method or strategy be discovered/developed that improves on naive baselines in chronological out-of-sample evaluation and remains useful after realistic execution costs?
 
 ## Objectives
 1. Establish a reproducible free-source daily NIFTY 50 dataset and provenance/hash record.
@@ -12,7 +14,7 @@ Can simple, leakage-controlled statistical and machine-learning models predict n
 4. Add calibrated prediction intervals/sets with MAPIE where compatible, and symbolic feature/model discovery with PySR as an optional later experiment.
 5. Assess regime stability, class balance, uncertainty, calibration and feature availability without look-ahead.
 6. Keep external agent frameworks (TradingAgents, astra-quant-agent, Quantevolve) as research/orchestration references until their dependencies and data contracts are reviewed; do not assume their outputs are validated evidence.
-7. Publish reproducible scores, caveats and an explicit go/no-go decision. No trading strategy or profitability claim in this phase.
+7. Publish reproducible scores, caveats and an explicit go/no-go decision for each candidate. Continue bounded hypothesis-driven research until a candidate strategy is identified or the evidence supports a clear no-edge conclusion for tested hypotheses.
 
 ## Repository research sources to assess
 - [Quantevolve](https://github.com/tarsyang/quantevolve): evolutionary research/optimization concepts; prohibit optimizing on final holdout.
@@ -54,9 +56,12 @@ Can simple, leakage-controlled statistical and machine-learning models predict n
 - PySR or Quantevolve optimization is exploratory only; nested validation required and final holdout must remain untouched.
 - Gate: report all attempted variants and multiplicity limitations.
 
-### P5 — Research manuscript and decision
-- Publish source manifest, data dictionary, reproducible commands, tables, plots, uncertainty, failures and limitations.
-- Stop after P5. No automatic strategy deployment; trading-cost/P&L analysis is a separate, later protocol.
+### P5 — Candidate strategy evaluation and final manuscript
+- Test named candidates that are motivated by market structure, not unconstrained blind tuning: previous-direction/momentum, short-horizon reversal, volatility/regime-conditioned variants, and available cross-market or options-derived signals where point-in-time data exists.
+- Compare all candidates to simple baselines using chronological walk-forward evaluation and a final untouched period where feasible; report uncertainty and multiple-testing limitations.
+- For candidates that survive prediction gates, evaluate a separate implementable signal with realistic costs, slippage, taxes, brokerage, liquidity, execution timing and Paytm Money fee assumptions where applicable. If these cannot be sourced, report explicit scenarios rather than zero costs.
+- Publish the final manuscript with data provenance, methods, results, charts, tables, failures, limitations, and reproducible commands.
+- Do not stop merely because the first benchmark is complete. Stop at the end of this bounded candidate-evaluation protocol with either a defensible candidate strategy or a clear evidence-based statement that tested candidates failed. Never fabricate an edge or profitability.
 
 ## Rules
 - Never fabricate missing observations or scores.
