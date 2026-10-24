@@ -92,3 +92,11 @@ The frozen market snapshot validator and all its tests passed in [workflow run #
 
 This meets a data-acquisition fallback gate but not the full historical intraday coverage gate. Dhan credential refresh and free alternative-source search remain next actions. No forecast score is produced.
 
+
+
+## Independent five-year 5-minute archive — acquired
+
+A public GitHub release from `voletiramu/nse-fno-1min-data` was acquired in [workflow run #40131891819](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131891819). The release documents `NIFTY_5min_5yr_2021_2026.csv` from Apr 2021 to Apr 2026. The normalized archive contains 92,876 rows, 2021-04-01 09:15 IST–2026-04-21 15:25 IST; the derived 30-minute series has 14,849 rows. SHA-256 hashes are recorded in the workflow manifest/log. Data is included in artifact `zigzag-nifty50-data-40131891819` (ID 12575426805; expires 2026-11-23).
+
+Gate status: **archive acquired and structural/OHLC validation passed; official calendar, source provenance and exact candle timestamp convention remain unverified**. Next: compare overlapping 5-minute bars to the Yahoo sample and available Dhan bars, test per-session bar counts/missing intervals against official NSE sessions, and only then produce expiry labels/forecasts.
+
