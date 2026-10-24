@@ -73,3 +73,19 @@ Run [#40126339052](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40
 
 ## 2026-10-25 — Automated Dhan authentication implemented
 Updated workflow commit `0705e9aeafec15949f55ebb983f1f77ec60b62ef` to generate a fresh token from the existing `DHAN_CLIENT_ID`, `DHAN_PIN`, and `DHAN_TOTP_SECRET` secrets, mask it, and validate `/v2/profile` before acquisition. Run [#40126973037](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40126973037): unit tests and token generation/profile validation passed. Historical data acquisition is still in progress; phase 2 remains IN PROGRESS, not complete. No prediction results exist yet.
+
+
+## 2026-10-25 — authenticated acquisition pipeline verified
+
+Run [#40127255063](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127255063) passed all six unit tests, cache restoration, fresh Dhan token generation/profile validation, historical acquisition, OHLC/timestamp validation, 30-minute derivation, artifact upload, and cache save.
+
+| Phase | Status | Evidence / blocker |
+|---|---|---|
+| 1. Protocol/source audit | PARTIAL — BLOCKED | Multi-timeframe panel is preregistered; exact imported ZigLib source and availability semantics are still unverified. |
+| 2. Data audit | ACQUISITION/VALIDATION PIPELINE PASSED | Successful run and artifact [12573423696](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127255063/artifacts/12573423696); audit the manifest and actual coverage before treating every date as usable. |
+| 3. Causal reconstruction | BLOCKED | Need source-faithful ZigLib behavior and signal availability timestamps; do not infer signals from retrospective pivot labels. |
+| 4. Evaluation | NOT STARTED | Evaluator requires a verified, interval-level signal/target CSV. No metrics yet. |
+| 5. Robustness/inference | NOT STARTED | Depends on validated predictions and multiple-testing control. |
+| 6. Manuscript/decision | DRAFT ONLY | Manuscript must remain explicit that no empirical prediction result has been obtained. |
+
+Current decision: **DATA ACQUISITION SUCCESSFUL; PREDICTION NOT EVALUATED; NO PERFORMANCE CLAIM.** User waived independent tester review for this experiment.
