@@ -1,0 +1,69 @@
+name: Vendor research repositories as git submodules
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/vendor-research-repos.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vendor-research-repos
+  cancel-in-progress: false
+
+jobs:
+  add-submodules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/tradingagents-feasibility-developer
+          fetch-depth: 0
+          submodules: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Add or refresh upstream repositories
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p vendor/research-repositories
+          declare -A repos=(
+            [quantevolve]="https://github.com/tarsyang/quantevolve.git"
+            [TradingAgents]="https://github.com/TauricResearch/TradingAgents.git"
+            [astra-quant-agent]="https://github.com/0xethanq/astra-quant-agent.git"
+            [PySR]="https://github.com/astroautomata/PySR.git"
+            [arch]="https://github.com/bashtage/arch.git"
+            [tick]="https://github.com/X-DataInitiative/tick.git"
+            [MAPIE]="https://github.com/scikit-learn-contrib/MAPIE.git"
+          )
+          for name in "${!repos[@]}"; do
+            path="vendor/research-repositories/$name"
+            url="${repos[$name]}"
+            if [ -e "$path/.git" ] || git config -f .gitmodules --get "submodule.$path.url" >/dev/null 2>&1; then
+              echo "Submodule already exists: $path"
+              git submodule sync -- "$path" || true
+              git submodule update --init --depth 1 -- "$path"
+            else
+              git submodule add --depth 1 "$url" "$path"
+            fi
+          done
+          git add .gitmodules vendor/research-repositories
+          if git diff --cached --quiet; then
+            echo "All seven submodules are already recorded; no commit needed."
+          else
+            git commit -m "Add seven research repositories as git submodules"
+          fi
+
+      - name: Push submodule references
+        run: |
+          git fetch origin research/tradingagents-feasibility-developer
+          git rebase origin/research/tradingagents-feasibility-developer
+          git push origin HEAD:research/tradingagents-feasibility-developer
