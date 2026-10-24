@@ -32,3 +32,14 @@
 - **Severity:** Medium for verification.
 - **Issue:** A direct shallow clone attempt failed because this execution environment could not resolve github.com. The available GitHub connector can read/write repository files but did not expose a workflow-dispatch action or an all-runs listing.
 - **Mitigation:** Continue checking repository evidence through available GitHub endpoints. Do not claim unit tests or empirical benchmark ran until Actions artifacts/logs are accessible.
+
+
+## NP-007 — Alternate historical dataset is stale (open)
+- **Severity:** High for current-market generalization.
+- **Issue:** The available third-party CSV mirror ends on 2019-12-02. It supports a preliminary historical diagnostic but not current-market claims.
+- **Mitigation:** Keep the source and date range explicit; seek a recent daily series from Yahoo Finance and/or a free official-source dataset, then compare overlapping dates before using it for final conclusions.
+
+## NP-008 — Preliminary diagnostic uses custom implementation (open)
+- **Severity:** Medium for exact reproducibility against production pipeline.
+- **Issue:** Preliminary logistic results were calculated with a custom Node.js gradient-descent implementation, not scikit-learn LogisticRegression. Random forest and gradient boosting were not included in this diagnostic.
+- **Mitigation:** Treat scores as preliminary only. Verify the production Python benchmark and all planned model families before finalizing conclusions.
