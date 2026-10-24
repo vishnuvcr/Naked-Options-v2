@@ -169,3 +169,16 @@ This is a separate experimental track and does not change the ZigZag protocol or
 | E. Formal expiry-label evaluation | BLOCKED | Main study's official calendar, candle convention and target eligibility gates remain unresolved. |
 
 No TradingAgents forecast accuracy result has been produced. See [test plan](../tradingagents/TEST_PLAN.md) and [feasibility report](../tradingagents/FEASIBILITY_REPORT.md).
+
+
+## TradingAgents benchmark status update — 2026-10-25
+
+| Stage | Status | Evidence |
+|---|---|---|
+| A. Static source audit | COMPLETE | See [feasibility report](../tradingagents/FEASIBILITY_REPORT.md). |
+| B. Pinned upstream software tests | PASS | [Actions run #40129883044](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129883044): dependency install, upstream unit tests, Ruff and clean-install import succeeded. |
+| C. NIFTY instrument/data compatibility | PENDING | Added live Yahoo `^NSEI` daily/5-minute probe; results pending. Current live bars alone cannot validate historical point-in-time eligibility. |
+| D. Structured forecast and causal-input audit | NOT STARTED | Must define output schema and prove all data available by cutoff. |
+| E. Formal expiry-label evaluation | BLOCKED | Main study calendar, Dhan timestamp convention, exact ZigLib causal timing and historical expiry mapping remain unresolved. |
+
+No TradingAgents prediction accuracy result has been produced. User explicitly directed “No tester”; no independent tester gate is used.
