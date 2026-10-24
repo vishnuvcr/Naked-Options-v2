@@ -7,10 +7,10 @@ Updated: 2026-10-25
 | P0 Scope/provenance | COMPLETE WITH LIMITATION | Primary daily dataset: 4,686 rows, 2007-09-17 through 2026-10-23. SHA-256 and provenance are recorded. Yahoo and public-parquet mirror OHLC match exactly, but the mirror is not independent validation and neither source is exchange-certified. Seek official-source cross-check before strong conclusions. |
 | P1 Leakage-safe benchmark | COMPLETE | GitHub Actions run [#34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710) succeeded, including tests, acquisition, source parity audit, benchmark and artifact persistence. |
 | P2 Statistical evaluation | COMPLETE FOR INITIAL BASELINE; STRATEGY RESEARCH ACTIVE | Holdout: 1,157 observations, 2022-02-14 to 2026-10-22; up-rate 52.20%. Previous-session direction: 54.19% accuracy / 54.10% balanced accuracy (block-bootstrap CI 51.30–56.81%). Logistic regression: 52.46% accuracy / 52.53% balanced accuracy; random forest: 50.56% / 50.44%; histogram gradient boosting: 53.15% / 52.82%. Learned models do not establish a reliable improvement over the previous-direction rule. |
-| P3 Volatility and uncertainty | NOT RUN | Repository review completed for `arch` and MAPIE. Next: one GARCH-family volatility forecast with appropriate volatility loss, and a chronological calibration/coverage experiment only if compatible dependencies and data contracts pass. |
-| P4 Hypothesis-driven candidate rules | ACTIVE | Next: small predeclared momentum, short-horizon mean-reversion and one lagged-volatility-conditioned candidate. Compare on the same dates and against simple baselines; if any survives, evaluate realistic turnover and costs. |
+| P3 Volatility and uncertainty | PENDING / OPTIONAL | Repository review completed for `arch` and MAPIE. Next: one GARCH-family volatility forecast with appropriate volatility loss, and a chronological calibration/coverage experiment only if compatible dependencies and data contracts pass. |
+| P4 Hypothesis-driven candidate rules | AUTOMATED RUN PENDING | Added a fixed candidate set: 3-session momentum, 5-session momentum, 1-session reversal, 3-session reversal, 20-session trend filter, and lagged-volatility-conditioned rule. Results will be written to reports/nifty-prediction/candidate_rules.json by the benchmark workflow. |
 | P5 External repository integration | REVIEW COMPLETE; EXECUTION PARTIAL/PENDING | README review completed for Quantevolve, TradingAgents, astra-quant-agent, PySR, arch, tick and MAPIE. Their concrete use and scope restrictions are documented in [REPOSITORY_INTEGRATION.md](REPOSITORY_INTEGRATION.md). Do not claim all repositories have been installed/executed; each has its own compatibility or suitability gate. |
-| P6 Manuscript and decision | LIVING DRAFT | Manuscript needs benchmark results and the candidate-rule experiment added; no validated profitable strategy is claimed yet. |
+| P6 Manuscript and decision | LIVING DRAFT | Baseline results are verified. Candidate-rule report is pending the new automated run; no validated profitable strategy is claimed yet. |
 
 ## What the benchmark says
 
@@ -29,3 +29,10 @@ All seven repository READMEs have been inspected. Integration is not assumed to 
 ## Scope and safeguards
 
 This track predicts daily next-session NIFTY spot direction first. It is not yet an expiry-specific or intraday evaluation. A candidate trading rule is not usable until point-in-time data, turnover, slippage, brokerage, taxes/charges and execution timing are evaluated. Do not optimize on the final holdout or report gross returns as net returns.
+
+
+## Latest concrete update (2026-10-25)
+
+- Verified Actions run #34 passed both jobs and all main benchmark steps; this supersedes older error-log entries saying that benchmark execution was unverified.
+- Added `evaluate_candidate_rules.py` and wired it into the same workflow; the next run must generate `reports/nifty-prediction/candidate_rules.json`.
+- No tester, tester branch, or tester review is part of this research.
