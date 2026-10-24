@@ -52,3 +52,11 @@ Successful workflow [#40128335927](https://github.com/vishnuvcr/Naked-Options-v2
 Downloaded and inspected workflow artifact 12575426805. Preliminary diagnostic counts: 92,876 rows; 1,244 dates; zero duplicate timestamps; sorted timestamps; zero OHLC-invalid rows. 1,236 dates contain 75 rows (09:15 through 15:25). Six dates fall on weekends and 48 rows are outside the regular session clock window; these are flagged for classification, not silently removed. The public archive ends 2026-04-21, whereas the Yahoo fallback begins later, so current artifacts have zero common timestamps and do not provide an overlap price-parity check.
 
 A reusable report generator, `research/zigzag-expiry-direction/audit_public_5m.py`, was added to the workflow. **These are data diagnostics only, not prediction results. No ZigZag forecast has been scored, and no accuracy or predictive-value claim is available.**
+
+## Final gate decision — 2026-10-25
+
+**No-go for empirical prediction scoring in this run.** The data pipeline and detailed structural audit succeeded, but the preregistered source-faithfulness gate did not pass. The exact DevLucem/ZigLib/1 implementation and its causal confirmation timing could not be established from the source material accessible during this run. The historical dataset has eight nonstandard dates requiring official session classification; the combined weekend/out-of-clock diagnostic flags 315 rows (including special evening sessions), and no timestamp overlap exists between the public archive and the current Yahoo fallback. A generic ZigZag substitute or retrospective pivot labels would introduce an unacceptable risk of look-ahead bias.
+
+Therefore the study has **zero scored forecasts** and no accuracy, balanced accuracy, confidence interval, significance test, or winning timeframe. This is an evidence/implementation no-go, not a finding that ZigZag++ has zero predictive value. Do not infer a trading strategy from this outcome.
+
+Restart criteria: (1) exact source or a reproducible signal export that records when each pivot became knowable; (2) official date-specific session and expiry table; (3) independent spot-price overlap validation; then run the pre-registered holdout without changing the signal rule.
