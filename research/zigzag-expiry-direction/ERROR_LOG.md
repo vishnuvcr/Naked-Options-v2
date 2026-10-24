@@ -291,3 +291,22 @@
 - **Evidence:** At user direction, downloaded workflow artifact 12575253300 and verified that the archive contains 1m/5m/15m/30m-resampled/60m/daily data plus validation/session reports.
 - **Limitation:** Data presence does not establish exact ZigLib v1 signal timing, official session classification, contract-specific weekly expiry dates, or the semantics of the required 10:00 and expiry-close prices.
 - **Mitigation:** Continue using available data for descriptive diagnostics. Keep the preregistered primary score unreported until the required source and target evidence exists. Do not pass a generic ZigZag approximation off as ZigZag++ [LD].
+
+
+## ZZD-023 — Shared five-minute cache path mixed providers (resolved in code; CI pending)
+- **Severity:** High.
+- **Issue:** Dhan acquisition, Yahoo fallback, and the independent public 5-minute archive reused `nifty50_5m.csv`. The public archive step could overwrite the downloaded Dhan series, and the cached file could later be mistaken for Dhan data.
+- **Correction:** The Dhan, public-archive, and Yahoo 5-minute outputs now use unique filenames. Old ambiguous `nifty50_5m.csv` data is quarantined using a SHA-256-derived filename. The 30-minute resampler uses an explicitly selected and source-specific validated file.
+- **Verification:** Code changes committed; the new GitHub Actions test/run outcome has not yet been checked.
+
+## ZZD-024 — Cross-source price outliers (open)
+- **Severity:** High for source acceptance.
+- **Evidence:** 82,451 exact timestamp overlaps across 1,105 dates. 94.99% of close pairs are within 0.05 points, but 800 rows differ by more than 1 point and the maximum close difference is 10.90 points. In the subset with 75 bars in both sources, 666 rows differ by more than 1 point.
+- **Risk:** Treating both sources as interchangeable or averaging them could alter pivots and target labels.
+- **Mitigation:** Keep raw sources separate; inspect large discrepancies, certify source timestamps/session dates, and never silently merge or drop the affected rows.
+
+## ZZD-025 — Dhan authentication workflow contained a malformed shell/heredoc section (corrected; CI pending)
+- **Severity:** High for workflow execution.
+- **Issue:** The checked-in token-renewal step contained an unmatched/duplicated `python - <<'PY'` section that was not valid as a standalone shell sequence.
+- **Correction:** Replaced the section with a single Python block that validates an existing token, attempts TOTP renewal when configured, masks token values, and falls back to Yahoo if Dhan authentication cannot be established.
+- **Verification:** Updated workflow is committed; do not claim the renewed block has passed CI until the new run is inspected.
