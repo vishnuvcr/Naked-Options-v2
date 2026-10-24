@@ -804,3 +804,8 @@ User authorized continued work using the available dataset. Downloaded audit art
 - [Updated phase status](research/zigzag-expiry-direction/PHASE_STATUS.md)
 - [Updated error log](research/zigzag-expiry-direction/ERROR_LOG.md)
 - [Updated interaction log](research/zigzag-expiry-direction/INTERACTION_LOG.md)
+
+
+## Workflow reliability correction — 2026-10-25
+
+The benchmark persistence step was hardened so a non-blocking second-source parity audit cannot cause a later `git add` failure merely because its optional JSON artifact was not produced. See [error log NP-011](research/nifty-prediction/ERROR_LOG.md) and [phase status](research/nifty-prediction/PHASE_STATUS.md). The correction is committed, but Actions execution remains unverified and no new production scores are claimed.
