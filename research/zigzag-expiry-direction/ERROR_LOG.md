@@ -195,3 +195,13 @@
 - **Fix:** Changed the decision check to use `result.get("status")` in commit `2345caf6d58be354987464a5e3010621a6e11427`.
 - **Impact:** Market data and validation were acquired successfully; the session report generation crashed before artifact upload completed (the other files were still uploaded). No prediction metrics were computed.
 - **Status:** Fix committed; verify next run.
+
+
+## ZZD-026 — Dhan token generation returned no accessToken and audit conflated raw findings with fatal errors
+- **Severity:** High; auth open, audit logic corrected
+- **Date:** 2026-10-25
+- **Run:** [Actions run #40128212164](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128212164)
+- **Observed:** Unit tests passed and cache restoration succeeded. Automated token generation received a response without a usable `accessToken`; the response body was intentionally not logged. The workflow's audit then failed because it treated raw OHLC findings as fatal, and because the optional 1m file may be absent from the restored cache.
+- **Fix:** Commit `1bb420e55cfdfa64ef26bfe594437b4665fa0639` separates timestamp parse/timezone failures, duplicate timestamps, unsorted timestamps, and missing required datasets from raw OHLC findings. Raw OHLC anomalies are reported without deleting source rows; 1m is marked optional as preregistered. The audit still explicitly blocks scoring until official session-calendar and Dhan timestamp conventions are verified.
+- **Remaining action:** Re-run workflow; diagnose Dhan token response using safe status/field-name logging only, and do not expose credentials or token values. If token generation is unavailable, validate the configured access-token secret as a fallback before requesting fresh data.
+- **Status:** Audit correction committed; CI verification pending. Authentication remains unresolved for this run. No prediction metrics exist.
