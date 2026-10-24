@@ -156,3 +156,9 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Added `market_snapshot.py` and tests to validate frozen market-only bars against cutoff, timezone, order, instrument and OHLC consistency. Added gate documentation; new CI run pending.
 - No LLM forecast invoked; no accuracy score. Standard TradingAgents data router remains disallowed for historical cutoff evaluation until a frozen-snapshot market-only path is proven.
 
+
+
+## 2026-10-25 — Frozen snapshot validator CI verified
+- Inspected [workflow #40131047411](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131047411); completed successfully with snapshot validator tests included.
+- Gate interpretation: synthetic unit tests only. No immutable historical dataset was validated and no TradingAgents forecast was run. Next gate is source/session certification and isolated market-only graph design.
+
