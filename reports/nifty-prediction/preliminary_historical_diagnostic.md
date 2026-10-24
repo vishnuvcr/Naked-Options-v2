@@ -11,6 +11,8 @@ The logistic model is a custom Node.js gradient-descent implementation refit on 
 
 ## Results
 
+![Preliminary balanced-accuracy comparison](preliminary_balanced_accuracy.svg)
+
 | Model | Accuracy | Balanced accuracy | 95% block-bootstrap interval |
 |---|---:|---:|---:|
 | Majority-class baseline | 53.02% | 50.00% | [50.00%, 50.00%] |
