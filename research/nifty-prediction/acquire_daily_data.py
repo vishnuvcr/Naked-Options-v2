@@ -16,15 +16,24 @@ def main():
     args = parser.parse_args()
     OUT.parent.mkdir(parents=True, exist_ok=True)
     MANIFEST.parent.mkdir(parents=True, exist_ok=True)
-    if OUT.exists() and not args.refresh:
+    if OUT.exists() and MANIFEST.exists() and not args.refresh:
         data = pd.read_csv(OUT)
-        if len(data) >= 1000:
-            manifest = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {}
+        manifest = json.loads(MANIFEST.read_text())
+        current_sha256 = hashlib.sha256(OUT.read_bytes()).hexdigest()
+        cache_provenance_valid = (
+            len(data) >= 1000
+            and manifest.get("symbol") == "^NSEI"
+            and manifest.get("source") == "Yahoo Finance chart data via yfinance"
+            and manifest.get("sha256") == current_sha256
+            and all(c in data.columns for c in ("Date", "Open", "High", "Low", "Close"))
+        )
+        if cache_provenance_valid:
             manifest.update({"reused_cache": True, "checked_at_utc": datetime.now(timezone.utc).isoformat(),
-                             "rows": int(len(data)), "sha256": hashlib.sha256(OUT.read_bytes()).hexdigest()})
+                             "rows": int(len(data)), "sha256": current_sha256})
             MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n")
             print(json.dumps(manifest, indent=2))
             return
+        print("Cached data lacks valid provenance/hash or required fields; reacquiring source data.")
     df = yf.download("^NSEI", period="max", interval="1d", auto_adjust=False, progress=False, threads=False)
     if df is None or df.empty:
         raise RuntimeError("Yahoo Finance returned no daily NIFTY 50 data")
