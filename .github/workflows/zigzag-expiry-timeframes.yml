@@ -1,0 +1,69 @@
+name: ZigZag expiry direction — acquire timeframe data
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_date:
+        description: "Start date (YYYY-MM-DD); intraday API is limited to about 5 years"
+        required: false
+        type: string
+        default: "2021-10-25"
+      end_date:
+        description: "End date (YYYY-MM-DD)"
+        required: false
+        type: string
+        default: "2026-10-25"
+      intervals:
+        description: "Comma-separated Dhan intervals in minutes"
+        required: false
+        type: string
+        default: "1,5,15,60"
+  push:
+    branches:
+      - "research/zigzag-expiry-direction-developer"
+    paths:
+      - "research/zigzag-expiry-direction/acquire_dhan_timeframes.py"
+      - ".github/workflows/zigzag-expiry-timeframes.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zigzag-expiry-data-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Restore reusable cached market data
+        uses: actions/cache@v4
+        with:
+          path: data/cache/zigzag_expiry_direction
+          key: zigzag-dhan-v1-${{ runner.os }}-${{ inputs.start_date || '2021-10-25' }}-${{ inputs.end_date || '2026-10-25' }}-${{ inputs.intervals || '1,5,15,60' }}
+          restore-keys: |
+            zigzag-dhan-v1-${{ runner.os }}-
+      - name: Acquire missing or requested Dhan datasets
+        env:
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          START_DATE: ${{ inputs.start_date || '2021-10-25' }}
+          END_DATE: ${{ inputs.end_date || '2026-10-25' }}
+          INTERVALS: ${{ inputs.intervals || '1,5,15,60' }}
+        run: |
+          python research/zigzag-expiry-direction/acquire_dhan_timeframes.py \
+            --start "$START_DATE" --end "$END_DATE" --intervals "$INTERVALS"
+      - name: Upload dataset and provenance manifest (no secrets)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zigzag-nifty50-data-${{ github.run_id }}
+          path: |
+            data/cache/zigzag_expiry_direction/*.csv
+            reports/zigzag_data_manifest.json
+          if-no-files-found: warn
+          retention-days: 30
