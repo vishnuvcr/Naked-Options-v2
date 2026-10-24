@@ -185,3 +185,9 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Downloaded and inspected Actions artifact 12575426805. Preliminary local diagnostics: 92,876 rows; 1,244 dates; sorted and unique timestamps; zero invalid OHLC; 1,236 dates with 75 regular-clock bars; six weekend-dated dates and 48 out-of-clock rows. The Yahoo fallback has no timestamp overlap with the archive because the archive ends 2026-04-21 and Yahoo starts later.
 - Added a reusable diagnostic audit script and wired it into the acquisition workflow so results are saved as a GitHub Actions artifact. This is not official calendar certification and does not authorize scoring.
 - No hidden chain-of-thought is recorded. The repository log captures actions, observable evidence, decisions and limitations.
+
+## 2026-10-25 — Final gate outcome
+- Detailed archive audit workflow [#40132605202](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40132605202) succeeded and uploaded its diagnostic report.
+- Structural archive checks passed, but official session classification, overlapping-source price validation, and exact imported ZigLib causal timing remain unresolved.
+- Applied the preregistered rule not to substitute a generic ZigZag or score retrospective pivots. Updated phase status, results ledger, manuscript, README and error log to close this run as NO-GO FOR SOURCE-FAITHFUL PREDICTION SCORING.
+- No accuracy estimate or trading recommendation is claimed. Restart criteria are recorded in the error log and results ledger.
