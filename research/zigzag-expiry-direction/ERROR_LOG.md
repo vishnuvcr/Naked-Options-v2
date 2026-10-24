@@ -150,3 +150,13 @@
 - **Risk:** Wrong bars may alter pivot sequences, 10:00 target references, and timeframe comparisons.
 - **Mitigation:** Add an official NSE session-calendar audit, check Dhan interval timestamp conventions, investigate 1m pre-open/extended-time rows, and retain a row-level exclusion report. Do not score any timeframe until this passes.
 - **Status:** Open; evaluation remains blocked.
+
+
+## ZZD-021 — Raw 1-minute file contains weekend and out-of-session timestamps
+- **Severity:** High; open
+- **Date:** 2026-10-25
+- **Artifact:** [Actions run #40127255063, artifact #12573423696](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127255063/artifacts/12573423696)
+- **Observed:** 511,268 1-minute rows; sorted timestamps and no duplicate timestamp strings. There are 2,636 rows dated Saturday/Sunday, 47,612 rows outside the regular-session time window 09:15–15:29 IST, 12 OHLC-inconsistent rows, and exact 10:00 timestamp rows on 1,236 dates. The first/last timestamps are 09:01 IST and 15:29 IST.
+- **Risk:** Unfiltered out-of-session rows can distort ZigZag pivots; incomplete/missing 10:00 bars or sessions can corrupt target labels. A basic monotonic timestamp check alone is insufficient.
+- **Mitigation:** Preserve raw data. Add a separate session-audit report; filter regular-session observations only in derived data, document the rule, enumerate affected dates, and cross-check 10:00 and expiry close against an independent source before target construction. Do not score the raw 1m series.
+- **Status:** Open. No prediction metrics exist.
