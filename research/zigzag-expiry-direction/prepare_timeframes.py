@@ -121,7 +121,13 @@ def main():
             issues = structural_issues(rows)
             bad = [{k: r[k] for k in FIELDS} for r in rows if not valid_ohlc(r)]
             clean = [r for r in rows if valid_ohlc(r)]
-            clean_path = ROOT / ("nifty50_daily_validated.csv" if label == "daily" else f"nifty50_{label}m_validated.csv")
+            if label == "daily":
+                clean_path = ROOT / "nifty50_daily_validated.csv"
+            elif label == "5":
+                clean_path = ROOT / f"{path.stem}_validated.csv"
+                selected_5m_clean_path = clean_path
+            else:
+                clean_path = ROOT / f"nifty50_{label}m_validated.csv"
             clean_info = write_rows(clean_path, clean)
             reports["datasets"][label] = {
                 "raw_path": str(path), "raw_rows": len(rows),
