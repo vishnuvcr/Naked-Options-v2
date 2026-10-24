@@ -140,3 +140,13 @@
 - **Security:** Token is masked and used at runtime; no token value is logged, committed, or uploaded as an artifact.
 - **Next action:** Verify data acquisition, manifest coverage and validation outputs before starting prediction scoring.
 - **Status:** Open until data acquisition/validation concludes. No prediction metrics exist.
+
+
+## ZZD-021 — Intraday timestamp/session eligibility not verified
+- **Severity:** High; open
+- **Date:** 2026-10-25
+- **Evidence:** Direct audit of artifact [12573423696](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127255063/artifacts/12573423696) found weekend-dated observations in every intraday timeframe and substantial 1m records outside a broad 09:00–16:00 IST clock screen. Counts: 1m 511,268 rows / 2,636 weekend timestamps / 40,975 outside broad clock screen; 5m 92,795 / 484 / 37; 15m 30,985 / 166 / 13; 30m derived 14,814 / 69 / 0; 60m 8,663 / 51 / 5. Daily data contains six weekend dates.
+- **Interpretation:** Some weekend sessions may be legitimate special sessions; do not blindly drop all weekend data. The current validator checks sorting, duplicates, timezone and OHLC, but does not establish exchange-session eligibility or confirm Dhan bar timestamp semantics.
+- **Risk:** Wrong bars may alter pivot sequences, 10:00 target references, and timeframe comparisons.
+- **Mitigation:** Add an official NSE session-calendar audit, check Dhan interval timestamp conventions, investigate 1m pre-open/extended-time rows, and retain a row-level exclusion report. Do not score any timeframe until this passes.
+- **Status:** Open; evaluation remains blocked.
