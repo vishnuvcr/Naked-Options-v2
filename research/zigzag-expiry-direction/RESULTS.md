@@ -41,3 +41,7 @@ This establishes that the acquisition pipeline ran successfully, not that the Zi
 ## 2026-10-25 — Raw 1-minute artifact audit
 
 The successful data artifact was inspected directly. Its 1-minute CSV contains 511,268 rows. Timestamp strings are sorted and unique, but the file contains 2,636 weekend-dated rows, 47,612 timestamps outside 09:15–15:29 IST, and 12 OHLC-inconsistent rows. Exact 10:00 rows occur on 1,236 dates. These observations identify a data-cleaning and session-completeness task; they do **not** constitute prediction results. The raw file must remain unchanged, with regular-session and valid-OHLC derived files produced separately and independently checked. No forecasts have been scored.
+
+
+## Verified acquisition and diagnostic audit — 2026-10-25
+Successful workflow [#40128335927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927) uploaded [artifact #12574310370](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927/artifacts/12574310370). Tests, Dhan authentication, acquisition, timeframe validation, 30m resampling, and diagnostic audit all passed. Dataset counts: 1m 511,268; 5m 92,795; 15m 30,985; 30m 14,814; 60m 8,663; daily 1,240. The raw audit found 12/5/3/0/2/0 OHLC findings respectively, with weekend and broad-clock flags detailed in reports/zigzag_session_audit.json inside the artifact. The audit decision remains NOT_ELIGIBLE_FOR_SCORING_UNTIL_OFFICIAL_SESSION_CALENDAR_AND_DHAN_TIMESTAMP_CONVENTION_ARE_VERIFIED. **No predictions have been scored and no accuracy claim is available.**
