@@ -146,3 +146,11 @@ The first workflow run after adding the session diagnostic, [#40127961418](https
 - Raw anomalies remain in the source files; no silent row deletion. These counts are diagnostics, not a determination that all weekend/out-of-session rows are invalid.
 - **Phase 2 remains BLOCKED for scoring:** official NSE session-by-session reconciliation and Dhan bar timestamp semantics are not verified. Exact ZigLib v1 source/causal signal availability and historical expiry schedule are also unresolved.
 - **Phase 3:** BLOCKED. **Phase 4:** NOT STARTED. No accuracy results exist.
+
+
+## 2026-10-25 — Official rule audit
+- Reviewed official NSE NIFTY F&O product page, NSE/FAOP/68747 (2025-06-25), NSE/FAOP/65336 (2024-11-29), NSE market holiday/timing page, and Dhan v2 historical-data docs.
+- Added [OFFICIAL_CALENDAR_PROTOCOL.md](OFFICIAL_CALENDAR_PROTOCOL.md), documenting the rule change and hard validation requirements.
+- Source-supported: NIFTY weekly expiry changed from Thursday to Tuesday in 2025, with transition exceptions for existing/long-dated contracts; Tuesday holiday expiry moves to previous trading day. Weekend/special sessions must be explicitly represented.
+- Dhan docs confirm epoch timestamps but do not settle candle-start versus candle-end semantics. This remains a target-alignment blocker.
+- **Phase 1:** partial; exact ZigLib source still not verified. **Phase 2:** data acquired but session calendar and timestamp convention not certified. **Phase 3:** blocked. **Phase 4:** not started. No accuracy results.
