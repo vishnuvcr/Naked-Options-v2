@@ -17,3 +17,7 @@ Dhan acquisition and validation scripts have been committed, with a GitHub Actio
 
 ## Execution-verification note
 The acquisition workflow and validation scripts are committed, but this session could not confirm a successful run or inspect a resulting artifact. A local clone/syntax-check attempt failed because github.com could not be resolved. Thus data status remains unverified and there are no prediction metrics or conclusions.
+
+
+## CI test coverage added — execution unverified
+Added tests for Dhan response parsing, timestamp conversion, OHLC validation, 30-minute aggregation, and incomplete-bar exclusion; wired them into the acquisition workflow. They have not been confirmed passing in a GitHub Actions run. No empirical forecasts or accuracy metrics are available.
