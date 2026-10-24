@@ -62,7 +62,7 @@ A reproducible custom Node.js diagnostic was run against a public third-party CS
 | Zero-return forecast (DOWN tie convention) | 46.98% | 50.00% | [50.00%, 50.00%] |
 | Custom expanding logistic regression | 52.86% | 52.78% | [50.11%, 55.36%] |
 
-The custom logistic diagnostic's Brier score was 0.2494 and log loss was 0.6919. Its balanced accuracy was only about 0.18 percentage points above the previous-session-direction baseline; their approximate intervals overlap substantially. The majority baseline has higher raw accuracy due to the test-set class imbalance.
+The custom logistic diagnostic's Brier score was 0.2494 and log loss was 0.6919. A comparison chart is available at [preliminary_balanced_accuracy.svg](../../reports/nifty-prediction/preliminary_balanced_accuracy.svg), and the full diagnostic report is [here](../../reports/nifty-prediction/preliminary_historical_diagnostic.md). Its balanced accuracy was only about 0.18 percentage points above the previous-session-direction baseline; their approximate intervals overlap substantially. The majority baseline has higher raw accuracy due to the test-set class imbalance.
 
 **Evidence boundary:** These are preliminary historical results, not the production scikit-learn benchmark. The custom logistic implementation differs from scikit-learn, random forest and gradient boosting were not evaluated here, and the data ends in 2019. No robust predictive advantage is established. The main benchmark workflow and artifact still need independent execution verification.
 
