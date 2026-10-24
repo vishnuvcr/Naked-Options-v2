@@ -708,11 +708,11 @@ def _evolve_rule(x_train, y_train, x_valid, y_valid, feature_names, seed=1729, m
             while len(proposed) < population_size:
                 roll = rng.random()
                 if roll < 0.50:
-                    parent = elites[int(rng.integers(0, len(elites)))]["candidate"]
+                    parent = elites[int(rng.integers(0, len(elites)))]
                     child = _mutate_candidate(parent, rng, x_train.shape[1], thresholds)
                 elif roll < 0.80 and len(elites) >= 2:
-                    a = elites[int(rng.integers(0, len(elites)))]["candidate"]
-                    b = elites[int(rng.integers(0, len(elites)))]["candidate"]
+                    a = elites[int(rng.integers(0, len(elites)))]
+                    b = elites[int(rng.integers(0, len(elites)))]
                     child = dict(a)
                     for field in list(child):
                         if rng.random() < 0.5:
