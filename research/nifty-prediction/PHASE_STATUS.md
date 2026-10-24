@@ -57,3 +57,9 @@ The GitHub commit-status endpoint returned no status entries for the new benchma
 
 ## Automation trigger correction — 2026-10-25
 The Actions overview screenshot confirms the benchmark workflow is triggering and shows failed runs. The push path filter previously included all `research/nifty-prediction/**` files, so status/error-log documentation updates also retriggered data acquisition and model training. Narrowed the push trigger to executable scripts, tests, and the workflow file while retaining manual dispatch. Commit: `f2ede8957f3bc2ba7cb557be04cc5c6ba04bafd4`. The screenshot does not expose the failing step; root cause of the failed run remains unresolved and is not represented as fixed.
+
+
+## Actions failure diagnosed — 2026-10-25
+- Inspected GitHub Actions run #33 (ID `40137118438`) through the GitHub run/job API. The `daily-direction` job failed at step 3, `Run actions/setup-python@v5`; dependency installation, unit tests, data acquisition, parity audit, and benchmark were skipped. The optional ARCH/MAPIE package audit job succeeded.
+- Likely cause: `cache: pip` was enabled in setup-python without a recognized dependency manifest for cache key discovery. Removed the pip cache setting in commit `3ba7e1e9d79a2a4a7323bc555a7e8ae76dc06f0b`. This diagnosis is based on the failed step; exact error text was not available in the run summary.
+- Await the newly triggered run before marking tests/data/benchmark as passed. No new performance result is claimed yet.
