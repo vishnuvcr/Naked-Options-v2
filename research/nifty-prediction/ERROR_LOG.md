@@ -54,3 +54,10 @@
 - **Severity:** Medium/high for data provenance.
 - **Issue:** The new source catalog claims recent daily NIFTY 50 data through 2026-10-23, but is not exchange-certified and has not yet been parity-audited against the primary series.
 - **Mitigation:** Run the cross-source OHLC audit, preserve the source hash and mismatch distribution, and seek official Nifty Indices/NSE data for final confirmation.
+
+
+## NP-011 — Optional parity artifact could break result persistence (fixed in code; CI pending)
+- **Severity:** Medium.
+- **Issue:** The workflow allowed the second-source parity audit to fail with `continue-on-error: true`, but the persistence step staged its JSON output unconditionally. If the audit failed before writing the file, `git add` could exit nonzero and fail the otherwise usable primary benchmark job.
+- **Fix:** Persistence now checks each expected output path and stages only files that exist, logging missing optional artifacts. This preserves primary benchmark output even if the independent parity audit is unavailable.
+- **Verification:** Workflow YAML updated in commit `dcce2fc65ee91d45544ac3779b9c08bf100d0c13`; actual GitHub Actions execution remains unverified, so CI confirmation is still required.
