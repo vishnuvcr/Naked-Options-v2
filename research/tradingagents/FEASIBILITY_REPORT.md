@@ -117,3 +117,13 @@ Yahoo `^NSEI` acquisition returned:
 
 **Critical limitation:** this is a mixed-coverage free fallback, not the requested five-year intraday archive. Yahoo retains only short intraday windows, and daily timestamps are date labels at midnight IST rather than session close timestamps. Do not use the daily timestamp as a 10:00 IST or close timestamp. No formal expiry prediction evaluation is authorized until timestamp conventions, session calendar, and target labels are validated. The workflow artifacts contain the actual CSV files and manifests; raw licensed data is not committed to the Git repository.
 
+
+
+## Independent public intraday archive acquired — 2026-10-25
+
+A second free source was found and acquired automatically: public release [voletiramu/nse-fno-1min-data, `indices-v1.0.0`](https://github.com/voletiramu/nse-fno-1min-data/releases/tag/indices-v1.0.0). Its release notes describe a five-year NIFTY 50 spot 5-minute file derived from Zerodha Kite, Apr 2021–Apr 2026. The acquisition workflow downloaded the release ZIP, verified its SHA-256 against the published digest, normalized the data, and passed the existing schema/OHLC audit.
+
+Successful run: [#40131891819](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131891819). Artifact: `zigzag-nifty50-data-40131891819` (ID 12575426805, retained until 2026-11-23). Source archive SHA-256: `0c1f3de848a4e8c05e233c195685e7ae560d56d08df8baba8b2ffcfac699d3f8`. Normalized five-minute file: 92,876 rows, 2021-04-01 09:15 IST through 2026-04-21 15:25 IST; normalized SHA-256: `a36106d04852bedc95019f3fc480e858961e654373a65108d4963bc9233c56cb`.
+
+The derived 30-minute series contains 14,849 rows. This is a material improvement in intraday coverage. The dataset remains **provisional**: third-party source provenance, every official session, missing bars, bar-start semantics and price agreement against an independent source must be checked. The calendar audit still explicitly reports `NOT_VERIFIED`; therefore this does not authorize final model scoring yet.
+
