@@ -77,8 +77,6 @@ class DataValidationTests(unittest.TestCase):
         self.assertEqual(derived,[])
         self.assertEqual(len(dropped),1)
 
-if __name__ == "__main__":
-    unittest.main()
 
 
 
@@ -143,26 +141,6 @@ class SourceParityTests(unittest.TestCase):
 
 
 
-class LegacyCacheMigrationTests(unittest.TestCase):
-    def test_legacy_mixed_cache_is_quarantined_with_matching_hash(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            legacy = root / "nifty50_5m.csv"
-            raw = b"timestamp_ist,open,high,low,close,volume\nlegacy\n"
-            legacy.write_bytes(raw)
-            report = migration.migrate(root)
-            quarantined = Path(report["quarantined_path"])
-            self.assertEqual(report["status"], "QUARANTINED")
-            self.assertFalse(legacy.exists())
-            self.assertEqual(quarantined.read_bytes(), raw)
-            self.assertEqual(report["legacy_sha256"], report["quarantined_sha256"])
-
-    def test_migration_without_legacy_file_is_a_noop(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            report = migration.migrate(Path(tmp))
-            self.assertEqual(report["status"], "NO_LEGACY_FILE")
-
-
     def test_dhan_internal_1m_to_5m_audit_flags_grid_and_ohlc_mismatch(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -185,3 +163,26 @@ class LegacyCacheMigrationTests(unittest.TestCase):
             self.assertEqual(report["complete_groups"], 2)
             self.assertEqual(report["mismatch_groups"], 1)
             self.assertEqual(report["misaligned_five_minute_timestamps"], 1)
+
+
+class LegacyCacheMigrationTests(unittest.TestCase):
+    def test_legacy_mixed_cache_is_quarantined_with_matching_hash(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            legacy = root / "nifty50_5m.csv"
+            raw = b"timestamp_ist,open,high,low,close,volume\nlegacy\n"
+            legacy.write_bytes(raw)
+            report = migration.migrate(root)
+            quarantined = Path(report["quarantined_path"])
+            self.assertEqual(report["status"], "QUARANTINED")
+            self.assertFalse(legacy.exists())
+            self.assertEqual(quarantined.read_bytes(), raw)
+            self.assertEqual(report["legacy_sha256"], report["quarantined_sha256"])
+
+    def test_migration_without_legacy_file_is_a_noop(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            report = migration.migrate(Path(tmp))
+            self.assertEqual(report["status"], "NO_LEGACY_FILE")
+
+if __name__ == "__main__":
+    unittest.main()
