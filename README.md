@@ -1,3 +1,28 @@
+# CURRENT RESEARCH TRACK — NWCP-1.0: NIFTY Weekly Candle Prediction
+
+**Status as of 2026-10-24:** Research protocol frozen; literature/source audit and pipeline verification in progress. **No empirical predictive result is claimed yet.**
+
+This is a clean, separate study. Historical scores, candidate fitness, model selections and conclusions from the archived NIFTY forecasting or option-buying tracks below are excluded from NWCP-1.0 evidence.
+
+**Exact question:** using only information available by 10:00 a.m. IST on the first trading session after the previous actual NIFTY 50 weekly expiry, predict whether the NIFTY 50 spot index will be above or below that next weekly expiry's regular-session close. UP / DOWN are the binary classes; ties are reported separately. This track does not develop an options strategy, optimize P&L, or recommend trades.
+
+- **Active developer branch:** [research/nifty-weekly-candle-prediction-developer](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/nifty-weekly-candle-prediction-developer)
+- [Research plan and fixed phases](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/RESEARCH_PLAN.md)
+- [Research questions / hypotheses](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/RESEARCH_QUESTIONS.md)
+- [Phase status and exit gates](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/PHASE_STATUS.md)
+- [Data and target-timing protocol](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/DATA_PROTOCOL.md)
+- [Literature and source review](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/LITERATURE_REVIEW.md)
+- [TradingView Pine indicator catalogue](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/PINE_INDICATOR_CATALOG.md)
+- [QuantEvolve-style discovery specification](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/QUANTEVOOLVE_SPEC.md)
+- [Reproducible research runner](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/run_research.py) · [Regression tests](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/test_research.py) · [Manual/automatic workflow](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/.github/workflows/nifty-weekly-candle-prediction.yml)
+- [Error and defect log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/ERROR_LOG.md) · [Visible decision log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/INTERACTION_LOG.md)
+
+**Method:** bounded QuantEvolve-inspired symbolic/rule evolution, regularized logistic regression, tree ensembles, conventional indicators and novel hypotheses (AIA, OWPE, MHDA, VSRP, CMRP and TCD). Chronological validation and a sealed final time block are mandatory. The automated initial result is exploratory only until expiry-calendar, data-provenance, look-ahead, uncertainty and independent-tester gates pass.
+
+**Data governance:** the runner checks a public NIFTY 50 one-minute history candidate and attempts a Dhan overlap audit when DHAN_ACCESS_TOKEN is configured. Public bars are cached; Dhan raw rows are kept ephemeral in the public repository workflow until data terms are confirmed. Raw price rows and weekly target-price rows are not uploaded as public artifacts.
+
+---
+
 # Naked Options v2 — Research status
 
 **Latest active track:** QE-NOB-2.0 bounded acquisition and discovery. [Developer branch](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/quant-evolve-nob-v2-discovery-developer) · [Phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS.md) · [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG.md) · [Acquisition/discovery workflow #39865627143](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39865627143) · [Sanitized reports artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39865627143/artifacts/12464009881)
