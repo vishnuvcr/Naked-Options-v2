@@ -26,3 +26,9 @@
 
 ## 2026-10-25 — Causality control
 Reviewed the publicly accessible ZigZag++ wrapper mirror. It defaults to `repaint=true`; the non-repaint branch draws only on direction changes and uses prior-bar point values. To avoid look-ahead in the prediction-only study, the pre-registered primary timeframe panel is now explicitly non-repaint mode, with signal availability assigned to the direction-change bar. This is a protocol amendment, not evidence of predictive performance; results must not be described as default-setting performance. The imported ZigLib v1 internals remain unverified.
+
+
+## 2026-10-25 — Execution verification attempt
+- Tried to clone the branch locally to run syntax checks; DNS/network to github.com failed. Logged as ZZD-016.
+- Checked available GitHub actions tools; no direct workflow dispatch was available and no successful run artifact could be confirmed.
+- Current outcome remains blocked: acquisition workflow is implemented but unverified; no empirical scores.
