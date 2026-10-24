@@ -32,3 +32,18 @@ Phase 1 protocol amendment: user requested “Test various timeframes.” Added 
 | 6. Manuscript/decision | PROTOCOL DRAFTED | No empirical results. |
 
 Current result remains DATA-LIMITED / NO PERFORMANCE CLAIM.
+
+
+## 2026-10-25 execution update — acquisition pipeline added
+Added `acquire_dhan_timeframes.py` to request NIFTY 50 spot index bars from Dhan v2 (security ID 13, segment `IDX_I`, instrument `INDEX`) for 1m/5m/15m/60m and daily data, in chunks no longer than 90 days. Added `prepare_timeframes.py` for timestamp/OHLC/duplicate checks and a 30m series resampled from six contiguous 5m bars anchored at 09:15 IST. Added `.github/workflows/zigzag-expiry-timeframes.yml` with cache, manual inputs, optional refresh, and an artifact that includes data plus provenance/validation manifests.
+
+| Phase | Status | Evidence / blocker |
+|---|---|---|
+| 1. Protocol/source audit | PARTIAL — BLOCKED | Timeframe variants registered; exact ZigLib source/timing still unverified. |
+| 2. Data audit | PIPELINE ADDED — EXECUTION NOT VERIFIED | Dhan acquisition code/workflow committed; no successful workflow artifact or validated dataset is yet confirmed in this chat. |
+| 3. Causal reconstruction | BLOCKED | No source-faithful ZigLib implementation yet. |
+| 4. Evaluation | NOT STARTED | No predictions scored. |
+| 5. Robustness/inference | NOT STARTED | Requires valid predictions and multiple-comparison control. |
+| 6. Manuscript/decision | DRAFT ONLY | No empirical results. |
+
+Important: adding the workflow is not evidence that Dhan authentication succeeded or that data was acquired. The next gate is inspect the workflow result/artifact, correct any logged API/data errors, then validate source parity before scoring.
