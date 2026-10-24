@@ -127,3 +127,11 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - No tester branch, tester agent/role, or tester approval gate will be created. Developer will inspect CI results, record errors, fix issues, and proceed autonomously through the defined gates. Automated unit tests and lint remain ordinary software quality checks, not a separate tester role.
 - At the time of this update, corrected run [#40129764557](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129764557) had passed upstream unit tests and Ruff lint; clean-install import smoke test was still running. Final workflow conclusion not yet verified.
 - Updated `research/tradingagents/TEST_PLAN.md` to remove the independent tester requirement.
+
+
+## 2026-10-25 — TradingAgents software test pass and NIFTY probe
+- User instruction: “No tester”; later: “Proceed”. Followed by removing tester role/branch/approval requirements from the feasibility plan. Automated unit tests remain normal developer CI, not a separate tester.
+- Inspected GitHub Actions run [#40129883044](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129883044): pinned upstream dependency installation, pytest suite, Ruff lint, and clean-install import smoke test all passed.
+- Added `research/tradingagents/probe_nifty_yahoo.py` to test live Yahoo Finance `^NSEI` daily and 5-minute data shape/timezone/timestamps; added it to the compatibility workflow. It has not yet run in the latest workflow; no data result is claimed yet.
+- CI success only establishes the upstream package's basic software checks, not predictive performance or historical data suitability.
+
