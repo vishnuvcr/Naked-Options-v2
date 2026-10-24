@@ -1,5 +1,17 @@
 # ZigZag++ NIFTY 50 expiry-direction study — current status
 
+**Updated 2026-10-25:** [Data pipeline run #40128335927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927) succeeded and [artifact #12574310370](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927/artifacts/12574310370) is available. Official NSE circular review confirms a 2025 transition from Thursday to Tuesday weekly expiry, with contract-level transition exceptions. See [official session/expiry calendar protocol](research/zigzag-expiry-direction/OFFICIAL_CALENDAR_PROTOCOL.md). **Scoring remains blocked**: the complete official session calendar, Dhan candle timestamp convention, exact ZigLib v1 causal timing, and full historical expiry mapping are not yet verified. No prediction accuracy result exists.
+
+- [Research plan](research/zigzag-expiry-direction/RESEARCH_PLAN.md)
+- [Phase status](research/zigzag-expiry-direction/PHASE_STATUS.md)
+- [Results ledger](research/zigzag-expiry-direction/RESULTS.md)
+- [Error log](research/zigzag-expiry-direction/ERROR_LOG.md)
+- [Interaction log](research/zigzag-expiry-direction/INTERACTION_LOG.md)
+
+---
+
+# ZigZag++ NIFTY 50 expiry-direction study — current status
+
 **Updated 2026-10-25:** Data acquisition, validation, diagnostic session audit, and artifact upload succeeded in [GitHub Actions run #40128335927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927). [Artifact #12574310370](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927/artifacts/12574310370) contains 1m/5m/15m/30m/60m/daily data and validation reports. The audit found 12/5/3/0/2/0 raw OHLC anomalies by timeframe (1m through daily); raw rows were preserved. All audited files had sorted timestamps and zero duplicates. **Prediction scoring remains blocked** until official NSE session dates, Dhan bar timestamp convention, exact ZigLib v1 causal signal timing, and historical weekly expiry mapping are verified. No accuracy result exists.
 
 - [Research plan and fixed phases](research/zigzag-expiry-direction/RESEARCH_PLAN.md)
