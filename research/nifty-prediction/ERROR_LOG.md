@@ -38,3 +38,11 @@ Candidate screen multiplies next-session spot-index return by a long/short direc
 - **Cause:** An earlier run committed `candidate_rules.json` while this run was still executing from an older checkout. Its local generated artifact then conflicted during the later rebase/push.
 - **Fix:** Updated the workflow to rebase the current branch **before** staging generated outputs, and included `volatility_forecast.json` in persistence. The newer workflow run #40 is in progress; verify it completes before marking this fix confirmed.
 - **Important:** The scientific candidate calculation did run successfully in #37; the failure was in saving results, not in the benchmark or candidate-rule step.
+
+## NP-012 — Concurrent branch push rejected during persistence (FIX APPLIED; rerun required)
+
+- **Evidence:** Workflow [#40](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40142926621) completed benchmark, candidate-rule, and GARCH steps, but the persistence step failed because the remote branch advanced after the runner's checkout/rebase.
+- **Scientific output:** Candidate rules were computed for 1,157 rows (2022-02-14 to 2026-10-22). GARCH(1,1) was computed on 1,157 observations (2022-02-15 to 2026-10-23). The run artifact uploaded successfully; branch JSON persistence did not.
+- **GARCH result:** QLIKE was -8.64595 for GARCH(1,1), -8.57379 for rolling 20-session variance, and -8.22293 for expanding unconditional variance. Lower is better. This supports a modest volatility forecast comparison only; squared returns are noisy and it is not a direction or trading result.
+- **Cause:** A concurrent branch update raced the push; pre-staging rebase alone did not eliminate the race window.
+- **Fix:** Persistence workflow now includes volatility_forecast.json, fetches/rebases before staging, and retries the push up to three times after fetching/rebasing on rejection. Workflow-file change triggers an automated rerun. Verify that run and its persisted reports before closing this entry.
