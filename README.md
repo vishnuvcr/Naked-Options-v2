@@ -726,3 +726,7 @@ Added a strict [forecast contract](research/tradingagents/FORECAST_CONTRACT.md),
 
 **Latest CI:** [Run #40130735394](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40130735394) passed forecast-contract tests, pinned TradingAgents install/tests/lint/import, and the Yahoo probe. Added [frozen market snapshot validator](research/tradingagents/market_snapshot.py), [its tests](research/tradingagents/test_market_snapshot.py), and [gate notes](research/tradingagents/MARKET_SNAPSHOT_GATE.md); CI for this newest change is pending. These checks do not yet constitute a historical forecast backtest.
 
+
+
+**Snapshot validator CI result:** [Run #40131047411](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131047411) completed successfully with the new snapshot tests. This validates the code against synthetic cases only; historical source/session certification and model integration remain blocked. No prediction score is available.
+
