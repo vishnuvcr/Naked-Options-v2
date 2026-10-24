@@ -65,6 +65,11 @@ jobs:
           DHAN_PIN: ${{ secrets.DHAN_PIN }}
           DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
         run: |
+          if [ -z "${DHAN_ACCESS_TOKEN:-}" ] && [ -z "${DHAN_CLIENT_ID:-}" ]; then
+            echo "DATA_SOURCE=yahoo" >> "$GITHUB_ENV"
+            echo "Dhan credentials unavailable; using free Yahoo fallback."
+            exit 0
+          fi
           if [ -n "${DHAN_ACCESS_TOKEN:-}" ]; then
             export DHAN_ACCESS_TOKEN
             python -c 'import json,os,urllib.request; t=os.environ["DHAN_ACCESS_TOKEN"].strip(); r=urllib.request.Request("https://api.dhan.co/v2/profile",headers={"access-token":t}); p=json.loads(urllib.request.urlopen(r,timeout=30).read().decode()); assert isinstance(p,dict) and p, "empty Dhan profile"; print("::add-mask::"+t); open(os.environ["GITHUB_ENV"],"a").write("DHAN_ACCESS_TOKEN="+t+"\\n"); print("Provided Dhan access token validated successfully.")'
@@ -121,9 +126,14 @@ jobs:
           INTERVALS: ${{ inputs.intervals || '1,5,15,60' }}
           REFRESH_DATA: ${{ inputs.refresh_data || 'false' }}
         run: |
-          ARGS=(--start "$START_DATE" --end "$END_DATE" --intervals "$INTERVALS")
-          if [ "$REFRESH_DATA" = "true" ]; then ARGS+=(--refresh); fi
-          python research/zigzag-expiry-direction/acquire_dhan_timeframes.py "${ARGS[@]}"
+          if [ "${DATA_SOURCE:-dhan}" = "yahoo" ]; then
+            python -m pip install --disable-pip-version-check yfinance
+            python research/tradingagents/acquire_nifty_yahoo_fallback.py
+          else
+            ARGS=(--start "$START_DATE" --end "$END_DATE" --intervals "$INTERVALS")
+            if [ "$REFRESH_DATA" = "true" ]; then ARGS+=(--refresh); fi
+            python research/zigzag-expiry-direction/acquire_dhan_timeframes.py "${ARGS[@]}"
+          fi
       - name: Validate data and derive 30-minute bars
         if: always()
         run: python research/zigzag-expiry-direction/prepare_timeframes.py --required 5,15,60,daily
