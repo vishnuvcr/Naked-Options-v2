@@ -2,7 +2,7 @@ import csv
 import importlib.util
 import tempfile
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
 
@@ -37,24 +37,25 @@ class DhanParserTests(unittest.TestCase):
             acq.get_rows(data)
 
 class DataValidationTests(unittest.TestCase):
-    def test_invalid_ohlc_is_flagged(self):
+    def test_invalid_ohlc_is_flagged_and_can_be_quarantined(self):
         rows=[{"timestamp_ist":"2024-01-01T09:15:00+05:30",
-               "dt":datetime(2024,1,1,9,15,tzinfo=prep.IST),
-               "open":10.0,"high":9.0,"low":8.0,"close":8.5,"volume":0}]
-        self.assertTrue(any("invalid OHLC" in x for x in prep.validate(rows)))
+               "dt":datetime.fromisoformat("2024-01-01T09:15:00+05:30"),
+               "date_ist":"2024-01-01","open":10.0,"high":9.0,
+               "low":8.0,"close":8.5,"volume":0}]
+        self.assertFalse(prep.valid_ohlc(rows[0]))
+        self.assertEqual(prep.structural_issues(rows), [])
 
     def test_valid_six_bar_block_resamples_to_30m(self):
         rows=[]
         for i in range(6):
-            stamp=datetime(2024,1,2,9,15,tzinfo=prep.IST).replace(minute=15+i*5)
+            stamp=datetime.fromisoformat("2024-01-02T09:15:00+05:30").replace(minute=15+i*5)
             rows.append({"timestamp_ist":stamp.isoformat(),"date_ist":"2024-01-02",
                          "dt":stamp,"open":100+i,"high":102+i,"low":99+i,
                          "close":101+i,"volume":10})
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)/"data"/"cache"/"zigzag_expiry_direction"
-            out=Path(tmp)/"reports"/"zigzag_timeframe_validation.json"
-            with patch.object(prep,"ROOT",root), patch.object(prep,"OUT",out):
-                derived,dropped,path=prep.derive_30m(rows)
+            with patch.object(prep,"ROOT",root):
+                derived,dropped,info=prep.derive_30m(rows)
             self.assertEqual(len(derived),1)
             self.assertEqual(derived[0]["open"],100)
             self.assertEqual(derived[0]["close"],106)
@@ -62,12 +63,12 @@ class DataValidationTests(unittest.TestCase):
             self.assertEqual(derived[0]["low"],99)
             self.assertEqual(derived[0]["volume"],60)
             self.assertEqual(dropped,[])
-            self.assertTrue(path.exists())
+            self.assertTrue(Path(info["path"]).exists())
 
     def test_incomplete_30m_bucket_is_excluded(self):
         rows=[]
         for i in range(5):
-            stamp=datetime(2024,1,2,9,15,tzinfo=prep.IST).replace(minute=15+i*5)
+            stamp=datetime.fromisoformat("2024-01-02T09:15:00+05:30").replace(minute=15+i*5)
             rows.append({"timestamp_ist":stamp.isoformat(),"date_ist":"2024-01-02",
                          "dt":stamp,"open":100,"high":102,"low":99,"close":101,"volume":1})
         with tempfile.TemporaryDirectory() as tmp:
