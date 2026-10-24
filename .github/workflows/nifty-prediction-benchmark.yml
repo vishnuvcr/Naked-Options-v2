@@ -43,7 +43,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: data/cache/nifty-prediction
-          key: nifty50-daily-yahoo-v1-${{ runner.os }}
+          key: nifty50-daily-v2-${{ runner.os }}-${{ hashFiles('data/cache/nifty-prediction/nifty50_daily.csv') }}
       - name: Acquire or reuse free daily NIFTY 50 data
         env:
           REFRESH_DATA: ${{ inputs.refresh_data || 'false' }}
@@ -64,6 +64,7 @@ jobs:
             echo "No new reproducibility outputs to commit."
           else
             git commit -m "Record NIFTY prediction benchmark results"
+            git pull --rebase origin "${BRANCH_NAME}"
             git push origin "HEAD:${BRANCH_NAME}"
           fi
       - name: Upload reproducibility artifacts
