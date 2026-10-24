@@ -59,3 +59,10 @@ Evaluate whether TradingAgents can serve as a separate prediction benchmark for 
 
 ## Developer → next step
 Run the pinned upstream CI suite, then build the smallest isolated NIFTY data/forecast adapter and validate the exact timestamp/point-in-time contract. Do not score until the original study's session-calendar and target-data gates pass.
+## CI result update — 2026-10-25
+
+Pinned upstream software checks succeeded in GitHub Actions run [#40129883044](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129883044): upstream dependency installation, pytest unit suite, Ruff lint, and clean-install import smoke test all completed successfully against the configured upstream checkout. This establishes software-test compatibility for that run, not predictive validity.
+
+A live-data diagnostic probe was added at `research/tradingagents/probe_nifty_yahoo.py` to inspect Yahoo Finance `^NSEI` daily and 5-minute bars. The new probe has not yet completed in a workflow run. Even if it succeeds, current availability will not establish historical coverage, exact 10:00 IST bar semantics, or point-in-time news integrity.
+
+User instruction confirmed: **no independent tester role, branch, or approval gate**. Developer will inspect automated logs and fix issues directly.
