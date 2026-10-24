@@ -36,3 +36,9 @@ Reviewed the publicly accessible ZigZag++ wrapper mirror. It defaults to `repain
 
 ## 2026-10-25 — CI test coverage added
 Added unit tests for Dhan response parsing, epoch timestamp conversion, invalid OHLC and array lengths, 30m aggregation, and incomplete-bar exclusion. The GitHub Actions workflow now executes these tests before acquisition. The commit should trigger the branch workflow, but I could not query the run directly with the available GitHub interface. No test-pass or data-acquisition success is claimed.
+
+
+## 2026-10-25 — Diagnose failed Actions run from user screenshots
+- Inspected the supplied screenshots: cache restore step reports `Key Validation Error`; validation then reports missing 5m/15m/60m/daily CSVs and failed 30m derivation.
+- Removed the comma-separated interval list from the cache key in commit `907e05fc8de0363aecf9fa8e7790c9b63b683b9f` to address the observed key validation failure.
+- Updated error log, phase status, and results ledger. Rerun outcome still pending; no successful acquisition or predictions claimed.
