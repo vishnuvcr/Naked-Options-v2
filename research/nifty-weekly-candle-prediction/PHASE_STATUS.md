@@ -21,3 +21,11 @@ Current decision: **IN PROGRESS — NO EMPIRICAL PREDICTION CLAIM**
 - No legacy score, results table or candidate fitness is imported as evidence.
 - If a source or feature cannot be verified, it remains conditional or is excluded.
 - The repository log contains visible instructions and research decisions, not private hidden reasoning.
+
+
+## Testing update — 2026-10-24
+
+- Added NWCP-E008 (critical): weekday-derived expiry fallback could create accepted labels. Fixed on developer branch by requiring complete official NSE provenance before target construction.
+- Added NWCP-E009 (high): regression coverage did not test missing anchor/expiry bars and provenance gate. Added tests for these conditions and Holm-adjustment invariants.
+- The GitHub Actions workflow run could not be confirmed through the available run listing, and a direct local clone/test attempt failed because this execution environment could not resolve github.com. Therefore the new tests are committed but **not yet verified as passing**. Do not mark CI or Phase 2 complete on this basis.
+- No prediction accuracy or winning rule is claimed. The current research remains blocked until the test suite runs and source/calendar validation succeeds.
