@@ -203,3 +203,12 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Decision: continue using these data for further non-inferential diagnostics, while retaining the preregistered source-faithful indicator and target definition.
 - No forecast metrics were manufactured. Exact imported library internals/causal timing and official session/expiry target mapping remain unresolved. Any generic ZigZag proxy would be a different, separately labeled exploratory study.
 - Only visible user instructions, observable actions, evidence and decisions are logged; hidden chain-of-thought is not stored.
+
+
+## 2026-10-25 — Source provenance audit and cache separation
+- User instruction retained: “Proceed without tester”; no independent tester branch or gate was created.
+- Downloaded the earlier Dhan and public-archive workflow artifacts, compared exact five-minute timestamps, and identified 82,451 overlaps across 1,105 dates. 94.99% of close pairs were within 0.05 points; 800 were more than 1 point apart; the maximum difference was 10.90 points. On the diagnostic subset with 75 bars in both feeds, 95.52% were within 0.05 points and 666 differed by more than 1 point. These are source diagnostics only, not forecast results.
+- Identified a path collision: both Dhan and the independent public archive wrote to `nifty50_5m.csv`; Yahoo fallback also used that path. Changed Dhan output to `nifty50_5m_dhan.csv`, public archive to `nifty50_5m_public_archive.csv`, and Yahoo to `nifty50_5m_yahoo_fallback.csv`. Added hash-based quarantine for the ambiguous legacy file, explicit-source validation and 30-minute derivation, cross-source audit code/tests, and cache reuse for the public archive.
+- Replaced the malformed Dhan token-renewal shell section with one validated Python block that masks tokens and uses Yahoo only when Dhan authentication is unavailable.
+- Updated the README, results ledger and error log. The new Actions run had not been inspected at log time. Test passage is not claimed. Exact ZigLib v1 timing, official session/expiry mapping and Dhan timestamp convention remain blockers; no forecasts have been scored.
+- Repository commits: `cab6a25` (Dhan file split), `46f366a` (public filename split), `2cc8dde` (source-aware preparation), `848a082` (session audit), `9fc577b` (cross-source audit), `19a5100` (cache quarantine), `01d2685` (workflow cache/auth repair), `0540082` (results ledger), `9d9d2c7` (error log), `9803b3c` (README), and `eb7cb6a` (cached public archive refresh behavior).
