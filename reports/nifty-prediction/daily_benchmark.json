@@ -28,7 +28,7 @@
         "Free third-party source, not exchange-certified; validate against official index data before high-confidence conclusions.",
         "Daily bars only; does not resolve intraday or expiry-specific questions."
       ],
-      "checked_at_utc": "2026-10-24T23:23:43.442506+00:00"
+      "checked_at_utc": "2026-10-24T23:42:57.718406+00:00"
     }
   },
   "feature_columns": [
@@ -190,8 +190,8 @@
         "upper": 0.5534335031522316,
         "method": "circular block bootstrap, block=10, reps=1500"
       },
-      "log_loss": 0.692299106882798,
-      "brier_score": 0.24954932604171895
+      "log_loss": 0.6922991068827994,
+      "brier_score": 0.24954932604171962
     },
     {
       "model": "random_forest",

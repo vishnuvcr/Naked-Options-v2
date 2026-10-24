@@ -1,12 +1,13 @@
 {
-  "status": "COMPUTED_BY_AUTOMATED_EXPERIMENT; persistence repair rerun in progress",
+  "status": "COMPUTED",
   "source": "data/cache/nifty-prediction/nifty50_daily.csv",
+  "rows": 4625,
   "first_test_date": "2022-02-14",
   "last_test_date": "2026-10-22",
   "n": 1157,
-  "split_rule": "chronological 75/25 after 60-session warm-up; common test dates with baseline benchmark",
-  "volatility_threshold": 0.011863679139815701,
-  "volatility_threshold_method": "70th percentile of training-period 20-session rolling volatility, fixed before test scoring",
+  "split_rule": "chronological 75/25 after 60-session warm-up; same test date range as baseline benchmark",
+  "volatility_threshold": 0.011863679139815677,
+  "volatility_threshold_method": "70th percentile of training-period 20-session rolling volatility; fixed before holdout scoring",
   "rules": [
     {
       "rule": "previous_session_direction_baseline",
@@ -27,7 +28,8 @@
           339
         ]
       ],
-      "costs_included": false
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
     },
     {
       "rule": "3_session_momentum",
@@ -48,7 +50,8 @@
           341
         ]
       ],
-      "costs_included": false
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
     },
     {
       "rule": "5_session_momentum",
@@ -69,7 +72,8 @@
           335
         ]
       ],
-      "costs_included": false
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
     },
     {
       "rule": "1_session_mean_reversion",
@@ -90,7 +94,8 @@
           265
         ]
       ],
-      "costs_included": false
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
     },
     {
       "rule": "3_session_mean_reversion",
@@ -111,7 +116,8 @@
           263
         ]
       ],
-      "costs_included": false
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
     },
     {
       "rule": "20_session_trend_filter",
@@ -132,7 +138,8 @@
           366
         ]
       ],
-      "costs_included": false
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
     },
     {
       "rule": "volatility_conditioned_momentum_reversal",
@@ -153,13 +160,14 @@
           321
         ]
       ],
-      "costs_included": false
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
     }
   ],
   "limitations": [
-    "These candidate metrics were printed by automated run #37; that run passed candidate execution but failed later at artifact persistence. Run #40 is rerunning and should verify persistence.",
-    "Gross daily sign proxy is not executable P&L and excludes futures/options basis, leverage, turnover, brokerage, taxes, slippage and execution.",
-    "Single holdout used for screening; any candidate requires a fresh untouched forward period before a strategy claim.",
-    "Source is third-party and not exchange-certified."
+    "Third-party daily index data, not exchange-certified.",
+    "Rules were predeclared and not tuned to maximize holdout metrics.",
+    "Gross long/short index proxy excludes futures/options basis, leverage, turnover, brokerage, taxes, slippage and execution.",
+    "The holdout is now used for candidate screening; a promising candidate needs a new untouched forward period before a strategy claim."
   ]
 }

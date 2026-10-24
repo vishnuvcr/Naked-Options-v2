@@ -1,0 +1,34 @@
+{
+  "status": "COMPUTED",
+  "model": "GARCH(1,1), zero mean; parameters refit every 20 sessions; variance recursively updated daily",
+  "source": "data/cache/nifty-prediction/nifty50_daily.csv",
+  "n": 1157,
+  "first_test_date": "2022-02-15",
+  "last_test_date": "2026-10-23",
+  "target": "next-session squared close-to-close return; noisy volatility proxy",
+  "metric": "QLIKE = mean(log(forecast variance) + realized squared return / forecast variance); lower is better",
+  "results": [
+    {
+      "model": "GARCH(1,1)",
+      "qlike": -8.645949601615408,
+      "mean_forecast_volatility": 0.008764551922918199
+    },
+    {
+      "model": "rolling_20_session_variance",
+      "qlike": -8.57378887928451,
+      "mean_forecast_volatility": 0.008007304319336366
+    },
+    {
+      "model": "expanding_unconditional_variance",
+      "qlike": -8.22293081818157,
+      "mean_forecast_volatility": 0.01334234424451209
+    }
+  ],
+  "limitations": [
+    "Volatility forecast evaluation is not directional prediction or proof of a trading edge.",
+    "Squared returns are a noisy proxy for latent volatility.",
+    "Daily third-party source is not exchange-certified.",
+    "Chronological final-quarter evaluation; each variance forecast uses only prior observations.",
+    "No transaction-cost or trading P&L claim is made."
+  ]
+}
