@@ -32,10 +32,13 @@ def main():
     d["high_vol"] = rv > rv.expanding(min_periods=100).quantile(0.70)
     d["regime_momentum"] = np.where(d["high_vol"], d["rev_1"], d["mom_5"])
     d = d.dropna(subset=["target_return", "target", "prev_direction", "mom_3", "mom_5", "rev_1", "rev_3", "trend_20", "high_vol"]).reset_index(drop=True)
-    split = max(750, int(len(d) * .75))
-    if split >= len(d) - 100:
-        split = len(d) - max(100, int(len(d) * .25))
-    test = d.iloc[split:].copy()
+    benchmark_path = ROOT / "reports/nifty-prediction/daily_benchmark.json"
+    benchmark = json.loads(benchmark_path.read_text(encoding="utf-8"))
+    first_test_date = pd.to_datetime(benchmark["test_first_date"]).date()
+    last_test_date = pd.to_datetime(benchmark["test_last_date"]).date()
+    test = d[(d["date"] >= first_test_date) & (d["date"] <= last_test_date)].copy()
+    if len(test) != int(benchmark["test_rows"]):
+        raise ValueError("Candidate holdout row count does not match benchmark; investigate date/feature alignment.")
     rules = {
         "previous_session_direction_baseline": test["prev_direction"].to_numpy(dtype=int),
         "3_session_momentum": test["mom_3"].to_numpy(dtype=int),
