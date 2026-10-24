@@ -205,3 +205,12 @@
 - **Fix:** Commit `1bb420e55cfdfa64ef26bfe594437b4665fa0639` separates timestamp parse/timezone failures, duplicate timestamps, unsorted timestamps, and missing required datasets from raw OHLC findings. Raw OHLC anomalies are reported without deleting source rows; 1m is marked optional as preregistered. The audit still explicitly blocks scoring until official session-calendar and Dhan timestamp conventions are verified.
 - **Remaining action:** Re-run workflow; diagnose Dhan token response using safe status/field-name logging only, and do not expose credentials or token values. If token generation is unavailable, validate the configured access-token secret as a fallback before requesting fresh data.
 - **Status:** Audit correction committed; CI verification pending. Authentication remains unresolved for this run. No prediction metrics exist.
+
+
+## ZZD-027 — Official session calendar and Dhan candle timestamp semantics remain unresolved
+- **Severity:** High; open
+- **Date:** 2026-10-25
+- **Evidence:** Official NSE product documentation and circular NSE/FAOP/68747 establish the current Tuesday weekly expiry rule and the 2025 transition from Thursday, with contract-specific exceptions. NSE session/holiday pages are available, but a complete dated session table (including special sessions and exceptional closures) has not yet been ingested and validated. Dhan v2 docs describe the timestamp field as Unix epoch but do not clearly define whether each intraday candle timestamp denotes bar start or bar end.
+- **Risk:** Wrong expiry targets or a one-bar timing shift can change both the label and whether a ZigZag signal was knowable at cutoff.
+- **Mitigation:** Added OFFICIAL_CALENDAR_PROTOCOL.md with required source fields, expiry-regime handling, row-level eligibility ledger, and unit-test cases. Continue sourcing the official session table and verify timestamp convention independently; do not score until both gates pass.
+- **Status:** Open. No prediction metrics exist.
