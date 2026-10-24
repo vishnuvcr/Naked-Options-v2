@@ -154,3 +154,18 @@ The first workflow run after adding the session diagnostic, [#40127961418](https
 - Source-supported: NIFTY weekly expiry changed from Thursday to Tuesday in 2025, with transition exceptions for existing/long-dated contracts; Tuesday holiday expiry moves to previous trading day. Weekend/special sessions must be explicitly represented.
 - Dhan docs confirm epoch timestamps but do not settle candle-start versus candle-end semantics. This remains a target-alignment blocker.
 - **Phase 1:** partial; exact ZigLib source still not verified. **Phase 2:** data acquired but session calendar and timestamp convention not certified. **Phase 3:** blocked. **Phase 4:** not started. No accuracy results.
+
+
+## Separate benchmark — TradingAgents (2026-10-25)
+
+This is a separate experimental track and does not change the ZigZag protocol or its blocked status.
+
+| Stage | Status | Evidence / blocker |
+|---|---|---|
+| A. Static source audit | COMPLETE | Upstream README, Apache-2.0 license, pyproject, CI, backtest harness, ticker normalization, OHLCV implementation, and representative point-in-time/date-boundary tests reviewed. See [feasibility report](../tradingagents/FEASIBILITY_REPORT.md). |
+| B. Pinned upstream test suite | WORKFLOW CONFIGURED — RESULT PENDING | Workflow pins upstream SHA e8f5503e9b86d5c2710b0c76b1f686703968c9df and runs pytest, Ruff, and clean-install import. Must inspect Actions result before claiming pass. |
+| C. NIFTY instrument/data compatibility | NOT STARTED | Yahoo `^NSEI` and exact intraday history/timestamp behavior not yet proven; Dhan adapter may be needed. |
+| D. Forecast schema and causal inputs | NOT STARTED | Must emit UP/DOWN/ABSTAIN with cutoff, provenance and config/model version. |
+| E. Formal expiry-label evaluation | BLOCKED | Main study's official calendar, candle convention and target eligibility gates remain unresolved. |
+
+No TradingAgents forecast accuracy result has been produced. See [test plan](../tradingagents/TEST_PLAN.md) and [feasibility report](../tradingagents/FEASIBILITY_REPORT.md).
