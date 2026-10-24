@@ -95,3 +95,9 @@ The latest completed run [#40130735394](https://github.com/vishnuvcr/Naked-Optio
 
 The snapshot validator does not yet certify source timestamps or official sessions, and is not wired to the TradingAgents graph. It must be paired with immutable data provenance and a market-only graph/tool configuration that prevents unfiltered vendor calls. No historical model outputs or accuracy scores exist.
 
+
+
+## Verified snapshot-validator CI result
+
+[Workflow run #40131047411](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131047411) completed successfully, including the new snapshot tests. The validator correctly passes/rejects its synthetic cases. This is software validation only. It does not prove historical source correctness, session completeness, or causal isolation inside TradingAgents. No live model invocation or out-of-sample prediction score has been produced.
+
