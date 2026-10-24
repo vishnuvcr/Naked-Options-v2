@@ -41,7 +41,7 @@ def main():
     results["daily"]=save("daily","5y","nifty50_daily.csv","1d")
     for key,period,interval,filename in [
         ("1m","7d","1m","nifty50_1m.csv"),
-        ("5m","60d","5m","nifty50_5m.csv"),
+        ("5m","60d","5m","nifty50_5m_yahoo_fallback.csv"),
         ("15m","60d","15m","nifty50_15m.csv"),
         ("60m","730d","60m","nifty50_60m.csv"),
     ]:
