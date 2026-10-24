@@ -13,3 +13,7 @@ User authorized testing multiple chart timeframes. The pre-registered panel is 5
 
 ## Data acquisition pipeline added; results still pending
 Dhan acquisition and validation scripts have been committed, with a GitHub Actions workflow configured to fetch/cache 1m, 5m, 15m, 60m and daily NIFTY 50 index bars and derive 30m bars from contiguous 5m data. The workflow has not yet been confirmed successful and no resulting data artifact has been inspected. **No empirical predictions or accuracy metrics exist yet.** Exact ZigLib causality remains a separate blocker.
+
+
+## Execution-verification note
+The acquisition workflow and validation scripts are committed, but this session could not confirm a successful run or inspect a resulting artifact. A local clone/syntax-check attempt failed because github.com could not be resolved. Thus data status remains unverified and there are no prediction metrics or conclusions.
