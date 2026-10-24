@@ -16,3 +16,7 @@ Confirm workflow tests pass, inspect the source manifest and daily benchmark JSO
 
 ## Scope note
 This is a daily next-session direction benchmark. It does not yet evaluate expiry-specific direction, intraday predictions, option returns, or trading profitability. Daily Yahoo data is a free baseline, not an exchange-certified series.
+
+
+## CI check — 2026-10-25
+The GitHub commit-status endpoint returned no status entries for the new benchmark workflow commits, and the available commit-associated workflow-run query returned no runs. This does not prove the workflow did not trigger; it means the run could not be verified with the available interface. Keep benchmark result status as pending until a real artifact is inspected.
