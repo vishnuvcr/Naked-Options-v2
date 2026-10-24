@@ -61,3 +61,8 @@ Dhan documents daily and intraday OHLC endpoints; minute bars include 1, 5, 15, 
 ## 6. Literature review gaps
 
 Continue targeted review on: NIFTY direction classification and expiry-related returns; technical indicators with strict temporal validation; financial model calibration and purged/embargo validation; quality-diversity/symbolic evolution on small samples; and event/regime-conditioned forecasts. For each source record instrument/period/frequency/sample size, features, split design, baseline, metric, statistical test, code and limitations. Clearly label peer-reviewed articles, preprints, repositories and vendor claims separately.
+
+
+## Full supplied-paper audit
+
+The 13 uploaded papers were reviewed separately for target, data window, model, metric and relevance. See [UPLOADED_PAPER_AUDIT.md](UPLOADED_PAPER_AUDIT.md). The source map, legal/provenance questions, timestamp availability and data-acceptance checklist are in [SOURCE_CATALOG.md](SOURCE_CATALOG.md). In short, none of the supplied papers exactly evaluates NWCP-1.0's 10:00 post-previous-expiry anchor to next-weekly-expiry-close UP/DOWN label, and no published headline score is used as NWCP evidence.
