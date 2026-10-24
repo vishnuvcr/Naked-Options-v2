@@ -271,3 +271,14 @@ The user directed continued work using available data. Downloaded artifact 12575
 | 6. Manuscript/decision | NO-GO REPORT COMPLETE; further diagnostics allowed | Do not claim predictive performance without gates passing |
 
 The instruction to proceed does not change the preregistered method or authorize unsupported accuracy claims. Any alternative generic ZigZag proxy would be a separate exploratory research question and must not be presented as the specified TradingView indicator.
+
+
+## Latest source-audit checkpoint — 2026-10-25
+
+Phase 1 — source audit: still blocked by missing exact ZigLib v1 implementation and causal signal-availability timestamps.
+
+Phase 2 — data audit: structural acquisition exists, but session/expiry labels and vendor timestamp semantics are not certified. Cross-source 5-minute comparison found 82,451 overlapping timestamps; 94.99% of close pairs differed by at most 0.05 points, while 800 differed by more than 1 point and the largest gap was 10.90 points. Source-specific filenames and a parity report are now committed. CI remains pending.
+
+Phase 3 — causal reconstruction: blocked. Phase 4 — prediction evaluation: not run, zero eligible forecasts scored. Phase 5 — statistical inference: not run. Phase 6 — manuscript: protocol plus data-limitations addendum recorded, but no prediction result exists.
+
+The pipeline repair is not yet counted as a verified test pass. The original scoring gates remain in force; no generic ZigZag substitution or performance claim is allowed.
