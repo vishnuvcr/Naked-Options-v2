@@ -51,11 +51,24 @@ The protocol avoids random shuffling and tuning against the final test period. A
 
 ## 6. Results
 
-**Pending.** No verified benchmark JSON has been inspected as of this manuscript version. Numerical scores, confidence intervals, sample sizes, and model rankings are intentionally omitted rather than estimated or fabricated. Once a workflow artifact is available, this section must be populated directly from that artifact and checked against its source manifest.
+### Preliminary historical diagnostic (not final benchmark)
+
+A reproducible custom Node.js diagnostic was run against a public third-party CSV mirror covering 2000-01-03 through 2019-12-02. After feature construction, 4,893 observations remained. The chronological 75/25 split used 3,669 training rows and 1,224 test rows, covering 2014-12-16 through 2019-11-29. The test-set up rate was 53.02%, with two exact zero-return labels mapped to DOWN.
+
+| Model | Accuracy | Balanced accuracy | 95% circular block-bootstrap interval for balanced accuracy |
+|---|---:|---:|---:|
+| Majority-class baseline | 53.02% | 50.00% | [50.00%, 50.00%] |
+| Previous-session direction | 52.78% | 52.60% | [49.72%, 55.56%] |
+| Zero-return forecast (DOWN tie convention) | 46.98% | 50.00% | [50.00%, 50.00%] |
+| Custom expanding logistic regression | 52.86% | 52.78% | [50.11%, 55.36%] |
+
+The custom logistic diagnostic's Brier score was 0.2494 and log loss was 0.6919. Its balanced accuracy was only about 0.18 percentage points above the previous-session-direction baseline; their approximate intervals overlap substantially. The majority baseline has higher raw accuracy due to the test-set class imbalance.
+
+**Evidence boundary:** These are preliminary historical results, not the production scikit-learn benchmark. The custom logistic implementation differs from scikit-learn, random forest and gradient boosting were not evaluated here, and the data ends in 2019. No robust predictive advantage is established. The main benchmark workflow and artifact still need independent execution verification.
 
 ## 7. Inferences and discussion
 
-No empirical inference is currently justified. A successful code commit is not evidence of a successful run, and a successful run is not evidence that a model outperforms a baseline. Any eventual apparent improvement must be interpreted alongside class balance, uncertainty intervals, source quality, regime variation, and the number of model variants attempted.
+The preliminary diagnostic does not demonstrate a reliable predictive edge: the custom logistic model's balanced-accuracy estimate is close to the previous-direction baseline and uncertainty intervals overlap. A successful script run is not evidence of generalization to current markets. Any future apparent improvement must be interpreted alongside class balance, uncertainty intervals, source quality, regime variation, and the number of model variants attempted.
 
 ## 8. Strengths
 
@@ -77,7 +90,7 @@ No empirical inference is currently justified. A successful code commit is not e
 
 ## 10. Conclusion
 
-The research harness and workflow are in place, but the empirical gate remains open until real workflow results and artifacts are inspected. The study must not name a best model or recommend a trading strategy without verified evidence. If the baseline shows no robust improvement over naive benchmarks, the correct conclusion is that the current feature/model set has not demonstrated useful predictive skill.
+A preliminary historical diagnostic has been completed, and it does not show a robust improvement over naive direction forecasts. The main empirical gate remains open because the production scikit-learn workflow and its artifacts have not been verified, and the dataset ends in 2019. The study does not name a best model or recommend a trading strategy. If the current-market benchmark similarly fails to improve robustly on naive baselines, the correct conclusion will be that this feature/model set has not demonstrated useful predictive skill.
 
 ## 11. Future research
 
