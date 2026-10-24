@@ -279,3 +279,9 @@
 - **Risk:** A guessed ZigZag port or retrospective pivot location could create look-ahead leakage and a false accuracy estimate.
 - **Decision:** Do not substitute a generic ZigZag; do not score. Close this run as **NO-GO FOR SOURCE-FAITHFUL PREDICTION CLAIM**, not as evidence of no predictive value.
 - **Restart criteria:** Exact library source or a reproducible TradingView signal export with confirmation timestamps; official session/expiry schedule; and an authoritative overlapping spot-price series for reconciliation.
+
+## ZZD-019 — Public wrapper source located; imported library still unavailable
+- **Severity:** Medium; source gate remains open.
+- **Evidence:** https://github.com/rohitbhure65/pine-scripts/blob/master/zigzag.pine mirrors the ZigZag++ [LD] wrapper and confirms Depth=12, Deviation=5, Backstep=2, `repaint=true` default, imported dependency `DevLucem/ZigLib/1`, use of prior-bar point references in the non-repaint branch, and direction-change alert frequency at bar close.
+- **Limitation:** The file imports the library but does not include the library internals. The public TradingView library page exposes the API and outputs, not enough source lines to reproduce the algorithm and confirmation timing.
+- **Decision:** Use the mirror only as wrapper evidence. Do not treat it as exact library source; no empirical scoring until causal behavior is source-verified or an export provides confirmed signal timestamps.
