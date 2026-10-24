@@ -111,3 +111,19 @@ Counts from the downloaded artifact:
 - Daily: 1,240 rows; 6 dates fall on weekends, which may include officially scheduled special sessions and must not be blindly deleted.
 
 This is a calendar/provenance issue, not proof that every weekend row is wrong: India has special Saturday/Sunday sessions on certain dates. Next data gate must compare every observation date/time to an official NSE trading-session calendar and inspect the downloader's timestamp conversion/interval conventions. Until then, the earlier phrase “no structural errors” means only basic CSV structure passed; it does not mean session eligibility is verified. Prediction scoring remains blocked.
+
+
+## 2026-10-25 — Independent 1-minute timestamp/session audit
+
+Inspected the actual downloaded CSV artifact from successful Actions run [#40127255063](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127255063), rather than treating workflow success as sufficient. The raw 1-minute file has 511,268 rows, from 2021-10-25 09:01 IST to 2026-10-23 15:29 IST. It is sorted and has no duplicate timestamp strings, but it includes 2,636 weekend-dated rows and 47,612 rows outside the regular-session window 09:15–15:29 IST; 12 rows violate OHLC consistency. Exact 10:00 timestamp rows exist on 1,236 dates. This means the raw 1-minute file is not yet suitable for indicator reconstruction or target pricing without a documented regular-session filter and per-session completeness audit. These are raw-source quality findings, not proof that every out-of-session row is invalid; retain raw rows and explicitly classify them.
+
+| Phase | Current status | Evidence |
+|---|---|---|
+| 1. Protocol/source audit | PARTIAL — BLOCKED | Exact DevLucem/ZigLib v1 implementation and signal availability semantics remain unverified. |
+| 2. Data audit | ACQUISITION PASSED; SESSION/PROVENANCE AUDIT INCOMPLETE | Artifact is present and basic OHLC/timestamp checks exist; 1m audit found weekend/out-of-session/invalid-OHLC rows. Cross-source price parity and historical expiry calendar are still unresolved. |
+| 3. Causal reconstruction | BLOCKED | Do not substitute a generic ZigZag for the imported library. |
+| 4. Evaluation | NOT STARTED | No eligible forecasts scored. |
+| 5. Robustness/inference | NOT STARTED | Requires valid causal forecasts. |
+| 6. Manuscript/decision | DRAFT ONLY | No performance claims or result plots. |
+
+Next action: improve validation to report regular-session rows, weekday anomalies, exact 10:00 availability, session completeness and OHLC exclusions for 1m, then build a source-backed historical expiry schedule. Prediction scoring remains prohibited until source parity and target mapping gates pass.
