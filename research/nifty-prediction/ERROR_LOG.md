@@ -89,3 +89,14 @@
 - **Severity:** Medium (interpretation risk).
 - **Observation:** The second-source audit found exactly identical OHLC values across all 4,686 overlapping daily rows. This could indicate common upstream dependencies or a mirrored copy, so it cannot be treated as independent confirmation of market-data correctness.
 - **Mitigation:** State this caveat prominently; seek official Nifty Indices/NSE source data before any high-confidence claim. Do not infer source independence from zero mismatch.
+
+
+## NP-015 — Historical status entries became stale (documentation corrected)
+- **Severity:** Medium for research traceability.
+- **Issue:** Earlier entries state that production benchmark outputs were unavailable. Those statements became stale after Actions run #34 completed successfully and the JSON artifacts were committed.
+- **Correction:** Run #34 passed setup, dependency installation, unit tests, data acquisition, source parity audit, benchmark, persistence and artifact upload. Preserve the historical failure entries as history; the verified outcome supersedes their old pending status.
+
+## NP-016 — Candidate-rule experiment not yet executed
+- **Severity:** Medium/high for strategy selection.
+- **Issue:** Six predeclared rule candidates were added to the benchmark workflow, but no result is claimed until the new run creates and persists `reports/nifty-prediction/candidate_rules.json`.
+- **Mitigation:** Inspect the actual Actions run and JSON. If the script fails, record the exact failure and fix it. Do not infer a winning candidate or treat gross index-proxy returns as net tradable returns.
