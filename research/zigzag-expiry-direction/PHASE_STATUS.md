@@ -96,3 +96,18 @@ Current decision: **DATA ACQUISITION SUCCESSFUL; PREDICTION NOT EVALUATED; NO PE
 Downloaded and inspected the successful Actions artifact [12573423696](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127255063/artifacts/12573423696). The validation report has no structural errors. Raw coverage runs from 2021-10-25 through 2026-10-23: 92,795 5m bars (5 invalid OHLC rows excluded in validated copy), 30,985 15m bars (3 excluded), 8,663 60m bars (2 excluded), and 1,240 daily bars (0 excluded). The 30m derived series contains 14,814 bars and 21 incomplete/noncontiguous bins were dropped. The artifact also contains 1m raw bars; 1m validation was not included in the current validator's required dataset report and must be added before using 1m in scoring.
 
 This audit verifies data pipeline output, not the exact imported ZigLib implementation or prediction performance. Source audit located the public wrapper [ZigZag++ [LD]](https://github.com/rohitbhure65/pine-scripts/blob/master/zigzag.pine), which imports DevLucem/ZigLib/1; public TradingView library metadata describes the function signature and returned direction/two points but does not expose sufficient source details in the available retrieval to prove exact causal pivot availability. The wrapper's default is repaint=true. No source-faithful causal signal stream has been produced, and the historically correct expiry/10:00-to-expiry target table has not been audited. Therefore no scoring should be run yet; phase 3 remains blocked and phase 4 has not started.
+
+
+## Timestamp/session audit — 2026-10-25
+
+A second audit of the actual downloaded CSVs found an important issue not caught by the existing structural validator: unique, sorted, timezone-aware timestamps and valid OHLC do not prove the observations belong to the intended regular-session calendar. Weekend timestamps occur in the intraday series, including known special trading sessions and other dates that need session-calendar reconciliation. The 1m file also includes many timestamps outside 09:00–16:00 IST (40,975 of 511,268 records under a broad clock-time screen), so 1m cannot be included without determining whether these are pre-open/extended-session observations, timestamp-convention artifacts, or invalid records. The broad clock screen is diagnostic only and is not itself the final exclusion rule.
+
+Counts from the downloaded artifact:
+- 15m: 30,985 rows; 166 timestamps fall on Saturday/Sunday; 13 fall outside the broad 09:00–16:00 IST screen.
+- 1m: 511,268 rows; 2,636 timestamps fall on Saturday/Sunday; 40,975 fall outside the broad screen.
+- 5m: 92,795 rows; 484 timestamps fall on Saturday/Sunday; 37 fall outside the broad screen.
+- Derived 30m: 14,814 rows; 69 timestamps fall on Saturday/Sunday.
+- 60m: 8,663 rows; 51 timestamps fall on Saturday/Sunday; 5 fall outside the broad screen.
+- Daily: 1,240 rows; 6 dates fall on weekends, which may include officially scheduled special sessions and must not be blindly deleted.
+
+This is a calendar/provenance issue, not proof that every weekend row is wrong: India has special Saturday/Sunday sessions on certain dates. Next data gate must compare every observation date/time to an official NSE trading-session calendar and inspect the downloader's timestamp conversion/interval conventions. Until then, the earlier phrase “no structural errors” means only basic CSV structure passed; it does not mean session eligibility is verified. Prediction scoring remains blocked.
