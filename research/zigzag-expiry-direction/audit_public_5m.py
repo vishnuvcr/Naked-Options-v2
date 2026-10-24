@@ -13,7 +13,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 ROOT = Path("data/cache/zigzag_expiry_direction")
-SOURCE = ROOT / "nifty50_5m.csv"
+SOURCE = ROOT / "nifty50_5m_public_archive.csv"
 OUT = Path("reports/public_5m_diagnostic_audit.json")
 IST = ZoneInfo("Asia/Kolkata")
 OPEN = time(9, 15)
