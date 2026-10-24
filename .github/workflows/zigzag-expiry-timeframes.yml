@@ -60,73 +60,88 @@ jobs:
         with:
           path: data/cache/zigzag_expiry_direction
           key: zigzag-dhan-v1-${{ runner.os }}-${{ inputs.start_date || '2021-10-25' }}-${{ inputs.end_date || '2026-10-25' }}
-      - name: Generate and validate Dhan token
+      - name: Generate and validate Dhan token or select free fallback
         env:
           DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
           DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
           DHAN_PIN: ${{ secrets.DHAN_PIN }}
           DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
         run: |
-          if [ -z "${DHAN_ACCESS_TOKEN:-}" ] && [ -z "${DHAN_CLIENT_ID:-}" ]; then
-            echo "DATA_SOURCE=yahoo" >> "$GITHUB_ENV"
-            echo "Dhan credentials unavailable; using free Yahoo fallback."
-            exit 0
-          fi
-          if [ -n "${DHAN_ACCESS_TOKEN:-}" ]; then
-            if curl --silent --show-error --fail --max-time 30 -H "access-token: ${DHAN_ACCESS_TOKEN}" https://api.dhan.co/v2/profile -o /dev/null; then
-              echo "::add-mask::${DHAN_ACCESS_TOKEN}"
-              echo "DHAN_ACCESS_TOKEN=${DHAN_ACCESS_TOKEN}" >> "$GITHUB_ENV"
-              echo "Provided Dhan access token validated successfully."
-              exit 0
-            else
-              echo "DATA_SOURCE=yahoo" >> "$GITHUB_ENV"
-              echo "Configured Dhan token is invalid or expired; falling back to free Yahoo data."
-              exit 0
-            fi
-          fi
           python - <<'PY'
-            exit 0
-          fi
-          python - <<'PY'
-          import base64, hashlib, hmac, json, os, struct, time, urllib.request
+          import base64, hashlib, hmac, json, os, struct, time, urllib.parse, urllib.request
+          from urllib.error import HTTPError, URLError
+
           client = os.environ.get("DHAN_CLIENT_ID", "").strip()
           pin = os.environ.get("DHAN_PIN", "").strip()
           secret = "".join(os.environ.get("DHAN_TOTP_SECRET", "").split()).upper()
-          if not client or not pin or not secret:
-              raise SystemExit("Required Dhan authentication secrets are missing.")
-          try:
-              key = base64.b32decode(secret + "=" * ((8 - len(secret) % 8) % 8), casefold=True)
-              counter = int(time.time()) // 30
-              digest = hmac.new(key, struct.pack(">Q", counter), hashlib.sha1).digest()
-              offset = digest[-1] & 15
-              code = (struct.unpack(">I", digest[offset:offset+4])[0] & 0x7fffffff) % 1_000_000
-              totp = f"{code:06d}"
-          except Exception:
-              raise SystemExit("Could not generate TOTP; check DHAN_TOTP_SECRET format.") from None
-          url = "https://auth.dhan.co/app/generateAccessToken?dhanClientId=" + client + "&pin=" + pin + "&totp=" + totp
-          request = urllib.request.Request(url, data=b"", method="POST", headers={"Accept":"application/json"})
-          try:
+          token = os.environ.get("DHAN_ACCESS_TOKEN", "").strip()
+
+          def add_mask(value):
+              if value:
+                  print("::add-mask::" + value)
+
+          def get_json(url, access_token=None, body=None):
+              headers = {"Accept": "application/json"}
+              if access_token:
+                  headers["access-token"] = access_token
+              if body is not None:
+                  headers["Content-Type"] = "application/json"
+              request = urllib.request.Request(url, data=body, headers=headers,
+                                               method="POST" if body is not None else "GET")
               with urllib.request.urlopen(request, timeout=30) as response:
-                  payload = json.loads(response.read().decode("utf-8"))
-          except Exception as exc:
-              raise SystemExit("Dhan token generation failed: " + type(exc).__name__ + ". Credentials and response were not logged.") from None
-          token = payload.get("accessToken", "") if isinstance(payload, dict) else ""
-          if not token:
-              raise SystemExit("Dhan did not return a token. Response omitted for safety.")
-          print("::add-mask::" + token)
-          profile_req = urllib.request.Request("https://api.dhan.co/v2/profile", headers={"access-token": token})
-          try:
-              with urllib.request.urlopen(profile_req, timeout=30) as response:
-                  profile = json.loads(response.read().decode("utf-8"))
-          except Exception as exc:
-              raise SystemExit("New token failed profile validation: " + type(exc).__name__ + ".") from None
-          if str(profile.get("dhanClientId", "")) != client:
-              raise SystemExit("Token profile client ID mismatch; refusing to continue.")
-          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as f:
-              f.write("DHAN_ACCESS_TOKEN=" + token + "\n")
-          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
-              f.write("Dhan token generated and validated against /v2/profile. Token value is masked and not included in artifacts.\n")
-          print("Dhan authentication validated successfully.")
+                  return json.loads(response.read().decode("utf-8"))
+
+          def valid_profile(candidate):
+              profile = get_json("https://api.dhan.co/v2/profile", access_token=candidate)
+              if client and str(profile.get("dhanClientId", "")) != client:
+                  raise RuntimeError("profile client ID does not match configured client ID")
+              return True
+
+          add_mask(token)
+          valid = False
+          if token:
+              try:
+                  valid = valid_profile(token)
+                  print("Configured Dhan access token validated.")
+              except Exception:
+                  print("Configured Dhan access token was invalid or expired; trying TOTP renewal if configured.")
+
+          if not valid and client and pin and secret:
+              try:
+                  key = base64.b32decode(secret + "=" * ((8 - len(secret) % 8) % 8), casefold=True)
+                  counter = int(time.time()) // 30
+                  digest = hmac.new(key, struct.pack(">Q", counter), hashlib.sha1).digest()
+                  offset = digest[-1] & 15
+                  code = (struct.unpack(">I", digest[offset:offset + 4])[0] & 0x7fffffff) % 1_000_000
+                  totp = f"{code:06d}"
+                  query = urllib.parse.urlencode({"dhanClientId": client, "pin": pin, "totp": totp})
+                  request = urllib.request.Request(
+                      "https://auth.dhan.co/app/generateAccessToken?" + query,
+                      data=b"", method="POST", headers={"Accept": "application/json"})
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      payload = json.loads(response.read().decode("utf-8"))
+                  token = payload.get("accessToken", "") if isinstance(payload, dict) else ""
+                  if not token:
+                      raise RuntimeError("Dhan token endpoint returned no access token")
+                  add_mask(token)
+                  valid_profile(token)
+                  valid = True
+                  print("Fresh Dhan access token generated and profile-validated.")
+              except Exception as exc:
+                  token = ""
+                  print("Dhan token renewal failed safely: " + type(exc).__name__ + ". No credential values were logged.")
+
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
+              if valid and token:
+                  env_file.write("DHAN_ACCESS_TOKEN=" + token + "\n")
+                  env_file.write("DATA_SOURCE=dhan\n")
+              else:
+                  env_file.write("DATA_SOURCE=yahoo\n")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              if valid and token:
+                  summary.write("Dhan access token was validated; token values are masked and are not added to artifacts.\n")
+              else:
+                  summary.write("Dhan authentication was unavailable; switched to the free Yahoo fallback.\n")
           PY
       - name: Acquire missing or requested Dhan datasets
         id: acquire
