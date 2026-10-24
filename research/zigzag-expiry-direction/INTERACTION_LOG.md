@@ -90,3 +90,11 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - New intended workflow run [#40128132592](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128132592), commit `2f2719e99f7159a2121d0d745b111c07249d3bd2`, passed unit tests after the resampling test correction, restored cache, generated/validated Dhan authentication, acquired data, and passed timeframe validation/resampling.
 - At the last check, session diagnostic and artifact upload were still running; final run conclusion and artifact report not yet verified.
 - No prediction score was run. Need inspect `zigzag_session_audit.json` after upload and compare the timestamps against official NSE calendars and vendor timestamp semantics.
+
+
+## 2026-10-25 — Diagnostic audit corrected and CI passed
+- Run [#40128212164](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128212164) exposed a Dhan token-generation response without a usable token and an audit that incorrectly treated raw OHLC findings as fatal. The next run succeeded.
+- Updated audit_sessions.py in commit 1bb420e55cfdfa64ef26bfe594437b4665fa0639 to separate structural/timestamp failures from raw OHLC findings and to treat 1m as optional per protocol. Raw rows are retained.
+- Successful run [#40128335927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927): tests, token validation, data acquisition, validation/resampling, audit, and artifact upload all succeeded.
+- Artifact [#12574310370](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927/artifacts/12574310370) inspected. All audited files had sorted timestamps and zero duplicates. Raw OHLC findings: 1m 12; 5m 5; 15m 3; 30m 0; 60m 2; daily 0.
+- Decision unchanged: no scoring until official NSE sessions and Dhan timestamp convention are verified, and exact ZigLib signal availability plus historical expiry mapping are established.
