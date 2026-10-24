@@ -16,6 +16,7 @@ on:
       - "research/nifty-prediction/acquire_daily_data.py"
       - "research/nifty-prediction/evaluate_daily_models.py"
       - "research/nifty-prediction/evaluate_candidate_rules.py"
+      - "research/nifty-prediction/evaluate_volatility_forecast.py"
       - "research/nifty-prediction/audit_source_parity.py"
       - "tests/test_nifty_prediction_benchmark.py"
       - ".github/workflows/nifty-prediction-benchmark.yml"
@@ -37,7 +38,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install baseline dependencies
-        run: python -m pip install --upgrade pip pandas numpy scikit-learn yfinance pyarrow
+        run: python -m pip install --upgrade pip pandas numpy scikit-learn yfinance pyarrow arch
       - name: Unit tests
         run: |
           python -m unittest discover -s tests -p "test_nifty_prediction_benchmark.py" -v
@@ -60,6 +61,8 @@ jobs:
         run: python research/nifty-prediction/evaluate_daily_models.py
       - name: Evaluate predeclared momentum and reversal rules
         run: python research/nifty-prediction/evaluate_candidate_rules.py
+      - name: Evaluate GARCH volatility forecasts with arch
+        run: python research/nifty-prediction/evaluate_volatility_forecast.py
       - name: Persist reproducibility data and results to research branch
         env:
           BRANCH_NAME: ${{ github.ref_name }}
@@ -93,6 +96,7 @@ jobs:
           path: |
             reports/nifty-prediction/daily_benchmark.json
             reports/nifty-prediction/candidate_rules.json
+            reports/nifty-prediction/volatility_forecast.json
             data/cache/nifty-prediction/source_manifest.json
             reports/nifty-prediction/source_parity_audit.json
           if-no-files-found: warn
