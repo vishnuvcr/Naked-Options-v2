@@ -68,3 +68,10 @@ The user instructed: “Proceed with available data.” The available five-minut
 **No forecast score is added in this update.** The target table still needs a verified official session/expiry mapping; 10:00 and close bar semantics need certification; the exact imported DevLucem/ZigLib/1 internals and signal-availability timing remain unavailable. Creating a generic ZigZag proxy would answer a different question and cannot be reported as a ZigZag++ [LD] result. Available data will be used for non-inferential diagnostics, and any proxy experiment must be separately named, explicitly exploratory, and never conflated with the primary study.
 
 Decision remains **NO-GO FOR SOURCE-FAITHFUL PREDICTION SCORING**. This is an evidence limitation, not a negative finding about predictive performance.
+
+
+## 2026-10-25 — Source parity diagnostic
+
+The Dhan and independent public five-minute archives share 82,451 exact timestamps across 1,105 dates. About 94.99% of close-price pairs differ by no more than 0.05 price points, but 800 rows differ by more than 1 point and the maximum absolute difference is 10.90 points. On the subset of 78,374 rows across 1,045 dates with 75 bars in both sources, 95.52% are within 0.05 points, but 666 rows differ by more than 1 point. The 75-bar subset is only a diagnostic proxy, not official session certification. The raw sources were not merged or modified.
+
+A shared five-minute filename could overwrite one provider's data with another's. The pipeline now uses distinct Dhan/public/Yahoo source names, quarantines old mixed-source data by hash, selects a source-specific file for validation, and writes a cross-source audit report. Public archive caching is retained unless explicit refresh is requested. The workflow changes are committed, but the new Actions run has not yet been checked. Prediction scoring remains blocked by exact ZigLib source timing and official session/expiry-label validation. No forecasts or accuracy metrics have been generated.
