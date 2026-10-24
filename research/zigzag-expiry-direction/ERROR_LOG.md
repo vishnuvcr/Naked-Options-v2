@@ -186,3 +186,12 @@
 - **Evidence:** After fixing the failing 30m test, the commit triggered the separate NIFTY research workflow but did not trigger the ZigZag acquisition workflow because its push path filters did not include `tests/test_zigzag_data_pipeline.py` or `audit_sessions.py`.
 - **Fix:** Added both paths to the ZigZag workflow's push filters in commit `2f2719e99f7159a2121d0d745b111c07249d3bd2`, which should trigger the intended CI run.
 - **Status:** Fix committed; await and inspect the resulting ZigZag Actions run.
+
+
+## ZZD-025 — Session audit assumed every valid dataset report had a status field
+- **Severity:** Medium; fix committed, CI rerun pending
+- **Date:** 2026-10-25
+- **Evidence:** Run [#40128132592](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128132592) passed tests, Dhan authentication, acquisition and timeframe validation, then failed in `audit_sessions.py` with `KeyError: 'status'`. Missing/schema-invalid datasets have a `status` field; valid audit results instead contain row statistics without that field.
+- **Fix:** Changed the decision check to use `result.get("status")` in commit `2345caf6d58be354987464a5e3010621a6e11427`.
+- **Impact:** Market data and validation were acquired successfully; the session report generation crashed before artifact upload completed (the other files were still uploaded). No prediction metrics were computed.
+- **Status:** Fix committed; verify next run.
