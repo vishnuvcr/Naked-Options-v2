@@ -21,3 +21,7 @@ The acquisition workflow and validation scripts are committed, but this session 
 
 ## CI test coverage added — execution unverified
 Added tests for Dhan response parsing, timestamp conversion, OHLC validation, 30-minute aggregation, and incomplete-bar exclusion; wired them into the acquisition workflow. They have not been confirmed passing in a GitHub Actions run. No empirical forecasts or accuracy metrics are available.
+
+
+## 2026-10-25 failed acquisition run
+The first observed run did not produce datasets. The Actions screenshot shows cache-key validation failure, followed by missing required 5m/15m/60m/daily files and no 30m derivation. This is pipeline failure evidence, not market evidence; no predictions were scored. A cache-key correction was committed (`907e05fc8de0363aecf9fa8e7790c9b63b683b9f`); awaiting rerun confirmation.
