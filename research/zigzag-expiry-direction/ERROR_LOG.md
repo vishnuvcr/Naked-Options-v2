@@ -111,3 +111,12 @@
 - **Date:** 2026-10-25
 - **Change:** Added unit tests for epoch conversion, API response array alignment, OHLC validation, six-bar 30m aggregation, and incomplete-bar exclusion; workflow now runs tests before data requests.
 - **Status:** Code committed; no CI success evidence is available in this session. Do not state tests passed until the workflow logs confirm it.
+
+
+## ZZD-018 — GitHub Actions cache key validation failure
+- **Severity:** High; fix committed, rerun pending
+- **Date:** 2026-10-25
+- **Observed evidence:** User-provided Actions screenshots show the `Restore reusable cached market data` step failed with `Key Validation Error` for the key beginning `zigzag-dhan-v1-Linux-2021-1...`. Since restore failed, acquisition did not produce the required CSV files; the subsequent validation step correctly reported missing `nifty50_5m.csv`, `nifty50_15m.csv`, `nifty50_60m.csv`, `nifty50_daily.csv`, and inability to derive 30m.
+- **Root-cause assessment:** The cache key interpolated the comma-separated interval input (`1,5,15,60`) directly. This is consistent with the key-validation failure shown in the run. The exact complete annotation text is truncated in the screenshot, so this is a high-confidence diagnosis, not a verbatim full log.
+- **Fix:** Removed the comma-separated intervals value from the cache key while retaining OS and date-range scope. Commit: `907e05fc8de0363aecf9fa8e7790c9b63b683b9f`.
+- **Verification:** Fix is committed to the active developer branch and should trigger another push run. Its outcome is not yet available; do not claim the cache or acquisition succeeded until the new run is inspected.
