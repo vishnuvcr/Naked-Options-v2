@@ -809,3 +809,7 @@ User authorized continued work using the available dataset. Downloaded audit art
 ## Workflow reliability correction — 2026-10-25
 
 The benchmark persistence step was hardened so a non-blocking second-source parity audit cannot cause a later `git add` failure merely because its optional JSON artifact was not produced. See [error log NP-011](research/nifty-prediction/ERROR_LOG.md) and [phase status](research/nifty-prediction/PHASE_STATUS.md). The correction is committed, but Actions execution remains unverified and no new production scores are claimed.
+
+
+## Automation trigger scope
+The NIFTY benchmark push trigger has been narrowed to executable research scripts, tests, and the workflow definition so phase-status/error-log documentation commits do not trigger another full data/model run. Manual dispatch remains enabled. The visible Actions overview showed failures but did not expose the failed step; see [error log NP-012](research/nifty-prediction/ERROR_LOG.md). No successful production benchmark is claimed.
