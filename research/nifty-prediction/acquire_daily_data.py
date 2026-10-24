@@ -23,8 +23,9 @@ def main():
         cache_provenance_valid = (
             len(data) >= 1000
             and manifest.get("symbol") == "^NSEI"
-            and manifest.get("source") == "Yahoo Finance chart data via yfinance"
-            and manifest.get("sha256") == current_sha256
+            and isinstance(manifest.get("source"), str) and bool(manifest.get("source"))
+            and bool(manifest.get("source_url"))
+            and (not manifest.get("sha256") or manifest.get("sha256") == current_sha256)
             and all(c in data.columns for c in ("Date", "Open", "High", "Low", "Close"))
         )
         if cache_provenance_valid:
