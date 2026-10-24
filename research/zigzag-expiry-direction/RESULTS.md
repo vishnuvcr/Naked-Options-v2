@@ -29,3 +29,10 @@ The first observed run did not produce datasets. The Actions screenshot shows ca
 
 ## 2026-10-25 verified CI outcome — run #40126339052
 Pipeline unit tests passed; cache restore passed. Dhan returned HTTP 401 `DH-901` for all requested intraday intervals and daily history, stating the client ID or user-generated access token is invalid or expired. No usable candles were acquired; the tiny artifact contains only reports. No predictions were scored. The next dependency is a valid `DHAN_ACCESS_TOKEN` repository secret followed by a successful acquisition rerun.
+
+
+## 2026-10-25 — successful authenticated acquisition and validation
+
+GitHub Actions run [#40127255063](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127255063) completed successfully. Six pipeline unit tests passed; the workflow generated a fresh Dhan token from configured secrets and validated it against the profile endpoint; the data acquisition step succeeded; validation and 30-minute resampling succeeded; and the artifact/cache were saved. Artifact: [download data artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127255063/artifacts/12573423696). Artifact size is approximately 11.7 MB.
+
+This establishes that the acquisition pipeline ran successfully, not that the ZigZag prediction experiment has been scored. No accuracy/balanced-accuracy estimates or performance conclusions are available yet. The exact imported ZigLib implementation and its causal signal-availability semantics remain unverified; the expiry calendar/target table and a source-faithful signal export must be resolved before the evaluator can produce scientifically defensible results. Current decision remains **DATA ACQUIRED / PREDICTION NOT YET EVALUATED**.
