@@ -75,3 +75,16 @@
 - **Issue:** User asked to test various chart timeframes. The supplied script does not pin a timeframe; each timeframe can create different pivot sequences and confirmation times.
 - **Mitigation:** Added TIMEFRAME_SENSITIVITY.md pre-registering 5m, 15m, 30m, 60m and 1-day variants, with 1m conditional on data quality. Keep signal rules and targets fixed, use common intervals where possible, report per-timeframe coverage, and correct formal multi-comparison tests. Do not score until exact ZigLib behavior, intraday prices and expiry schedule are validated.
 - **Status:** Protocol decision complete; empirical execution still blocked.
+
+
+## ZZD-013 — Dhan multi-timeframe acquisition workflow added; execution not yet verified
+- **Severity:** High; open until a successful artifact is inspected
+- **Date:** 2026-10-25
+- **Change:** Added Dhan v2 API downloader for NIFTY 50 index security ID 13 (`IDX_I`, `INDEX`), 1m/5m/15m/60m bars, daily OHLC, 90-day request chunks, SHA-256 manifests, retry handling, and a validation/resampling script that derives 30m bars from contiguous 5m bars anchored at 09:15 IST.
+- **Risk:** API schema, token validity, plan entitlements, timestamp semantics, and index bar availability have not been verified by a successful run yet. Cached CSVs are not a result until checks pass.
+- **Mitigation:** Workflow uploads the data and validation manifests as an artifact; inspect actual run logs and artifact before declaring data phase complete. Never expose token values.
+
+## ZZD-014 — Workflow-run confirmation unavailable in this execution context
+- **Severity:** Medium; open
+- **Issue:** The available GitHub integration exposes workflow-job/artifact reads and reruns, but no direct workflow dispatch action was found; a successful run/artifact could not yet be confirmed through the available interface.
+- **Mitigation:** Workflow is configured to run on matching branch pushes and supports manual dispatch. Verify a resulting run before claiming acquisition success.
