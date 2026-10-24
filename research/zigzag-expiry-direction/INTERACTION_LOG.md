@@ -162,3 +162,11 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Inspected [workflow #40131047411](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131047411); completed successfully with snapshot validator tests included.
 - Gate interpretation: synthetic unit tests only. No immutable historical dataset was validated and no TradingAgents forecast was run. Next gate is source/session certification and isolated market-only graph design.
 
+
+
+## 2026-10-25 — NIFTY data acquired using free fallback
+- Initial Dhan authentication failed with HTTP 401, indicating the configured token is invalid/expired. No credential value was logged. Workflow was updated to use Yahoo Finance `^NSEI` as a clearly labeled fallback and triggered automatically.
+- Successful run [#40131619468](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131619468), artifact `zigzag-nifty50-data-40131619468` (expires 2026-11-23).
+- Dataset sizes: daily 1,235 rows (2021-10-25–2026-10-23); 1m 2,611 (2026-10-14–2026-10-23); 5m 4,496 and 15m 1,500 (2026-07-29–2026-10-23); 60m 5,075 (2023-11-08–2026-10-23); derived 30m 719 rows.
+- Limitations recorded: not a five-year intraday archive; daily midnight timestamp is not close time; derived bar/session completeness not fully certified. No prediction scoring yet.
+
