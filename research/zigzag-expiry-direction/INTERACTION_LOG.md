@@ -15,3 +15,10 @@
 - Decision: avoid asking the user to choose a single timeframe; pre-register 5m, 15m, 30m, 60m and 1-day variants, with 1m conditional on validated data.
 - Added TIMEFRAME_SENSITIVITY.md defining comparability, metrics, multiplicity controls, and the no-scoring-before-validation gate.
 - No performance results have been generated; exact ZigLib behavior and validated intraday/expiry data remain blockers.
+
+
+## 2026-10-25 — Acquisition workflow implemented
+- Added `acquire_dhan_timeframes.py`: Dhan v2 NIFTY 50 spot index requests (security ID 13; `IDX_I`/`INDEX`), 1m/5m/15m/60m plus daily bars, <=90-day chunks, retry handling, local cache reuse unless `--refresh`, SHA-256 and timestamp manifests. Credentials are read from `DHAN_ACCESS_TOKEN` only; never logged.
+- Added `prepare_timeframes.py`: OHLC/timestamp validation and session-anchored 30m resampling from six contiguous 5m bars; incomplete bars are excluded and counted.
+- Added `.github/workflows/zigzag-expiry-timeframes.yml`: push/manual triggers, cache, optional refresh, and data/manifest artifact retention.
+- Execution status remains unverified until a workflow run and artifact are inspected. No empirical score was produced. Source-faithful ZigLib causality remains a hard gate.
