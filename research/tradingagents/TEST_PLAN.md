@@ -58,3 +58,12 @@ A strict output contract was added in `forecast_contract.py`, with deterministic
 - Phase E leakage audit: BLOCKED until a custom frozen-snapshot adapter prevents TradingAgents' regular market tools from fetching outside the cutoff.
 - Formal evaluation: BLOCKED.
 
+
+
+## Phase D/E implementation update — 2026-10-25
+
+- The full workflow [#40130735394](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40130735394) completed successfully: local forecast contract tests, pinned upstream dependency install, upstream pytest suite, Ruff, clean-install import, and Yahoo data probe all passed.
+- Added `market_snapshot.py` plus deterministic tests to validate a frozen market-only bar list: timezone-aware ordered timestamps, instrument identity, no post-cutoff bars, OHLC consistency and non-negative volume. CI has been triggered by these additions; its result is pending.
+- This is a strict input validation boundary, not yet a data-source certification or a working TradingAgents adapter. Official session calendar, Dhan/Yahoo timestamp convention, source revision/freeze and market-only graph isolation still require proof.
+- Phase D schema: IMPLEMENTED. Phase D input validator: IMPLEMENTED, CI pending. Phase E end-to-end leakage audit: BLOCKED until frozen source data and tool isolation are verified. Formal evaluation remains blocked.
+
