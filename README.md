@@ -1,6 +1,19 @@
 # ZigZag++ NIFTY 50 expiry-direction study — current status
 
-**Updated 2026-10-25:** [Data pipeline run #40128335927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927) succeeded and [artifact #12574310370](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927/artifacts/12574310370) is available. Official NSE circular review confirms a 2025 transition from Thursday to Tuesday weekly expiry, with contract-level transition exceptions. See [official session/expiry calendar protocol](research/zigzag-expiry-direction/OFFICIAL_CALENDAR_PROTOCOL.md). **Scoring remains blocked**: the complete official session calendar, Dhan candle timestamp convention, exact ZigLib v1 causal timing, and full historical expiry mapping are not yet verified. No prediction accuracy result exists.
+## Latest execution status — 2026-10-25
+
+**Scientific scoring remains blocked; no forecast observations have been scored.** A source-parity diagnostic of the previously acquired datasets found 82,451 exact five-minute timestamp overlaps. In that overlap, 94.99% of close prices differed by no more than ₹0.05, but 800 rows differed by more than ₹1 and the largest absolute close gap was ₹10.90. This is substantial agreement with material outliers, not proof that the source series are interchangeable.
+
+A pipeline defect was found and corrected: older workflow versions reused `nifty50_5m.csv` for Dhan, Yahoo fallback, and the public archive, allowing one source to overwrite another or enter a cache under the wrong provenance. The active workflow now writes separate files for Dhan, public archive, and Yahoo fallback, quarantines the ambiguous legacy 5-minute cache with a SHA-256 record, derives 30-minute bars from a source-selected validated file, and emits [the cross-source audit](research/zigzag-expiry-direction/audit_5m_source_parity.py). Public archive downloads are cached and refreshed only by an explicit input. The Dhan-authentication workflow's malformed shell fragment was also repaired.
+
+**The fixes are committed, but their new GitHub Actions run has not yet been independently inspected in this session.** Do not interpret the earlier successful acquisition run as evidence that these changes passed CI. The scientific gates remain open: exact imported `DevLucem/ZigLib/1` implementation and causal pivot timing, official date-level spot-session and weekly-expiry mapping, and vendor bar timestamp semantics. No accuracy result, winning timeframe, or strategy is claimed.
+
+- [Cross-source parity audit](research/zigzag-expiry-direction/audit_5m_source_parity.py)
+- [Legacy-cache quarantine](research/zigzag-expiry-direction/migrate_legacy_5m_cache.py)
+- [Dhan source acquisition](research/zigzag-expiry-direction/acquire_dhan_timeframes.py)
+- [Public archive acquisition](research/tradingagents/acquire_public_intraday_archive.py)
+- [Workflow](.github/workflows/zigzag-expiry-timeframes.yml)
+
 
 - [Research plan](research/zigzag-expiry-direction/RESEARCH_PLAN.md)
 - [Phase status](research/zigzag-expiry-direction/PHASE_STATUS.md)
