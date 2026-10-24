@@ -1,0 +1,39 @@
+{
+  "study": "PRELIMINARY diagnostic: NIFTY 50 next-session direction, third-party historical CSV",
+  "status": "PRELIMINARY_RESULTS_COMPUTED_NOT_FINAL",
+  "source": {
+    "repository": "VatsalSin/Stock-Market-Indices-Dataset",
+    "path": "NIFTY 50.csv",
+    "upstream_git_blob_sha": "21a6b73916d577ce84178925fe515aeee1ad1441",
+    "cached_git_blob_sha": "4ca331b4de6c18f8e00b08097cc2c9535addc6f5",
+    "first_date": "2000-01-03",
+    "last_date": "2019-12-02",
+    "raw_rows": 4954,
+    "duplicate_dates": 0,
+    "invalid_ohlc_rows": 0,
+    "source_not_exchange_certified": true
+  },
+  "method": "Chronological 75/25 split with expanding logistic regression refit every 20 test observations; custom JavaScript gradient-descent implementation, not scikit-learn. Naive baselines use identical holdout dates.",
+  "feature_columns": ["ret_1","ret_2","ret_3","ret_5","ret_10","ret_20","ret_60","vol_5","vol_10","vol_20","vol_60","ma_gap_5","ma_gap_10","ma_gap_20","ma_gap_60","range_pct","open_gap","close_position"],
+  "all_rows": 4893,
+  "train_rows": 3669,
+  "test_rows": 1224,
+  "test_first_date": "2014-12-16",
+  "test_last_date": "2019-11-29",
+  "test_up_rate": 0.5302287581699346,
+  "test_tie_count": 2,
+  "models": [
+    {"model":"majority_class_baseline","n":1224,"accuracy":0.5302287581699346,"balanced_accuracy":0.5,"confusion_matrix_labels_down_up":[[0,575],[0,649]],"precision_down_up":[0,0.5302287581699346],"recall_down_up":[0,1],"f1_down_up":[0,0.6930058729311266],"balanced_accuracy_95pct_ci":{"lower":0.5,"upper":0.5,"method":"circular block bootstrap, block=10, reps=1000"}},
+    {"model":"previous_session_direction","n":1224,"accuracy":0.5277777777777778,"balanced_accuracy":0.5260454210491057,"confusion_matrix_labels_down_up":[[286,289],[289,360]],"precision_down_up":[0.4973913043478261,0.5546995377503852],"recall_down_up":[0.4973913043478261,0.5546995377503852],"f1_down_up":[0.4973913043478261,0.5546995377503852],"balanced_accuracy_95pct_ci":{"lower":0.4972415768383465,"upper":0.5556157457565909,"method":"circular block bootstrap, block=10, reps=1000"}},
+    {"model":"zero_return_forecast","n":1224,"accuracy":0.46977124183006536,"balanced_accuracy":0.5,"confusion_matrix_labels_down_up":[[575,0],[649,0]],"precision_down_up":[0.46977124183006536,0],"recall_down_up":[1,0],"f1_down_up":[0.6392440244580322,0],"balanced_accuracy_95pct_ci":{"lower":0.5,"upper":0.5,"method":"circular block bootstrap, block=10, reps=1000"}},
+    {"model":"logistic_regression","n":1224,"accuracy":0.5285947712418301,"balanced_accuracy":0.5278073290011389,"confusion_matrix_labels_down_up":[[296,279],[298,351]],"precision_down_up":[0.4983164983164983,0.5571428571428572],"recall_down_up":[0.5147826086956522,0.5408320493066255],"f1_down_up":[0.5064157399486742,0.5488663017982798],"brier_score":0.24935359103914215,"log_loss":0.6918844944764506,"balanced_accuracy_95pct_ci":{"lower":0.5011080034423407,"upper":0.5535664020717221,"method":"circular block bootstrap, block=10, reps=1000"}}
+  ],
+  "limitations": [
+    "Source snapshot ends in December 2019 and is not current-market validation.",
+    "Third-party CSV mirror; values are not exchange-certified.",
+    "Custom logistic implementation differs from the committed scikit-learn pipeline; treat as a diagnostic, not the final benchmark.",
+    "Random forest and gradient boosting are not evaluated in this diagnostic.",
+    "Bootstrap intervals are approximate.",
+    "No trading costs or profitability evaluated."
+  ]
+}
