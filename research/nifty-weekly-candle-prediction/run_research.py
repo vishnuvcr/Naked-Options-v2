@@ -92,6 +92,100 @@ def find_column(columns, candidates):
             return c
     return None
 
+def acquire_secondary_public(force: bool = False) -> dict:
+    """Cache one long-history public cross-check file in Actions cache; never publish row data."""
+    session = requests.Session()
+    session.headers.update({"User-Agent": "NWCP-1.0 reproducible source audit", "Accept": "text/csv,*/*"})
+    url = "https://raw.githubusercontent.com/sandeepkapri/Nifty50-Minute-Data/main/nifty50_candlestick_data.csv"
+    dest = CACHE / "public" / "secondary" / "nifty50_candlestick_data.csv"
+    if force and dest.exists():
+        dest.unlink()
+    result = download_url(url, dest, session, timeout=90)
+    result.update({
+        "source": "sandeepkapri/Nifty50-Minute-Data",
+        "description": "long-history public candidate; upstream data provider and redistribution rights remain unverified",
+    })
+    return result
+
+def read_secondary(path: Path) -> tuple[pd.DataFrame, dict]:
+    """Parse the Sandeep public archive for independent overlap checks only."""
+    if not path.exists():
+        return pd.DataFrame(), {"status": "NOT_DOWNLOADED"}
+    try:
+        df = pd.read_csv(path, low_memory=False)
+        date_col = find_column(df.columns, ["date"])
+        time_col = find_column(df.columns, ["time"])
+        if date_col is None or time_col is None:
+            raise ValueError("secondary archive missing separate Date and Time fields")
+        timestamp_text = df[date_col].astype(str).str.strip() + " " + df[time_col].astype(str).str.strip()
+        parsed = pd.to_datetime(timestamp_text, format="%d-%m-%y %H:%M:%S", errors="coerce")
+        if parsed.isna().mean() > 0.02:
+            parsed_alt = pd.to_datetime(timestamp_text, dayfirst=True, errors="coerce")
+            if parsed_alt.notna().sum() > parsed.notna().sum():
+                parsed = parsed_alt
+        df = df.copy()
+        df["nwcp_timestamp"] = parsed.dt.strftime("%Y-%m-%dT%H:%M:%S")
+        part = normalize_ohlc(df, "nwcp_timestamp", timestamp_is_start=True)
+        part["source"] = "secondary_public"
+        audit = {
+            "status": "OK", "rows_read": int(len(df)), "valid_bars": int(len(part)),
+            "invalid_timestamp_rows": int(parsed.isna().sum()),
+            "start": str(part.bar_start.min()) if len(part) else None,
+            "end": str(part.bar_start.max()) if len(part) else None,
+            "sha256": sha256_file(path),
+            "rights": "repository says MIT; upstream market data provider/redistribution rights require verification",
+        }
+        return part, audit
+    except Exception as exc:
+        return pd.DataFrame(), {"status": "FAILED_PARSE", "error": type(exc).__name__ + ": " + str(exc)[:200]}
+
+def compare_bar_sources(primary: pd.DataFrame, secondary: pd.DataFrame, source_name: str) -> dict:
+    if primary.empty or secondary.empty:
+        return {"status": "NOT_AVAILABLE", "source": source_name, "overlap_bars": 0}
+    left = primary[["bar_start", "close"]].rename(columns={"close": "primary_close"})
+    right = secondary[["bar_start", "close"]].rename(columns={"close": "secondary_close"})
+    overlap = left.merge(right, on="bar_start", how="inner")
+    if overlap.empty:
+        return {"status": "NO_OVERLAP", "source": source_name, "overlap_bars": 0}
+    diff = (overlap.primary_close - overlap.secondary_close).abs()
+    return {
+        "status": "OVERLAP_AUDITED", "source": source_name, "overlap_bars": int(len(overlap)),
+        "median_abs_price_difference": float(diff.median()),
+        "p95_abs_price_difference": float(diff.quantile(.95)),
+        "max_abs_price_difference": float(diff.max()),
+        "within_1_point_fraction": float((diff <= 1.0).mean()),
+        "within_5_points_fraction": float((diff <= 5.0).mean()),
+        "agreement_gate_pass": bool(len(overlap) >= 1000 and (diff <= 1.0).mean() >= .995),
+        "merge_policy": "cross-check only; do not merge or average source prices",
+    }
+
+def audit_bar_integrity(bars: pd.DataFrame) -> dict:
+    if bars.empty:
+        return {"status": "FAILED_NO_BARS"}
+    data = bars.copy()
+    bad_ohlc = (
+        (data["high"] < data[["open", "close", "low"]].max(axis=1)) |
+        (data["low"] > data[["open", "close", "high"]].min(axis=1)) |
+        (data[["open", "high", "low", "close"]] <= 0).any(axis=1)
+    )
+    duplicates = int(data.duplicated("bar_start", keep=False).sum())
+    data["session_date"] = data["bar_start"].dt.date
+    data["clock"] = data["bar_start"].dt.strftime("%H:%M")
+    regular = data[data["clock"].between("09:15", "15:29")]
+    per_session = regular.groupby("session_date")["bar_start"].nunique()
+    # A regular full continuous session normally has 375 one-minute bars from 09:15 through 15:29.
+    short_sessions = per_session[per_session < 360]
+    return {
+        "status": "OK" if int(bad_ohlc.sum()) == 0 and duplicates == 0 else "WARN",
+        "rows": int(len(data)), "bad_ohlc_rows": int(bad_ohlc.sum()),
+        "duplicate_bar_rows": duplicates, "sessions": int(data.session_date.nunique()),
+        "sessions_with_360_or_fewer_regular_bars": int(len(short_sessions)),
+        "short_session_examples": {str(k): int(v) for k, v in short_sessions.head(20).to_dict().items()},
+        "bar_rows_per_regular_session_quantiles": {
+            str(q): float(per_session.quantile(q)) for q in [0, .1, .5, .9, 1]
+        } if len(per_session) else {},
+    }
+
 def fetch_dhan_security_id(session: requests.Session) -> str:
     urls = [
         "https://images.dhan.co/api-data/api-scrip-master.csv",
