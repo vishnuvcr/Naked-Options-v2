@@ -68,3 +68,9 @@ Added unit tests for Dhan response parsing, epoch timestamp conversion, invalid 
 - Downloaded/inspected the actual successful data artifact and independently checked raw 1-minute timestamps and OHLC consistency.
 - Found 511,268 rows, 2,636 weekend-dated rows, 47,612 out-of-session rows, 12 OHLC-inconsistent rows, and exact 10:00 rows on 1,236 dates.
 - Logged this as ZZD-021 and updated phase/results documentation. No signals were generated and no accuracy was calculated because exact ZigLib parity and historical expiry target mapping remain unverified.
+
+
+## 2026-10-25 — Added non-destructive session diagnostic
+- Added `audit_sessions.py` to inspect timestamps and OHLC for every acquired timeframe, flag weekend dates and broad clock-time anomalies without deleting observations.
+- Updated the Actions workflow to run the diagnostic and upload `zigzag_session_audit.json` alongside other data reports.
+- Added ZZD-022: this is not official exchange-calendar certification. Need authoritative NSE session calendar and Dhan bar timestamp convention before scoring. No prediction metrics generated.
