@@ -38,3 +38,14 @@ The user explicitly instructed: “No tester.” Do not create an independent te
 - Phases D–G: NOT STARTED/BLOCKED until the data and point-in-time contract is validated.
 
 No independent tester branch or tester approval gate will be created. Ordinary CI tests remain part of development quality control.
+## Phase C result — 2026-10-25
+
+**PASS for basic current data-shape availability only.** [Run #40130052739](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40130052739) returned 21 daily rows and 375 five-minute rows for `^NSEI`, with timezone-aware timestamps and OHLC columns; close values were non-missing in the sampled output.
+
+This is not a historical-data gate pass. The data probe does not validate historical 10:00 IST bars, the official trading calendar, or point-in-time ancillary inputs. Phase D must implement a structured forecast interface and freeze market-only inputs first. Formal evaluation remains blocked by the main research track's unresolved calendar/timestamp and causal ZigZag constraints.
+
+- Phase A — COMPLETE.
+- Phase B — PASS (upstream tests, lint, clean import).
+- Phase C — PARTIAL PASS (short-window Yahoo shape only).
+- Phase D — NEXT; no performance evaluation until data/causal gates pass.
+
