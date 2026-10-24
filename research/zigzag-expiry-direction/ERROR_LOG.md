@@ -310,3 +310,10 @@
 - **Issue:** The checked-in token-renewal step contained an unmatched/duplicated `python - <<'PY'` section that was not valid as a standalone shell sequence.
 - **Correction:** Replaced the section with a single Python block that validates an existing token, attempts TOTP renewal when configured, masks token values, and falls back to Yahoo if Dhan authentication cannot be established.
 - **Verification:** Updated workflow is committed; do not claim the renewed block has passed CI until the new run is inspected.
+
+
+## ZZD-026 — Dhan cross-timeframe OHLC inconsistency (open)
+- **Severity:** High for price-source acceptance.
+- **Evidence:** Under the provisional start-labelled timestamp assumption, aggregation of Dhan 1-minute bars yields 92,696 complete five-minute groups; six native five-minute timestamps fall off the expected 09:15-anchored grid and two aligned groups have OHLC differences above 0.001 points. One mismatch has a 15.4-point high difference; another has an 8.5-point low difference and 2.9512-point close difference.
+- **Risk:** Inconsistent OHLC can alter ZigZag pivots and future target labels.
+- **Mitigation:** Keep raw feeds separate, preserve mismatch samples, verify timestamp semantics with provider documentation or independent bar exports, and do not start forecast scoring before source validation is resolved.
