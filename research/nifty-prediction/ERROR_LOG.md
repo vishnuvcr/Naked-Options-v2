@@ -20,3 +20,9 @@
 - **Severity:** Medium.
 - **Issue:** ARCH, MAPIE, PySR, tick, Quantevolve, TradingAgents and astra-quant-agent have not all been installed or executed.
 - **Mitigation:** Keep optional; validate dependency versions and contracts before integration. Baseline models must remain interpretable and independently evaluated.
+
+
+## NP-005 — Workflow result not observable (open)
+- **Severity:** High for result reporting.
+- **Issue:** The GitHub status query returned no status entries for the benchmark workflow commits and the available commit-associated run query returned no runs.
+- **Mitigation:** Treat the code as committed but unverified. Do not infer pass/fail or publish scores until the Actions run and artifact are inspected.
