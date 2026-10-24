@@ -136,3 +136,6 @@ def test_holm_adjustment_is_monotonic_and_bounded():
     assert all(0 <= v <= 1 for v in vals)
     assert vals == sorted(vals)
     assert adjusted["missing"] is None
+
+
+# CI dispatch probe: this comment-only commit triggers the repository's push workflow so the committed suite is executed in GitHub Actions.
