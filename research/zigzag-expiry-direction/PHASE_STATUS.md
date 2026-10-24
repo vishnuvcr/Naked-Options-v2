@@ -132,3 +132,8 @@ Next action: improve validation to report regular-session rows, weekday anomalie
 ## Diagnostic audit implementation — 2026-10-25
 
 Added `audit_sessions.py` and wired it into the data workflow. It produces `reports/zigzag_session_audit.json` for 1m/5m/15m/30m/60m/daily data with row counts, checksums, timestamp range, duplicates, sort order, invalid OHLC, weekend-dated rows, and a broad 09:00–16:00 IST diagnostic. The report explicitly marks official session eligibility as NOT_VERIFIED and does not delete flagged observations. The workflow uploads this report. This improves detection/traceability but does not resolve the gate: the official NSE session calendar and Dhan bar timestamp conventions still need evidence. Prediction scoring remains blocked.
+
+
+## 2026-10-25 — Diagnostic workflow failure and self-correction
+
+The first workflow run after adding the session diagnostic, [#40127961418](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127961418), failed at the pre-acquisition unit-test gate. Log inspection showed a pre-existing test assertion expected a dictionary but `derive_30m` returns a `Path` for the output file. Corrected the assertion in commit `1b6845b3b0d81b333ede7be9071ecd6ebbff2d10`. Because tests failed before acquisition, that run's missing-file diagnostics are not a new market-data failure. Await a fresh run to verify tests, acquisition, and the new session report.
