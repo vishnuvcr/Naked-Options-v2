@@ -32,3 +32,7 @@ Reviewed the publicly accessible ZigZag++ wrapper mirror. It defaults to `repain
 - Tried to clone the branch locally to run syntax checks; DNS/network to github.com failed. Logged as ZZD-016.
 - Checked available GitHub actions tools; no direct workflow dispatch was available and no successful run artifact could be confirmed.
 - Current outcome remains blocked: acquisition workflow is implemented but unverified; no empirical scores.
+
+
+## 2026-10-25 — CI test coverage added
+Added unit tests for Dhan response parsing, epoch timestamp conversion, invalid OHLC and array lengths, 30m aggregation, and incomplete-bar exclusion. The GitHub Actions workflow now executes these tests before acquisition. The commit should trigger the branch workflow, but I could not query the run directly with the available GitHub interface. No test-pass or data-acquisition success is claimed.
