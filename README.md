@@ -656,3 +656,6 @@ A separate prediction-only study has been registered. It uses the supplied ZigZa
 - [Protocol manuscript](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/zigzag-expiry-direction-developer/research/zigzag-expiry-direction/MANUSCRIPT.md)
 
 Source audit started: TradingView describes ZigLib as the library returning direction and two chart points; that description alone does not establish when a historical pivot became knowable. See [ZigLib source page](https://www.tradingview.com/script/NC3cgEcT-ZigLib/) and [ZigZag++ indicator page](https://www.tradingview.com/script/lj8djt1n-ZigZag/). No TradingView compilation or empirical score is claimed.
+
+
+**ZigZag track status update (2026-10-25):** protocol/source audit found that public ZigLib metadata describes outputs but does not establish exact causal pivot timing; TradingView's general ZigZag docs warn of retrospective pivot confirmation and revisable latest points. Empirical scoring remains blocked pending exact library behavior and validated spot/expiry data. [Phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/zigzag-expiry-direction-developer/research/zigzag-expiry-direction/PHASE_STATUS.md) · [Updated error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/zigzag-expiry-direction-developer/research/zigzag-expiry-direction/ERROR_LOG.md).
