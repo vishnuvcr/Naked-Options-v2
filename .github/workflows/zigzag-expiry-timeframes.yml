@@ -27,6 +27,7 @@ on:
   push:
     branches:
       - "research/zigzag-expiry-direction-developer"
+      - "research/tradingagents-feasibility-developer"
     paths:
       - "research/zigzag-expiry-direction/acquire_dhan_timeframes.py"
       - "research/zigzag-expiry-direction/prepare_timeframes.py"
@@ -59,10 +60,31 @@ jobs:
           key: zigzag-dhan-v1-${{ runner.os }}-${{ inputs.start_date || '2021-10-25' }}-${{ inputs.end_date || '2026-10-25' }}
       - name: Generate and validate Dhan token
         env:
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
           DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
           DHAN_PIN: ${{ secrets.DHAN_PIN }}
           DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
         run: |
+          if [ -n "${DHAN_ACCESS_TOKEN:-}" ]; then
+            export DHAN_ACCESS_TOKEN
+            python - <<'PY'
+          import json, os, urllib.request
+          token = os.environ["DHAN_ACCESS_TOKEN"].strip()
+          req = urllib.request.Request("https://api.dhan.co/v2/profile", headers={"access-token": token})
+          try:
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  profile = json.loads(response.read().decode("utf-8"))
+          except Exception as exc:
+              raise SystemExit("Provided DHAN_ACCESS_TOKEN failed profile validation: " + type(exc).__name__ + ".") from None
+          if not isinstance(profile, dict) or not profile:
+              raise SystemExit("Dhan profile response was empty; refusing to continue.")
+          print("::add-mask::" + token)
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as f:
+              f.write("DHAN_ACCESS_TOKEN=" + token + "\\n")
+          print("Provided Dhan access token validated successfully.")
+          PY
+            exit 0
+          fi
           python - <<'PY'
           import base64, hashlib, hmac, json, os, struct, time, urllib.request
           client = os.environ.get("DHAN_CLIENT_ID", "").strip()
