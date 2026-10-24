@@ -47,3 +47,7 @@ Added `acquire_dhan_timeframes.py` to request NIFTY 50 spot index bars from Dhan
 | 6. Manuscript/decision | DRAFT ONLY | No empirical results. |
 
 Important: adding the workflow is not evidence that Dhan authentication succeeded or that data was acquired. The next gate is inspect the workflow result/artifact, correct any logged API/data errors, then validate source parity before scoring.
+
+
+## Wrapper timing finding — 2026-10-25
+The accessible public wrapper mirror shows `repaint=true` as the default and a separate non-repaint branch that only draws when `direction != direction[1]`, using prior-bar points (`z1[1]`, `z2[1]`). This is useful wrapper-level evidence, not authoritative proof of the imported ZigLib implementation. To keep a causal prediction study, primary timeframe evaluation is now specified for `repaint=false`; its signal availability must be the direction-change bar, never the earlier pivot timestamp. Results must be labeled non-repaint-mode results and not default-setting results. Exact library internals and the successful Dhan acquisition artifact remain unverified.
