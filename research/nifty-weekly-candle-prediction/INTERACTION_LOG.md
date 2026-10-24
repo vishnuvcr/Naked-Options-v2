@@ -22,3 +22,11 @@ This log tracks visible research scope changes and decisions, not private hidden
 - Use bounded QuantEvolve-style evolution, audited open-source Pine indicator ports and original hypothesis-driven indicators.
 - No option strategy, P&L optimization or live trading development in this study.
 - Historical expiry conventions, source licensing, target timestamps and look-ahead tests must pass before model discovery.
+
+## 2026-10-24 — First automated workflow and corrective run
+
+- User instructed: “Proceed. Run the workflow yourself.”
+- Triggered GitHub Actions run [#14](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40104096953). Dependency installation and unit tests completed; **13 tests passed**. The data/baseline stage then failed with KeyError f1 in the evolutionary search because archive wrapper records were carried forward as candidates.
+- Logged the defect as NWCP-E011. Corrected the evolutionary generation population to carry candidate dictionaries, adjusted mutation/crossover references, and added a multi-generation regression test.
+- Corrective push run [#18](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40109273486) was created; at last check it was pending behind an earlier run. The end-to-end pipeline is not yet verified.
+- No prediction accuracy or winning rule is accepted from this failed run. Data/label and predictive phases remain gated.
