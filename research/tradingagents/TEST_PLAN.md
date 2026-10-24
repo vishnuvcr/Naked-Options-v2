@@ -1,6 +1,6 @@
 # TradingAgents NIFTY 50 Feasibility Plan
 
-**Status:** Phase A static review completed; Phase B workflow first attempt failed before upstream checkout due setup-python pip cache searching for a project dependency file in the research repo root. Workflow cache was removed; corrected run is pending.  
+**Status:** Phase A static review completed; corrected Phase B workflow has passed upstream unit tests and Ruff lint; clean-install import smoke test is running. No independent tester branch or review gate will be created, per user instruction.  
 **Scope:** Evaluate TradingAgents as a separate NIFTY 50 weekly-expiry direction-prediction benchmark. This is not a trading-strategy phase.
 
 ## Questions
@@ -28,5 +28,5 @@
 - Do not generate brokerage/slippage-adjusted P&L in this prediction-only phase.
 - Preserve upstream license and notices if source code is copied or modified.
 
-## Tester instruction
-Independently inspect the workflow run, verify the checked-out SHA, test logs and artifact. Report failures with exact step/log evidence. Then audit any NIFTY adapter for timestamp, symbol, missing-data and point-in-time errors before authorizing evaluation.
+## Developer self-check (no independent tester)
+The user explicitly instructed: “No tester.” Do not create an independent tester branch, tester role, or tester approval gate. The developer will inspect CI logs, record defects, fix them, and continue the planned gates autonomously. Software CI remains a normal automated test suite, not a separate tester role.
