@@ -12,6 +12,8 @@ The initial daily next-session direction benchmark passed in [GitHub Actions run
 - [Daily data acquisition](research/nifty-prediction/acquire_daily_data.py)
 - [Baseline model benchmark](research/nifty-prediction/evaluate_daily_models.py)
 - [Candidate rule experiment](research/nifty-prediction/evaluate_candidate_rules.py)
+- [GARCH volatility forecast experiment using `arch`](research/nifty-prediction/evaluate_volatility_forecast.py)
+- [Volatility forecast results JSON](reports/nifty-prediction/volatility_forecast.json)
 - [Source parity audit](research/nifty-prediction/audit_source_parity.py)
 - [Error log](research/nifty-prediction/ERROR_LOG.md)
 - [Baseline results JSON](reports/nifty-prediction/daily_benchmark.json)
@@ -43,7 +45,7 @@ Common holdout: 1,157 observations from 2022-02-14 through 2026-10-22; up-sessio
 | 20-session trend filter | 54.19% | 53.90% |
 | Volatility-conditioned momentum/reversal | 50.82% | 50.71% |
 
-No candidate has yet beaten the previous-session direction comparator. All gross return proxies exclude executable instrument basis, brokerage, taxes/charges, slippage, turnover and execution. They are not strategy P&L. Source is third-party and not exchange-certified.
+No candidate has yet beaten the previous-session direction comparator. All gross return proxies exclude executable instrument basis, brokerage, taxes/charges, slippage, turnover and execution. They are not strategy P&L. Source is third-party and not exchange-certified. A GARCH(1,1) volatility forecast comparison using `arch` is now implemented; its automated run and QLIKE results are pending.
 
 ## Required repositories
 
