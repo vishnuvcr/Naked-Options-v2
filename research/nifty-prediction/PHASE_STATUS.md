@@ -47,3 +47,9 @@ The GitHub commit-status endpoint returned no status entries for the new benchma
 - Identified a second public dataset repository whose index catalog lists NIFTY 50 daily OHLC from 2007-09-17 through 2026-10-23 (4,686 rows), plus India VIX, NIFTY Bank, SENSEX and macro/flow datasets. These coverage details are upstream metadata, not independent validation.
 - Added [audit_source_parity.py](audit_source_parity.py) to compare cached primary OHLC with the second free source and write [source_parity_audit.json](../../reports/nifty-prediction/source_parity_audit.json). The audit is non-blocking if the secondary source is unavailable.
 - The source audit and production benchmark are wired into GitHub Actions, but actual execution remains unverified from this interface. No parity numbers are claimed yet.
+
+
+## Workflow robustness correction — 2026-10-25
+- Reviewed the benchmark workflow and found a failure path: the parity audit is intentionally non-blocking, but its JSON had been staged unconditionally. A failed download/schema audit could therefore fail the persistence step after the primary model benchmark.
+- Corrected the persistence step to stage only output files that exist and log missing optional outputs. Commit: `dcce2fc65ee91d45544ac3779b9c08bf100d0c13`.
+- This is a code-level correction only. It does not prove the workflow or tests passed; production artifacts and Actions status remain unverified.
