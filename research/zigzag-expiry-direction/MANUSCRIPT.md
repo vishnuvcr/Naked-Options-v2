@@ -30,3 +30,7 @@ This is a preregistered protocol, not a validated forecasting method. No conclus
 
 ## Future research
 After data and implementation gates pass: conduct the fixed holdout evaluation, dependence-aware uncertainty analysis, volatility-regime breakdown, and independent reproduction if later authorized.
+
+
+## Multi-timeframe sensitivity amendment
+Following the user instruction to test various timeframes, the protocol now pre-registers 5-minute, 15-minute, 30-minute, 60-minute and daily variants; 1-minute is conditional on data availability and quality. The primary metric remains out-of-sample balanced accuracy, with coverage and baselines reported for every timeframe. Since multiple variants are compared, any formal tests must account for multiplicity and use comparable expiry intervals. The exact ZigLib implementation, signal availability, intraday price provenance and historical expiry schedule are still unresolved; therefore no empirical result or winner is reported.
