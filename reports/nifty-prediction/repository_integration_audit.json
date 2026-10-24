@@ -1,0 +1,78 @@
+{
+  "generated_at_utc": "2026-10-24T23:46:00.603856+00:00",
+  "status": "AUDIT_ONLY_NO_EXTERNAL_AGENT_EXECUTION",
+  "repositories": {
+    "quantevolve": {
+      "url": "https://github.com/tarsyang/quantevolve",
+      "mode": "bounded-search-design-only",
+      "local_checkout_present": true,
+      "pinned_commit": "2df1e85758620e8ac0ca88ffc428b379d6cb9620",
+      "status": "CHECKED_OUT"
+    },
+    "TradingAgents": {
+      "url": "https://github.com/TauricResearch/TradingAgents",
+      "mode": "evidence-hypothesis-workflow-only",
+      "local_checkout_present": true,
+      "pinned_commit": "e8f5503e9b86d5c2710b0c76b1f686703968c9df",
+      "status": "CHECKED_OUT"
+    },
+    "astra-quant-agent": {
+      "url": "https://github.com/0xethanq/astra-quant-agent",
+      "mode": "risk-control-reference-only",
+      "local_checkout_present": true,
+      "pinned_commit": "e0b29fef1818e0ff9c6b210eb73234620e276a02",
+      "status": "CHECKED_OUT"
+    },
+    "PySR": {
+      "url": "https://github.com/astroautomata/PySR",
+      "mode": "optional-symbolic-regression",
+      "local_checkout_present": true,
+      "pinned_commit": "a14f593cfde61ec4c092fffd8208a4b77cbd80ac",
+      "status": "CHECKED_OUT"
+    },
+    "arch": {
+      "url": "https://github.com/bashtage/arch",
+      "mode": "garch-volatility-forecast",
+      "local_checkout_present": true,
+      "pinned_commit": "d638400cf85940c85652284c0d55217597dfbc5f",
+      "status": "CHECKED_OUT"
+    },
+    "tick": {
+      "url": "https://github.com/X-DataInitiative/tick",
+      "mode": "optional-regularized-model-compatibility",
+      "local_checkout_present": true,
+      "pinned_commit": "a40d19f868c22469be90c1e6c50bc3dab26ff070",
+      "status": "CHECKED_OUT"
+    },
+    "MAPIE": {
+      "url": "https://github.com/scikit-learn-contrib/MAPIE",
+      "mode": "optional-uncertainty-calibration",
+      "local_checkout_present": true,
+      "pinned_commit": "f1cc3d07460b2d7198f557d40d60cd563c51822b",
+      "status": "CHECKED_OUT"
+    }
+  },
+  "installed_package_versions": {
+    "arch": "8.0.0",
+    "PySR": null,
+    "tick": null,
+    "MAPIE": "1.6.0",
+    "scikit-learn": "1.9.1"
+  },
+  "pipeline_contract": {
+    "prediction_target": "next-session NIFTY 50 spot direction",
+    "feature_timing": "features available through close of session t only",
+    "evaluation": "chronological; deterministic baseline metrics remain authoritative",
+    "agent_outputs_are_labels": false,
+    "live_order_execution_enabled": false,
+    "holdout_tuning_allowed": false
+  },
+  "notes": [
+    "A pinned submodule pointer proves provenance, not empirical integration.",
+    "Quantevolve and TradingAgents are not invoked; no API keys or paid LLM calls are made.",
+    "AstraQuant's exchange-specific crypto executor is intentionally not imported into NSE/NFO.",
+    "PySR and tick require separate compatibility-gated experiments before model inclusion.",
+    "MAPIE requires a chronological calibration experiment before uncertainty outputs can be used.",
+    "arch GARCH forecast experiment is run separately by evaluate_volatility_forecast.py."
+  ]
+}
