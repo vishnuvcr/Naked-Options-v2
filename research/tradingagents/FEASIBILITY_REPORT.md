@@ -79,3 +79,11 @@ The compatibility workflow's live `^NSEI` probe passed in [run #40130052739](htt
 
 **Conditional candidate for an isolated benchmark; not yet approved as a validated predictor.** The pinned upstream software checks and current Yahoo data-shape check passed. The next implementation should use frozen/cached NIFTY bars and a deterministic, structured UP/DOWN/ABSTAIN output contract; exclude news/social/fundamentals unless historically timestamped snapshots are available. Compare against naïve/base-rate and simple price-momentum baselines on the same expiry dates. Do not interpret LLM narrative confidence as calibrated probability.
 
+## Phase D — forecast contract and framework integration risk
+
+A machine-readable forecast contract has been implemented with a deterministic validator. It forces explicit cutoff/target timestamps, UP/DOWN/ABSTAIN, model and prompt identity, an input-manifest hash, and an input as-of timestamp. Unit tests cover key temporal and schema failures; CI execution is pending.
+
+**Important integration risk found in source audit:** the pinned framework's standard market tool takes date-based start/end values, routes to Yahoo, and the Yahoo OHLCV formatter removes timezone information from its index. That is not sufficient by itself for the project's 10:00 IST intraday cutoff. In addition, the standard graph defaults to market, social, news, and fundamentals analysts; historical news/fundamental context cannot be assumed point-in-time. For the benchmark, use only market analysis initially and a custom prefiltered frozen-data adapter; disable unrestricted vendor retrieval and exclude undated ancillary inputs. A record validator alone cannot prove the model actually used only the declared inputs.
+
+This is a blocking design constraint, not a prediction result. No forecast has been scored.
+
