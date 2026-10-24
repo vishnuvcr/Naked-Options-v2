@@ -2,7 +2,7 @@
 
 ## Current status — 2026-10-25
 
-The daily next-session direction benchmark has completed successfully in [GitHub Actions run #34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710). Strategy discovery remains active: the first benchmark did not establish a reliable machine-learning edge over a simple previous-session direction rule, so the next step is a bounded set of explicit candidate rules.
+The daily next-session direction benchmark completed successfully in [GitHub Actions run #34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710). A fixed set of momentum/reversal candidate rules has now been added to the same workflow; its new run/result is pending. No tester or tester branch is involved.
 
 - [Research plan](research/nifty-prediction/RESEARCH_PLAN.md)
 - [Phase status and verified scores](research/nifty-prediction/PHASE_STATUS.md)
@@ -11,6 +11,8 @@ The daily next-session direction benchmark has completed successfully in [GitHub
 - [Targeted literature review](docs/research-literature/nifty_prediction_literature_review.md)
 - [Daily data acquisition](research/nifty-prediction/acquire_daily_data.py)
 - [Walk-forward model benchmark](research/nifty-prediction/evaluate_daily_models.py)
+- [Candidate momentum/reversal rules](research/nifty-prediction/evaluate_candidate_rules.py)
+- [Candidate-rule results JSON](reports/nifty-prediction/candidate_rules.json)
 - [Two-source OHLC parity audit](research/nifty-prediction/audit_source_parity.py)
 - [Benchmark tests](tests/test_nifty_prediction_benchmark.py)
 - [Error log](research/nifty-prediction/ERROR_LOG.md)
@@ -45,3 +47,8 @@ All seven repository READMEs were reviewed and their intended research role and 
 - Workflow run status is verified from the actual Actions run, not inferred from a commit alone.
 
 The older ZigZag expiry-direction study remains a separate track and does not block this daily prediction benchmark.
+
+
+## Candidate-rule experiment (2026-10-25)
+
+The existing workflow now evaluates 3-session momentum, 5-session momentum, 1-session reversal, 3-session reversal, a 20-session trend filter, and a lagged-volatility-conditioned rule. It writes a machine-readable report to `reports/nifty-prediction/candidate_rules.json`. The first verified benchmark still favors the previous-session direction baseline (54.10% balanced accuracy) over the three supervised models, none of which established a reliable improvement. Candidate results must be retrieved from an actual Actions run before a rule is selected. Gross index proxies are not net profitability; any viable candidate still needs instrument-specific execution and sourced brokerage, taxes/charges, slippage and turnover assumptions.
