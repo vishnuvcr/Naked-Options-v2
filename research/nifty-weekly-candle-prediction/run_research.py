@@ -330,15 +330,18 @@ def get_expiry_calendar(session_dates: set[date]) -> tuple[list[date], dict]:
             d += timedelta(days=1)
         fallback = sorted(set(fallback))
     # Prefer complete official data when it has meaningful coverage; fill unavailable years from calendar fallback.
-    official_years = {d.year for d in official}
+    counts_by_year = {year: sum(1 for d in official if d.year == year) for year in range(2019, TODAY.year + 1)}
+    # The API must return roughly a full weekly sequence before its year is trusted.
+    trusted_official_years = {year for year, count in counts_by_year.items() if count >= (30 if year in {2019, TODAY.year} else 40)}
     chosen, provenance = set(), {}
     for d in fallback:
-        if d.year not in official_years:
+        if d.year not in trusted_official_years:
             chosen.add(d)
             provenance[d.isoformat()] = "calendar_fallback"
     for d in official:
-        chosen.add(d)
-        provenance[d.isoformat()] = "nse_expiry_api"
+        if d.year in trusted_official_years:
+            chosen.add(d)
+            provenance[d.isoformat()] = "nse_expiry_api"
     dates = sorted(d for d in chosen if START_DATE <= d <= TODAY)
     audit = {
         "source": "mixed_official_and_fallback" if official else "calendar_fallback_only",
@@ -516,6 +519,188 @@ def engineer_features(bars: pd.DataFrame, labels: pd.DataFrame) -> pd.DataFrame:
         features.append(feat)
     return pd.DataFrame(features)
 
+def _balanced_accuracy(y_true, y_pred):
+    from sklearn.metrics import balanced_accuracy_score
+    if len(np.unique(y_true)) < 2:
+        return np.nan
+    return float(balanced_accuracy_score(y_true, y_pred))
+
+def _rule_prediction(x_scaled, candidate):
+    def condition(column, op, threshold):
+        return x_scaled[:, int(column)] > float(threshold) if op == "gt" else x_scaled[:, int(column)] < float(threshold)
+    first = condition(candidate["f1"], candidate["op1"], candidate["t1"])
+    if candidate["mode"] == "single":
+        signal = first
+    else:
+        second = condition(candidate["f2"], candidate["op2"], candidate["t2"])
+        signal = np.logical_and(first, second) if candidate["mode"] == "and" else np.logical_or(first, second)
+    pred = signal.astype(int)
+    if candidate["invert"]:
+        pred = 1 - pred
+    return pred
+
+def _candidate_key(candidate):
+    return json.dumps(candidate, sort_keys=True, separators=(",", ":"))
+
+def _mutate_candidate(candidate, rng, n_features, thresholds):
+    child = dict(candidate)
+    field = rng.choice(["f1", "op1", "t1", "mode", "invert", "f2", "op2", "t2"])
+    if field in {"f1", "f2"}:
+        child[field] = int(rng.integers(0, n_features))
+    elif field in {"op1", "op2"}:
+        child[field] = str(rng.choice(["gt", "lt"]))
+    elif field in {"t1", "t2"}:
+        child[field] = float(rng.choice(thresholds))
+    elif field == "mode":
+        child[field] = str(rng.choice(["single", "and", "or"]))
+    else:
+        child[field] = not bool(child[field])
+    if child["mode"] == "single":
+        child["f2"], child["op2"], child["t2"] = -1, "gt", 0.0
+    elif child["f2"] == child["f1"]:
+        child["f2"] = int((child["f1"] + 1) % n_features)
+    return child
+
+def _new_candidate(rng, n_features, thresholds):
+    mode = str(rng.choice(["single", "single", "and", "or"]))
+    f1 = int(rng.integers(0, n_features))
+    f2 = -1 if mode == "single" else int(rng.integers(0, n_features))
+    if mode != "single" and f2 == f1:
+        f2 = (f1 + 1) % n_features
+    return {
+        "f1": f1, "op1": str(rng.choice(["gt", "lt"])), "t1": float(rng.choice(thresholds)),
+        "mode": mode, "f2": f2, "op2": str(rng.choice(["gt", "lt"])),
+        "t2": float(rng.choice(thresholds)), "invert": bool(rng.integers(0, 2)),
+    }
+
+def _evolve_rule(x_train, y_train, x_valid, y_valid, feature_names, seed=1729, max_candidates=500, max_generations=20):
+    rng = np.random.default_rng(seed)
+    thresholds = [-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5]
+    population_size = 32
+    seen, archive, population = set(), [], []
+    best_valid = -np.inf
+    patience = 0
+    generations_run = 0
+    while generations_run < max_generations and len(seen) < max_candidates:
+        generations_run += 1
+        proposed = []
+        if not population:
+            proposed = [_new_candidate(rng, x_train.shape[1], thresholds) for _ in range(population_size)]
+        else:
+            elites = sorted(population, key=lambda row: row["train_fitness"], reverse=True)[:12]
+            proposed = elites[:4]
+            while len(proposed) < population_size:
+                roll = rng.random()
+                if roll < 0.50:
+                    parent = elites[int(rng.integers(0, len(elites)))]["candidate"]
+                    child = _mutate_candidate(parent, rng, x_train.shape[1], thresholds)
+                elif roll < 0.80 and len(elites) >= 2:
+                    a = elites[int(rng.integers(0, len(elites)))]["candidate"]
+                    b = elites[int(rng.integers(0, len(elites)))]["candidate"]
+                    child = dict(a)
+                    for field in list(child):
+                        if rng.random() < 0.5:
+                            child[field] = b[field]
+                    if child["mode"] == "single":
+                        child["f2"], child["op2"], child["t2"] = -1, "gt", 0.0
+                    elif child["f2"] == child["f1"]:
+                        child["f2"] = (child["f1"] + 1) % x_train.shape[1]
+                else:
+                    child = _new_candidate(rng, x_train.shape[1], thresholds)
+                proposed.append(child)
+        generation_best = -np.inf
+        next_population = []
+        for candidate in proposed:
+            key = _candidate_key(candidate)
+            if key in seen or len(seen) >= max_candidates:
+                continue
+            seen.add(key)
+            train_pred = _rule_prediction(x_train, candidate)
+            valid_pred = _rule_prediction(x_valid, candidate)
+            train_ba = _balanced_accuracy(y_train, train_pred)
+            valid_ba = _balanced_accuracy(y_valid, valid_pred)
+            complexity = 1.0 if candidate["mode"] == "single" else 2.0
+            train_fitness = (train_ba if np.isfinite(train_ba) else 0.0) - 0.001 * complexity
+            record = {
+                "candidate": candidate, "candidate_id": hashlib.sha1(key.encode()).hexdigest()[:12],
+                "train_balanced_accuracy": float(train_ba) if np.isfinite(train_ba) else None,
+                "validation_balanced_accuracy": float(valid_ba) if np.isfinite(valid_ba) else None,
+                "train_fitness": float(train_fitness), "complexity": complexity,
+                "feature_1": feature_names[int(candidate["f1"])],
+                "feature_2": feature_names[int(candidate["f2"])] if candidate["mode"] != "single" else None,
+                "generation": generations_run,
+            }
+            archive.append(record)
+            next_population.append(record)
+            if np.isfinite(valid_ba):
+                generation_best = max(generation_best, float(valid_ba))
+        population = sorted(next_population, key=lambda row: row["train_fitness"], reverse=True)[:population_size]
+        if generation_best > best_valid + 1e-12:
+            best_valid = generation_best
+            patience = 0
+        else:
+            patience += 1
+        if patience >= 3 or not population:
+            break
+    archive = sorted(archive, key=lambda row: (
+        -((row["validation_balanced_accuracy"]) if row["validation_balanced_accuracy"] is not None else -1),
+        row["complexity"], -row["train_fitness"]))
+    winner = archive[0] if archive else None
+    return {
+        "status": "OK" if winner else "FAILED_NO_CANDIDATES",
+        "method": "bounded typed-rule evolutionary search inspired by QuantEvolve quality-diversity; not the paper's multi-agent implementation",
+        "seed": seed, "unique_candidates_evaluated": len(seen), "generations_run": generations_run,
+        "population_size": population_size, "max_candidates": max_candidates, "max_generations": max_generations,
+        "early_stop_patience_generations": patience, "selected_by_validation_only": winner,
+        "top_candidates": archive[:25],
+        "family_diversity": pd.Series([row["feature_1"].split("_")[0] for row in archive]).value_counts().to_dict() if archive else {},
+        "_archive_internal": archive,
+    }
+
+def _block_bootstrap_diff(y_true, pred, baseline_pred, block_len=4, reps=1500, seed=1729):
+    rng = np.random.default_rng(seed)
+    n = len(y_true)
+    if n < max(12, block_len * 2) or len(np.unique(y_true)) < 2:
+        return {"status": "INSUFFICIENT_OOS", "block_length": block_len, "replicates_requested": reps}
+    values = []
+    for _ in range(reps):
+        selected = []
+        while len(selected) < n:
+            start = int(rng.integers(0, n))
+            selected.extend([(start + j) % n for j in range(block_len)])
+        ix = np.asarray(selected[:n], dtype=int)
+        if len(np.unique(y_true[ix])) < 2:
+            continue
+        candidate_ba = _balanced_accuracy(y_true[ix], pred[ix])
+        baseline_ba = _balanced_accuracy(y_true[ix], baseline_pred[ix])
+        if np.isfinite(candidate_ba) and np.isfinite(baseline_ba):
+            values.append(candidate_ba - baseline_ba)
+    if len(values) < max(100, reps // 3):
+        return {"status": "INSUFFICIENT_VALID_RESAMPLES", "valid_replicates": len(values), "block_length": block_len}
+    values = np.asarray(values)
+    observed = _balanced_accuracy(y_true, pred) - _balanced_accuracy(y_true, baseline_pred)
+    return {
+        "status": "OK", "block_length": block_len, "valid_replicates": int(len(values)),
+        "observed_balanced_accuracy_difference": float(observed),
+        "difference_ci95": [float(np.quantile(values, .025)), float(np.quantile(values, .975))],
+        "one_sided_p_improvement": float((1 + np.sum(values <= 0)) / (len(values) + 1)),
+    }
+
+def _holm_adjust(p_values):
+    keys = list(p_values)
+    valid = [(k, p) for k, p in p_values.items() if p is not None and np.isfinite(p)]
+    ordered = sorted(valid, key=lambda item: item[1])
+    adjusted = {}
+    running = 0.0
+    m = len(ordered)
+    for rank, (key, p) in enumerate(ordered):
+        value = min(1.0, (m - rank) * float(p))
+        running = max(running, value)
+        adjusted[key] = running
+    for key in keys:
+        adjusted.setdefault(key, None)
+    return adjusted
+
 def baseline_evaluation(feature_frame: pd.DataFrame) -> dict:
     from sklearn.impute import SimpleImputer
     from sklearn.pipeline import Pipeline
@@ -529,52 +714,132 @@ def baseline_evaluation(feature_frame: pd.DataFrame) -> dict:
         return {"status": "DATA_LIMITED", "reason": "fewer than 120 usable binary labels after feature warm-up", "usable_labels": int(len(frame))}
     y = frame.label.map({"DOWN": 0, "UP": 1}).to_numpy()
     excluded = {"label", "anchor_date", "previous_expiry", "current_expiry"}
-    X = frame[[c for c in frame.columns if c not in excluded]].replace([np.inf, -np.inf], np.nan)
+    feature_names = [c for c in frame.columns if c not in excluded]
+    X = frame[feature_names].replace([np.inf, -np.inf], np.nan)
     n = len(frame)
-    train_end, valid_end = int(n * 0.6), int(n * 0.8)
+    train_end, valid_end = int(n * 0.55), int(n * 0.75)  # reserve last quarter for a final chronological block
     X_train, y_train = X.iloc[:train_end], y[:train_end]
     X_valid, y_valid = X.iloc[train_end:valid_end], y[train_end:valid_end]
     X_test, y_test = X.iloc[valid_end:], y[valid_end:]
+    imputer = SimpleImputer(strategy="median", keep_empty_features=True)
+    scaler = StandardScaler()
+    x_train = scaler.fit_transform(imputer.fit_transform(X_train))
+    x_valid = scaler.transform(imputer.transform(X_valid))
+    x_test = scaler.transform(imputer.transform(X_test))
+    evolution = _evolve_rule(x_train, y_train, x_valid, y_valid, feature_names, seed=1729)
     models = {
         "majority": DummyClassifier(strategy="most_frequent"),
-        "logistic": Pipeline([("imputer", SimpleImputer(strategy="median", add_indicator=True)), ("scale", StandardScaler()), ("model", LogisticRegression(C=0.1, max_iter=3000, class_weight=None, random_state=1729))]),
-        "extra_trees": Pipeline([("imputer", SimpleImputer(strategy="median", add_indicator=True)), ("model", ExtraTreesClassifier(n_estimators=300, min_samples_leaf=5, max_features=0.8, class_weight="balanced", random_state=1729, n_jobs=2))]),
-        "random_forest": Pipeline([("imputer", SimpleImputer(strategy="median", add_indicator=True)), ("model", RandomForestClassifier(n_estimators=300, min_samples_leaf=5, max_features=0.8, class_weight="balanced", random_state=1729, n_jobs=2))]),
+        "logistic": Pipeline([("imputer", SimpleImputer(strategy="median", keep_empty_features=True, add_indicator=True)), ("scale", StandardScaler()), ("model", LogisticRegression(C=0.1, max_iter=3000, class_weight=None, random_state=1729))]),
+        "extra_trees": Pipeline([("imputer", SimpleImputer(strategy="median", keep_empty_features=True, add_indicator=True)), ("model", ExtraTreesClassifier(n_estimators=300, min_samples_leaf=5, max_features=0.8, class_weight="balanced", random_state=1729, n_jobs=2))]),
+        "random_forest": Pipeline([("imputer", SimpleImputer(strategy="median", keep_empty_features=True, add_indicator=True)), ("model", RandomForestClassifier(n_estimators=300, min_samples_leaf=5, max_features=0.8, class_weight="balanced", random_state=1729, n_jobs=2))]),
     }
-    validation = {}
-    fitted = {}
+    validation, fitted = {}, {}
     for name, model in models.items():
         model.fit(X_train, y_train)
         pred = model.predict(X_valid)
-        validation[name] = {"balanced_accuracy": float(balanced_accuracy_score(y_valid, pred)), "accuracy": float(accuracy_score(y_valid, pred)), "mcc": float(matthews_corrcoef(y_valid, pred))}
+        validation[name] = {
+            "balanced_accuracy": float(balanced_accuracy_score(y_valid, pred)),
+            "accuracy": float(accuracy_score(y_valid, pred)),
+            "mcc": float(matthews_corrcoef(y_valid, pred)),
+        }
         fitted[name] = model
-    selectable = [n for n in models if n != "majority"]
-    chosen = max(selectable, key=lambda name: (validation[name]["balanced_accuracy"], validation[name]["mcc"]))
-    # Frozen model recipe: refit once on train+validation, evaluate the chronological final test once.
-    final_model = models[chosen]
-    final_model.fit(X.iloc[:valid_end], y[:valid_end])
-    pred = final_model.predict(X_test)
-    proba = final_model.predict_proba(X_test)[:, 1] if hasattr(final_model, "predict_proba") else None
-    p, r, f1, _ = precision_recall_fscore_support(y_test, pred, labels=[0,1], zero_division=0)
-    output = {
-        "status": "OOS_EVALUATED_EXPLORATORY",
-        "note": "Single chronological holdout estimate. No block-bootstrap or multiplicity gate yet; not a final scientific conclusion.",
-        "total_binary_labels": int(n), "train_labels": int(train_end), "validation_labels": int(valid_end-train_end), "sealed_test_labels": int(n-valid_end),
-        "test_period_start": str(frame.anchor_date.iloc[valid_end]), "test_period_end": str(frame.anchor_date.iloc[-1]),
-        "selected_model_by_validation_only": chosen, "validation_metrics": validation,
-        "test_metrics": {
-            "balanced_accuracy": float(balanced_accuracy_score(y_test, pred)), "accuracy": float(accuracy_score(y_test, pred)),
-            "mcc": float(matthews_corrcoef(y_test, pred)), "precision_down_up": p.tolist(), "recall_down_up": r.tolist(),
-            "f1_down_up": f1.tolist(), "confusion_matrix_down_up": confusion_matrix(y_test, pred, labels=[0,1]).tolist(),
+    if evolution.get("selected_by_validation_only"):
+        candidate = evolution["selected_by_validation_only"]["candidate"]
+        ev_pred = _rule_prediction(x_valid, candidate)
+        validation["evolved_rule"] = {
+            "balanced_accuracy": float(balanced_accuracy_score(y_valid, ev_pred)),
+            "accuracy": float(accuracy_score(y_valid, ev_pred)),
+            "mcc": float(matthews_corrcoef(y_valid, ev_pred)),
+        }
+    candidates = [name for name in validation if name != "majority"]
+    chosen = max(candidates, key=lambda name: (validation[name]["balanced_accuracy"], validation[name]["mcc"]))
+    # Fit each predeclared model family once on train+validation. This allows corrected secondary comparisons
+    # while the primary model is chosen only using validation metrics. The test block is not used to tune.
+    models["majority"].fit(X.iloc[:valid_end], y[:valid_end])
+    test_predictions, test_probabilities, test_metrics, raw_p = {}, {}, {}, {}
+    majority_pred = models["majority"].predict(X_test)
+    for name, model in models.items():
+        if name != "majority":
+            model.fit(X.iloc[:valid_end], y[:valid_end])
+            pred = model.predict(X_test)
+            proba = model.predict_proba(X_test)[:, 1] if hasattr(model, "predict_proba") else None
+        else:
+            pred, proba = majority_pred, None
+        test_predictions[name] = pred
+        if proba is not None:
+            test_probabilities[name] = proba
+        p, r, f1, _ = precision_recall_fscore_support(y_test, pred, labels=[0,1], zero_division=0)
+        valid_ba = _balanced_accuracy(y_test, pred)
+        test_metrics[name] = {
+            "balanced_accuracy": float(valid_ba) if np.isfinite(valid_ba) else None,
+            "accuracy": float(accuracy_score(y_test, pred)),
+            "mcc": float(matthews_corrcoef(y_test, pred)),
+            "precision_down_up": p.tolist(), "recall_down_up": r.tolist(), "f1_down_up": f1.tolist(),
+            "confusion_matrix_down_up": confusion_matrix(y_test, pred, labels=[0,1]).tolist(),
             "roc_auc": float(roc_auc_score(y_test, proba)) if proba is not None and len(np.unique(y_test)) == 2 else None,
             "log_loss": float(log_loss(y_test, np.clip(proba, 1e-6, 1-1e-6), labels=[0,1])) if proba is not None and len(np.unique(y_test)) == 2 else None,
-            "brier_score": float(brier_score_loss(y_test, proba)) if proba is not None else None,
-        },
-        "features": X.columns.tolist(),
-        "feature_count": int(X.shape[1]),
-        "limitations": ["No block-bootstrap uncertainty or Holm correction in this exploratory first run.", "Test set must not be used to tune features or models.", "Model is a direction classifier, not a strategy or profitability test."],
+            "brier_score": float(brier_score_loss(y_test, proba)) if proba is not None and len(np.unique(y_test)) == 2 else None,
+        }
+        if name != "majority":
+            raw_p[name] = _block_bootstrap_diff(y_test, pred, majority_pred, block_len=4, reps=1500, seed=1729 + len(raw_p)).get("one_sided_p_improvement")
+    evolved_candidate = evolution.get("selected_by_validation_only")
+    if evolved_candidate:
+        ev_test_pred = _rule_prediction(x_test, evolved_candidate["candidate"])
+        test_predictions["evolved_rule"] = ev_test_pred
+        p, r, f1, _ = precision_recall_fscore_support(y_test, ev_test_pred, labels=[0,1], zero_division=0)
+        ev_ba = _balanced_accuracy(y_test, ev_test_pred)
+        test_metrics["evolved_rule"] = {
+            "balanced_accuracy": float(ev_ba) if np.isfinite(ev_ba) else None,
+            "accuracy": float(accuracy_score(y_test, ev_test_pred)),
+            "mcc": float(matthews_corrcoef(y_test, ev_test_pred)),
+            "precision_down_up": p.tolist(), "recall_down_up": r.tolist(), "f1_down_up": f1.tolist(),
+            "confusion_matrix_down_up": confusion_matrix(y_test, ev_test_pred, labels=[0,1]).tolist(),
+            "roc_auc": None, "log_loss": None, "brier_score": None,
+            "probability_metrics_note": "not applicable; evolved rule returns a hard class only",
+        }
+        raw_p["evolved_rule"] = _block_bootstrap_diff(y_test, ev_test_pred, majority_pred, block_len=4, reps=1500, seed=1733).get("one_sided_p_improvement")
+    adjusted = _holm_adjust(raw_p)
+    comparison = {}
+    for name, p_value in raw_p.items():
+        comparison[name] = {
+            "one_sided_p_improvement": p_value,
+            "holm_adjusted_p": adjusted.get(name),
+            "block_bootstrap_vs_majority": _block_bootstrap_diff(
+                y_test, test_predictions[name], majority_pred, block_len=4, reps=1500, seed=1777 + len(comparison)
+            ),
+        }
+    test_class_counts = pd.Series(y_test).map({0:"DOWN", 1:"UP"}).value_counts().to_dict()
+    chosen_bootstrap = comparison.get(chosen, {}).get("block_bootstrap_vs_majority", {})
+    selected_metrics = test_metrics.get(chosen, {})
+    enough_test_classes = min(test_class_counts.get("DOWN", 0), test_class_counts.get("UP", 0)) >= 5
+    gate = (
+        enough_test_classes
+        and selected_metrics.get("balanced_accuracy") is not None
+        and selected_metrics.get("balanced_accuracy", 0) > 0.5
+        and selected_metrics.get("mcc", 0) > 0
+        and chosen_bootstrap.get("difference_ci95", [0,0])[0] > 0
+        and (adjusted.get(chosen) is not None and adjusted.get(chosen) < 0.05)
+    )
+    archive = evolution.pop("_archive_internal", [])
+    return {
+        "status": "EXPLORATORY_OOS_GATE_PASS" if gate else "OOS_GATE_NOT_PASSED_OR_INSUFFICIENT",
+        "note": "The final chronological quarter is reserved from training. This is a first automated research run; independent verification and source integrity gates remain mandatory.",
+        "total_binary_labels": int(n), "train_labels": int(train_end), "validation_labels": int(valid_end-train_end),
+        "sealed_test_labels": int(n-valid_end), "test_class_counts": test_class_counts,
+        "test_period_start": str(frame.anchor_date.iloc[valid_end]), "test_period_end": str(frame.anchor_date.iloc[-1]),
+        "selected_model_by_validation_only": chosen, "validation_metrics": validation,
+        "test_metrics_by_model": test_metrics, "multiple_comparison_adjusted_tests_vs_majority": comparison,
+        "selected_model_test_metrics": selected_metrics, "selected_model_bootstrap_vs_majority": chosen_bootstrap,
+        "exploratory_gate_pass": bool(gate), "features": feature_names, "feature_count": int(X.shape[1]),
+        "evolution_summary": {k:v for k,v in evolution.items() if k != "_archive_internal"},
+        "evolution_archive_count": len(archive), "evolution_candidate_archive": archive[:500],
+        "limitations": [
+            "This is preliminary research evidence, not a final decision until source/candle/expiry audits and independent tester gate pass.",
+            "Block bootstrap is a circular moving-block approximation; block lengths 2 and 8 and seed sensitivity remain to be run.",
+            "Historical exchange/public data provenance and official expiry coverage must be checked before accepting any metric.",
+            "Hard prediction accuracy is not a trading strategy or profitability estimate."
+        ],
     }
-    return output
 
 def run(args):
     REPORTS.mkdir(parents=True, exist_ok=True)
