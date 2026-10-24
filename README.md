@@ -736,3 +736,9 @@ Added a strict [forecast contract](research/tradingagents/FORECAST_CONTRACT.md),
 
 Data acquisition completed via the free Yahoo Finance fallback after Dhan token validation returned HTTP 401. [Successful workflow run #40131619468](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131619468) produced artifact `zigzag-nifty50-data-40131619468` (expires 2026-11-23): daily 1,235 rows (2021-10-25–2026-10-23), 1m 2,611 rows (2026-10-14–2026-10-23), 5m 4,496 rows and 15m 1,500 rows (both 2026-07-29–2026-10-23), 60m 5,075 rows (2023-11-08–2026-10-23), and 30m derived 719 rows. The intraday history is incomplete for a five-year study. Yahoo daily timestamps are midnight date labels, not certified close times; no formal prediction evaluation has been run. See the [TradingAgents feasibility report](research/tradingagents/FEASIBILITY_REPORT.md) and [test plan](research/tradingagents/TEST_PLAN.md).
 
+
+
+### Expanded intraday data coverage (2026-10-25)
+
+A second free-source acquisition found a public [five-year NIFTY 50 5-minute archive](https://github.com/voletiramu/nse-fno-1min-data/releases/tag/indices-v1.0.0). [Workflow run #40131891819](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131891819) succeeded and produced artifact `zigzag-nifty50-data-40131891819` (ID 12575426805, expires 2026-11-23). The normalized 5-minute series has 92,876 rows from 2021-04-01 to 2026-04-21; derived 30-minute series has 14,849 rows. Source and normalized SHA-256 hashes are logged in the workflow output. This improves intraday coverage but remains provisional: official session completeness, source provenance and candle timestamp semantics are not yet certified, so formal model scoring remains blocked. See [detailed feasibility report](research/tradingagents/FEASIBILITY_REPORT.md) and [test plan](research/tradingagents/TEST_PLAN.md).
+
