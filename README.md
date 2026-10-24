@@ -722,3 +722,7 @@ Per user instruction, no independent tester role/branch/gate is used. No NIFTY a
 
 Added a strict [forecast contract](research/tradingagents/FORECAST_CONTRACT.md), [validator](research/tradingagents/forecast_contract.py), and [unit tests](research/tradingagents/test_forecast_contract.py). The contract requires explicit timezone-aware cutoff/target times, UP/DOWN/ABSTAIN, model/prompt identity, and an input manifest hash. CI now executes the contract tests; latest result is pending. Source audit found that the standard TradingAgents Yahoo tool uses date-based windows and strips timezone information in its formatted output, so it cannot alone certify a 10:00 IST intraday cutoff. A frozen market-only adapter is required before any historical evaluation.
 
+
+
+**Latest CI:** [Run #40130735394](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40130735394) passed forecast-contract tests, pinned TradingAgents install/tests/lint/import, and the Yahoo probe. Added [frozen market snapshot validator](research/tradingagents/market_snapshot.py), [its tests](research/tradingagents/test_market_snapshot.py), and [gate notes](research/tradingagents/MARKET_SNAPSHOT_GATE.md); CI for this newest change is pending. These checks do not yet constitute a historical forecast backtest.
+
