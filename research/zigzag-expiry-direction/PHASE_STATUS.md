@@ -220,3 +220,19 @@ Acquisition workflow [#40131619468](https://github.com/vishnuvcr/Naked-Options-v
 
 [Run #40131891819](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131891819) downloaded a public five-year NIFTY 50 5-minute archive. Normalized file: 92,876 rows, 2021-04-01 to 2026-04-21; derived 30m: 14,849 rows. Artifact ID 12575426805, expires 2026-11-23. Structural/OHLC validation passed. Official session calendar and candle timestamp semantics remain unverified; forecast evaluation is still blocked.
 
+
+
+## Continuous execution update — 2026-10-25
+
+The public five-minute archive ZIP was downloaded from Actions artifact 12575426805 and independently inspected locally. Preliminary audit: 92,876 rows; 1,244 distinct dates; timestamps sorted and unique; no invalid OHLC in the 5m archive; 1,236 dates have 75 bars (09:15–15:25); six weekend-dated dates and 48 rows outside the regular 09:15–15:25 clock window were found. The archive ends 2026-04-21, while the Yahoo fallback starts later, so their timestamp overlap is zero and price parity cannot yet be assessed from the existing artifacts. These are diagnostics, not exclusions or official calendar validation.
+
+Added `audit_public_5m.py` and wired it into the data workflow to produce a durable diagnostic report on each run. The workflow will be inspected after completion. The source/calendar/causality gates remain open; no score has been fabricated. Next steps are to classify nonstandard dates against the official calendar, establish timestamp semantics, and obtain exact ZigLib causal behavior before scoring.
+
+| Phase | Current status | Next action |
+|---|---|---|
+| 1. Protocol/source audit | BLOCKED on exact ZigLib internals | Verify source-faithful signal availability; if unavailable, report no-go rather than substitute generic ZigZag |
+| 2. Data audit | PARTIAL; structural checks pass, official calendar unresolved | Use diagnostic report and official session/holiday evidence; preserve raw bars |
+| 3. Causal reconstruction | BLOCKED | Implement only after library semantics are evidenced |
+| 4. Evaluation | BLOCKED | Run only after phases 1–3 gates pass |
+| 5. Robustness/inference | NOT STARTED | Depends on eligible out-of-sample predictions |
+| 6. Manuscript/decision | DRAFT | Update after results or a documented no-go conclusion |
