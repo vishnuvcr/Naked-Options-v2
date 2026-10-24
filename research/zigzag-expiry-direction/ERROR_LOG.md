@@ -2,9 +2,9 @@
 
 ## ZZD-001 — External library behavior not yet verified
 - **Severity:** High; open
-- **Issue:** Supplied Pine code imports DevLucem/ZigLib/1; pasted indicator code alone does not define the pivot algorithm or when a pivot becomes final.
+- **Issue:** Supplied Pine code imports DevLucem/ZigLib/1; public library metadata describes inputs/outputs but did not provide enough accessible implementation detail in this run to verify exact pivot-confirmation timing.
 - **Risk:** Look-ahead leakage and false historical accuracy if chart pivot time is mistaken for signal availability.
-- **Mitigation:** Retrieve and version-pin the exact library source; test causal availability time and repaint behavior before scoring.
+- **Mitigation:** Obtain and version-pin exact library source; test causal availability time and repaint behavior before scoring.
 
 ## ZZD-002 — Existing price-data provenance unresolved
 - **Severity:** High; open
@@ -23,3 +23,9 @@
 - **Issue:** No TradingView compiler result is available in this run.
 - **Risk:** A Python reconstruction could be mistaken for a compiled Pine implementation.
 - **Mitigation:** Label any Python checks accurately; claim Pine compilation only when verified.
+
+## ZZD-005 — Generic ZigZag behavior cannot be assumed to equal ZigLib
+- **Severity:** High; open
+- **Issue:** TradingView's general ZigZag documentation describes retrospective confirmation and revisable latest pivots, but this does not prove exact behavior of the imported DevLucem library version.
+- **Risk:** Incorrectly inferred signal timing or false equivalence between implementations.
+- **Mitigation:** Keep general documentation as contextual evidence only; block empirical scoring until source-level behavior is verified.
