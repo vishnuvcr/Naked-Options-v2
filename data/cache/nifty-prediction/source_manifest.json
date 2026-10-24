@@ -1,0 +1,21 @@
+{
+  "symbol": "^NSEI",
+  "instrument": "NIFTY 50 daily index OHLC; historical third-party CSV mirror",
+  "source": "GitHub-hosted public CSV mirror (source repository: VatsalSin/Stock-Market-Indices-Dataset)",
+  "source_url": "https://raw.githubusercontent.com/VatsalSin/Stock-Market-Indices-Dataset/main/NIFTY%2050.csv",
+  "upstream_blob_sha": "21a6b73916d577ce84178925fe515aeee1ad1441",
+  "retrieved_at_utc": "2026-10-24T21:49:29.795Z",
+  "reused_cache": false,
+  "rows": 4954,
+  "first_date": "2000-01-03",
+  "last_date": "2019-12-02",
+  "sha256": null,
+  "source_sha256_note": "File hash will be calculated by the repository acquisition script on first verified cache reuse; upstream Git blob SHA recorded separately.",
+  "invalid_ohlc_rows": 0,
+  "duplicate_dates": 0,
+  "limitations": [
+    "Third-party mirror, not exchange-certified; upstream provenance and accuracy have not been independently verified.",
+    "This snapshot ends in December 2019 and is not suitable as a current-market validation set.",
+    "Historical OHLC is used for a preliminary benchmark only; source sensitivity remains required."
+  ]
+}
