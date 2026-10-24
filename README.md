@@ -1,6 +1,6 @@
 # CURRENT RESEARCH TRACK — NWCP-1.0: NIFTY Weekly Candle Prediction
 
-**Status as of 2026-10-24:** Protocol and source-review documents committed. Code review found a critical risk where weekday-derived fallback expiry dates could create labels; the developer branch now fails closed unless every selected expiry has official NSE provenance. Regression tests were added but have **not yet been verified as passing** because a local test run could not reach GitHub and no successful Actions run was confirmed. **No empirical predictive result is claimed yet.**
+**Status as of 2026-10-24:** Protocol and source-review documents committed. Code review found a critical risk where weekday-derived fallback expiry dates could create labels; the developer branch now fails closed unless every selected expiry has official NSE provenance. Regression tests were added and a push-triggered GitHub Actions run is now active: [run #14](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40104096953). Its latest observed state is **in progress** at dependency installation; the test step has not started, so tests are **not yet verified as passing**. **No empirical predictive result is claimed yet.**
 
 This is a clean, separate study. Historical scores, candidate fitness, model selections and conclusions from the archived NIFTY forecasting or option-buying tracks below are excluded from NWCP-1.0 evidence.
 
