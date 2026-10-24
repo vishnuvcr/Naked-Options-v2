@@ -178,3 +178,10 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Successful acquisition/audit [run #40131891819](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131891819), artifact ID 12575426805. 92,876 normalized 5m rows (2021-04-01–2026-04-21), 14,849 derived 30m rows. Hashes recorded in workflow manifest/log.
 - Remaining gate: third-party provenance, official session coverage, missing-bar audit and exact bar timestamp convention; do not score forecasts yet.
 
+
+
+## 2026-10-25 — User instructed continuous execution
+- User instruction: “Proceed without stopping”. Continued with the acquired archive; no additional broad source search was initiated.
+- Downloaded and inspected Actions artifact 12575426805. Preliminary local diagnostics: 92,876 rows; 1,244 dates; sorted and unique timestamps; zero invalid OHLC; 1,236 dates with 75 regular-clock bars; six weekend-dated dates and 48 out-of-clock rows. The Yahoo fallback has no timestamp overlap with the archive because the archive ends 2026-04-21 and Yahoo starts later.
+- Added a reusable diagnostic audit script and wired it into the acquisition workflow so results are saved as a GitHub Actions artifact. This is not official calendar certification and does not authorize scoring.
+- No hidden chain-of-thought is recorded. The repository log captures actions, observable evidence, decisions and limitations.
