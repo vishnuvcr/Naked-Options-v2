@@ -256,3 +256,18 @@ This closes the current fixed research run without making an unsupported perform
 
 ## Additional source investigation — 2026-10-25
 A publicly accessible mirror of the exact ZigZag++ [LD] wrapper was located: https://github.com/rohitbhure65/pine-scripts/blob/master/zigzag.pine. It confirms the supplied parameters (Depth 12, Deviation 5, Backstep 2), the imported dependency `DevLucem/ZigLib/1`, the `repaint=true` default, and direction-change alerts configured for bar close. The wrapper references `z2[1]` for labels in its non-repaint branch. This materially narrows wrapper-level behavior, but the imported library implementation remains unavailable in the mirrored file; therefore it does not validate the internal pivot confirmation logic or permit source-faithful Python reconstruction. No scoring gate is passed by this discovery.
+
+## User instruction: proceed with available data — 2026-10-25
+
+The user directed continued work using available data. Downloaded artifact 12575253300 and confirmed it contains 1m/5m/15m/30m-resampled/60m/daily CSVs and diagnostic reports. The data is available for additional diagnostics; this does not close the exact indicator or target-definition gates.
+
+| Phase | Updated status | Next action |
+|---|---|---|
+| 1. Protocol/source audit | PARTIAL / BLOCKED | Keep wrapper evidence separate from missing imported library internals |
+| 2. Data audit | PARTIAL / BLOCKED | Use existing files for diagnostics; certify session/expiry mapping and timestamp semantics |
+| 3. Causal reconstruction | BLOCKED | Do not invent ZigLib internals; require exact source or timestamped TradingView export |
+| 4. Prediction evaluation | NOT RUN | Target labels and causal features are not yet valid |
+| 5. Statistical inference | NOT RUN | No eligible out-of-sample predictions |
+| 6. Manuscript/decision | NO-GO REPORT COMPLETE; further diagnostics allowed | Do not claim predictive performance without gates passing |
+
+The instruction to proceed does not change the preregistered method or authorize unsupported accuracy claims. Any alternative generic ZigZag proxy would be a separate exploratory research question and must not be presented as the specified TradingView indicator.
