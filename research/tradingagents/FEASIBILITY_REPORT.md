@@ -101,3 +101,19 @@ The snapshot validator does not yet certify source timestamps or official sessio
 
 [Workflow run #40131047411](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131047411) completed successfully, including the new snapshot tests. The validator correctly passes/rejects its synthetic cases. This is software validation only. It does not prove historical source correctness, session completeness, or causal isolation inside TradingAgents. No live model invocation or out-of-sample prediction score has been produced.
 
+
+
+## Historical data acquired via free fallback — 2026-10-25
+
+The Dhan authentication path returned HTTP 401 for the configured access token in the acquisition workflow. To avoid stopping, the workflow was updated to use the explicitly labeled public Yahoo Finance fallback when the Dhan token is invalid/expired or required authentication material is unavailable. Successful acquisition and audit are recorded in [workflow run #40131619468](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131619468); artifact ID 12574574199 is named `zigzag-nifty50-data-40131619468` and is retained through 2026-11-23.
+
+Yahoo `^NSEI` acquisition returned:
+- Daily: 1,235 rows, 2021-10-25 to 2026-10-23.
+- 1-minute: 2,611 rows, 2026-10-14 to 2026-10-23 (7-day request).
+- 5-minute: 4,496 rows, 2026-07-29 to 2026-10-23 (60-day request).
+- 15-minute: 1,500 rows, 2026-07-29 to 2026-10-23 (60-day request).
+- 60-minute: 5,075 rows, 2023-11-08 to 2026-10-23 (730-day request).
+- Derived 30-minute series: 719 rows in the validation output.
+
+**Critical limitation:** this is a mixed-coverage free fallback, not the requested five-year intraday archive. Yahoo retains only short intraday windows, and daily timestamps are date labels at midnight IST rather than session close timestamps. Do not use the daily timestamp as a 10:00 IST or close timestamp. No formal expiry prediction evaluation is authorized until timestamp conventions, session calendar, and target labels are validated. The workflow artifacts contain the actual CSV files and manifests; raw licensed data is not committed to the Git repository.
+
