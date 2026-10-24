@@ -29,3 +29,10 @@
 - **Issue:** TradingView's general ZigZag documentation describes retrospective confirmation and revisable latest pivots, but this does not prove exact behavior of the imported DevLucem library version.
 - **Risk:** Incorrectly inferred signal timing or false equivalence between implementations.
 - **Mitigation:** Keep general documentation as contextual evidence only; block empirical scoring until source-level behavior is verified.
+
+
+## ZZD-006 — Historical expiry regime mapping incomplete
+- **Severity:** High; open
+- **Evidence:** NSE current product page says NIFTY weekly expiry is Tuesday, moved to the previous trading day for a holiday. NSE circular FAOP/68747 dated 2025-06-25 revised NIFTY weekly expiry from Thursday to Tuesday and states existing contracts expiring on/before 2025-08-31 remained unchanged (with specified long-dated exceptions). Earlier 2025 Monday change was withheld/modified, so announcement dates cannot be treated as simple effective dates without circular-level mapping.
+- **Risk:** Wrong target endpoint for historical intervals.
+- **Mitigation:** Build and test a date-by-date expiry schedule from official circulars and contract masters; retain source references per row.
