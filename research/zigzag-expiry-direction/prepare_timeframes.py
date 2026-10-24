@@ -102,10 +102,17 @@ def main():
     reports = {"required": required, "datasets": {}, "warnings": [], "errors": [], "derived": [],
                "cleaning_policy": "Raw downloads are preserved. Invalid OHLC rows are excluded only from *_validated.csv outputs and listed with full OHLC values; structural issues remain fatal."}
     labels = list(dict.fromkeys(required + ["5"] if "5" in required else required))
+    selected_5m_path = resolve_5m_source()
+    selected_5m_clean_path = None
+    reports["selected_5m_source"] = str(selected_5m_path) if selected_5m_path else None
     for label in labels:
-        name = "nifty50_daily.csv" if label == "daily" else f"nifty50_{label}m.csv"
-        path = ROOT / name
-        if not path.exists():
+        if label == "5":
+            path = selected_5m_path
+            name = path.name if path else "nifty50_5m_public_archive.csv or nifty50_5m_dhan.csv"
+        else:
+            name = "nifty50_daily.csv" if label == "daily" else f"nifty50_{label}m.csv"
+            path = ROOT / name
+        if path is None or not path.exists():
             if label in required:
                 reports["errors"].append(f"missing required dataset: {name}")
             continue
