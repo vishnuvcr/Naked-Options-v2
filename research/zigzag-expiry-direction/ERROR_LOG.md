@@ -258,3 +258,10 @@
 - **Mitigation:** Added a public Yahoo Finance `^NSEI` fallback and robust token validation/fallback logic. Successful acquisition and validation: [run #40131619468](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131619468).
 - **Residual risk:** Yahoo's intraday retention is limited (1m ~7 days; 5m/15m ~60 days; 60m ~2 years). It does not replace the five-year intraday dataset required by the original study. Refresh the Dhan token/secrets to acquire the longer history. Yahoo daily timestamps are midnight labels and cannot be treated as close timestamps.
 
+
+
+## TA-007 — Public five-year intraday source provenance not yet certified
+- **Severity:** Medium / open validation gate.
+- **Finding:** A public release claims five-year NIFTY 50 spot 5-minute data; acquisition and OHLC/schema audit passed in [run #40131891819](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131891819). Archive digest: `0c1f3de848a4e8c05e233c195685e7ae560d56d08df8baba8b2ffcfac699d3f8`; normalized CSV digest: `a36106d04852bedc95019f3fc480e858961e654373a65108d4963bc9233c56cb`.
+- **Residual risk:** publisher provenance is third-party; session coverage and bar-start semantics are not independently certified. The automated audit explicitly remains `NOT_VERIFIED` for official NSE sessions. Keep model scoring blocked until overlap comparison and session-calendar checks pass.
+
