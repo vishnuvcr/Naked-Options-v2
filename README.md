@@ -813,3 +813,8 @@ The benchmark persistence step was hardened so a non-blocking second-source pari
 
 ## Automation trigger scope
 The NIFTY benchmark push trigger has been narrowed to executable research scripts, tests, and the workflow definition so phase-status/error-log documentation commits do not trigger another full data/model run. Manual dispatch remains enabled. The visible Actions overview showed failures but did not expose the failed step; see [error log NP-012](research/nifty-prediction/ERROR_LOG.md). No successful production benchmark is claimed.
+
+
+## Latest workflow diagnosis — 2026-10-25
+
+GitHub Actions run #33 failed before research execution: the main job stopped at `actions/setup-python@v5`; installation, tests, acquisition, and benchmark steps were skipped. The optional ARCH/MAPIE package audit succeeded. The `cache: pip` option was removed because no recognized dependency manifest was present for setup-python cache discovery. See [error log](research/nifty-prediction/ERROR_LOG.md) and [phase status](research/nifty-prediction/PHASE_STATUS.md). The correction is committed, but production benchmark success and results are still pending a verified rerun.
