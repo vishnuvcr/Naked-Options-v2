@@ -282,3 +282,6 @@ Phase 2 — data audit: structural acquisition exists, but session/expiry labels
 Phase 3 — causal reconstruction: blocked. Phase 4 — prediction evaluation: not run, zero eligible forecasts scored. Phase 5 — statistical inference: not run. Phase 6 — manuscript: protocol plus data-limitations addendum recorded, but no prediction result exists.
 
 The pipeline repair is not yet counted as a verified test pass. The original scoring gates remain in force; no generic ZigZag substitution or performance claim is allowed.
+
+
+Latest note (2026-10-25): a second Dhan-only audit found 6 five-minute timestamps off-grid and 2 OHLC mismatches when comparing native 5m bars with 1m aggregates (92,696 complete groups). This assumes start-labelled bars, which Dhan documentation reviewed here does not certify. Phase 2 remains blocked for data validity; Phase 3 is blocked for exact ZigLib timing; prediction scoring and inference remain not run. No accuracy result exists.
