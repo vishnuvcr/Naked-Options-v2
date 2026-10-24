@@ -48,3 +48,9 @@ Added unit tests for Dhan response parsing, epoch timestamp conversion, invalid 
 - Queried GitHub Actions run #40126339052 and inspected job logs. Confirmed the cache-key correction succeeded and pipeline unit tests passed.
 - Identified the actual blocking error: Dhan HTTP 401 `DH-901` across 1m/5m/15m/60m and daily requests; the token is invalid or expired. Validation then failed because no CSV datasets existed.
 - No data or predictions were produced. Next step requires updating the repository secret `DHAN_ACCESS_TOKEN` with a valid token; do not ask user to paste token into chat.
+
+
+## 2026-10-25 — Automated Dhan token generation implemented
+- Inspected the workflow and confirmed the previous version only consumed the static `DHAN_ACCESS_TOKEN` secret.
+- Updated `.github/workflows/zigzag-expiry-timeframes.yml` in commit `0705e9aeafec15949f55ebb983f1f77ec60b62ef` to generate a fresh token using `DHAN_CLIENT_ID`, `DHAN_PIN`, and `DHAN_TOTP_SECRET`, mask it, validate it through `/v2/profile`, and pass it to the data acquisition step in the same job without persisting it as a repository secret.
+- GitHub Actions run [#40126973037](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40126973037): tests and token validation succeeded; acquisition was still running at log inspection. No prediction result claimed.
