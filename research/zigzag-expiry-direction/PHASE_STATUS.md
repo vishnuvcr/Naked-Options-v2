@@ -214,3 +214,9 @@ Forecast record schema and deterministic validator are implemented; unit tests w
 
 Acquisition workflow [#40131619468](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131619468) succeeded using Yahoo Finance `^NSEI` after Dhan token validation returned HTTP 401. Artifact: `zigzag-nifty50-data-40131619468`, expires 2026-11-23. Acquired daily 1,235 rows (5 years); 1m 2,611 rows (~7 days); 5m 4,496 and 15m 1,500 rows (~60 days); 60m 5,075 rows (~2 years); derived 30m 719 rows. The acquisition gate passes for available samples, but five-year intraday coverage and timestamp/session certification do not. Forecast evaluation remains blocked.
 
+
+
+### TradingAgents benchmark — independent intraday source acquired
+
+[Run #40131891819](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131891819) downloaded a public five-year NIFTY 50 5-minute archive. Normalized file: 92,876 rows, 2021-04-01 to 2026-04-21; derived 30m: 14,849 rows. Artifact ID 12575426805, expires 2026-11-23. Structural/OHLC validation passed. Official session calendar and candle timestamp semantics remain unverified; forecast evaluation is still blocked.
+
