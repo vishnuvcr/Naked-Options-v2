@@ -1,6 +1,6 @@
 # Phase Status — ZigZag Expiry Direction
 
-Updated: 2026-10-25
+Updated: 2026-10-25 (latest source audit checkpoint)
 
 | Phase | Status | Evidence / blocker |
 |---|---|---|
