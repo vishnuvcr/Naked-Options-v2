@@ -32,6 +32,7 @@ on:
       - "research/zigzag-expiry-direction/acquire_dhan_timeframes.py"
       - "research/zigzag-expiry-direction/prepare_timeframes.py"
       - "research/zigzag-expiry-direction/audit_sessions.py"
+      - "research/tradingagents/acquire_public_intraday_archive.py"
       - "tests/test_zigzag_data_pipeline.py"
       - ".github/workflows/zigzag-expiry-timeframes.yml"
 
