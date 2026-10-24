@@ -8,7 +8,7 @@ Updated: 2026-10-25
 | P1 Baseline benchmark | COMPLETE | [Workflow run #34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710) succeeded. |
 | P2 Baseline statistical evaluation | COMPLETE FOR INITIAL BENCHMARK | On 1,157 holdout rows (2022-02-14 to 2026-10-22), previous-session direction achieved 54.19% accuracy / 54.10% balanced accuracy. Logistic regression, random forest and histogram gradient boosting did not establish an improvement. |
 | P3 Simple candidate rules | SCREENING COMPUTED; AUTOMATED RUN PENDING | Added a bounded rule experiment for 3/5-session momentum, 1/3-session reversal, 20-session trend and a training-calibrated volatility-conditioned rule. Cached-data calculations show the simple previous-direction rule remains strongest overall; no candidate yet justifies a strategy claim. [Latest workflow run #37](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40142722883) was pending at last check and must finish to validate script execution and persist the report. |
-| P4 Volatility model / uncertainty | NOT RUN | Next use `arch` for a separately scored volatility forecast and MAPIE only if time-ordered calibration is appropriate. |
+| P4 Volatility model / uncertainty | GARCH EXPERIMENT IMPLEMENTED; AUTOMATED RUN PENDING | Added `evaluate_volatility_forecast.py` using `arch` GARCH(1,1), with daily recursive one-step variance updates and a QLIKE comparison against rolling and expanding variance baselines. Workflow updated to persist the output; latest workflow run is pending/queued behind the current benchmark. MAPIE calibration remains unrun. |
 | P5 Seven repository integrations | REVIEW COMPLETE; EXPERIMENTS PARTIAL | Roles and guardrails for Quantevolve, TradingAgents, AstraQuant, PySR, arch, tick and MAPIE are documented in [REPOSITORY_INTEGRATION.md](REPOSITORY_INTEGRATION.md). Do not claim a library has produced results until a run artifact exists. |
 | P6 Costs and decision | NOT READY | Daily index proxy is not executable P&L. Any candidate must be evaluated with turnover, futures/options basis, brokerage, slippage, taxes/charges and realistic execution before a net strategy conclusion. |
 
@@ -34,6 +34,6 @@ The gross proxy compounds daily direction-signed spot returns and is **not** a r
 2. Add deterministic tests for the candidate script and date alignment if the run reveals issues.
 3. Use `arch` to forecast volatility (volatility score only), then test no more than one predeclared regime-conditioned direction rule.
 4. Attempt PySR, `tick`, and MAPIE only through their documented compatibility gates; preserve failed attempts in the error log.
-5. Do not select a strategy until a candidate beats simple comparators on a fresh untouched forward period and net costs are modeled.
+5. Verify the candidate-rule workflow output, then inspect the GARCH QLIKE results. Volatility forecast quality is not directional skill. Do not select a strategy until a candidate beats simple comparators on a fresh untouched forward period and net costs are modeled.
 
 No tester review or tester branch is part of this work.
