@@ -13,7 +13,8 @@ A pipeline defect was found and corrected: older workflow versions reused `nifty
 - [Dhan source acquisition](research/zigzag-expiry-direction/acquire_dhan_timeframes.py)
 - [Public archive acquisition](research/tradingagents/acquire_public_intraday_archive.py)
 - [Workflow](.github/workflows/zigzag-expiry-timeframes.yml)
-
+- [Official session and expiry protocol](research/zigzag-expiry-direction/OFFICIAL_CALENDAR_PROTOCOL.md)
+- [Research manuscript](research/zigzag-expiry-direction/MANUSCRIPT.md)
 
 - [Research plan](research/zigzag-expiry-direction/RESEARCH_PLAN.md)
 - [Phase status](research/zigzag-expiry-direction/PHASE_STATUS.md)
