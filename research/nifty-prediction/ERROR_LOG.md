@@ -46,3 +46,10 @@ Candidate screen multiplies next-session spot-index return by a long/short direc
 - **GARCH result:** QLIKE was -8.64595 for GARCH(1,1), -8.57379 for rolling 20-session variance, and -8.22293 for expanding unconditional variance. Lower is better. This supports a modest volatility forecast comparison only; squared returns are noisy and it is not a direction or trading result.
 - **Cause:** A concurrent branch update raced the push; pre-staging rebase alone did not eliminate the race window.
 - **Fix:** Persistence workflow now includes volatility_forecast.json, fetches/rebases before staging, and retries the push up to three times after fetching/rebasing on rejection. Workflow-file change triggers an automated rerun. Verify that run and its persisted reports before closing this entry.
+
+
+## NP-013 — Repository integration audit and optional model experiments (PARTIALLY RESOLVED)
+
+- **Integration audit:** [run #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40143973082) succeeded. All seven upstream repositories were checked out at pinned commits. Installed versions: arch 8.0.0, MAPIE 1.6.0, scikit-learn 1.9.1; PySR and tick were not installed in that audit environment.
+- **Fix/progress:** Added `evaluate_optional_models.py` and [optional-model workflow](../../.github/workflows/nifty-optional-models.yml). It uses a chronological 60/15/25 train/calibration/test split; it records MAPIE API/coverage status and PySR/tick import compatibility. It does not permit agent labels, holdout tuning, or orders.
+- **Pending:** Workflow has just been added; do not call MAPIE/PySR/tick empirically integrated until its JSON report is committed and inspected. Optional install failures are expected to be captured rather than hidden.
