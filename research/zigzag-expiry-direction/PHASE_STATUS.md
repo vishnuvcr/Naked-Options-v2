@@ -194,3 +194,11 @@ The live Yahoo `^NSEI` shape probe passed in [run #40130052739](https://github.c
 
 Forecast record schema and deterministic validator are implemented; unit tests were added to CI. End-to-end model adapter is not yet complete. Source inspection found standard TradingAgents market tools are date-window based and Yahoo formatting removes timezone info, so a custom frozen market-only adapter is required for 10:00 IST cutoff integrity. Historical evaluation remains blocked; no score is available.
 
+
+
+### TradingAgents benchmark — latest validation (2026-10-25)
+
+- Prior complete workflow [#40130735394](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40130735394): PASS on contract tests, upstream suite, lint, clean import and Yahoo probe.
+- New frozen market snapshot validation and tests added; CI pending.
+- No end-to-end model adapter or prediction score yet. Historical evaluation blocked on frozen data provenance, session/timestamp verification and isolation from unrestricted vendor tools.
+
