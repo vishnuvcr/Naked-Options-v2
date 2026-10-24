@@ -220,3 +220,11 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Added a regression test, repaired its placement/fixture, and updated `RESULTS.md`, `ERROR_LOG.md`, `PHASE_STATUS.md`, `MANUSCRIPT.md` and `README.md`.
 - Latest code-related commits include `853ce4f` / `f0101f2` (internal audit), `df20c15` / `5fe8a10` (test correction), `c2935fe` (results), `bd98d70` (error log), `a925ef3` (README), `9d1301b` (phase status) and `928fecdd` (manuscript).
 - The resulting Actions run has not been queried/verified through the available GitHub interface; CI pass is not claimed. No prediction was scored. Exact ZigLib v1 causality and official session/expiry labels remain open.
+
+
+## 2026-10-25 — Final source search and navigation updates
+- Repeated search for an independently available copy of the imported `DevLucem/ZigLib/1` source. Results expose the public API page and a script wrapper importing the library, but not the library implementation itself. The causal reconstruction gate stays blocked.
+- Added the internal Dhan 1m-to-5m consistency finding to `RESULTS.md`, `ERROR_LOG.md`, `PHASE_STATUS.md`, `MANUSCRIPT.md`, and README status text.
+- Added links to the official session/expiry protocol and research manuscript in the README status area.
+- Checked combined CI status for the newly changed test commit; the GitHub status endpoint returned no status entries. Treat CI verification as unavailable/unconfirmed, not passed.
+- No model fit, forecast scoring, accuracy estimate, statistical inference, or trading strategy was produced. Current decision: continue only non-inferential diagnostics until the source/timing and session/expiry gates are satisfied.
