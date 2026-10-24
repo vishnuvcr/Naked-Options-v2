@@ -111,7 +111,15 @@ def main():
       "rows":len(rows),"first_timestamp_ist":rows[0]["timestamp_ist"],
       "last_timestamp_ist":rows[-1]["timestamp_ist"],
       "source_description":"Zerodha Kite-derived NIFTY 50 spot index 5-minute OHLC; public third-party release",
-      "limitations":["third-party provenance not independently verified","official session calendar not yet reconciled","bar-start semantics described by publisher but not independently certified","spot index volume is not meaningful"]}
+      "source_is_independent_of_dhan":True,
+      "reused_cache":False,
+      "retrieved_at_utc":datetime.now(timezone.utc).isoformat(),
+      "limitations":["third-party provenance not independently verified","official session calendar not yet reconciled","bar-start semantics described by publisher but not independently certified","spot index volume is not meaningful"],
+      "data_handling":"Written to a source-specific filename; other provider files are not overwritten."}
+    CACHE_MANIFEST.write_text(json.dumps(result,indent=2)+"\n",encoding="utf-8")
     MANIFEST.write_text(json.dumps(result,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(result,indent=2))
-if __name__=="__main__": main()
+    return 0
+
+if __name__=="__main__":
+    raise SystemExit(main())
