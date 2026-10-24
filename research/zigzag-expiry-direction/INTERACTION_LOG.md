@@ -212,3 +212,11 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Replaced the malformed Dhan token-renewal shell section with one validated Python block that masks tokens and uses Yahoo only when Dhan authentication is unavailable.
 - Updated the README, results ledger and error log. The new Actions run had not been inspected at log time. Test passage is not claimed. Exact ZigLib v1 timing, official session/expiry mapping and Dhan timestamp convention remain blockers; no forecasts have been scored.
 - Repository commits: `cab6a25` (Dhan file split), `46f366a` (public filename split), `2cc8dde` (source-aware preparation), `848a082` (session audit), `9fc577b` (cross-source audit), `19a5100` (cache quarantine), `01d2685` (workflow cache/auth repair), `0540082` (results ledger), `9d9d2c7` (error log), `9803b3c` (README), and `eb7cb6a` (cached public archive refresh behavior).
+
+
+## 2026-10-25 — Within-provider timeframe consistency diagnostic
+- Added a Dhan 1m-to-5m OHLC aggregation comparison to the cross-source audit script. It uses a provisional start-labelled timestamp assumption, which is not certified by the provider docs reviewed.
+- Findings from the downloaded artifact: 6 native 5m timestamps off the expected grid; 92,696 complete aligned groups; 2 OHLC mismatches. The largest component difference was 15.4 points in the high; a second mismatch showed 8.5 points in the low and 2.9512 points in the close.
+- Added a regression test, repaired its placement/fixture, and updated `RESULTS.md`, `ERROR_LOG.md`, `PHASE_STATUS.md`, `MANUSCRIPT.md` and `README.md`.
+- Latest code-related commits include `853ce4f` / `f0101f2` (internal audit), `df20c15` / `5fe8a10` (test correction), `c2935fe` (results), `bd98d70` (error log), `a925ef3` (README), `9d1301b` (phase status) and `928fecdd` (manuscript).
+- The resulting Actions run has not been queried/verified through the available GitHub interface; CI pass is not claimed. No prediction was scored. Exact ZigLib v1 causality and official session/expiry labels remain open.
