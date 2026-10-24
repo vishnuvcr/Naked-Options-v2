@@ -680,11 +680,17 @@ def _block_bootstrap_diff(y_true, pred, baseline_pred, block_len=4, reps=1500, s
         return {"status": "INSUFFICIENT_VALID_RESAMPLES", "valid_replicates": len(values), "block_length": block_len}
     values = np.asarray(values)
     observed = _balanced_accuracy(y_true, pred) - _balanced_accuracy(y_true, baseline_pred)
+    # Approximate one-sided bootstrap hypothesis test with the bootstrap distribution
+    # recentered under H0: true paired metric difference = 0. Do not use P(bootstrap
+    # effect <= 0) as a p-value; that is a confidence-distribution tail, not a null test.
+    null_centered = values - observed
+    p_improvement = float((1 + np.sum(null_centered >= observed)) / (len(null_centered) + 1))
     return {
         "status": "OK", "block_length": block_len, "valid_replicates": int(len(values)),
         "observed_balanced_accuracy_difference": float(observed),
         "difference_ci95": [float(np.quantile(values, .025)), float(np.quantile(values, .975))],
-        "one_sided_p_improvement": float((1 + np.sum(values <= 0)) / (len(values) + 1)),
+        "one_sided_p_improvement": p_improvement,
+        "p_value_method": "one-sided circular moving-block bootstrap with distribution recentered under zero-effect null; approximate finite-sample test",
     }
 
 def _holm_adjust(p_values):
