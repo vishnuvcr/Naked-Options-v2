@@ -69,9 +69,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Sync before staging; retry if another writer advances the branch.
-          git fetch origin "$BRANCH_NAME"
-          git rebase "origin/$BRANCH_NAME"
+          # Stage generated outputs before rebasing so the worktree is clean.
           for output in \
             data/cache/nifty-prediction/nifty50_daily.csv \
             data/cache/nifty-prediction/source_manifest.json \
@@ -85,10 +83,12 @@ jobs:
               echo "Optional output absent; not staging: $output"
             fi
           done
+          git fetch origin "$BRANCH_NAME"
           if git diff --cached --quiet; then
             echo "No new reproducibility outputs to commit."
           else
             git commit -m "Record NIFTY prediction benchmark results"
+            git rebase "origin/$BRANCH_NAME"
             pushed=false
             for attempt in 1 2 3; do
               if git push origin "HEAD:${BRANCH_NAME}"; then pushed=true; break; fi
