@@ -192,7 +192,8 @@ def acquire_dhan(force: bool = False) -> tuple[pd.DataFrame, dict]:
         return pd.DataFrame(), {"status": "FAILED_SECURITY_MASTER", "error": type(exc).__name__ + ": " + str(exc)[:180]}
     start = max(date(2021, 1, 1), TODAY - timedelta(days=1095))
     end = TODAY
-    dest_dir = CACHE / "dhan" / "intraday"
+    # In this public repository, keep licensed Dhan rows in an ephemeral runner cache unless redistribution/cache rights are established.
+    dest_dir = Path(os.environ.get("NWCP_DHAN_CACHE_DIR", str(CACHE / "dhan"))) / "intraday"
     dest_dir.mkdir(parents=True, exist_ok=True)
     chunks, failures = [], []
     cursor = start
