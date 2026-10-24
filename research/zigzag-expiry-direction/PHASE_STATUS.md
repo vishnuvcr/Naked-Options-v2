@@ -127,3 +127,8 @@ Inspected the actual downloaded CSV artifact from successful Actions run [#40127
 | 6. Manuscript/decision | DRAFT ONLY | No performance claims or result plots. |
 
 Next action: improve validation to report regular-session rows, weekday anomalies, exact 10:00 availability, session completeness and OHLC exclusions for 1m, then build a source-backed historical expiry schedule. Prediction scoring remains prohibited until source parity and target mapping gates pass.
+
+
+## Diagnostic audit implementation — 2026-10-25
+
+Added `audit_sessions.py` and wired it into the data workflow. It produces `reports/zigzag_session_audit.json` for 1m/5m/15m/30m/60m/daily data with row counts, checksums, timestamp range, duplicates, sort order, invalid OHLC, weekend-dated rows, and a broad 09:00–16:00 IST diagnostic. The report explicitly marks official session eligibility as NOT_VERIFIED and does not delete flagged observations. The workflow uploads this report. This improves detection/traceability but does not resolve the gate: the official NSE session calendar and Dhan bar timestamp conventions still need evidence. Prediction scoring remains blocked.
