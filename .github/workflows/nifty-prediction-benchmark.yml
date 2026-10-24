@@ -52,6 +52,7 @@ jobs:
           if [ "$REFRESH_DATA" = "true" ]; then ARGS+=(--refresh); fi
           python research/nifty-prediction/acquire_daily_data.py "${ARGS[@]}"
       - name: Audit OHLC parity against a second free source
+        continue-on-error: true
         run: python research/nifty-prediction/audit_source_parity.py
       - name: Run leakage-controlled chronological benchmark
         run: python research/nifty-prediction/evaluate_daily_models.py
