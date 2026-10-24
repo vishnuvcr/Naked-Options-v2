@@ -699,3 +699,16 @@ A separate feasibility review is underway on [TauricResearch/TradingAgents](http
 - [Pinned upstream compatibility workflow](.github/workflows/tradingagents-compatibility.yml)
 
 **Current decision:** CONDITIONAL CANDIDATE. NIFTY-specific data availability, 10:00 IST timestamp alignment, point-in-time input integrity, and a structured UP/DOWN/ABSTAIN forecast contract remain untested. No accuracy result exists.
+
+
+### TradingAgents benchmark update (2026-10-25)
+
+Pinned upstream software validation passed in [GitHub Actions run #40129883044](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129883044): dependencies installed, unit tests passed, Ruff passed, and clean-install imports passed. This is not evidence of NIFTY prediction accuracy. A live Yahoo `^NSEI` daily/5-minute diagnostic probe has been added and awaits its next workflow run.
+
+- [Feasibility report](research/tradingagents/FEASIBILITY_REPORT.md)
+- [Staged test plan](research/tradingagents/TEST_PLAN.md)
+- [NIFTY Yahoo probe](research/tradingagents/probe_nifty_yahoo.py)
+- [Compatibility workflow](.github/workflows/tradingagents-compatibility.yml)
+
+Per user instruction, no independent tester role/branch/gate is used. No NIFTY accuracy score exists.
+
