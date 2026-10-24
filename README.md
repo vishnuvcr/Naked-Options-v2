@@ -716,3 +716,9 @@ Per user instruction, no independent tester role/branch/gate is used. No NIFTY a
 
 **Latest data-probe result:** [run #40130052739](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40130052739) successfully retrieved 21 daily and 375 five-minute `^NSEI` rows with timezone-aware timestamps and OHLC columns. This validates only a short live data-shape sample—not historical expiry-cutoff coverage or point-in-time correctness. TradingAgents remains a conditional benchmark candidate, with no prediction accuracy claim. See the [updated feasibility report](research/tradingagents/FEASIBILITY_REPORT.md) and [test plan](research/tradingagents/TEST_PLAN.md).
 
+
+
+### TradingAgents forecast contract (2026-10-25)
+
+Added a strict [forecast contract](research/tradingagents/FORECAST_CONTRACT.md), [validator](research/tradingagents/forecast_contract.py), and [unit tests](research/tradingagents/test_forecast_contract.py). The contract requires explicit timezone-aware cutoff/target times, UP/DOWN/ABSTAIN, model/prompt identity, and an input manifest hash. CI now executes the contract tests; latest result is pending. Source audit found that the standard TradingAgents Yahoo tool uses date-based windows and strips timezone information in its formatted output, so it cannot alone certify a 10:00 IST intraday cutoff. A frozen market-only adapter is required before any historical evaluation.
+
