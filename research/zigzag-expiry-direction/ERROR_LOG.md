@@ -272,3 +272,10 @@
 - **Evidence:** Local inspection of artifact 12575426805 found 92,876 rows across 1,244 dates, sorted/unique timestamps, and zero invalid OHLC rows. 1,236 dates have 75 bars from 09:15 through 15:25. Six weekend-dated dates and 48 rows outside the regular 09:15–15:25 clock window were observed. Public archive ends 2026-04-21; Yahoo fallback begins later, yielding zero overlapping timestamps in current artifacts.
 - **Interpretation:** Weekend/special-session records may be legitimate or erroneous; do not silently delete them. The absence of overlap means independent price parity is not established.
 - **Mitigation:** Added `research/zigzag-expiry-direction/audit_public_5m.py` and integrated it into the acquisition workflow to persist a full diagnostic report. Classify candidate sessions against official exchange records and establish timestamp semantics before any evaluation.
+
+## ZZD-018 — Source-faithful scoring gate failed; research closed as no-go
+- **Severity:** Critical for the requested empirical claim; no score generated.
+- **Evidence:** TradingView's public ZigLib page documents function signature and outputs, but the source materials available in this run did not expose enough implementation detail to establish exact pivot confirmation and signal-availability timing. The reviewed public wrapper mirror imports DevLucem/ZigLib/1 and is not the library implementation. The public five-minute data archive also has unresolved official-session classification, and its current Yahoo fallback has no overlapping timestamps for price parity.
+- **Risk:** A guessed ZigZag port or retrospective pivot location could create look-ahead leakage and a false accuracy estimate.
+- **Decision:** Do not substitute a generic ZigZag; do not score. Close this run as **NO-GO FOR SOURCE-FAITHFUL PREDICTION CLAIM**, not as evidence of no predictive value.
+- **Restart criteria:** Exact library source or a reproducible TradingView signal export with confirmation timestamps; official session/expiry schedule; and an authoritative overlapping spot-price series for reconciliation.
