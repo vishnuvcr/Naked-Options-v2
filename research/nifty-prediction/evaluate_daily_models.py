@@ -54,6 +54,11 @@ def load_data(path: Path) -> tuple[pd.DataFrame, dict]:
     invalid = (data["high"] < data[["open", "close", "low"]].max(axis=1)) | (data["low"] > data[["open", "close", "high"]].min(axis=1))
     if invalid.any():
         raise ValueError(f"OHLC invariants failed for {int(invalid.sum())} rows")
+    manifest_path = path.parent / "source_manifest.json"
+    try:
+        source_manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else None
+    except (OSError, json.JSONDecodeError):
+        source_manifest = None
     report = {
         "input_path": str(path),
         "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
@@ -62,7 +67,8 @@ def load_data(path: Path) -> tuple[pd.DataFrame, dict]:
         "last_date": str(data.date.iloc[-1]),
         "invalid_ohlc_rows": int(invalid.sum()),
         "duplicate_dates_dropped": int(raw.shape[0] - len(data)),
-        "source_note": "Input source must be documented by acquisition workflow; daily Yahoo data is not exchange-certified.",
+        "source_note": "Source details are copied from the adjacent acquisition manifest when present; third-party data is not exchange-certified.",
+        "source_manifest": source_manifest,
     }
     return data, report
 
