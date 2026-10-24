@@ -23,7 +23,7 @@ Previous-session direction scored 54.10% balanced accuracy on the 1,157-row hold
 ## NP-007 — Trading costs not modeled (OPEN)
 All current results are prediction or gross index proxies. No strategy is viable until turnover, realistic execution, slippage, brokerage, taxes/charges and relevant futures/options basis are modeled.
 
-## NP-008 — Optional package and integration runs pending (OPEN)
+## NP-008 — Optional package and integration runs pending (PARTIALLY RESOLVED)
 The baseline workflow only checks `arch` and MAPIE package availability. GARCH scoring, MAPIE calibration, PySR, `tick`, Quantevolve and TradingAgents have not yet produced empirical benchmark artifacts. AstraQuant's OKX-native crypto executor is not an NSE/NFO adapter.
 
 ## NP-009 — Candidate script added after baseline workflow (OPEN UNTIL VERIFIED)
@@ -53,3 +53,13 @@ Candidate screen multiplies next-session spot-index return by a long/short direc
 - **Integration audit:** [run #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40143973082) succeeded. All seven upstream repositories were checked out at pinned commits. Installed versions: arch 8.0.0, MAPIE 1.6.0, scikit-learn 1.9.1; PySR and tick were not installed in that audit environment.
 - **Fix/progress:** Added `evaluate_optional_models.py` and [optional-model workflow](../../.github/workflows/nifty-optional-models.yml). It uses a chronological 60/15/25 train/calibration/test split; it records MAPIE API/coverage status and PySR/tick import compatibility. It does not permit agent labels, holdout tuning, or orders.
 - **Pending:** Workflow has just been added; do not call MAPIE/PySR/tick empirically integrated until its JSON report is committed and inspected. Optional install failures are expected to be captured rather than hidden.
+
+
+## NP-014 — Optional-model experiment completed with bounded skips (RESOLVED AS REPORTED; no model promotion)
+
+- **Evidence:** [Optional model workflow #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40144386537) succeeded and persisted [optional_model_experiments.json](../../reports/nifty-prediction/optional_model_experiments.json).
+- **Result:** On a chronological 60% train / 15% calibration / 25% test split (4,626 valid feature rows; 1,157 test rows, 2022-02-15 to 2026-10-23), logistic regression achieved 53.59% accuracy and 53.31% balanced accuracy. This is a separate split from the earlier benchmark; compare cautiously, and it does not establish improvement over the simple previous-session direction baseline.
+- **MAPIE:** Installed version 1.6.0 did not expose the expected classifier entry point; conformal calibration was skipped. Do not claim uncertainty-set calibration results.
+- **PySR:** Version 2.7.2 imported. No symbolic model was fitted because the current protocol has no predeclared continuous target and no separately budgeted search; this is a documented non-experiment, not a failed predictive result.
+- **tick:** Version 0.8.0.2 imported. Import compatibility is not evidence of predictive utility; no model was fitted.
+- **Action:** Preserve these outcomes, avoid widening the search indefinitely, and move to synthesis of evidence/limitations. The holdout has already been used for screening; any future model requires a new untouched forward period.
