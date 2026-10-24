@@ -66,3 +66,16 @@ Pinned upstream software checks succeeded in GitHub Actions run [#40129883044](h
 A live-data diagnostic probe was added at `research/tradingagents/probe_nifty_yahoo.py` to inspect Yahoo Finance `^NSEI` daily and 5-minute bars. The new probe has not yet completed in a workflow run. Even if it succeeds, current availability will not establish historical coverage, exact 10:00 IST bar semantics, or point-in-time news integrity.
 
 User instruction confirmed: **no independent tester role, branch, or approval gate**. Developer will inspect automated logs and fix issues directly.
+## Live Yahoo data probe — 2026-10-25
+
+The compatibility workflow's live `^NSEI` probe passed in [run #40130052739](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40130052739). The run returned:
+- Daily: 21 rows for the requested one-month window; first timestamp 2026-09-23 00:00:00+05:30; last timestamp 2026-10-23 00:00:00+05:30.
+- Five-minute: 375 rows for the requested five-day window; first timestamp 2026-10-16 09:15:00+05:30; last timestamp 2026-10-23 15:25:00+05:30.
+- Both responses had OHLC columns, no missing close values in the tested sample, and timezone-aware indexes.
+
+**Interpretation:** Yahoo can currently return a usable-shaped NIFTY spot series for daily and intraday exploratory use. This is not a historical coverage certification: the probe checks only a short live window and does not establish robust past 10:00 IST cutoffs, historical intraday availability, official session-calendar correctness, corporate/action adjustments, or frozen point-in-time news/fundamentals. It therefore does not authorize the formal expiry-label evaluation.
+
+## Updated decision
+
+**Conditional candidate for an isolated benchmark; not yet approved as a validated predictor.** The pinned upstream software checks and current Yahoo data-shape check passed. The next implementation should use frozen/cached NIFTY bars and a deterministic, structured UP/DOWN/ABSTAIN output contract; exclude news/social/fundamentals unless historically timestamped snapshots are available. Compare against naïve/base-rate and simple price-momentum baselines on the same expiry dates. Do not interpret LLM narrative confidence as calibrated probability.
+
