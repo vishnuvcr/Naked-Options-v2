@@ -11,6 +11,7 @@ The user directed that ZigZag testing should not delay broader NIFTY prediction 
 - [Repository integration plan for Quantevolve, TradingAgents, astra-quant-agent, PySR, arch, tick and MAPIE](research/nifty-prediction/REPOSITORY_INTEGRATION.md)
 - [Daily data acquisition](research/nifty-prediction/acquire_daily_data.py)
 - [Walk-forward model benchmark](research/nifty-prediction/evaluate_daily_models.py)
+- [Two-source OHLC parity audit](research/nifty-prediction/audit_source_parity.py)
 - [Benchmark tests](tests/test_nifty_prediction_benchmark.py)
 - [Error log](research/nifty-prediction/ERROR_LOG.md)
 - [Preliminary historical diagnostic results](reports/nifty-prediction/preliminary_historical_diagnostic.md)
