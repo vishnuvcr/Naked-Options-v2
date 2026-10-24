@@ -4,50 +4,36 @@ Updated: 2026-10-25
 
 | Phase | Status | Evidence / next action |
 |---|---|---|
-| P0 Scope/provenance | COMPLETE WITH LIMITATION | Primary daily dataset: 4,686 rows, 2007-09-17 through 2026-10-23. SHA-256 and provenance are recorded. Yahoo and public-parquet mirror OHLC match exactly, but the mirror is not independent validation and neither source is exchange-certified. Seek official-source cross-check before strong conclusions. |
-| P1 Leakage-safe benchmark | COMPLETE | GitHub Actions run [#34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710) succeeded, including tests, acquisition, source parity audit, benchmark and artifact persistence. |
-| P2 Statistical evaluation | COMPLETE FOR INITIAL BASELINE; STRATEGY RESEARCH ACTIVE | Holdout: 1,157 observations, 2022-02-14 to 2026-10-22; up-rate 52.20%. Previous-session direction: 54.19% accuracy / 54.10% balanced accuracy (block-bootstrap CI 51.30–56.81%). Logistic regression: 52.46% accuracy / 52.53% balanced accuracy; random forest: 50.56% / 50.44%; histogram gradient boosting: 53.15% / 52.82%. Learned models do not establish a reliable improvement over the previous-direction rule. |
-| P3 Volatility and uncertainty | PENDING / OPTIONAL | Repository review completed for `arch` and MAPIE. Next: one GARCH-family volatility forecast with appropriate volatility loss, and a chronological calibration/coverage experiment only if compatible dependencies and data contracts pass. |
-| P4 Hypothesis-driven candidate rules | AUTOMATED RUN PENDING | Added a fixed candidate set: 3-session momentum, 5-session momentum, 1-session reversal, 3-session reversal, 20-session trend filter, and lagged-volatility-conditioned rule. A preliminary diagnostic is saved at reports/nifty-prediction/candidate_rules_preliminary.json; automated Python confirmation is pending. |
-| P5 External repository integration | REVIEW COMPLETE; EXECUTION PARTIAL/PENDING | README review completed for Quantevolve, TradingAgents, astra-quant-agent, PySR, arch, tick and MAPIE. Their concrete use and scope restrictions are documented in [REPOSITORY_INTEGRATION.md](REPOSITORY_INTEGRATION.md). Do not claim all repositories have been installed/executed; each has its own compatibility or suitability gate. |
-| P6 Manuscript and decision | LIVING DRAFT | Baseline results are verified. Candidate-rule report is pending the new automated run; no validated profitable strategy is claimed yet. |
+| P0 Data provenance | COMPLETE WITH LIMITATION | 4,686 daily rows, 2007-09-17 to 2026-10-23. Yahoo and public parquet mirror OHLC match exactly, but neither is exchange-certified and they may share upstream data. |
+| P1 Baseline benchmark | COMPLETE | [Workflow run #34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710) succeeded. |
+| P2 Baseline statistical evaluation | COMPLETE FOR INITIAL BENCHMARK | On 1,157 holdout rows (2022-02-14 to 2026-10-22), previous-session direction achieved 54.19% accuracy / 54.10% balanced accuracy. Logistic regression, random forest and histogram gradient boosting did not establish an improvement. |
+| P3 Simple candidate rules | SCREENING COMPUTED; AUTOMATED RUN PENDING | Added a bounded rule experiment for 3/5-session momentum, 1/3-session reversal, 20-session trend and a training-calibrated volatility-conditioned rule. Cached-data calculations show the simple previous-direction rule remains strongest overall; no candidate yet justifies a strategy claim. [Latest workflow run #37](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40142722883) was pending at last check and must finish to validate script execution and persist the report. |
+| P4 Volatility model / uncertainty | NOT RUN | Next use `arch` for a separately scored volatility forecast and MAPIE only if time-ordered calibration is appropriate. |
+| P5 Seven repository integrations | REVIEW COMPLETE; EXPERIMENTS PARTIAL | Roles and guardrails for Quantevolve, TradingAgents, AstraQuant, PySR, arch, tick and MAPIE are documented in [REPOSITORY_INTEGRATION.md](REPOSITORY_INTEGRATION.md). Do not claim a library has produced results until a run artifact exists. |
+| P6 Costs and decision | NOT READY | Daily index proxy is not executable P&L. Any candidate must be evaluated with turnover, futures/options basis, brokerage, slippage, taxes/charges and realistic execution before a net strategy conclusion. |
 
-## What the benchmark says
+## First candidate-rule screening (cached data; pending automated reproduction)
 
-The initial models do not provide evidence of a reliable machine-learning edge over the previous-session direction rule. This does **not** prove that no strategy can work. It means the next bounded step is to test a small number of explicit, low-complexity rules and reject candidates that do not beat simple comparators after costs.
+Common test interval: 2022-02-14 to 2026-10-22, 1,157 rows. These diagnostics use a daily long/short sign proxy and are **gross, before costs**.
 
-## Verified workflow
-
-- Run: [GitHub Actions #34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710)
-- Outcome: success for both jobs.
-- Output files: [daily benchmark JSON](../../reports/nifty-prediction/daily_benchmark.json), [source parity audit](../../reports/nifty-prediction/source_parity_audit.json), [source manifest](../../data/cache/nifty-prediction/source_manifest.json).
-
-## Repository review gate
-
-All seven repository READMEs have been inspected. Integration is not assumed to mean direct installation: AstraQuant's OKX-native crypto executor is unsuitable for NSE/NFO execution; Quantevolve's Binance-oriented collector is not a NIFTY data source; `tick`, PySR and MAPIE require compatibility/calibration checks; `arch` is for volatility modeling; TradingAgents is research orchestration, not numeric ground truth.
-
-## Scope and safeguards
-
-This track predicts daily next-session NIFTY spot direction first. It is not yet an expiry-specific or intraday evaluation. A candidate trading rule is not usable until point-in-time data, turnover, slippage, brokerage, taxes/charges and execution timing are evaluated. Do not optimize on the final holdout or report gross returns as net returns.
-
-
-## Latest concrete update (2026-10-25)
-
-- Verified Actions run #34 passed both jobs and all main benchmark steps; this supersedes older error-log entries saying that benchmark execution was unverified.
-- Added `evaluate_candidate_rules.py` and wired it into the same workflow; the next run must generate `reports/nifty-prediction/candidate_rules.json`.
-- No tester, tester branch, or tester review is part of this research.
-
-
-## Preliminary candidate-rule result (same 1,157-session holdout)
-
-| Rule | Accuracy | Balanced accuracy | Gross long/short index proxy, compounded |
+| Rule | Accuracy | Balanced accuracy | Gross compounded index proxy |
 |---|---:|---:|---:|
 | Previous-session direction | 54.19% | 54.10% | +81.39% |
 | 3-session momentum | 53.33% | 53.18% | +16.30% |
 | 5-session momentum | 51.60% | 51.42% | +8.59% |
-| 1-session reversal | 45.89% | 45.99% | -47.78% |
-| 3-session reversal | 46.67% | 46.82% | -21.03% |
+| 1-session mean reversion | 45.89% | 45.99% | -47.78% |
+| 3-session mean reversion | 46.67% | 46.82% | -21.03% |
 | 20-session trend filter | 54.19% | 53.90% | +20.64% |
-| Volatility-conditioned rule | 51.34% | 51.22% | -21.10% |
+| Volatility-conditioned momentum/reversal | 50.82% | 50.71% | -28.85% |
 
-These are preliminary calculations on the committed third-party CSV. Gross long/short index proxy returns are not executable net returns and exclude all trading costs. No new candidate beats the previous-session-direction baseline in balanced accuracy. The 20-session trend filter is the best of the new rules but is still below the baseline; it is not validated as a usable strategy. The automated Python report must confirm these numbers before final publication.
+The gross proxy compounds daily direction-signed spot returns and is **not** a realizable futures/options return. Its numbers are not a claim of profit. Candidate screening does not identify a better directional rule than previous-session direction. The trend filter's directional accuracy ties the baseline but has lower balanced accuracy and weaker gross proxy performance.
+
+## Next steps
+
+1. Confirm workflow #37 completes and inspect the persisted `candidate_rules.json`.
+2. Add deterministic tests for the candidate script and date alignment if the run reveals issues.
+3. Use `arch` to forecast volatility (volatility score only), then test no more than one predeclared regime-conditioned direction rule.
+4. Attempt PySR, `tick`, and MAPIE only through their documented compatibility gates; preserve failed attempts in the error log.
+5. Do not select a strategy until a candidate beats simple comparators on a fresh untouched forward period and net costs are modeled.
+
+No tester review or tester branch is part of this work.
