@@ -60,3 +60,11 @@ A reusable report generator, `research/zigzag-expiry-direction/audit_public_5m.p
 Therefore the study has **zero scored forecasts** and no accuracy, balanced accuracy, confidence interval, significance test, or winning timeframe. This is an evidence/implementation no-go, not a finding that ZigZag++ has zero predictive value. Do not infer a trading strategy from this outcome.
 
 Restart criteria: (1) exact source or a reproducible signal export that records when each pivot became knowable; (2) official date-specific session and expiry table; (3) independent spot-price overlap validation; then run the pre-registered holdout without changing the signal rule.
+
+## 2026-10-25 — Proceed-with-available-data decision
+
+The user instructed: “Proceed with available data.” The available five-minute archive was downloaded from the successful workflow artifact and its contents confirmed: raw/validated 1m, 5m, 15m, 30m-resampled, 60m and daily CSVs plus validation and diagnostic reports are present. The archive provides enough material for additional data diagnostics and exploratory indicator prototyping, but not enough to certify the preregistered source-faithful ZigZag++ [LD] experiment.
+
+**No forecast score is added in this update.** The target table still needs a verified official session/expiry mapping; 10:00 and close bar semantics need certification; the exact imported DevLucem/ZigLib/1 internals and signal-availability timing remain unavailable. Creating a generic ZigZag proxy would answer a different question and cannot be reported as a ZigZag++ [LD] result. Available data will be used for non-inferential diagnostics, and any proxy experiment must be separately named, explicitly exploratory, and never conflated with the primary study.
+
+Decision remains **NO-GO FOR SOURCE-FAITHFUL PREDICTION SCORING**. This is an evidence limitation, not a negative finding about predictive performance.
