@@ -22,3 +22,7 @@
 - Added `prepare_timeframes.py`: OHLC/timestamp validation and session-anchored 30m resampling from six contiguous 5m bars; incomplete bars are excluded and counted.
 - Added `.github/workflows/zigzag-expiry-timeframes.yml`: push/manual triggers, cache, optional refresh, and data/manifest artifact retention.
 - Execution status remains unverified until a workflow run and artifact are inspected. No empirical score was produced. Source-faithful ZigLib causality remains a hard gate.
+
+
+## 2026-10-25 — Causality control
+Reviewed the publicly accessible ZigZag++ wrapper mirror. It defaults to `repaint=true`; the non-repaint branch draws only on direction changes and uses prior-bar point values. To avoid look-ahead in the prediction-only study, the pre-registered primary timeframe panel is now explicitly non-repaint mode, with signal availability assigned to the direction-change bar. This is a protocol amendment, not evidence of predictive performance; results must not be described as default-setting performance. The imported ZigLib v1 internals remain unverified.
