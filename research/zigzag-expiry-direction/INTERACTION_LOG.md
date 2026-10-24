@@ -228,3 +228,12 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Added links to the official session/expiry protocol and research manuscript in the README status area.
 - Checked combined CI status for the newly changed test commit; the GitHub status endpoint returned no status entries. Treat CI verification as unavailable/unconfirmed, not passed.
 - No model fit, forecast scoring, accuracy estimate, statistical inference, or trading strategy was produced. Current decision: continue only non-inferential diagnostics until the source/timing and session/expiry gates are satisfied.
+
+
+## 2026-10-25 — User redirected research away from ZigZag dependency
+- User instruction: “If zigzag indicator testing is lagging, drop it and use other repos mentioned in the project instructions too proceed testing on nifty prediction”.
+- Action: kept ZigZag research records intact but made ZigZag a non-blocking side study; started `research/nifty-prediction/` as the primary daily direction benchmark track.
+- Added `RESEARCH_PLAN.md`, `REPOSITORY_INTEGRATION.md`, `PHASE_STATUS.md`, `ERROR_LOG.md`, `acquire_daily_data.py`, `evaluate_daily_models.py`, `tests/test_nifty_prediction_benchmark.py`, and `.github/workflows/nifty-prediction-benchmark.yml`.
+- The baseline benchmark compares majority class, previous-session direction, logistic regression, random forest, and histogram gradient boosting under chronological expanding walk-forward evaluation. It reports balanced accuracy, accuracy, confusion matrix, class precision/recall, probability losses where available, and circular block-bootstrap intervals.
+- Added optional ARCH/MAPIE dependency-check job. PySR, Quantevolve, TradingAgents, astra-quant-agent and tick are documented with staged integration gates; they are not falsely claimed to be installed or validated.
+- Updated the top of README to make the new track primary. CI/status endpoints returned no workflow runs/status entries for the new commits, so no test pass or empirical score is claimed. Daily Yahoo data is not exchange-certified and the first track does not yet cover expiry-specific/intraday targets.
