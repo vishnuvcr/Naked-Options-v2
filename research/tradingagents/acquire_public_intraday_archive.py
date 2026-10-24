@@ -5,8 +5,8 @@ The release describes NIFTY spot 5-minute bars from Apr 2021 to Apr 2026.
 This is an independent source requiring provenance/session/price cross-checks.
 """
 from __future__ import annotations
-import csv, hashlib, io, json, urllib.request, zipfile
-from datetime import datetime
+import argparse, csv, hashlib, io, json, urllib.request, zipfile
+from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -15,6 +15,7 @@ ROOT=Path("data/cache/zigzag_expiry_direction")
 # Source-specific output: never overwrite the Dhan or Yahoo source file.
 OUT=ROOT/"nifty50_5m_public_archive.csv"
 MANIFEST=Path("reports/public_intraday_sources.json")
+CACHE_MANIFEST=ROOT/"nifty50_5m_public_archive_manifest.json"
 IST=ZoneInfo("Asia/Kolkata")
 
 def keymap(headers):
@@ -42,6 +43,43 @@ def parse_dt(value, date_value=None, time_value=None):
     return d.replace(tzinfo=IST) if d.tzinfo is None else d.astimezone(IST)
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--refresh",action="store_true",help="Force a fresh download instead of using the source-specific cached archive")
+    args=parser.parse_args()
+    ROOT.mkdir(parents=True,exist_ok=True);MANIFEST.parent.mkdir(parents=True,exist_ok=True)
+
+    if OUT.exists() and not args.refresh:
+        with OUT.open(newline="",encoding="utf-8") as handle:
+            cached_rows=list(csv.DictReader(handle))
+        if len(cached_rows)<50000:
+            raise RuntimeError(f"Cached public archive has too few rows: {len(cached_rows)}; rerun with --refresh")
+        cached_hash=hashlib.sha256(OUT.read_bytes()).hexdigest()
+        cached_meta={}
+        if CACHE_MANIFEST.exists():
+            cached_meta=json.loads(CACHE_MANIFEST.read_text(encoding="utf-8"))
+            expected=cached_meta.get("normalized_sha256")
+            if expected and expected != cached_hash:
+                raise RuntimeError("Cached public archive hash does not match its manifest; rerun with --refresh")
+        result={
+          "source_url":URL,"release":"indices-v1.0.0",
+          "archive_sha256":cached_meta.get("archive_sha256"),
+          "source_csv":cached_meta.get("source_csv"),
+          "normalized_path":str(OUT),"normalized_sha256":cached_hash,
+          "rows":len(cached_rows),
+          "first_timestamp_ist":cached_rows[0]["timestamp_ist"],
+          "last_timestamp_ist":cached_rows[-1]["timestamp_ist"],
+          "source_description":"Zerodha Kite-derived NIFTY 50 spot 5-minute OHLC; public third-party release",
+          "source_is_independent_of_dhan":True,
+          "reused_cache":True,
+          "retrieved_at_utc":datetime.now(timezone.utc).isoformat(),
+          "limitations":["third-party provenance not independently verified","official session calendar not yet reconciled","bar-start semantics described by publisher but not independently certified","spot index volume is not meaningful"],
+          "data_handling":"Reused source-specific cached file; no other provider's data was overwritten."
+        }
+        CACHE_MANIFEST.write_text(json.dumps(result,indent=2)+"\n",encoding="utf-8")
+        MANIFEST.write_text(json.dumps(result,indent=2)+"\n",encoding="utf-8")
+        print(json.dumps(result,indent=2))
+        return 0
+
     req=urllib.request.Request(URL,headers={"User-Agent":"Naked-Options-v2-research/1.0"})
     with urllib.request.urlopen(req,timeout=120) as r: blob=r.read()
     ziphash=hashlib.sha256(blob).hexdigest()
