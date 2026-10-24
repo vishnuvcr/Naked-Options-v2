@@ -49,3 +49,12 @@ This is not a historical-data gate pass. The data probe does not validate histor
 - Phase C — PARTIAL PASS (short-window Yahoo shape only).
 - Phase D — NEXT; no performance evaluation until data/causal gates pass.
 
+## Phase D implementation update — 2026-10-25
+
+A strict output contract was added in `forecast_contract.py`, with deterministic tests in `test_forecast_contract.py` and documentation in `FORECAST_CONTRACT.md`. CI now runs these local tests. Contract checks cover required fields, UP/DOWN/ABSTAIN classes, timezone-aware timestamps, target ordering, input-as-of not later than cutoff, record creation timing, and SHA-256 syntax.
+
+- Phase D schema/validator: IMPLEMENTED; CI result pending for the newest commit.
+- Phase D end-to-end model adapter: NOT COMPLETE.
+- Phase E leakage audit: BLOCKED until a custom frozen-snapshot adapter prevents TradingAgents' regular market tools from fetching outside the cutoff.
+- Formal evaluation: BLOCKED.
+
