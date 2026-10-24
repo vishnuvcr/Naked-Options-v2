@@ -66,3 +66,12 @@ The key implementation gate failed: the accessible documentation describes the i
 The user authorized continued work with the available dataset. Inspection of the downloadable workflow artifact confirms the archive includes 1m/5m/15m/30m-resampled/60m/daily CSVs and associated validation/session reports. This permits further diagnostics, but does not by itself validate the forecast target or the indicator implementation.
 
 The primary protocol remains unchanged. The analysis will not relabel a generic ZigZag approximation as the imported ZigZag++ [LD] indicator. Until the source/confirmation-time and session/expiry gates are resolved, performance metrics remain unreported. If an explicitly exploratory proxy is evaluated later, it must be a separate experiment with its own algorithm definition, limitations, and labels, and cannot support a conclusion about the specified TradingView indicator.
+
+
+## Source-quality audit update (2026-10-25)
+
+The Dhan and independent public five-minute sources have 82,451 exact timestamp matches. About 94.99% of matching close prices differ by at most 0.05 points, but 800 rows differ by more than 1 point and the largest difference is 10.90 points. On the diagnostic subset of 78,374 rows across 1,045 dates with 75 bars in both sources, 95.52% of close pairs are within 0.05 points and 666 rows differ by more than 1 point. This subset is not an official-session classification.
+
+The pipeline now writes Dhan, public archive, and Yahoo five-minute data to distinct paths, quarantines the old ambiguous cache with a hash record, validates a source-selected copy, and includes a cross-source report. The public archive is cached unless refresh is explicitly requested. The malformed token-renewal shell block has been replaced, but the new workflow run is not yet verified.
+
+No prediction performance result exists. Exact ZigLib v1 signal timing, official session/expiry mapping, and candle timestamp semantics remain open, so forecast scoring is still blocked. This indicates insufficient evidence for the registered experiment, not absence of predictive value.
