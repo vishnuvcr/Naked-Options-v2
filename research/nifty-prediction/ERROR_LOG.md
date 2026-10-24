@@ -31,3 +31,10 @@ Added `research/nifty-prediction/evaluate_candidate_rules.py` and updated the wo
 
 ## NP-010 — Gross index proxy can be mistaken for tradable performance (OPEN)
 Candidate screen multiplies next-session spot-index return by a long/short direction sign. This ignores executable instrument basis, lot sizing, turnover, margin, slippage, brokerage, taxes and execution. It is only a diagnostic; never describe its compounded value as strategy P&L.
+
+## NP-011 — Artifact persistence race during candidate workflow (RESOLVED IN WORKFLOW; latest run pending)
+- **Severity:** Medium.
+- **Evidence:** Workflow run [#37](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40142722883) passed dependency setup, unit tests, acquisition, parity audit, baseline benchmark and candidate-rule execution, but failed at artifact persistence.
+- **Cause:** An earlier run committed `candidate_rules.json` while this run was still executing from an older checkout. Its local generated artifact then conflicted during the later rebase/push.
+- **Fix:** Updated the workflow to rebase the current branch **before** staging generated outputs, and included `volatility_forecast.json` in persistence. The newer workflow run #40 is in progress; verify it completes before marking this fix confirmed.
+- **Important:** The scientific candidate calculation did run successfully in #37; the failure was in saving results, not in the benchmark or candidate-rule step.
