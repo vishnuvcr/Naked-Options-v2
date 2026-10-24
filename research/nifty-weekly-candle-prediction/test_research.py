@@ -155,5 +155,5 @@ def test_evolutionary_search_runs_across_multiple_generations():
         max_candidates=100, max_generations=5,
     )
     assert result["status"] == "OK"
-    assert result["candidate_count"] > 0
-    assert result["best_candidate"]["candidate"]["f1"] in range(6)
+    assert result["unique_candidates_evaluated"] > 0
+    assert result["selected_by_validation_only"]["candidate"]["f1"] in range(6)
