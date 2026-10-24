@@ -62,7 +62,17 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/cache/nifty-prediction/nifty50_daily.csv data/cache/nifty-prediction/source_manifest.json reports/nifty-prediction/daily_benchmark.json reports/nifty-prediction/source_parity_audit.json
+          for output in \
+            data/cache/nifty-prediction/nifty50_daily.csv \
+            data/cache/nifty-prediction/source_manifest.json \
+            reports/nifty-prediction/daily_benchmark.json \
+            reports/nifty-prediction/source_parity_audit.json; do
+            if [ -f "$output" ]; then
+              git add "$output"
+            else
+              echo "Optional output absent; not staging: $output"
+            fi
+          done
           if git diff --cached --quiet; then
             echo "No new reproducibility outputs to commit."
           else
