@@ -67,3 +67,11 @@ A strict output contract was added in `forecast_contract.py`, with deterministic
 - This is a strict input validation boundary, not yet a data-source certification or a working TradingAgents adapter. Official session calendar, Dhan/Yahoo timestamp convention, source revision/freeze and market-only graph isolation still require proof.
 - Phase D schema: IMPLEMENTED. Phase D input validator: IMPLEMENTED, CI pending. Phase E end-to-end leakage audit: BLOCKED until frozen source data and tool isolation are verified. Formal evaluation remains blocked.
 
+
+
+## Phase D/E checkpoint — 2026-10-25 (verified)
+
+The frozen market snapshot validator and all its tests passed in [workflow run #40131047411](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131047411). The run completed successfully. This establishes the deterministic validators work on synthetic test cases; it does not validate a real historical archive or TradingAgents graph integration.
+
+**Gate decision:** continue to source/session certification, but do not start model evaluation. No validated immutable historical snapshot is currently available in this benchmark branch, and the primary study still flags Dhan timestamp semantics, official calendar and causal ZigLib timing as unresolved. The next phase must establish data provenance and official-session completeness before generating model forecasts.
+
