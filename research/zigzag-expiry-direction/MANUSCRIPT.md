@@ -60,3 +60,9 @@ The key implementation gate failed: the accessible documentation describes the i
 - Source and data limitations: ERROR_LOG.md
 - Preregistered protocol: RESEARCH_PLAN.md
 - Dataset source: [public five-year NIFTY 5-minute release](https://github.com/voletiramu/nse-fno-1min-data/releases/tag/indices-v1.0.0)
+
+## User instruction to proceed with available data — 2026-10-25
+
+The user authorized continued work with the available dataset. Inspection of the downloadable workflow artifact confirms the archive includes 1m/5m/15m/30m-resampled/60m/daily CSVs and associated validation/session reports. This permits further diagnostics, but does not by itself validate the forecast target or the indicator implementation.
+
+The primary protocol remains unchanged. The analysis will not relabel a generic ZigZag approximation as the imported ZigZag++ [LD] indicator. Until the source/confirmation-time and session/expiry gates are resolved, performance metrics remain unreported. If an explicitly exploratory proxy is evaluated later, it must be a separate experiment with its own algorithm definition, limitations, and labels, and cannot support a conclusion about the specified TradingView indicator.
