@@ -188,3 +188,9 @@ No TradingAgents prediction accuracy result has been produced. User explicitly d
 
 The live Yahoo `^NSEI` shape probe passed in [run #40130052739](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40130052739): 21 daily rows and 375 five-minute rows, timezone-aware indexes, OHLC present, and no missing close in the sample. This is only a short-window availability check. Historical 10:00 IST cutoff validity, session calendar and point-in-time ancillary data remain unverified. Decision remains conditional candidate; no prediction accuracy score is available.
 
+
+
+### TradingAgents benchmark — Phase D update (2026-10-25)
+
+Forecast record schema and deterministic validator are implemented; unit tests were added to CI. End-to-end model adapter is not yet complete. Source inspection found standard TradingAgents market tools are date-window based and Yahoo formatting removes timezone info, so a custom frozen market-only adapter is required for 10:00 IST cutoff integrity. Historical evaluation remains blocked; no score is available.
+
