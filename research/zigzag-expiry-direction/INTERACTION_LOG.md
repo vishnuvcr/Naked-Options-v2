@@ -8,3 +8,10 @@
 - User explicitly said no tester review is needed; no independent tester branch/gate will be created for this task.
 - Protocol rule: last confirmed and knowable low (LL/HL) => UP; last confirmed high (HH/LH) => DOWN; no eligible pivot => abstain.
 - No private hidden reasoning is stored. This log preserves user-visible decisions and research actions, not hidden chain-of-thought.
+
+
+## 2026-10-25 — Timeframe sensitivity authorized
+- User instruction: “Test various timeframes”.
+- Decision: avoid asking the user to choose a single timeframe; pre-register 5m, 15m, 30m, 60m and 1-day variants, with 1m conditional on validated data.
+- Added TIMEFRAME_SENSITIVITY.md defining comparability, metrics, multiplicity controls, and the no-scoring-before-validation gate.
+- No performance results have been generated; exact ZigLib behavior and validated intraday/expiry data remain blockers.
