@@ -96,7 +96,7 @@ def main():
         "errors": []
     }
     for tf, result in report["datasets"].items():
-        if result["status"] in {"MISSING", "INVALID_SCHEMA"} or result.get("duplicate_timestamps") or result.get("timestamps_not_sorted") or result.get("timestamp_or_ohlc_errors"):
+        if result.get("status") in {"MISSING", "INVALID_SCHEMA"} or result.get("duplicate_timestamps") or result.get("timestamps_not_sorted") or result.get("timestamp_or_ohlc_errors"):
             report["errors"].append(f"{tf}: structural issue or missing file; inspect dataset report")
     report["decision"] = "NOT_ELIGIBLE_FOR_SCORING_UNTIL_OFFICIAL_SESSION_CALENDAR_AND_DHAN_TIMESTAMP_CONVENTION_ARE_VERIFIED"
     out = Path(args.output)
