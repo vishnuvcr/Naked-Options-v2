@@ -1,0 +1,21 @@
+[submodule "vendor/research-repositories/MAPIE"]
+	path = vendor/research-repositories/MAPIE
+	url = https://github.com/scikit-learn-contrib/MAPIE.git
+[submodule "vendor/research-repositories/PySR"]
+	path = vendor/research-repositories/PySR
+	url = https://github.com/astroautomata/PySR.git
+[submodule "vendor/research-repositories/astra-quant-agent"]
+	path = vendor/research-repositories/astra-quant-agent
+	url = https://github.com/0xethanq/astra-quant-agent.git
+[submodule "vendor/research-repositories/quantevolve"]
+	path = vendor/research-repositories/quantevolve
+	url = https://github.com/tarsyang/quantevolve.git
+[submodule "vendor/research-repositories/tick"]
+	path = vendor/research-repositories/tick
+	url = https://github.com/X-DataInitiative/tick.git
+[submodule "vendor/research-repositories/TradingAgents"]
+	path = vendor/research-repositories/TradingAgents
+	url = https://github.com/TauricResearch/TradingAgents.git
+[submodule "vendor/research-repositories/arch"]
+	path = vendor/research-repositories/arch
+	url = https://github.com/bashtage/arch.git
