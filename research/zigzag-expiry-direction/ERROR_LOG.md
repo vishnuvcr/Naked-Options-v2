@@ -104,3 +104,10 @@
 - **Issue:** Attempted a shallow clone of the active GitHub branch in the local container to run Python syntax checks; DNS/network access to github.com was unavailable. The GitHub integration in this session did not expose a direct workflow-dispatch action, and no successful workflow artifact was confirmed.
 - **Risk:** The acquisition and resampling scripts have not been executed end-to-end in this environment; potential API/schema or runtime errors remain possible.
 - **Mitigation:** The configured branch-push workflow should run the scripts and upload logs/data/validation manifests. Inspect its actual run/artifact before considering the data gate passed. No result is claimed in the absence of that evidence.
+
+
+## ZZD-017 — Unit tests added but not yet executed by confirmed CI
+- **Severity:** Medium; open until CI result reviewed
+- **Date:** 2026-10-25
+- **Change:** Added unit tests for epoch conversion, API response array alignment, OHLC validation, six-bar 30m aggregation, and incomplete-bar exclusion; workflow now runs tests before data requests.
+- **Status:** Code committed; no CI success evidence is available in this session. Do not state tests passed until the workflow logs confirm it.
