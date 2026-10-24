@@ -37,3 +37,7 @@ A timeframe can change both the pivot sequence and the time a pivot becomes know
 
 ## Required artifacts
 Update PHASE_STATUS.md, ERROR_LOG.md, RESULTS.md, MANUSCRIPT.md, and INTERACTION_LOG.md after the relevant step. Cache raw data and manifests with checksums when acquired. No options strategy or trading rules are in scope.
+
+
+## Causality setting amendment (2026-10-25)
+The primary comparison must use `repaint=false` in the wrapper. The accessible wrapper mirror defaults to repainting on and uses prior-bar point values in the non-repaint branch only when direction changes. Signal availability is therefore the direction-change bar, not the earlier pivot location. Label any future scores as **non-repaint-mode** results; do not generalize them to the default repaint-on display. This wrapper-level finding does not verify the imported ZigLib v1 internals, so the exact-source gate remains open.
