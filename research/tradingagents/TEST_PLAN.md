@@ -1,6 +1,6 @@
 # TradingAgents NIFTY 50 Feasibility Plan
 
-**Status:** Phase A static review completed; Phase B upstream executable tests pending.  
+**Status:** Phase A static review completed; Phase B workflow first attempt failed before upstream checkout due setup-python pip cache searching for a project dependency file in the research repo root. Workflow cache was removed; corrected run is pending.  
 **Scope:** Evaluate TradingAgents as a separate NIFTY 50 weekly-expiry direction-prediction benchmark. This is not a trading-strategy phase.
 
 ## Questions
