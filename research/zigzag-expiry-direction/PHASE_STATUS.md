@@ -69,3 +69,7 @@ The user supplied screenshots of the failed Actions run. The cache restore step 
 
 ## 2026-10-25 confirmed workflow run — authentication blocker
 Run [#40126339052](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40126339052) confirms the cache-key fix worked and the pipeline unit tests passed. All five Dhan datasets failed with HTTP 401 `DH-901` (access token invalid or expired), so no usable data was acquired and validation failed due to missing CSVs. Phase 2 remains BLOCKED until the GitHub Actions secret is updated with a valid Dhan token and a fresh run verifies acquisition. Prediction evaluation remains NOT STARTED.
+
+
+## 2026-10-25 — Automated Dhan authentication implemented
+Updated workflow commit `0705e9aeafec15949f55ebb983f1f77ec60b62ef` to generate a fresh token from the existing `DHAN_CLIENT_ID`, `DHAN_PIN`, and `DHAN_TOTP_SECRET` secrets, mask it, and validate `/v2/profile` before acquisition. Run [#40126973037](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40126973037): unit tests and token generation/profile validation passed. Historical data acquisition is still in progress; phase 2 remains IN PROGRESS, not complete. No prediction results exist yet.
