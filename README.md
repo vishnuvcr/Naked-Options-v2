@@ -1,5 +1,22 @@
 # ZigZag++ NIFTY 50 expiry-direction study — current status
 
+**Updated 2026-10-25:** Data acquisition, validation, diagnostic session audit, and artifact upload succeeded in [GitHub Actions run #40128335927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927). [Artifact #12574310370](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927/artifacts/12574310370) contains 1m/5m/15m/30m/60m/daily data and validation reports. The audit found 12/5/3/0/2/0 raw OHLC anomalies by timeframe (1m through daily); raw rows were preserved. All audited files had sorted timestamps and zero duplicates. **Prediction scoring remains blocked** until official NSE session dates, Dhan bar timestamp convention, exact ZigLib v1 causal signal timing, and historical weekly expiry mapping are verified. No accuracy result exists.
+
+- [Research plan and fixed phases](research/zigzag-expiry-direction/RESEARCH_PLAN.md)
+- [Phase status and evidence](research/zigzag-expiry-direction/PHASE_STATUS.md)
+- [Data acquisition and acceptance rules](research/zigzag-expiry-direction/DATA_ACQUISITION.md)
+- [Timeframe sensitivity protocol](research/zigzag-expiry-direction/TIMEFRAME_SENSITIVITY.md)
+- [Results ledger — no performance claim](research/zigzag-expiry-direction/RESULTS.md)
+- [Error and limitation log](research/zigzag-expiry-direction/ERROR_LOG.md)
+- [Interaction/decision log](research/zigzag-expiry-direction/INTERACTION_LOG.md)
+- [Manuscript draft](research/zigzag-expiry-direction/MANUSCRIPT.md)
+- [Latest successful data acquisition run](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927)
+- [Latest acquisition artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927/artifacts/12574310370)
+
+---
+
+# ZigZag++ NIFTY 50 expiry-direction study — current status
+
 **Status (2026-10-25): data acquisition succeeded, but session/provenance audit and exact indicator-source verification remain incomplete. No prediction accuracy has been measured.** The acquired Dhan artifact contains 1m/5m/15m/30m/60m/daily data. An additional raw 1m audit found 511,268 rows, including 2,636 weekend-dated rows, 47,612 outside the regular session window, and 12 OHLC-inconsistent rows. These must be handled in derived data without altering the raw file. Exact DevLucem/ZigLib v1 causality and historical expiry target mapping remain hard gates; do not treat any backtest metric as valid before they pass.
 
 - [Research plan and fixed phases](research/zigzag-expiry-direction/RESEARCH_PLAN.md)
