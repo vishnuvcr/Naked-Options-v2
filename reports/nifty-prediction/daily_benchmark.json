@@ -19,7 +19,7 @@
       "source": "Yahoo Finance chart data via yfinance",
       "source_url": "https://finance.yahoo.com/quote/%5ENSEI/history/",
       "retrieved_at_utc": "2026-10-24T22:44:37.341246+00:00",
-      "reused_cache": false,
+      "reused_cache": true,
       "rows": 4686,
       "first_date": "2007-09-17",
       "last_date": "2026-10-23",
@@ -27,7 +27,8 @@
       "limitations": [
         "Free third-party source, not exchange-certified; validate against official index data before high-confidence conclusions.",
         "Daily bars only; does not resolve intraday or expiry-specific questions."
-      ]
+      ],
+      "checked_at_utc": "2026-10-24T23:23:43.442506+00:00"
     }
   },
   "feature_columns": [

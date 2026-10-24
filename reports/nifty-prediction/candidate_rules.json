@@ -1,0 +1,100 @@
+{
+  "status": "COMPUTED",
+  "source": "data/cache/nifty-prediction/nifty50_daily.csv",
+  "first_test_date": "2022-01-21",
+  "last_test_date": "2026-10-22",
+  "n": 1172,
+  "split_rule": "chronological 75/25; no parameter tuning",
+  "rules": [
+    {
+      "rule": "previous_session_direction_baseline",
+      "n": 1172,
+      "accuracy": 0.5426621160409556,
+      "balanced_accuracy": 0.5418282176730237,
+      "gross_long_short_mean_daily_return": 0.0005977189723450692,
+      "gross_long_short_compounded_return": 0.9278740353668979,
+      "positive_gross_days_pct": 0.5418088737201365,
+      "mean_absolute_daily_index_return": 0.006327126300431951,
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+    },
+    {
+      "rule": "3_session_momentum",
+      "n": 1172,
+      "accuracy": 0.5315699658703071,
+      "balanced_accuracy": 0.5302417649101003,
+      "gross_long_short_mean_daily_return": 0.00014521522387506554,
+      "gross_long_short_compounded_return": 0.13427419614716718,
+      "positive_gross_days_pct": 0.5307167235494881,
+      "mean_absolute_daily_index_return": 0.006327126300431951,
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+    },
+    {
+      "rule": "5_session_momentum",
+      "n": 1172,
+      "accuracy": 0.5136518771331058,
+      "balanced_accuracy": 0.5120357323110765,
+      "gross_long_short_mean_daily_return": 8.612320070115597e-05,
+      "gross_long_short_compounded_return": 0.058431735117715045,
+      "positive_gross_days_pct": 0.5127986348122867,
+      "mean_absolute_daily_index_return": 0.006327126300431951,
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+    },
+    {
+      "rule": "1_session_mean_reversion",
+      "n": 1172,
+      "accuracy": 0.45819112627986347,
+      "balanced_accuracy": 0.4590630479241243,
+      "gross_long_short_mean_daily_return": -0.0005713211603793619,
+      "gross_long_short_compounded_return": -0.5101947875101271,
+      "positive_gross_days_pct": 0.45819112627986347,
+      "mean_absolute_daily_index_return": 0.006327126300431951,
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+    },
+    {
+      "rule": "3_session_mean_reversion",
+      "n": 1172,
+      "accuracy": 0.4684300341296928,
+      "balanced_accuracy": 0.46975823508989967,
+      "gross_long_short_mean_daily_return": -0.00014521522387506554,
+      "gross_long_short_compounded_return": -0.19286416837478415,
+      "positive_gross_days_pct": 0.4684300341296928,
+      "mean_absolute_daily_index_return": 0.006327126300431951,
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+    },
+    {
+      "rule": "20_session_trend_filter",
+      "n": 1172,
+      "accuracy": 0.5409556313993175,
+      "balanced_accuracy": 0.5383681816723118,
+      "gross_long_short_mean_daily_return": 0.00021236191284338435,
+      "gross_long_short_compounded_return": 0.2272049061266228,
+      "positive_gross_days_pct": 0.5401023890784983,
+      "mean_absolute_daily_index_return": 0.006327126300431951,
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+    },
+    {
+      "rule": "volatility_conditioned_momentum_reversal",
+      "n": 1172,
+      "accuracy": 0.5110921501706485,
+      "balanced_accuracy": 0.5100183504438824,
+      "gross_long_short_mean_daily_return": -0.00018636515745219705,
+      "gross_long_short_compounded_return": -0.23100812663906078,
+      "positive_gross_days_pct": 0.5102389078498294,
+      "mean_absolute_daily_index_return": 0.006327126300431951,
+      "costs_included": false,
+      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+    }
+  ],
+  "limitations": [
+    "Daily third-party index data, not exchange-certified.",
+    "Rules are predeclared simple diagnostics, not optimized strategies.",
+    "Gross long/short index proxy ignores futures/options basis, leverage, turnover, brokerage, taxes, slippage, and execution.",
+    "The volatility-conditioned rule uses an expanding 70th-percentile threshold and is exploratory; its result is not independent confirmation."
+  ]
+}

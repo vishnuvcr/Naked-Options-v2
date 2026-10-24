@@ -1,13 +1,13 @@
 {
   "status": "AUDIT_COMPLETED",
-  "generated_at_utc": "2026-10-24T22:44:38.071388+00:00",
+  "generated_at_utc": "2026-10-24T23:23:44.195068+00:00",
   "primary_source_manifest": {
     "symbol": "^NSEI",
     "instrument": "NIFTY 50 spot index (Yahoo Finance symbol mapping)",
     "source": "Yahoo Finance chart data via yfinance",
     "source_url": "https://finance.yahoo.com/quote/%5ENSEI/history/",
     "retrieved_at_utc": "2026-10-24T22:44:37.341246+00:00",
-    "reused_cache": false,
+    "reused_cache": true,
     "rows": 4686,
     "first_date": "2007-09-17",
     "last_date": "2026-10-23",
@@ -15,7 +15,8 @@
     "limitations": [
       "Free third-party source, not exchange-certified; validate against official index data before high-confidence conclusions.",
       "Daily bars only; does not resolve intraday or expiry-specific questions."
-    ]
+    ],
+    "checked_at_utc": "2026-10-24T23:23:43.442506+00:00"
   },
   "secondary_source": "aswinv90/indian-market-historical-data daily NIFTY 50 parquet",
   "secondary_source_url": "https://raw.githubusercontent.com/aswinv90/indian-market-historical-data/main/data/INDICES/NIFTY_50.parquet",
