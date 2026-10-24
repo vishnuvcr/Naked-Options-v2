@@ -39,7 +39,7 @@ Reviewed the target-construction path, expiry-calendar selection, feature timing
 
 ## Execution evidence and limitations
 
-A local clone/test command was attempted, but the environment could not resolve `github.com`. The GitHub workflow run listing did not confirm a run for the relevant commits. Therefore, **no claim is made that pytest passes**. The source files have been committed, but they must be executed in GitHub Actions or another connected environment before the phase can advance.
+A local clone/test command was attempted, but the environment could not resolve `github.com`. I then triggered the repository's push workflow by committing a CI trigger to the test file (commit `48b98fd8bf6c109dc3700f877ee6aa1f68a63901`). GitHub Actions created run [#14](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40104096953), but the latest observed status is `pending` and no job records are available yet. Therefore, **no claim is made that pytest passes**. Continue to inspect this run until a terminal conclusion is available; source/data phases remain blocked meanwhile.
 
 The source/data gates also remain unresolved:
 - official expiry endpoint coverage and provenance across every selected expiry;
