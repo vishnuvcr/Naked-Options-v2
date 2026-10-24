@@ -38,3 +38,7 @@ Following the user instruction to test various timeframes, the protocol now pre-
 
 ## Data acquisition implementation status
 A Dhan v2 acquisition workflow has been added for NIFTY 50 index ID 13, requesting 1m, 5m, 15m and 60m bars (plus daily bars) and deriving 30m bars from six contiguous 5m bars. Validation checks timestamp order/duplicates, timezone awareness, OHLC consistency, and records SHA-256 hashes. Dhan documents minute bars for the last five years and a maximum 90-day request window; this constrains the common intraday sample. The acquisition workflow's success and actual dataset are not yet verified, and this is not a prediction result.
+
+
+## Repaint-mode limitation
+The publicly accessible wrapper mirror sets repainting on by default and has a separate non-repaint branch that emits drawings only when direction changes, using prior-bar point values. The causal multi-timeframe study therefore specifies non-repaint mode and uses the time the direction change becomes available, not the historical pivot location. This setting differs from the wrapper default and any future performance result must be labeled accordingly. The mirror does not expose the imported ZigLib v1 implementation, so it does not remove the source-verification limitation.
