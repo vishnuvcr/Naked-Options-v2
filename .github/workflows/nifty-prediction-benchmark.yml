@@ -13,7 +13,9 @@ on:
       - research/tradingagents-feasibility-developer
       - research/nifty-prediction-developer
     paths:
-      - "research/nifty-prediction/**"
+      - "research/nifty-prediction/acquire_daily_data.py"
+      - "research/nifty-prediction/evaluate_daily_models.py"
+      - "research/nifty-prediction/audit_source_parity.py"
       - "tests/test_nifty_prediction_benchmark.py"
       - ".github/workflows/nifty-prediction-benchmark.yml"
 
