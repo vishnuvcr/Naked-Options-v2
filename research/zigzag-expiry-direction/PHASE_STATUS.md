@@ -61,3 +61,7 @@ The accessible public wrapper mirror shows `repaint=true` as the default and a s
 
 ## 2026-10-25 follow-up — unit tests added
 Added `tests/test_zigzag_data_pipeline.py` to test epoch-to-IST conversion, OHLC response parsing, mismatched array rejection, invalid OHLC detection, 30m resampling, and exclusion of incomplete bars. Updated the timeframe workflow to run these tests before attempting data acquisition. This is test coverage added, not a passing CI result; the run has not been confirmed. Data artifact, exact ZigLib parity, expiry mapping and prediction scoring remain open.
+
+
+## 2026-10-25 cache-key failure and correction
+The user supplied screenshots of the failed Actions run. The cache restore step failed with a `Key Validation Error` for a key containing the comma-separated interval list. The validation step then reported all required CSVs missing and could not derive 30-minute bars. Updated the cache key to omit the interval-list field in commit `907e05fc8de0363aecf9fa8e7790c9b63b683b9f`. The correction is committed, but the rerun has not yet been verified. Phase 2 remains BLOCKED; no prediction results exist.
