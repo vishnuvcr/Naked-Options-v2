@@ -67,22 +67,10 @@ jobs:
         run: |
           if [ -n "${DHAN_ACCESS_TOKEN:-}" ]; then
             export DHAN_ACCESS_TOKEN
-            python - <<'PY'
-          import json, os, urllib.request
-          token = os.environ["DHAN_ACCESS_TOKEN"].strip()
-          req = urllib.request.Request("https://api.dhan.co/v2/profile", headers={"access-token": token})
-          try:
-              with urllib.request.urlopen(req, timeout=30) as response:
-                  profile = json.loads(response.read().decode("utf-8"))
-          except Exception as exc:
-              raise SystemExit("Provided DHAN_ACCESS_TOKEN failed profile validation: " + type(exc).__name__ + ".") from None
-          if not isinstance(profile, dict) or not profile:
-              raise SystemExit("Dhan profile response was empty; refusing to continue.")
-          print("::add-mask::" + token)
-          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as f:
-              f.write("DHAN_ACCESS_TOKEN=" + token + "\\n")
-          print("Provided Dhan access token validated successfully.")
-          PY
+            python -c 'import json,os,urllib.request; t=os.environ["DHAN_ACCESS_TOKEN"].strip(); r=urllib.request.Request("https://api.dhan.co/v2/profile",headers={"access-token":t}); p=json.loads(urllib.request.urlopen(r,timeout=30).read().decode()); assert isinstance(p,dict) and p, "empty Dhan profile"; print("::add-mask::"+t); open(os.environ["GITHUB_ENV"],"a").write("DHAN_ACCESS_TOKEN="+t+"\\n"); print("Provided Dhan access token validated successfully.")'
+            exit 0
+          fi
+          python - <<'PY'
             exit 0
           fi
           python - <<'PY'
