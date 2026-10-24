@@ -63,7 +63,7 @@ class DataValidationTests(unittest.TestCase):
             self.assertEqual(derived[0]["low"],99)
             self.assertEqual(derived[0]["volume"],60)
             self.assertEqual(dropped,[])
-            self.assertTrue(Path(info["path"]).exists())
+            self.assertTrue(Path(info).exists())
 
     def test_incomplete_30m_bucket_is_excluded(self):
         rows=[]
