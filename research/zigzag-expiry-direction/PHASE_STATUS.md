@@ -182,3 +182,9 @@ No TradingAgents forecast accuracy result has been produced. See [test plan](../
 | E. Formal expiry-label evaluation | BLOCKED | Main study calendar, Dhan timestamp convention, exact ZigLib causal timing and historical expiry mapping remain unresolved. |
 
 No TradingAgents prediction accuracy result has been produced. User explicitly directed “No tester”; no independent tester gate is used.
+
+
+### TradingAgents benchmark — Phase C update (2026-10-25)
+
+The live Yahoo `^NSEI` shape probe passed in [run #40130052739](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40130052739): 21 daily rows and 375 five-minute rows, timezone-aware indexes, OHLC present, and no missing close in the sample. This is only a short-window availability check. Historical 10:00 IST cutoff validity, session calendar and point-in-time ancillary data remain unverified. Decision remains conditional candidate; no prediction accuracy score is available.
+
