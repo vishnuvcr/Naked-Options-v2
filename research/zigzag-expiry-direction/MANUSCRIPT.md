@@ -34,3 +34,7 @@ After data and implementation gates pass: conduct the fixed holdout evaluation, 
 
 ## Multi-timeframe sensitivity amendment
 Following the user instruction to test various timeframes, the protocol now pre-registers 5-minute, 15-minute, 30-minute, 60-minute and daily variants; 1-minute is conditional on data availability and quality. The primary metric remains out-of-sample balanced accuracy, with coverage and baselines reported for every timeframe. Since multiple variants are compared, any formal tests must account for multiplicity and use comparable expiry intervals. The exact ZigLib implementation, signal availability, intraday price provenance and historical expiry schedule are still unresolved; therefore no empirical result or winner is reported.
+
+
+## Data acquisition implementation status
+A Dhan v2 acquisition workflow has been added for NIFTY 50 index ID 13, requesting 1m, 5m, 15m and 60m bars (plus daily bars) and deriving 30m bars from six contiguous 5m bars. Validation checks timestamp order/duplicates, timezone awareness, OHLC consistency, and records SHA-256 hashes. Dhan documents minute bars for the last five years and a maximum 90-day request window; this constrains the common intraday sample. The acquisition workflow's success and actual dataset are not yet verified, and this is not a prediction result.
