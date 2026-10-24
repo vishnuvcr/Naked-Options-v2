@@ -42,3 +42,21 @@ A Dhan v2 acquisition workflow has been added for NIFTY 50 index ID 13, requesti
 
 ## Repaint-mode limitation
 The publicly accessible wrapper mirror sets repainting on by default and has a separate non-repaint branch that emits drawings only when direction changes, using prior-bar point values. The causal multi-timeframe study therefore specifies non-repaint mode and uses the time the direction change becomes available, not the historical pivot location. This setting differs from the wrapper default and any future performance result must be labeled accordingly. The mirror does not expose the imported ZigLib v1 implementation, so it does not remove the source-verification limitation.
+
+## Final study outcome and evidence gate
+
+### Results
+No eligible forecast observations were scored. The five-minute public archive contains 92,876 rows, with sorted unique timestamps and no invalid OHLC values in the detailed audit. There are 1,244 distinct dates; 1,236 dates contain 75 bars from 09:15 through 15:25. Eight dates have nonstandard row counts or times, requiring official session classification. The combined weekend/out-of-clock diagnostic flags 315 rows, including special evening sessions. The Yahoo fallback has no timestamp overlap with the archive, so source price parity remains untested.
+
+### Interpretation
+The key implementation gate failed: the accessible documentation describes the imported ZigLib API but does not establish the exact algorithm or the time at which a pivot becomes knowable. The wrapper source mirror is not the imported library source. A generic ZigZag reconstruction would not be source-faithful and could misdate signals. Consequently, no forecast score is reported. This outcome indicates insufficient evidence to test the specified indicator rigorously in this run; it does not demonstrate that the indicator lacks predictive power.
+
+### Conclusion
+**No-go for a predictive-accuracy claim under the preregistered protocol.** No timeframe is selected as a winner. No strategy is proposed. The protocol can be resumed when exact ZigLib implementation/confirmation timestamps, official session and expiry mapping, and independent overlapping spot prices are available.
+
+### Reproducibility and supplementary materials
+- Data acquisition/audit workflow: [run #40132605202](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40132605202)
+- Diagnostic audit implementation: research/zigzag-expiry-direction/audit_public_5m.py
+- Source and data limitations: ERROR_LOG.md
+- Preregistered protocol: RESEARCH_PLAN.md
+- Dataset source: [public five-year NIFTY 5-minute release](https://github.com/voletiramu/nse-fno-1min-data/releases/tag/indices-v1.0.0)
