@@ -34,6 +34,7 @@ on:
       - "research/zigzag-expiry-direction/audit_sessions.py"
       - "research/tradingagents/acquire_public_intraday_archive.py"
       - "research/zigzag-expiry-direction/audit_public_5m.py"
+      - "research/zigzag-expiry-direction/audit_5m_source_parity.py"
       - "tests/test_zigzag_data_pipeline.py"
       - ".github/workflows/zigzag-expiry-timeframes.yml"
 
@@ -162,6 +163,9 @@ jobs:
       - name: Acquire independent public five-year NIFTY 5-minute archive
         if: always() && steps.acquire.outcome == 'success'
         run: python research/tradingagents/acquire_public_intraday_archive.py
+      - name: Audit exact-timestamp Dhan vs public five-minute price parity
+        if: always() && steps.acquire.outcome == 'success'
+        run: python research/zigzag-expiry-direction/audit_5m_source_parity.py
       - name: Validate data and derive 30-minute bars
         if: always()
         run: python research/zigzag-expiry-direction/prepare_timeframes.py --required 5,15,60,daily
@@ -183,5 +187,6 @@ jobs:
             reports/zigzag_session_audit.json
             reports/public_intraday_sources.json
             reports/public_5m_diagnostic_audit.json
+            reports/zigzag_cross_source_audit.json
           if-no-files-found: warn
           retention-days: 30
