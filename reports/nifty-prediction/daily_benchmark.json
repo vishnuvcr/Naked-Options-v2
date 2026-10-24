@@ -1,0 +1,273 @@
+{
+  "study": "NIFTY 50 next-session direction; daily OHLC baseline benchmark",
+  "status": "EMPIRICAL_RESULTS_COMPUTED",
+  "target": "sign(next session close / current close - 1); zero return classified DOWN for binary baseline, exact ties separately counted below",
+  "primary_metric": "balanced_accuracy",
+  "evaluation": "chronological expanding walk-forward; model refit every N test rows; each prediction uses only data through current close",
+  "source_manifest": {
+    "input_path": "/home/runner/work/Naked-Options-v2/Naked-Options-v2/data/cache/nifty-prediction/nifty50_daily.csv",
+    "sha256": "8d73f2b98d2109a5ccf6bfc6e85927de9f5c59ced889c188f6aa59a340079ab0",
+    "rows": 4686,
+    "first_date": "2007-09-17",
+    "last_date": "2026-10-23",
+    "invalid_ohlc_rows": 0,
+    "duplicate_dates_dropped": 0,
+    "source_note": "Source details are copied from the adjacent acquisition manifest when present; third-party data is not exchange-certified.",
+    "source_manifest": {
+      "symbol": "^NSEI",
+      "instrument": "NIFTY 50 spot index (Yahoo Finance symbol mapping)",
+      "source": "Yahoo Finance chart data via yfinance",
+      "source_url": "https://finance.yahoo.com/quote/%5ENSEI/history/",
+      "retrieved_at_utc": "2026-10-24T22:44:37.341246+00:00",
+      "reused_cache": false,
+      "rows": 4686,
+      "first_date": "2007-09-17",
+      "last_date": "2026-10-23",
+      "sha256": "8d73f2b98d2109a5ccf6bfc6e85927de9f5c59ced889c188f6aa59a340079ab0",
+      "limitations": [
+        "Free third-party source, not exchange-certified; validate against official index data before high-confidence conclusions.",
+        "Daily bars only; does not resolve intraday or expiry-specific questions."
+      ]
+    }
+  },
+  "feature_columns": [
+    "ret_1",
+    "ret_2",
+    "ret_3",
+    "ret_5",
+    "ret_10",
+    "ret_20",
+    "ret_60",
+    "vol_5",
+    "ma_gap_5",
+    "vol_10",
+    "ma_gap_10",
+    "vol_20",
+    "ma_gap_20",
+    "vol_60",
+    "ma_gap_60",
+    "range_pct",
+    "open_gap",
+    "close_position"
+  ],
+  "all_rows": 4625,
+  "train_rows": 3468,
+  "test_rows": 1157,
+  "test_first_date": "2022-02-14",
+  "test_last_date": "2026-10-22",
+  "test_up_rate": 0.5220397579948142,
+  "test_tie_count": 1,
+  "models": [
+    {
+      "model": "majority_class_baseline",
+      "n": 1157,
+      "accuracy": 0.5220397579948142,
+      "balanced_accuracy": 0.5,
+      "confusion_matrix_labels_down_up": [
+        [
+          0,
+          553
+        ],
+        [
+          0,
+          604
+        ]
+      ],
+      "precision_down_up": [
+        0.0,
+        0.5220397579948142
+      ],
+      "recall_down_up": [
+        0.0,
+        1.0
+      ],
+      "f1_down_up": [
+        0.0,
+        0.6859738784781374
+      ],
+      "balanced_accuracy_95pct_ci": {
+        "lower": 0.5,
+        "upper": 0.5,
+        "method": "circular block bootstrap, block=10, reps=1500"
+      }
+    },
+    {
+      "model": "previous_session_direction",
+      "n": 1157,
+      "accuracy": 0.5419187554019015,
+      "balanced_accuracy": 0.5410269690909308,
+      "confusion_matrix_labels_down_up": [
+        [
+          288,
+          265
+        ],
+        [
+          265,
+          339
+        ]
+      ],
+      "precision_down_up": [
+        0.5207956600361664,
+        0.5612582781456954
+      ],
+      "recall_down_up": [
+        0.5207956600361664,
+        0.5612582781456954
+      ],
+      "f1_down_up": [
+        0.5207956600361664,
+        0.5612582781456954
+      ],
+      "balanced_accuracy_95pct_ci": {
+        "lower": 0.512966536505608,
+        "upper": 0.5680851541478394,
+        "method": "circular block bootstrap, block=10, reps=1500"
+      }
+    },
+    {
+      "model": "zero_return_forecast",
+      "n": 1157,
+      "accuracy": 0.47796024200518583,
+      "balanced_accuracy": 0.5,
+      "confusion_matrix_labels_down_up": [
+        [
+          553,
+          0
+        ],
+        [
+          604,
+          0
+        ]
+      ],
+      "precision_down_up": [
+        0.47796024200518583,
+        0.0
+      ],
+      "recall_down_up": [
+        1.0,
+        0.0
+      ],
+      "f1_down_up": [
+        0.6467836257309941,
+        0.0
+      ],
+      "balanced_accuracy_95pct_ci": {
+        "lower": 0.5,
+        "upper": 0.5,
+        "method": "circular block bootstrap, block=10, reps=1500"
+      }
+    },
+    {
+      "model": "logistic_regression",
+      "n": 1157,
+      "accuracy": 0.5246326707000865,
+      "balanced_accuracy": 0.5253104678873813,
+      "confusion_matrix_labels_down_up": [
+        [
+          299,
+          254
+        ],
+        [
+          296,
+          308
+        ]
+      ],
+      "precision_down_up": [
+        0.5025210084033613,
+        0.5480427046263345
+      ],
+      "recall_down_up": [
+        0.5406871609403255,
+        0.5099337748344371
+      ],
+      "f1_down_up": [
+        0.5209059233449478,
+        0.5283018867924528
+      ],
+      "balanced_accuracy_95pct_ci": {
+        "lower": 0.49751587537653585,
+        "upper": 0.5534335031522316,
+        "method": "circular block bootstrap, block=10, reps=1500"
+      },
+      "log_loss": 0.692299106882798,
+      "brier_score": 0.24954932604171895
+    },
+    {
+      "model": "random_forest",
+      "n": 1157,
+      "accuracy": 0.5056179775280899,
+      "balanced_accuracy": 0.5044264876711017,
+      "confusion_matrix_labels_down_up": [
+        [
+          264,
+          289
+        ],
+        [
+          283,
+          321
+        ]
+      ],
+      "precision_down_up": [
+        0.4826325411334552,
+        0.5262295081967213
+      ],
+      "recall_down_up": [
+        0.47739602169981915,
+        0.5314569536423841
+      ],
+      "f1_down_up": [
+        0.48,
+        0.528830313014827
+      ],
+      "balanced_accuracy_95pct_ci": {
+        "lower": 0.4767081784481255,
+        "upper": 0.5303196812879336,
+        "method": "circular block bootstrap, block=10, reps=1500"
+      },
+      "log_loss": 0.6970501190996035,
+      "brier_score": 0.25182112842541693
+    },
+    {
+      "model": "hist_gradient_boosting",
+      "n": 1157,
+      "accuracy": 0.5315471045808124,
+      "balanced_accuracy": 0.528192100882603,
+      "confusion_matrix_labels_down_up": [
+        [
+          250,
+          303
+        ],
+        [
+          239,
+          365
+        ]
+      ],
+      "precision_down_up": [
+        0.5112474437627812,
+        0.5464071856287425
+      ],
+      "recall_down_up": [
+        0.45207956600361665,
+        0.6043046357615894
+      ],
+      "f1_down_up": [
+        0.4798464491362764,
+        0.5738993710691824
+      ],
+      "balanced_accuracy_95pct_ci": {
+        "lower": 0.5011982916050671,
+        "upper": 0.5558221535855907,
+        "method": "circular block bootstrap, block=10, reps=1500"
+      },
+      "log_loss": 0.7054879577062203,
+      "brier_score": 0.2554322924467178
+    }
+  ],
+  "limitations": [
+    "Daily Yahoo source is a free baseline and not exchange-certified.",
+    "No transaction costs or trading P&L are evaluated; this is prediction-only.",
+    "Regime and hyperparameter variants are not optimized on the holdout.",
+    "Bootstrap intervals are approximate and serial-dependence assumptions must be considered.",
+    "This benchmark does not establish tradable profitability or generalization to options."
+  ]
+}

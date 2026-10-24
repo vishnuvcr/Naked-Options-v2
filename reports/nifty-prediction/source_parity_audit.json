@@ -1,0 +1,69 @@
+{
+  "status": "AUDIT_COMPLETED",
+  "generated_at_utc": "2026-10-24T22:44:38.071388+00:00",
+  "primary_source_manifest": {
+    "symbol": "^NSEI",
+    "instrument": "NIFTY 50 spot index (Yahoo Finance symbol mapping)",
+    "source": "Yahoo Finance chart data via yfinance",
+    "source_url": "https://finance.yahoo.com/quote/%5ENSEI/history/",
+    "retrieved_at_utc": "2026-10-24T22:44:37.341246+00:00",
+    "reused_cache": false,
+    "rows": 4686,
+    "first_date": "2007-09-17",
+    "last_date": "2026-10-23",
+    "sha256": "8d73f2b98d2109a5ccf6bfc6e85927de9f5c59ced889c188f6aa59a340079ab0",
+    "limitations": [
+      "Free third-party source, not exchange-certified; validate against official index data before high-confidence conclusions.",
+      "Daily bars only; does not resolve intraday or expiry-specific questions."
+    ]
+  },
+  "secondary_source": "aswinv90/indian-market-historical-data daily NIFTY 50 parquet",
+  "secondary_source_url": "https://raw.githubusercontent.com/aswinv90/indian-market-historical-data/main/data/INDICES/NIFTY_50.parquet",
+  "secondary_parquet_sha256": "6da37a6ab6d8195ea78888d69831e2c9a1282a1aad2e7b68245c9c5521a15a69",
+  "primary_rows": 4686,
+  "primary_first_date": "2007-09-17",
+  "primary_last_date": "2026-10-23",
+  "secondary_rows": 4686,
+  "secondary_first_date": "2007-09-17",
+  "secondary_last_date": "2026-10-23",
+  "overlap_rows": 4686,
+  "fields": {
+    "Open": {
+      "mae_points": 0.0,
+      "median_abs_error_points": 0.0,
+      "p95_abs_error_points": 0.0,
+      "max_abs_error_points": 0.0,
+      "exact_within_0_05_points_pct": 100.0,
+      "within_1_point_pct": 100.0
+    },
+    "High": {
+      "mae_points": 0.0,
+      "median_abs_error_points": 0.0,
+      "p95_abs_error_points": 0.0,
+      "max_abs_error_points": 0.0,
+      "exact_within_0_05_points_pct": 100.0,
+      "within_1_point_pct": 100.0
+    },
+    "Low": {
+      "mae_points": 0.0,
+      "median_abs_error_points": 0.0,
+      "p95_abs_error_points": 0.0,
+      "max_abs_error_points": 0.0,
+      "exact_within_0_05_points_pct": 100.0,
+      "within_1_point_pct": 100.0
+    },
+    "Close": {
+      "mae_points": 0.0,
+      "median_abs_error_points": 0.0,
+      "p95_abs_error_points": 0.0,
+      "max_abs_error_points": 0.0,
+      "exact_within_0_05_points_pct": 100.0,
+      "within_1_point_pct": 100.0
+    }
+  },
+  "limitations": [
+    "Both sources are public third-party mirrors and neither is treated as exchange-certified.",
+    "Agreement is not proof of correctness because sources may share upstream dependencies.",
+    "Date labels are normalized to Indian calendar dates; source session conventions still need validation."
+  ]
+}
