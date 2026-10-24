@@ -51,3 +51,9 @@ Important: adding the workflow is not evidence that Dhan authentication succeede
 
 ## Wrapper timing finding — 2026-10-25
 The accessible public wrapper mirror shows `repaint=true` as the default and a separate non-repaint branch that only draws when `direction != direction[1]`, using prior-bar points (`z1[1]`, `z2[1]`). This is useful wrapper-level evidence, not authoritative proof of the imported ZigLib implementation. To keep a causal prediction study, primary timeframe evaluation is now specified for `repaint=false`; its signal availability must be the direction-change bar, never the earlier pivot timestamp. Results must be labeled non-repaint-mode results and not default-setting results. Exact library internals and the successful Dhan acquisition artifact remain unverified.
+
+
+## Latest execution check — 2026-10-25
+- Dhan acquisition and 30m preparation scripts plus an Actions workflow are committed.
+- A local clone/syntax-check attempt failed because this execution environment could not resolve github.com. Available GitHub tools did not provide direct workflow dispatch or a confirmed run artifact.
+- Therefore workflow execution and data acquisition are **UNVERIFIED**, not complete. Exact ZigLib source/causal parity is still blocked. No predictions have been scored.
