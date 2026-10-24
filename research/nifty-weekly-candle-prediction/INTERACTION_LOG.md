@@ -28,5 +28,5 @@ This log tracks visible research scope changes and decisions, not private hidden
 - User instructed: “Proceed. Run the workflow yourself.”
 - Triggered GitHub Actions run [#14](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40104096953). Dependency installation and unit tests completed; **13 tests passed**. The data/baseline stage then failed with KeyError f1 in the evolutionary search because archive wrapper records were carried forward as candidates.
 - Logged the defect as NWCP-E011. Corrected the evolutionary generation population to carry candidate dictionaries, adjusted mutation/crossover references, and added a multi-generation regression test.
-- Corrective push run [#18](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40109273486) was created; at last check it was pending behind an earlier run. The end-to-end pipeline is not yet verified.
-- No prediction accuracy or winning rule is accepted from this failed run. Data/label and predictive phases remain gated.
+- Corrective push run [#18](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40109273486) completed successfully. The workflow reports **14 tests passed**, **398 valid labels**, **398 features**, and decision status `OOS_GATE_NOT_PASSED_OR_INSUFFICIENT`.
+- Operational pipeline completion is not a scientific pass. No accuracy edge or winning rule is accepted; source provenance, timestamp semantics, expiry completeness, and OOS gate details still require audit.
