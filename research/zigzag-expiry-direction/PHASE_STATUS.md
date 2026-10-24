@@ -65,3 +65,7 @@ Added `tests/test_zigzag_data_pipeline.py` to test epoch-to-IST conversion, OHLC
 
 ## 2026-10-25 cache-key failure and correction
 The user supplied screenshots of the failed Actions run. The cache restore step failed with a `Key Validation Error` for a key containing the comma-separated interval list. The validation step then reported all required CSVs missing and could not derive 30-minute bars. Updated the cache key to omit the interval-list field in commit `907e05fc8de0363aecf9fa8e7790c9b63b683b9f`. The correction is committed, but the rerun has not yet been verified. Phase 2 remains BLOCKED; no prediction results exist.
+
+
+## 2026-10-25 confirmed workflow run — authentication blocker
+Run [#40126339052](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40126339052) confirms the cache-key fix worked and the pipeline unit tests passed. All five Dhan datasets failed with HTTP 401 `DH-901` (access token invalid or expired), so no usable data was acquired and validation failed due to missing CSVs. Phase 2 remains BLOCKED until the GitHub Actions secret is updated with a valid Dhan token and a fresh run verifies acquisition. Prediction evaluation remains NOT STARTED.
