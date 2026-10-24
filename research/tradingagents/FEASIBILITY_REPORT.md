@@ -87,3 +87,11 @@ A machine-readable forecast contract has been implemented with a deterministic v
 
 This is a blocking design constraint, not a prediction result. No forecast has been scored.
 
+
+
+## Latest CI and frozen-snapshot gate — 2026-10-25
+
+The latest completed run [#40130735394](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40130735394) passed every listed step: forecast-contract tests, upstream install, upstream pytest, Ruff, clean-install import and Yahoo probe. A second layer, `market_snapshot.py`, was added to reject future bars, non-monotonic timestamps, naive timestamps, instrument mismatch and inconsistent OHLC. Its CI run is pending.
+
+The snapshot validator does not yet certify source timestamps or official sessions, and is not wired to the TradingAgents graph. It must be paired with immutable data provenance and a market-only graph/tool configuration that prevents unfiltered vendor calls. No historical model outputs or accuracy scores exist.
+
