@@ -4,7 +4,7 @@ Updated: 2026-10-25
 
 | Phase | Status | Evidence / blocker |
 |---|---|---|
-| 1. Protocol/source audit | PARTIALLY COMPLETE — BLOCKED | Public TradingView pages establish that ZigLib returns direction and two chart points; generic ZigZag documentation confirms that plotted pivots may be backdated and the latest point may change. Exact ZigLib v1 source semantics and signal-availability time have not been verified. |
+| 1. Protocol/source audit | PARTIALLY COMPLETE — BLOCKED | TradingView ZigLib page states the function returns direction and two chart points (library page dated Oct 9, 2023); TradingView's generic Zigzag documentation explicitly warns that confirmed labels are drawn into the past and the latest solid line is not final. Exact ZigLib v1 source semantics and signal-availability time have not been verified. NSE official contract page confirms current Tuesday expiry with previous-session holiday shift, but historical circular mapping remains incomplete. |
 | 2. Data audit | BLOCKED | Existing NWCP data has unresolved source overlap, timestamp/provenance and expiry-calendar issues; it is not automatically admissible for this experiment. |
 | 3. Causal reconstruction | BLOCKED | Cannot safely substitute a generic ZigZag or guessed port for the exact imported library. |
 | 4. Evaluation | NOT STARTED | No eligible ZigZag predictions scored. |
