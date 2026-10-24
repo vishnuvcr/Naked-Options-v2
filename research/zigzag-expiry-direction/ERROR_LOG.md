@@ -285,3 +285,9 @@
 - **Evidence:** https://github.com/rohitbhure65/pine-scripts/blob/master/zigzag.pine mirrors the ZigZag++ [LD] wrapper and confirms Depth=12, Deviation=5, Backstep=2, `repaint=true` default, imported dependency `DevLucem/ZigLib/1`, use of prior-bar point references in the non-repaint branch, and direction-change alert frequency at bar close.
 - **Limitation:** The file imports the library but does not include the library internals. The public TradingView library page exposes the API and outputs, not enough source lines to reproduce the algorithm and confirmation timing.
 - **Decision:** Use the mirror only as wrapper evidence. Do not treat it as exact library source; no empirical scoring until causal behavior is source-verified or an export provides confirmed signal timestamps.
+
+## ZZD-020 — Available dataset does not close source/target validity gates
+- **Severity:** High; empirical claim remains blocked.
+- **Evidence:** At user direction, downloaded workflow artifact 12575253300 and verified that the archive contains 1m/5m/15m/30m-resampled/60m/daily data plus validation/session reports.
+- **Limitation:** Data presence does not establish exact ZigLib v1 signal timing, official session classification, contract-specific weekly expiry dates, or the semantics of the required 10:00 and expiry-close prices.
+- **Mitigation:** Continue using available data for descriptive diagnostics. Keep the preregistered primary score unreported until the required source and target evidence exists. Do not pass a generic ZigZag approximation off as ZigZag++ [LD].
