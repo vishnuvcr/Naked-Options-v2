@@ -642,3 +642,17 @@ The active developer branch now includes a TOTP-based Dhan token bootstrap befor
 - Dhan TOTP authentication is now validated by workflow [#39844476476](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39844476476).
 - Historical option acquisition remains incomplete: three bounded passes ended with 363/366 option requests recorded and transient Dhan read timeouts. The cache audit passed parsing checks, but prediction discovery correctly remained blocked.
 - A bounded retry mitigation (40-second timeout, four attempts, 2/4/8-second backoff) and regression assertion updates are committed on the developer branch. See [phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS.md) and [error log QE-NOB2-E010](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG.md). Do not treat cache parse success as research completion; wait for the acquisition rerun and data quality gates.
+
+
+## New isolated experiment — ZigZag++ NIFTY expiry direction (protocol only)
+A separate prediction-only study has been registered. It uses the supplied ZigZag++ [LD] settings (Depth 12, Deviation 5, Backstep 2) to predict UP/DOWN from the latest **confirmed and knowable** pivot. Options rules and profitability are explicitly out of scope. No predictive results have been established yet; this is currently DATA-LIMITED pending exact ZigLib timing, source-quality, and historical expiry-calendar verification.
+
+- **Developer branch:** [research/zigzag-expiry-direction-developer](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/zigzag-expiry-direction-developer)
+- [Research plan](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/zigzag-expiry-direction-developer/research/zigzag-expiry-direction/RESEARCH_PLAN.md)
+- [Research questions](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/zigzag-expiry-direction-developer/research/zigzag-expiry-direction/RESEARCH_QUESTIONS.md)
+- [Phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/zigzag-expiry-direction-developer/research/zigzag-expiry-direction/PHASE_STATUS.md)
+- [Error log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/zigzag-expiry-direction-developer/research/zigzag-expiry-direction/ERROR_LOG.md)
+- [Results (no scores yet)](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/zigzag-expiry-direction-developer/research/zigzag-expiry-direction/RESULTS.md)
+- [Protocol manuscript](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/zigzag-expiry-direction-developer/research/zigzag-expiry-direction/MANUSCRIPT.md)
+
+Source audit started: TradingView describes ZigLib as the library returning direction and two chart points; that description alone does not establish when a historical pivot became knowable. See [ZigLib source page](https://www.tradingview.com/script/NC3cgEcT-ZigLib/) and [ZigZag++ indicator page](https://www.tradingview.com/script/lj8djt1n-ZigZag/). No TradingView compilation or empirical score is claimed.
