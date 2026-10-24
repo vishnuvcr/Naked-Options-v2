@@ -197,3 +197,9 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - The mirror does not contain DevLucem/ZigLib/1 implementation. This is useful wrapper-level evidence but does not remove the causality gate.
 - Official historical daily index data portals were also confirmed as available from NSE/Nifty Indices, but daily OHLC cannot substitute for the required intraday 10:00 target observation.
 - No model score generated; no generic ZigZag substitution.
+
+## 2026-10-25 — User instructed “Proceed with available data”
+- Downloaded workflow artifact 12575253300 from the successful detailed audit run and confirmed it contains 1m/5m/15m/30m-resampled/60m/daily CSVs plus validation and diagnostic reports.
+- Decision: continue using these data for further non-inferential diagnostics, while retaining the preregistered source-faithful indicator and target definition.
+- No forecast metrics were manufactured. Exact imported library internals/causal timing and official session/expiry target mapping remain unresolved. Any generic ZigZag proxy would be a different, separately labeled exploratory study.
+- Only visible user instructions, observable actions, evidence and decisions are logged; hidden chain-of-thought is not stored.
