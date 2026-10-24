@@ -1,4 +1,4 @@
-# Execution trigger: rerun the validated timeframe acquisition pipeline on this commit.
+# Generate a fresh Dhan token from the configured client ID, PIN, and TOTP secret at run time.
 name: ZigZag expiry direction — acquire timeframe data
 
 on:
@@ -36,7 +36,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: zigzag-expiry-data-${{ github.ref }}
+  group: zigzag-dhan-data-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -55,9 +55,55 @@ jobs:
         with:
           path: data/cache/zigzag_expiry_direction
           key: zigzag-dhan-v1-${{ runner.os }}-${{ inputs.start_date || '2021-10-25' }}-${{ inputs.end_date || '2026-10-25' }}
+      - name: Generate and validate Dhan token
+        env:
+          DHAN_CLIENT_ID: ${{ secrets.DHAN_CLIENT_ID }}
+          DHAN_PIN: ${{ secrets.DHAN_PIN }}
+          DHAN_TOTP_SECRET: ${{ secrets.DHAN_TOTP_SECRET }}
+        run: |
+          python - <<'PY'
+          import base64, hashlib, hmac, json, os, struct, time, urllib.request
+          client = os.environ.get("DHAN_CLIENT_ID", "").strip()
+          pin = os.environ.get("DHAN_PIN", "").strip()
+          secret = "".join(os.environ.get("DHAN_TOTP_SECRET", "").split()).upper()
+          if not client or not pin or not secret:
+              raise SystemExit("Required Dhan authentication secrets are missing.")
+          try:
+              key = base64.b32decode(secret + "=" * ((8 - len(secret) % 8) % 8), casefold=True)
+              counter = int(time.time()) // 30
+              digest = hmac.new(key, struct.pack(">Q", counter), hashlib.sha1).digest()
+              offset = digest[-1] & 15
+              code = (struct.unpack(">I", digest[offset:offset+4])[0] & 0x7fffffff) % 1_000_000
+              totp = f"{code:06d}"
+          except Exception:
+              raise SystemExit("Could not generate TOTP; check DHAN_TOTP_SECRET format.") from None
+          url = "https://auth.dhan.co/app/generateAccessToken?dhanClientId=" + client + "&pin=" + pin + "&totp=" + totp
+          request = urllib.request.Request(url, data=b"", method="POST", headers={"Accept":"application/json"})
+          try:
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  payload = json.loads(response.read().decode("utf-8"))
+          except Exception as exc:
+              raise SystemExit("Dhan token generation failed: " + type(exc).__name__ + ". Credentials and response were not logged.") from None
+          token = payload.get("accessToken", "") if isinstance(payload, dict) else ""
+          if not token:
+              raise SystemExit("Dhan did not return a token. Response omitted for safety.")
+          print("::add-mask::" + token)
+          profile_req = urllib.request.Request("https://api.dhan.co/v2/profile", headers={"access-token": token})
+          try:
+              with urllib.request.urlopen(profile_req, timeout=30) as response:
+                  profile = json.loads(response.read().decode("utf-8"))
+          except Exception as exc:
+              raise SystemExit("New token failed profile validation: " + type(exc).__name__ + ".") from None
+          if str(profile.get("dhanClientId", "")) != client:
+              raise SystemExit("Token profile client ID mismatch; refusing to continue.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as f:
+              f.write("DHAN_ACCESS_TOKEN=" + token + "\n")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+              f.write("Dhan token generated and validated against /v2/profile. Token value is masked and not included in artifacts.\n")
+          print("Dhan authentication validated successfully.")
+          PY
       - name: Acquire missing or requested Dhan datasets
         env:
-          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
           START_DATE: ${{ inputs.start_date || '2021-10-25' }}
           END_DATE: ${{ inputs.end_date || '2026-10-25' }}
           INTERVALS: ${{ inputs.intervals || '1,5,15,60' }}
