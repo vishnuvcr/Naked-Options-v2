@@ -7,7 +7,11 @@ The initial daily next-session direction benchmark passed in [GitHub Actions run
 - [Research plan](research/nifty-prediction/RESEARCH_PLAN.md)
 - [Phase status](research/nifty-prediction/PHASE_STATUS.md)
 - [Living manuscript](research/nifty-prediction/MANUSCRIPT.md)
-- [Seven-repository integration ledger](research/nifty-prediction/REPOSITORY_INTEGRATION.md)\n- [Repository integration audit script](research/nifty-prediction/audit_repository_integrations.py)\n- [Automated integration audit workflow](.github/workflows/repository-integration-audit.yml)\n- [Vendored upstream repositories](vendor/research-repositories)
+- [Seven-repository integration ledger](research/nifty-prediction/REPOSITORY_INTEGRATION.md)\n- [Repository integration audit script](research/nifty-prediction/audit_repository_integrations.py)
+- [Optional chronological model experiments](research/nifty-prediction/evaluate_optional_models.py)
+- [Optional model experiment workflow](.github/workflows/nifty-optional-models.yml)
+- [Repository integration audit results](reports/nifty-prediction/repository_integration_audit.json)
+- [Optional model experiment results](reports/nifty-prediction/optional_model_experiments.json)\n- [Automated integration audit workflow](.github/workflows/repository-integration-audit.yml)\n- [Vendored upstream repositories](vendor/research-repositories)
 - [Literature review](docs/research-literature/nifty_prediction_literature_review.md)
 - [Daily data acquisition](research/nifty-prediction/acquire_daily_data.py)
 - [Baseline model benchmark](research/nifty-prediction/evaluate_daily_models.py)
@@ -49,7 +53,7 @@ No candidate has yet beaten the previous-session direction comparator. All gross
 
 ## Required repositories
 
-All seven requested repositories and their scope restrictions are documented in the [integration ledger](research/nifty-prediction/REPOSITORY_INTEGRATION.md): [Quantevolve](https://github.com/tarsyang/quantevolve), [TradingAgents](https://github.com/TauricResearch/TradingAgents), [AstraQuant](https://github.com/0xethanq/astra-quant-agent), [PySR](https://github.com/astroautomata/PySR), [arch](https://github.com/bashtage/arch), [tick](https://github.com/X-DataInitiative/tick), [MAPIE](https://github.com/scikit-learn-contrib/MAPIE). All seven submodule pointers are confirmed. The integration audit workflow checks out the pinned sources and records package/runtime availability. `arch` has an active GARCH volatility experiment; MAPIE, PySR, and tick still require dedicated empirical experiments. Quantevolve and TradingAgents are bounded research-orchestration references, while AstraQuant's crypto execution layer is explicitly excluded. See the integration ledger for exact status; checkout or dependency installation alone is not evidence of predictive value.
+All seven requested repositories and their scope restrictions are documented in the [integration ledger](research/nifty-prediction/REPOSITORY_INTEGRATION.md): [Quantevolve](https://github.com/tarsyang/quantevolve), [TradingAgents](https://github.com/TauricResearch/TradingAgents), [AstraQuant](https://github.com/0xethanq/astra-quant-agent), [PySR](https://github.com/astroautomata/PySR), [arch](https://github.com/bashtage/arch), [tick](https://github.com/X-DataInitiative/tick), [MAPIE](https://github.com/scikit-learn-contrib/MAPIE). All seven submodule pointers are confirmed. The integration audit workflow checked out all seven pinned sources, installed stable libraries, ran the audit, and persisted the report successfully in [run #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40143973082). A second automated workflow now attempts chronological MAPIE calibration and records PySR/tick compatibility outcomes. `arch` has an active GARCH volatility experiment; MAPIE, PySR, and tick still require dedicated empirical experiments. Quantevolve and TradingAgents are bounded research-orchestration references, while AstraQuant's crypto execution layer is explicitly excluded. See the integration ledger for exact status; checkout or dependency installation alone is not evidence of predictive value.
 
 ## Safeguards
 
