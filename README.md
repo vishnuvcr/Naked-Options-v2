@@ -754,3 +754,13 @@ The detailed audit workflow passed in [run #40132605202](https://github.com/vish
 
 ## Additional source investigation — 2026-10-25
 Located a public [ZigZag++ wrapper source mirror](https://github.com/rohitbhure65/pine-scripts/blob/master/zigzag.pine). It confirms the parameters and wrapper's repaint setting, but imports rather than includes the ZigLib implementation. It therefore does not resolve causal pivot timing. Official daily historical-index pages are also confirmed ([NSE reports](https://www.nseindia.com/all-reports), [Nifty Indices reports](https://www.niftyindices.com/reports)); daily bars alone do not provide the required 10:00 intraday target. Research remains no-go for scoring until source-faithful signal timing and market-data gates pass.
+
+## 2026-10-25 — Proceed with available data
+
+User authorized continued work using the available dataset. Downloaded audit artifact [#12575253300](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40132605202/artifacts/12575253300) and confirmed it contains 1m/5m/15m/30m-resampled/60m/daily CSVs and diagnostic reports. Data availability enables further diagnostics but does not validate exact ZigLib v1 causal timing or the official session/expiry target table. **No source-faithful prediction metrics are claimed.** The primary protocol is unchanged; a generic ZigZag proxy must not be presented as the TradingView indicator.
+
+- [Updated results ledger](research/zigzag-expiry-direction/RESULTS.md)
+- [Updated manuscript](research/zigzag-expiry-direction/MANUSCRIPT.md)
+- [Updated phase status](research/zigzag-expiry-direction/PHASE_STATUS.md)
+- [Updated error log](research/zigzag-expiry-direction/ERROR_LOG.md)
+- [Updated interaction log](research/zigzag-expiry-direction/INTERACTION_LOG.md)
