@@ -1,3 +1,20 @@
+# ZigZag++ NIFTY 50 expiry-direction study — current status
+
+**Status (2026-10-25): data acquisition succeeded, but session/provenance audit and exact indicator-source verification remain incomplete. No prediction accuracy has been measured.** The acquired Dhan artifact contains 1m/5m/15m/30m/60m/daily data. An additional raw 1m audit found 511,268 rows, including 2,636 weekend-dated rows, 47,612 outside the regular session window, and 12 OHLC-inconsistent rows. These must be handled in derived data without altering the raw file. Exact DevLucem/ZigLib v1 causality and historical expiry target mapping remain hard gates; do not treat any backtest metric as valid before they pass.
+
+- [Research plan and fixed phases](research/zigzag-expiry-direction/RESEARCH_PLAN.md)
+- [Phase status and evidence](research/zigzag-expiry-direction/PHASE_STATUS.md)
+- [Data acquisition and acceptance rules](research/zigzag-expiry-direction/DATA_ACQUISITION.md)
+- [Timeframe sensitivity protocol](research/zigzag-expiry-direction/TIMEFRAME_SENSITIVITY.md)
+- [Results ledger — no performance claim](research/zigzag-expiry-direction/RESULTS.md)
+- [Error and limitation log](research/zigzag-expiry-direction/ERROR_LOG.md)
+- [Interaction/decision log](research/zigzag-expiry-direction/INTERACTION_LOG.md)
+- [Manuscript draft](research/zigzag-expiry-direction/MANUSCRIPT.md)
+- [Successful data acquisition run](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127255063)
+- [Acquisition artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127255063/artifacts/12573423696)
+
+---
+
 # CURRENT RESEARCH TRACK — NWCP-1.0: NIFTY Weekly Candle Prediction
 
 **Status as of 2026-10-24:** Corrective GitHub Actions [run #18](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40109273486) completed: **14 tests passed**, 884,552 one-minute bars audited, 398 labels (224 UP / 174 DOWN), 28 features and 120 sealed test labels. The evolved rule reached 0.577 test balanced accuracy, but its reported Holm-adjusted p-value is 0.116; logistic regression reached 0.558 with a reported adjusted p-value of 0.0107. These are exploratory only: Dhan source overlap failed, expiry calendar counts require reconciliation, public-source provenance/timestamps are unverified, and an internal bootstrap p-value discrepancy must be fixed. Decision: **DATA-LIMITED / NO CONFIRMATORY CLAIM**. See [results](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/RESULTS.md), [manuscript](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/MANUSCRIPT.md), [phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/PHASE_STATUS.md), and [sanitized report artifact](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40109273486/artifacts/12566991817).
