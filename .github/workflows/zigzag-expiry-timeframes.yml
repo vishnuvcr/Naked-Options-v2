@@ -127,6 +127,7 @@ jobs:
           print("Dhan authentication validated successfully.")
           PY
       - name: Acquire missing or requested Dhan datasets
+        id: acquire
         env:
           START_DATE: ${{ inputs.start_date || '2021-10-25' }}
           END_DATE: ${{ inputs.end_date || '2026-10-25' }}
@@ -141,6 +142,9 @@ jobs:
             if [ "$REFRESH_DATA" = "true" ]; then ARGS+=(--refresh); fi
             python research/zigzag-expiry-direction/acquire_dhan_timeframes.py "${ARGS[@]}"
           fi
+      - name: Acquire independent public five-year NIFTY 5-minute archive
+        if: always() && steps.acquire.outcome == 'success'
+        run: python research/tradingagents/acquire_public_intraday_archive.py
       - name: Validate data and derive 30-minute bars
         if: always()
         run: python research/zigzag-expiry-direction/prepare_timeframes.py --required 5,15,60,daily
@@ -157,5 +161,6 @@ jobs:
             reports/zigzag_data_manifest.json
             reports/zigzag_timeframe_validation.json
             reports/zigzag_session_audit.json
+            reports/public_intraday_sources.json
           if-no-files-found: warn
           retention-days: 30
