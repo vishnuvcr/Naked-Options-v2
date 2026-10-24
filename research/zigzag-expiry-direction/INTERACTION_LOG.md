@@ -42,3 +42,9 @@ Added unit tests for Dhan response parsing, epoch timestamp conversion, invalid 
 - Inspected the supplied screenshots: cache restore step reports `Key Validation Error`; validation then reports missing 5m/15m/60m/daily CSVs and failed 30m derivation.
 - Removed the comma-separated interval list from the cache key in commit `907e05fc8de0363aecf9fa8e7790c9b63b683b9f` to address the observed key validation failure.
 - Updated error log, phase status, and results ledger. Rerun outcome still pending; no successful acquisition or predictions claimed.
+
+
+## 2026-10-25 — Retrieved failed workflow logs directly
+- Queried GitHub Actions run #40126339052 and inspected job logs. Confirmed the cache-key correction succeeded and pipeline unit tests passed.
+- Identified the actual blocking error: Dhan HTTP 401 `DH-901` across 1m/5m/15m/60m and daily requests; the token is invalid or expired. Validation then failed because no CSV datasets existed.
+- No data or predictions were produced. Next step requires updating the repository secret `DHAN_ACCESS_TOKEN` with a valid token; do not ask user to paste token into chat.
