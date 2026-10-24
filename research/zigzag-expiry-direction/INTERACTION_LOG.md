@@ -80,3 +80,7 @@ Added unit tests for Dhan response parsing, epoch timestamp conversion, invalid 
 - Inspected run [#40127961418](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127961418) logs after adding session diagnostics.
 - Found the 30m test incorrectly indexed the returned `Path` as if it were a dictionary. Corrected the assertion in commit `1b6845b3b0d81b333ede7be9071ecd6ebbff2d10`.
 - Since the unit-test gate failed, the run skipped Dhan authentication and acquisition. Do not interpret its missing-file reports as a new data-provider failure. Check the next workflow result.
+
+
+## 2026-10-25 — Corrected workflow path filters
+The workflow did not rerun on the test/audit changes because the push path filters omitted `tests/test_zigzag_data_pipeline.py` and `audit_sessions.py`. Added both paths to the workflow in commit `2f2719e99f7159a2121d0d745b111c07249d3bd2`. Next action: inspect the new ZigZag run, verify tests and artifact generation, then continue official session/expiry calendar research. NSE official public results surfaced: 2026 holidays page and F&O circulars for 2024 and 2025; these are evidence leads, not yet a complete historical calendar dataset.
