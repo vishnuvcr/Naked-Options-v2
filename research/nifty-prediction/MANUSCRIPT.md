@@ -64,7 +64,7 @@ A reproducible custom Node.js diagnostic was run against a public third-party CS
 
 The custom logistic diagnostic's Brier score was 0.2494 and log loss was 0.6919. A comparison chart is available at [preliminary_balanced_accuracy.svg](../../reports/nifty-prediction/preliminary_balanced_accuracy.svg), and the full diagnostic report is [here](../../reports/nifty-prediction/preliminary_historical_diagnostic.md). Its balanced accuracy was only about 0.18 percentage points above the previous-session-direction baseline; their approximate intervals overlap substantially. The majority baseline has higher raw accuracy due to the test-set class imbalance.
 
-**Evidence boundary:** These are preliminary historical results, not the production scikit-learn benchmark. The custom logistic implementation differs from scikit-learn, random forest and gradient boosting were not evaluated here, and the data ends in 2019. No robust predictive advantage is established. The main benchmark workflow and artifact still need independent execution verification.
+**Evidence boundary:** These are preliminary historical results, not the production scikit-learn benchmark. The custom logistic implementation differs from scikit-learn, random forest and gradient boosting were not evaluated here, and the data ends in 2019. No robust predictive advantage is established. The main benchmark workflow, source-parity audit, and their artifacts still need execution verification.
 
 ## 7. Inferences and discussion
 
@@ -108,6 +108,7 @@ A preliminary historical diagnostic has been completed, and it does not show a r
 - Plan: [RESEARCH_PLAN.md](RESEARCH_PLAN.md)
 - Phase status: [PHASE_STATUS.md](PHASE_STATUS.md)
 - Source acquisition: [acquire_daily_data.py](acquire_daily_data.py)
+- Cross-source audit: [audit_source_parity.py](audit_source_parity.py)
 - Evaluation: [evaluate_daily_models.py](evaluate_daily_models.py)
 - Unit tests: [test_nifty_prediction_benchmark.py](../../tests/test_nifty_prediction_benchmark.py)
 - Workflow: [nifty-prediction-benchmark.yml](../../.github/workflows/nifty-prediction-benchmark.yml)
