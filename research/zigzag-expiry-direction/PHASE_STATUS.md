@@ -137,3 +137,12 @@ Added `audit_sessions.py` and wired it into the data workflow. It produces `repo
 ## 2026-10-25 — Diagnostic workflow failure and self-correction
 
 The first workflow run after adding the session diagnostic, [#40127961418](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127961418), failed at the pre-acquisition unit-test gate. Log inspection showed a pre-existing test assertion expected a dictionary but `derive_30m` returns a `Path` for the output file. Corrected the assertion in commit `1b6845b3b0d81b333ede7be9071ecd6ebbff2d10`. Because tests failed before acquisition, that run's missing-file diagnostics are not a new market-data failure. Await a fresh run to verify tests, acquisition, and the new session report.
+
+
+## 2026-10-25 — Data pipeline and diagnostic audit verified
+- **CI run:** [#40128335927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927) succeeded, including tests, Dhan authentication, acquisition, OHLC validation, 30m derivation, audit, and artifact upload.
+- **Artifact:** [#12574310370](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927/artifacts/12574310370).
+- Audit counts: 1m 511,268 rows (12 raw OHLC findings; 2,636 weekend-dated; 40,829 outside broad 09:00–16:00 screen); 5m 92,795 (5 raw OHLC findings); 15m 30,985 (3); 30m 14,814 (0); 60m 8,663 (2); daily 1,240 (0). All files audited have sorted timestamps and no duplicate timestamps.
+- Raw anomalies remain in the source files; no silent row deletion. These counts are diagnostics, not a determination that all weekend/out-of-session rows are invalid.
+- **Phase 2 remains BLOCKED for scoring:** official NSE session-by-session reconciliation and Dhan bar timestamp semantics are not verified. Exact ZigLib v1 source/causal signal availability and historical expiry schedule are also unresolved.
+- **Phase 3:** BLOCKED. **Phase 4:** NOT STARTED. No accuracy results exist.
