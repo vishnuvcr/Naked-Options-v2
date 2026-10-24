@@ -250,3 +250,11 @@
 - **Details:** New validator checks timestamp and OHLC record integrity, but cannot prove source timestamps are bar-start vs bar-end, completeness of official trading sessions, immutability/revision history, or source accuracy.
 - **Mitigation:** Require source/query provenance, SHA-256 of frozen source files, independent overlap checks, official session membership, and a cutoff-specific materialized snapshot before graph invocation.
 
+
+
+## TA-006 — Dhan access token rejected; free-source fallback used
+- **Severity:** High for premium data acquisition; workaround succeeded.
+- **Evidence:** [Initial run #40131454946](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131454946) reported HTTP 401 during Dhan profile validation. The configured token was not printed or committed.
+- **Mitigation:** Added a public Yahoo Finance `^NSEI` fallback and robust token validation/fallback logic. Successful acquisition and validation: [run #40131619468](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131619468).
+- **Residual risk:** Yahoo's intraday retention is limited (1m ~7 days; 5m/15m ~60 days; 60m ~2 years). It does not replace the five-year intraday dataset required by the original study. Refresh the Dhan token/secrets to acquire the longer history. Yahoo daily timestamps are midnight labels and cannot be treated as close timestamps.
+
