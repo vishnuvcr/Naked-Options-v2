@@ -11,6 +11,7 @@ This is a clean, separate study. Historical scores, candidate fitness, model sel
 - [Research questions / hypotheses](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/RESEARCH_QUESTIONS.md)
 - [Phase status and exit gates](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/PHASE_STATUS.md)
 - [Error and defect log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/ERROR_LOG.md)
+- [Developer self-test report](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/TESTING_REPORT.md)
 - [Phase status and exit gates](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/PHASE_STATUS.md)
 - [Data and target-timing protocol](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/DATA_PROTOCOL.md)
 - [Detailed audit of the 13 supplied PDFs](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-phase-1-sources/research/nifty-weekly-candle-prediction/UPLOADED_PAPER_AUDIT.md)
