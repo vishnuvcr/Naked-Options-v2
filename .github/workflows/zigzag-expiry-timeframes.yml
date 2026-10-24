@@ -71,16 +71,10 @@ jobs:
             exit 0
           fi
           if [ -n "${DHAN_ACCESS_TOKEN:-}" ]; then
-            export DHAN_ACCESS_TOKEN
-            if python -c 'import json,os,sys,urllib.request; t=os.environ["DHAN_ACCESS_TOKEN"].strip(); r=urllib.request.Request("https://api.dhan.co/v2/profile",headers={"access-token":t});
-try:
- p=json.loads(urllib.request.urlopen(r,timeout=30).read().decode())
- if not isinstance(p,dict) or not p: raise ValueError()
- print("::add-mask::"+t)
- open(os.environ["GITHUB_ENV"],"a").write("DHAN_ACCESS_TOKEN="+t+"\\n")
- print("Provided Dhan access token validated successfully.")
-except Exception:
- sys.exit(1)' 2>/dev/null; then
+            if curl --silent --show-error --fail --max-time 30 -H "access-token: ${DHAN_ACCESS_TOKEN}" https://api.dhan.co/v2/profile -o /dev/null; then
+              echo "::add-mask::${DHAN_ACCESS_TOKEN}"
+              echo "DHAN_ACCESS_TOKEN=${DHAN_ACCESS_TOKEN}" >> "$GITHUB_ENV"
+              echo "Provided Dhan access token validated successfully."
               exit 0
             else
               echo "DATA_SOURCE=yahoo" >> "$GITHUB_ENV"
