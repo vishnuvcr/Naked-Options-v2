@@ -2,7 +2,7 @@
 
 Date: 24 October 2026  
 Review mode: developer self-test / code review  
-Status: **INCOMPLETE — automated tests not yet executed successfully**
+Status: **IN PROGRESS — unit tests passed in run #14; end-to-end run failed and is being corrected**
 
 ## Scope
 
@@ -51,3 +51,10 @@ The source/data gates also remain unresolved:
 ## Decision
 
 **Do not accept a predictive result yet.** The critical label-calendar failure mode is corrected in code, but Phase 2 stays blocked until the regression suite passes and the official expiry/source checks pass. If the official expiry feed is unavailable, the correct status is `DATA-LIMITED` / blocked labels—not silently accepting weekday-generated dates.
+
+## First GitHub Actions execution — run #14
+
+Run [#14](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40104096953) reached the automated unit-test step and reported **13 passed in 1.38 seconds**. The full data/baseline stage then failed in `_evolve_rule` with `KeyError: 'f1'`: the generation loop carried archive wrapper records into the next generation, although prediction expects a candidate dictionary.
+
+**Correction:** elite carry-forward now unwraps each record to its `candidate` object; mutation and crossover use those candidate dictionaries directly. Added a regression test that runs evolution across multiple generations. Defect logged as NWCP-E011. A new push-triggered workflow run is expected from the commits; end-to-end success is not yet established.
+
