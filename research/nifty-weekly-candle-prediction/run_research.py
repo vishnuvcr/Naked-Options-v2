@@ -452,6 +452,18 @@ def get_expiry_calendar(session_dates: set[date]) -> tuple[list[date], dict]:
     }
     return dates, audit
 
+def expiry_calendar_is_verified(expiry_audit: dict) -> bool:
+    """Fail closed unless every selected expiry has official NSE provenance."""
+    provenance = expiry_audit.get("provenance", {})
+    selected = int(expiry_audit.get("selected_expiry_count", 0))
+    return bool(
+        selected > 0
+        and int(expiry_audit.get("fallback_dates", selected)) == 0
+        and len(provenance) == selected
+        and all(source == "nse_expiry_api" for source in provenance.values())
+    )
+
+
 def make_target_rows(bars: pd.DataFrame, expiries: list[date], expiry_audit: dict) -> tuple[pd.DataFrame, dict]:
     if bars.empty:
         return pd.DataFrame(), {"status": "BLOCKED_NO_BARS"}
@@ -988,7 +1000,19 @@ def run(args):
     bars = bars.drop_duplicates("bar_start", keep="last").sort_values("bar_start").reset_index(drop=True)
     bars["session_date"] = bars.bar_start.dt.date
     expiries, expiry_audit = get_expiry_calendar(set(bars.session_date))
-    labels, label_audit = make_target_rows(bars, expiries, expiry_audit)
+    if expiry_calendar_is_verified(expiry_audit):
+        labels, label_audit = make_target_rows(bars, expiries, expiry_audit)
+        label_audit["expiry_calendar_gate"] = "PASS_OFFICIAL_NSE_ONLY"
+    else:
+        labels = pd.DataFrame()
+        label_audit = {
+            "status": "BLOCKED_UNVERIFIED_EXPIRY_CALENDAR",
+            "expiry_calendar_gate": "FAIL_CLOSED",
+            "reason": "At least one selected expiry lacks verified official NSE provenance; weekday-derived fallback dates cannot produce accepted labels.",
+            "official_expiry_count": int(expiry_audit.get("official_expiry_count", 0)),
+            "fallback_dates": int(expiry_audit.get("fallback_dates", 0)),
+            "selected_expiry_count": int(expiry_audit.get("selected_expiry_count", 0)),
+        }
     features = engineer_features(bars, labels) if len(labels) else pd.DataFrame()
     # Never upload raw source bars or per-week price labels into public artifacts.
     reports = {
