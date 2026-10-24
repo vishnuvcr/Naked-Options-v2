@@ -21,12 +21,13 @@ FILES = {
     "1m": ROOT / "nifty50_1m.csv",
     "5m_dhan": ROOT / "nifty50_5m_dhan.csv",
     "5m_public_archive": ROOT / "nifty50_5m_public_archive.csv",
+    "5m_yahoo_fallback": ROOT / "nifty50_5m_yahoo_fallback.csv",
     "15m": ROOT / "nifty50_15m.csv",
     "30m": ROOT / "nifty50_30m_resampled.csv",
     "60m": ROOT / "nifty50_60m.csv",
     "daily": ROOT / "nifty50_daily.csv",
 }
-OPTIONAL = {"1m", "5m_dhan", "5m_public_archive"}
+OPTIONAL = {"1m", "5m_dhan", "5m_public_archive", "5m_yahoo_fallback"}
 BROAD_START, BROAD_END = time(9, 0), time(16, 0)
 
 
@@ -99,6 +100,7 @@ def main():
     primary_5m = next((candidate for candidate in (
         ROOT / "nifty50_5m_public_archive.csv",
         ROOT / "nifty50_5m_dhan.csv",
+        ROOT / "nifty50_5m_yahoo_fallback.csv",
         ROOT / "nifty50_5m.csv",
     ) if candidate.exists()), ROOT / "nifty50_5m.csv")
     files["5m"] = primary_5m
