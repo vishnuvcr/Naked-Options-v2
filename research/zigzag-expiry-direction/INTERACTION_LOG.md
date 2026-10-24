@@ -142,3 +142,10 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Probe output: 21 daily rows (2026-09-23 to 2026-10-23) and 375 five-minute rows (2026-10-16 09:15 IST to 2026-10-23 15:25 IST), timezone-aware timestamps, OHLC columns present, no missing close in sample.
 - Interpreted strictly as current short-window availability. No claim of historical coverage or predictive performance. Formal expiry evaluation remains blocked pending historical/cutoff/point-in-time validation.
 
+
+
+## 2026-10-25 — Forecast contract implemented
+- Added `research/tradingagents/forecast_contract.py`, deterministic tests, and `FORECAST_CONTRACT.md`. Contract requires explicit cutoff and target times, UP/DOWN/ABSTAIN, model/prompt IDs, input-manifest SHA-256, and temporal validation.
+- Added local unit test execution to the compatibility workflow; latest CI result pending.
+- Source review found standard TradingAgents date-window market tools and Yahoo output timezone removal do not establish a 10:00 IST cutoff. Next design step is a frozen market-only adapter with unrestricted data retrieval disabled. No model forecast or score generated.
+
