@@ -170,3 +170,11 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Dataset sizes: daily 1,235 rows (2021-10-25–2026-10-23); 1m 2,611 (2026-10-14–2026-10-23); 5m 4,496 and 15m 1,500 (2026-07-29–2026-10-23); 60m 5,075 (2023-11-08–2026-10-23); derived 30m 719 rows.
 - Limitations recorded: not a five-year intraday archive; daily midnight timestamp is not close time; derived bar/session completeness not fully certified. No prediction scoring yet.
 
+
+
+## 2026-10-25 — Independent five-year 5-minute source acquired
+- Found public release `voletiramu/nse-fno-1min-data`, tag `indices-v1.0.0`; its notes describe five-year NIFTY spot 5-minute OHLC from Apr 2021 to Apr 2026.
+- Added `research/tradingagents/acquire_public_intraday_archive.py` and wired it into the acquisition workflow; the Yahoo 5m fallback is preserved separately while the public archive becomes the primary 5m file.
+- Successful acquisition/audit [run #40131891819](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131891819), artifact ID 12575426805. 92,876 normalized 5m rows (2021-04-01–2026-04-21), 14,849 derived 30m rows. Hashes recorded in workflow manifest/log.
+- Remaining gate: third-party provenance, official session coverage, missing-bar audit and exact bar timestamp convention; do not score forecasts yet.
+
