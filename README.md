@@ -730,3 +730,9 @@ Added a strict [forecast contract](research/tradingagents/FORECAST_CONTRACT.md),
 
 **Snapshot validator CI result:** [Run #40131047411](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131047411) completed successfully with the new snapshot tests. This validates the code against synthetic cases only; historical source/session certification and model integration remain blocked. No prediction score is available.
 
+
+
+### NIFTY data acquisition update (2026-10-25)
+
+Data acquisition completed via the free Yahoo Finance fallback after Dhan token validation returned HTTP 401. [Successful workflow run #40131619468](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40131619468) produced artifact `zigzag-nifty50-data-40131619468` (expires 2026-11-23): daily 1,235 rows (2021-10-25–2026-10-23), 1m 2,611 rows (2026-10-14–2026-10-23), 5m 4,496 rows and 15m 1,500 rows (both 2026-07-29–2026-10-23), 60m 5,075 rows (2023-11-08–2026-10-23), and 30m derived 719 rows. The intraday history is incomplete for a five-year study. Yahoo daily timestamps are midnight date labels, not certified close times; no formal prediction evaluation has been run. See the [TradingAgents feasibility report](research/tradingagents/FEASIBILITY_REPORT.md) and [test plan](research/tradingagents/TEST_PLAN.md).
+
