@@ -1,12 +1,12 @@
 # NIFTY 50 Next-Session Direction Prediction — Research Manuscript (Living Draft)
 
 **Updated:** 2026-10-25  
-**Status:** Initial benchmark complete; first rule screen computed from cached data, automated reproduction pending.  
+**Status:** Core benchmarks, candidate-rule screen, GARCH volatility comparison, and optional-model compatibility workflow completed. No strategy is validated.  
 **Scope:** Daily next-session NIFTY 50 spot direction. No live trading or options profitability is established.
 
 ## Abstract
 
-The baseline daily prediction workflow completed successfully in [GitHub Actions run #34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710). The third-party dataset has 4,686 daily rows from 2007-09-17 to 2026-10-23. The chronological holdout has 1,157 observations from 2022-02-14 to 2026-10-22. Previous-session direction achieved 54.19% accuracy and 54.10% balanced accuracy; logistic regression, random forest and histogram gradient boosting did not establish an improvement. A first screen of simple momentum, reversal, trend and volatility-conditioned rules also fails to identify a clearly superior candidate. Automated reproduction of this second experiment is pending in [workflow run #37](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40142722883). All gross return proxies are pre-cost diagnostics, not executable strategy returns.
+The baseline daily prediction workflow completed successfully in [GitHub Actions run #34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710). The third-party dataset has 4,686 daily rows from 2007-09-17 to 2026-10-23. The chronological holdout has 1,157 observations from 2022-02-14 to 2026-10-22. Previous-session direction achieved 54.19% accuracy and 54.10% balanced accuracy; logistic regression, random forest and histogram gradient boosting did not establish an improvement. A first screen of simple momentum, reversal, trend and volatility-conditioned rules also fails to identify a clearly superior candidate. The candidate-rule output is persisted in [candidate_rules.json](../../reports/nifty-prediction/candidate_rules.json); the gross proxy is not executable performance. All gross return proxies are pre-cost diagnostics, not executable strategy returns.
 
 ## 1. Research questions and objectives
 
@@ -39,7 +39,7 @@ The previous-session direction rule has a 95% block-bootstrap balanced-accuracy 
 
 ## 5. First simple-rule screen
 
-Cached repository data was used to calculate the following on the common 1,157-row test interval. The automated script/workflow reproduction is pending.
+The automated candidate workflow computed and persisted these results on the common 1,157-row test interval.
 
 | Rule | Accuracy | Balanced accuracy | Gross compounded sign proxy |
 |---|---:|---:|---:|
@@ -53,24 +53,24 @@ Cached repository data was used to calculate the following on the common 1,157-r
 
 Interpretation: neither momentum variant beats the previous-session direction baseline; reversal rules perform poorly; the trend filter ties raw accuracy but has lower balanced accuracy and lower gross sign-proxy performance. The volatility-conditioned rule does not help. The large gross proxy number for the baseline is not a trading result and cannot be used as evidence of profitability.
 
-## 6. Repository integration
+## 6. Volatility and optional-model experiments\n\nThe GARCH(1,1) forecast experiment used recursive daily variance updates with parameter refits every 20 sessions. QLIKE was -8.64595 for GARCH(1,1), -8.57379 for rolling 20-session variance, and -8.22293 for expanding unconditional variance (lower is better). This is a modest relative volatility-score improvement only; realized squared returns are noisy, and this result is not directional prediction skill. See [volatility forecast report](../../reports/nifty-prediction/volatility_forecast.json).\n\nA separate chronological 60/15/25 experiment on 4,626 valid feature rows scored logistic regression at 53.59% accuracy and 53.31% balanced accuracy over 1,157 test rows (2022-02-15 to 2026-10-23). The split differs slightly from the initial benchmark, so results should not be pooled. It does not establish a better model. MAPIE 1.6.0 conformal classification was skipped due to API mismatch; PySR 2.7.2 was importable but intentionally not fitted without a predeclared regression target; tick 0.8.0.2 imported only. See [optional-model report](../../reports/nifty-prediction/optional_model_experiments.json) and [workflow #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40144386537).\n\n## 7. Repository integration
 
 Roles and compatibility guardrails for all seven named repositories are in [REPOSITORY_INTEGRATION.md](REPOSITORY_INTEGRATION.md): Quantevolve, TradingAgents, AstraQuant, PySR, `arch`, `tick`, and MAPIE. README review is complete; not every repository has been installed or empirically executed. Next experiments are a separately scored GARCH-family volatility forecast using `arch`, and only then bounded attempts at symbolic regression, regularized time-dependent models and calibrated prediction sets if compatible.
 
-## 7. Strengths and limitations
+## 8. Strengths and limitations
 
 **Strengths:** reproducible baseline workflow; source hashes and parity audit; chronological evaluation; predeclared, interpretable rules; same test interval across comparators.
 
 **Limitations:** third-party data not exchange-certified; exact source parity is not independent validation; candidate results use one holdout and are now screening results rather than untouched confirmation; gross index proxies are not executable P&L; no fees/slippage/execution model yet; daily bars do not validate intraday or expiry-specific options predictions.
 
-## 8. Conclusion and next work
+## 9. Conclusion and next work
 
-The current evidence does not identify a better simple direction rule than previous-session direction. No strategy is recommended at this stage. First verify [workflow #37](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40142722883) and its candidate JSON output. Then test a single volatility forecast with `arch`, use suitable tools from the requested repositories only when compatibility and methodology are sound, and evaluate any surviving candidate on a fresh untouched forward period with realistic costs before concluding.
+The current evidence does not identify a better simple direction rule than previous-session direction. No strategy is recommended at this stage. The bounded experiment set is complete for the currently available daily data and compatible tools. The evidence does not support selecting a predictive model or trading strategy. The next scientifically valid extension is a new untouched forward period with official/exchange-grade data and a predeclared evaluation protocol; do not keep tuning against the already-screened holdout. Before any trading study, model Paytm Money/NSE-NFO brokerage, statutory charges, slippage, liquidity, instrument basis, turnover, sizing, and execution. No live trading is authorized or recommended.
 
 ## Reproducibility links
 
 - [Initial benchmark run #34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710)
-- [Candidate experiment workflow #37](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40142722883)
+- [Optional-model experiment workflow #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40144386537)\n- [Repository integration audit #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40143973082)
 - [Benchmark JSON](../../reports/nifty-prediction/daily_benchmark.json)
 - [Candidate rules JSON](../../reports/nifty-prediction/candidate_rules.json)
 - [Source parity audit](../../reports/nifty-prediction/source_parity_audit.json)
