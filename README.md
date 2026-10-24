@@ -1,6 +1,6 @@
 # CURRENT RESEARCH TRACK — NWCP-1.0: NIFTY Weekly Candle Prediction
 
-**Status as of 2026-10-24:** Research protocol frozen; literature/source audit and pipeline verification in progress. **No empirical predictive result is claimed yet.**
+**Status as of 2026-10-24:** Protocol and source-review documents committed. Code review found a critical risk where weekday-derived fallback expiry dates could create labels; the developer branch now fails closed unless every selected expiry has official NSE provenance. Regression tests were added but have **not yet been verified as passing** because a local test run could not reach GitHub and no successful Actions run was confirmed. **No empirical predictive result is claimed yet.**
 
 This is a clean, separate study. Historical scores, candidate fitness, model selections and conclusions from the archived NIFTY forecasting or option-buying tracks below are excluded from NWCP-1.0 evidence.
 
@@ -9,6 +9,8 @@ This is a clean, separate study. Historical scores, candidate fitness, model sel
 - **Active developer branch:** [research/nifty-weekly-candle-prediction-developer](https://github.com/vishnuvcr/Naked-Options-v2/tree/research/nifty-weekly-candle-prediction-developer)
 - [Research plan and fixed phases](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/RESEARCH_PLAN.md)
 - [Research questions / hypotheses](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/RESEARCH_QUESTIONS.md)
+- [Phase status and exit gates](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/PHASE_STATUS.md)
+- [Error and defect log](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/ERROR_LOG.md)
 - [Phase status and exit gates](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/PHASE_STATUS.md)
 - [Data and target-timing protocol](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-developer/research/nifty-weekly-candle-prediction/DATA_PROTOCOL.md)
 - [Detailed audit of the 13 supplied PDFs](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/nifty-weekly-candle-prediction-phase-1-sources/research/nifty-weekly-candle-prediction/UPLOADED_PAPER_AUDIT.md)
