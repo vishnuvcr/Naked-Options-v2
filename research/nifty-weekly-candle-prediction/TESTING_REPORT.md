@@ -63,3 +63,12 @@ Run [#14](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40104096953
 ## Corrective end-to-end run #18 — 2026-10-24
 
 [Run #18](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40109273486) completed with CI conclusion **success**. All **14 tests passed in 2.12 seconds**. The full runner completed and reported `valid labels=398, features=398, decision status=OOS_GATE_NOT_PASSED_OR_INSUFFICIENT`. The evolutionary-search wrapper bug is therefore resolved for this execution. The OOS gate did not pass (or did not have sufficient evidence), so this run does not support a predictive edge or a winning method. The sanitized report artifact is [available here](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40109273486/artifacts/12566991817). Remaining limitations include official expiry coverage, source licensing/provenance, timestamp semantics and primary-source overlap validation. Do not promote any candidate or start trading-strategy work.
+
+
+## Artifact-level formula and data-integrity review — run #18
+
+- Confirmed run #18 test metrics and audited the downloaded sanitized artifact. The evolved rule's holdout balanced accuracy is 0.5767 (n=120), but the Holm-adjusted p-value reported in the multiple-comparison table is 0.1159; it does not pass 0.05.
+- Logistic regression reports balanced accuracy 0.5577 and Holm-adjusted p=0.01066, but the result remains exploratory because source overlap, provenance and timestamp gates remain open.
+- **Defect found:** evolved-rule raw bootstrap p-value differs between `selected_model_bootstrap_vs_majority` (0.04397) and `multiple_comparison_adjusted_tests_vs_majority.evolved_rule` (0.03864). Logged as NWCP-E014; must be reconciled before confirmatory inference.
+- **Source gates:** Dhan security-master resolution failed, leaving overlap unavailable. The expiry audit reports 409 official dates and 402 fallback calendar dates; selected expiry provenance must be reconciled row by row. Public archive licensing and timestamp semantics remain unverified.
+- Decision: DATA-LIMITED / NO CONFIRMATORY CLAIM. No test-set tuning. Full details in [RESULTS.md](RESULTS.md) and [MANUSCRIPT.md](MANUSCRIPT.md).
