@@ -253,3 +253,6 @@ The detailed audit passed on run [#40132605202](https://github.com/vishnuvcr/Nak
 | 6. Manuscript/decision | COMPLETE AS A NO-GO REPORT | Findings, limitations, and exact restart criteria recorded |
 
 This closes the current fixed research run without making an unsupported performance claim. Restart only when the exact library source/TradingView export and a certified session/expiry table or overlapping authoritative spot data become available.
+
+## Additional source investigation — 2026-10-25
+A publicly accessible mirror of the exact ZigZag++ [LD] wrapper was located: https://github.com/rohitbhure65/pine-scripts/blob/master/zigzag.pine. It confirms the supplied parameters (Depth 12, Deviation 5, Backstep 2), the imported dependency `DevLucem/ZigLib/1`, the `repaint=true` default, and direction-change alerts configured for bar close. The wrapper references `z2[1]` for labels in its non-repaint branch. This materially narrows wrapper-level behavior, but the imported library implementation remains unavailable in the mirrored file; therefore it does not validate the internal pivot confirmation logic or permit source-faithful Python reconstruction. No scoring gate is passed by this discovery.
