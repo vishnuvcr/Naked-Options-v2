@@ -155,7 +155,7 @@ class SourceParityTests(unittest.TestCase):
                 {"timestamp_ist": "2024-01-02T09:15:00+05:30", "date_ist": "2024-01-02",
                  "open": 100, "high": 106, "low": 99, "close": 105, "volume": 0},
                 {"timestamp_ist": "2024-01-02T09:20:00+05:30", "date_ist": "2024-01-02",
-                 "open": 105, "high": 111, "low": 104, "close": 110, "volume": 0},
+                 "open": 105, "high": 110, "low": 104, "close": 110, "volume": 0},
                 {"timestamp_ist": "2024-01-02T09:16:00+05:30", "date_ist": "2024-01-02",
                  "open": 101, "high": 108, "low": 100, "close": 107, "volume": 0},
             ])
