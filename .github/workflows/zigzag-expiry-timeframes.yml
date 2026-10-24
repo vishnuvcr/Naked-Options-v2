@@ -1,3 +1,4 @@
+# Execution trigger: rerun the validated timeframe acquisition pipeline on this commit.
 name: ZigZag expiry direction — acquire timeframe data
 
 on:
