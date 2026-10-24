@@ -184,7 +184,7 @@ def acquire_dhan(force: bool = False) -> tuple[pd.DataFrame, dict]:
     if not token:
         return pd.DataFrame(), {"status": "SKIPPED_NO_SECRET", "note": "DHAN_ACCESS_TOKEN unavailable; public-data audit continues"}
     session = requests.Session()
-    session.headers.update({"Accept": "application/json", "Content-Type": "application/json", "access-token": token, "client-id": ""})
+    session.headers.update({"Accept": "application/json", "Content-Type": "application/json", "access-token": token})
     try:
         security_id = fetch_dhan_security_id(session)
     except Exception as exc:
@@ -557,7 +557,7 @@ def _mutate_candidate(candidate, rng, n_features, thresholds):
         child[field] = not bool(child[field])
     if child["mode"] == "single":
         child["f2"], child["op2"], child["t2"] = -1, "gt", 0.0
-    elif child["f2"] == child["f1"]:
+    elif child["f2"] < 0 or child["f2"] == child["f1"]:
         child["f2"] = int((child["f1"] + 1) % n_features)
     return child
 
@@ -603,7 +603,7 @@ def _evolve_rule(x_train, y_train, x_valid, y_valid, feature_names, seed=1729, m
                             child[field] = b[field]
                     if child["mode"] == "single":
                         child["f2"], child["op2"], child["t2"] = -1, "gt", 0.0
-                    elif child["f2"] == child["f1"]:
+                    elif child["f2"] < 0 or child["f2"] == child["f1"]:
                         child["f2"] = (child["f1"] + 1) % x_train.shape[1]
                 else:
                     child = _new_candidate(rng, x_train.shape[1], thresholds)
@@ -717,7 +717,7 @@ def baseline_evaluation(feature_frame: pd.DataFrame) -> dict:
     feature_names = [c for c in frame.columns if c not in excluded]
     X = frame[feature_names].replace([np.inf, -np.inf], np.nan)
     n = len(frame)
-    train_end, valid_end = int(n * 0.55), int(n * 0.75)  # reserve last quarter for a final chronological block
+    train_end, valid_end = int(n * 0.50), int(n * 0.70)  # reserve last 30% for a single chronological holdout
     X_train, y_train = X.iloc[:train_end], y[:train_end]
     X_valid, y_valid = X.iloc[train_end:valid_end], y[train_end:valid_end]
     X_test, y_test = X.iloc[valid_end:], y[valid_end:]
@@ -813,7 +813,8 @@ def baseline_evaluation(feature_frame: pd.DataFrame) -> dict:
     selected_metrics = test_metrics.get(chosen, {})
     enough_test_classes = min(test_class_counts.get("DOWN", 0), test_class_counts.get("UP", 0)) >= 5
     gate = (
-        enough_test_classes
+        len(y_test) >= 100
+        and enough_test_classes
         and selected_metrics.get("balanced_accuracy") is not None
         and selected_metrics.get("balanced_accuracy", 0) > 0.5
         and selected_metrics.get("mcc", 0) > 0
