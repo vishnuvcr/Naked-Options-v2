@@ -49,6 +49,9 @@ jobs:
           python -m pip uninstall -y tradingagents
           pip install .
           python -c "import tradingagents, cli.main; print('clean-install import OK')"
+      - name: Probe NIFTY 50 Yahoo daily and intraday availability
+        working-directory: /tmp/TradingAgents
+        run: python "$GITHUB_WORKSPACE/research/tradingagents/probe_nifty_yahoo.py"
       - name: Upload test provenance
         if: always()
         uses: actions/upload-artifact@v4
