@@ -161,3 +161,27 @@ class LegacyCacheMigrationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             report = migration.migrate(Path(tmp))
             self.assertEqual(report["status"], "NO_LEGACY_FILE")
+
+
+    def test_dhan_internal_1m_to_5m_audit_flags_grid_and_ohlc_mismatch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            one = root / "one.csv"
+            five = root / "five.csv"
+            self._write_source(one, [
+                {"timestamp_ist": f"2024-01-02T09:{15+i:02d}:00+05:30", "date_ist": "2024-01-02",
+                 "open": 100+i, "high": 102+i, "low": 99+i, "close": 101+i, "volume": 0}
+                for i in range(11)
+            ])
+            self._write_source(five, [
+                {"timestamp_ist": "2024-01-02T09:15:00+05:30", "date_ist": "2024-01-02",
+                 "open": 100, "high": 106, "low": 99, "close": 105, "volume": 0},
+                {"timestamp_ist": "2024-01-02T09:20:00+05:30", "date_ist": "2024-01-02",
+                 "open": 105, "high": 111, "low": 104, "close": 110, "volume": 0},
+                {"timestamp_ist": "2024-01-02T09:16:00+05:30", "date_ist": "2024-01-02",
+                 "open": 101, "high": 108, "low": 100, "close": 107, "volume": 0},
+            ])
+            report = parity.audit_dhan_internal_consistency(one, five)
+            self.assertEqual(report["complete_groups"], 2)
+            self.assertEqual(report["mismatch_groups"], 1)
+            self.assertEqual(report["misaligned_five_minute_timestamps"], 1)
