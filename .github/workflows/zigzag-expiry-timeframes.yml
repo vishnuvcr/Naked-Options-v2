@@ -47,6 +47,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Run data pipeline unit tests
+        run: python -m unittest discover -s tests -p "test_zigzag_data_pipeline.py" -v
       - name: Restore reusable cached market data
         uses: actions/cache@v4
         with:
