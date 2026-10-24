@@ -235,3 +235,11 @@
 - **Limitation:** Current short-window availability does not establish historical intraday coverage, exact 10:00 IST cutoff semantics, official-session completeness, or point-in-time news/fundamentals. Passing the probe must not be represented as formal backtest data validation.
 - **Required action:** Use a frozen historical dataset and verify its timestamps/session membership before evaluating any predictions.
 
+
+
+## TA-004 — Standard TradingAgents market data is not cutoff-safe for 10:00 IST by default (open blocker)
+- **Severity:** High; formal historical evaluation blocked.
+- **Evidence:** Pinned `tradingagents/agents/tools.py` market tool requests date-based windows; `tradingagents/dataflows/vendors/yahoo/market.py` strips timezone info from the Yahoo OHLCV index before formatting; the default graph includes social, news, and fundamentals analysts.
+- **Risk:** A historical run could receive daily or ancillary data that does not represent only information available by the 10:00 IST cutoff. A forecast-record timestamp validator cannot independently prove the model's actual input set.
+- **Mitigation:** Use a custom frozen market-only snapshot/adapter, no unrestricted Yahoo market retrieval, no undated news/fundamentals/social data, and hash the exact input manifest. Add tests proving any requested data timestamps are <= cutoff. Keep formal evaluation blocked until this is demonstrated.
+
