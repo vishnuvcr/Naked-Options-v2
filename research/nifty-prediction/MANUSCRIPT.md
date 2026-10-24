@@ -1,12 +1,12 @@
 # NIFTY 50 Next-Session Direction Prediction — Research Manuscript (Living Draft)
 
 **Version/date:** 2026-10-25  
-**Status:** Protocol and implementation draft; empirical results pending verified workflow artifacts.  
+**Status:** Initial benchmark verified in Actions run #34; fixed candidate-rule experiment added and awaiting its automated result.  
 **Scope:** Prediction only. No trading strategy, option profitability, or execution recommendation is evaluated.
 
 ## Abstract
 
-This study is designed to test whether daily NIFTY 50 spot-index observations available through session close can support reliable prediction of the next session's direction. A free Yahoo Finance daily series is used as an initial, explicitly non-exchange-certified data source. Naive directional benchmarks are compared with logistic regression, random forest, and histogram gradient boosting using chronological expanding walk-forward evaluation. Balanced accuracy is the primary metric; accuracy, class-wise metrics, probabilistic scores, and block-bootstrap uncertainty are secondary. The code and workflow are committed, but the real data acquisition, unit-test run, and benchmark artifact have not yet been independently verified. Therefore, this draft makes no performance claim and names no winning model.
+This study is designed to test whether daily NIFTY 50 spot-index observations available through session close can support reliable prediction of the next session's direction. A free Yahoo Finance daily series is used as an initial, explicitly non-exchange-certified data source. Naive directional benchmarks are compared with logistic regression, random forest, and histogram gradient boosting using chronological expanding walk-forward evaluation. Balanced accuracy is the primary metric; accuracy, class-wise metrics, probabilistic scores, and block-bootstrap uncertainty are secondary. The production workflow has completed successfully: data acquisition, unit tests, source-parity audit, chronological benchmark, persistence and artifact upload passed in run #34. The data is third-party and not exchange-certified. The baseline results do not establish a reliable learned-model advantage.
 
 ## 1. Research question
 
@@ -64,7 +64,7 @@ A reproducible custom Node.js diagnostic was run against a public third-party CS
 
 The custom logistic diagnostic's Brier score was 0.2494 and log loss was 0.6919. A comparison chart is available at [preliminary_balanced_accuracy.svg](../../reports/nifty-prediction/preliminary_balanced_accuracy.svg), and the full diagnostic report is [here](../../reports/nifty-prediction/preliminary_historical_diagnostic.md). Its balanced accuracy was only about 0.18 percentage points above the previous-session-direction baseline; their approximate intervals overlap substantially. The majority baseline has higher raw accuracy due to the test-set class imbalance.
 
-**Evidence boundary:** These are preliminary historical results, not the production scikit-learn benchmark. The custom logistic implementation differs from scikit-learn, random forest and gradient boosting were not evaluated here, and the data ends in 2019. No robust predictive advantage is established. The main benchmark workflow, source-parity audit, and their artifacts still need execution verification.
+**Evidence boundary:** These are preliminary historical results, not the production scikit-learn benchmark. The custom logistic implementation differs from scikit-learn, random forest and gradient boosting were not evaluated here, and the data ends in 2019. No robust predictive advantage is established. The main benchmark workflow and source-parity audit were executed successfully in Actions run #34. The exact match across the two public sources is not independent confirmation; they may share upstream provenance.
 
 ## 7. Inferences and discussion
 
@@ -156,3 +156,12 @@ The public parquet mirror and Yahoo series were exactly identical for Open, High
 ### Updated conclusion
 
 The fixed baseline experiment is operational and reproducible, but its current result is **no demonstrated predictive edge from the tested machine-learning models over the naive previous-direction baseline**. Stop model complexity escalation at this planned benchmark gate. Further research within the plan should prioritize source independence, statistical paired comparisons and regime stability, not unconstrained tuning. Do not develop a trading strategy from these results. No slippage, brokerage, taxes, option payoff, or P&L was assessed because this phase is prediction-only.
+
+
+## Candidate-rule experiment update — 2026-10-25
+
+The automated workflow now runs six predeclared candidates on the same chronological holdout: 3-session momentum, 5-session momentum, 1-session reversal, 3-session reversal, a 20-session trend filter, and a lagged-volatility-conditioned momentum/reversal rule. The report is `reports/nifty-prediction/candidate_rules.json`. Candidate metrics are pending the new workflow run and are not guessed here.
+
+The existing benchmark result is verified: on 1,157 observations from 2022-02-14 through 2026-10-22, previous-session direction achieved 54.19% accuracy and 54.10% balanced accuracy; logistic regression achieved 52.46% and 52.53%, random forest 50.56% and 50.44%, and histogram gradient boosting 53.15% and 52.82%, respectively. None of the learned models establishes a reliable improvement over the simple baseline.
+
+Any reported long/short index-return proxy from the candidate script is gross and illustrative only. It excludes implementable instrument selection, basis, leverage, brokerage, taxes/charges, slippage, liquidity, margin and execution timing. A candidate is not a usable strategy until these costs are included with sourced assumptions.
