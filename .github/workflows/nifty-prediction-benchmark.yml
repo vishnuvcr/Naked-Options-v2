@@ -1,0 +1,91 @@
+name: NIFTY 50 daily prediction benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      refresh_data:
+        description: Force a fresh download of free-source daily data
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches:
+      - research/tradingagents-feasibility-developer
+      - research/nifty-prediction-developer
+    paths:
+      - "research/nifty-prediction/**"
+      - "tests/test_nifty_prediction_benchmark.py"
+      - ".github/workflows/nifty-prediction-benchmark.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nifty-prediction-benchmark-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  daily-direction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install baseline dependencies
+        run: python -m pip install --upgrade pip pandas numpy scikit-learn yfinance
+      - name: Unit tests
+        run: |
+          python -m unittest discover -s tests -p "test_nifty_prediction_benchmark.py" -v
+      - name: Restore cached daily market data
+        uses: actions/cache@v4
+        with:
+          path: data/cache/nifty-prediction
+          key: nifty50-daily-yahoo-v1-${{ runner.os }}
+      - name: Acquire or reuse free daily NIFTY 50 data
+        env:
+          REFRESH_DATA: ${{ inputs.refresh_data || 'false' }}
+        run: |
+          ARGS=()
+          if [ "$REFRESH_DATA" = "true" ]; then ARGS+=(--refresh); fi
+          python research/nifty-prediction/acquire_daily_data.py "${ARGS[@]}"
+      - name: Run leakage-controlled chronological benchmark
+        run: python research/nifty-prediction/evaluate_daily_models.py
+      - name: Upload reproducibility artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nifty-prediction-daily-benchmark
+          path: |
+            reports/nifty-prediction/daily_benchmark.json
+            data/cache/nifty-prediction/source_manifest.json
+          if-no-files-found: warn
+          retention-days: 90
+
+  optional-model-stack-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check optional statistical and uncertainty libraries
+        continue-on-error: true
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install arch mapie
+          python - <<'PY'
+          import json
+          import importlib.metadata as md
+          names = ("arch", "mapie", "scikit-learn")
+          result = {}
+          for name in names:
+              try:
+                  result[name] = md.version(name)
+              except md.PackageNotFoundError:
+                  result[name] = None
+          print(json.dumps(result, indent=2))
+          PY
