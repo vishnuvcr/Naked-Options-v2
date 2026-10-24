@@ -227,3 +227,11 @@
 - **Evidence:** Run [#40129671248](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129671248) failed before upstream checkout because `actions/setup-python` pip caching searched the research repository root for `requirements.txt` or `pyproject.toml`.
 - **Correction:** Removed `cache: pip` from the workflow. The subsequent run [#40129883044](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129883044) passed dependency installation, upstream unit tests, Ruff, and clean-install import. The error is retained as a resolved issue to prevent recurrence.
 
+
+
+## TA-003 — Yahoo live probe scope limitation (open gate, not a code failure)
+- **Severity:** Medium; research gate remains open.
+- **Evidence:** [Run #40130052739](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40130052739) retrieved 21 daily and 375 five-minute `^NSEI` rows in short windows.
+- **Limitation:** Current short-window availability does not establish historical intraday coverage, exact 10:00 IST cutoff semantics, official-session completeness, or point-in-time news/fundamentals. Passing the probe must not be represented as formal backtest data validation.
+- **Required action:** Use a frozen historical dataset and verify its timestamps/session membership before evaluating any predictions.
+
