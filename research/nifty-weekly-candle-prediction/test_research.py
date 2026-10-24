@@ -29,8 +29,8 @@ def test_up_down_tie_target_labels():
     expiries = [date(2025, 9, 2), date(2025, 9, 9), date(2025, 9, 16)]
     bars["bar_start"] = pd.to_datetime(bars["bar_start"]).dt.tz_convert(mod.IST)
     labels, audit = mod.make_target_rows(bars, expiries, {"provenance": {}})
-    assert len(labels) >= 1
-    assert set(labels.label).issubset({"UP", "DOWN", "TIE"})
+    assert len(labels) == 2
+    assert labels.label.tolist() == ["UP", "DOWN"]
 
 def test_rsi_is_bounded():
     assert 0 <= mod.rsi(list(range(1, 25)), 14) <= 100
@@ -52,3 +52,25 @@ def test_no_future_price_required_at_anchor():
 def test_cache_manifest_does_not_expose_token():
     # Invariants: report writing is aggregate-only and token value is never a report field.
     assert "DHAN_ACCESS_TOKEN" not in str(mod.REPORTS)
+
+
+def test_evolved_candidates_never_use_invalid_second_feature_index():
+    rng = np.random.default_rng(7)
+    thresholds = [-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5]
+    for _ in range(300):
+        candidate = mod._new_candidate(rng, 9, thresholds)
+        if candidate["mode"] != "single":
+            assert 0 <= candidate["f2"] < 9
+            assert candidate["f2"] != candidate["f1"]
+        child = mod._mutate_candidate(candidate, rng, 9, thresholds)
+        if child["mode"] != "single":
+            assert 0 <= child["f2"] < 9
+            assert child["f2"] != child["f1"]
+
+def test_rule_prediction_is_binary_and_length_preserving():
+    rng = np.random.default_rng(1729)
+    x = rng.normal(size=(50, 5))
+    candidate = {"f1": 0, "op1": "gt", "t1": 0.0, "mode": "and", "f2": 1, "op2": "lt", "t2": 1.0, "invert": False}
+    prediction = mod._rule_prediction(x, candidate)
+    assert len(prediction) == len(x)
+    assert set(np.unique(prediction)).issubset({0, 1})
