@@ -236,3 +236,20 @@ Added `audit_public_5m.py` and wired it into the data workflow to produce a dura
 | 4. Evaluation | BLOCKED | Run only after phases 1–3 gates pass |
 | 5. Robustness/inference | NOT STARTED | Depends on eligible out-of-sample predictions |
 | 6. Manuscript/decision | DRAFT | Update after results or a documented no-go conclusion |
+
+## Gate decision — 2026-10-25
+
+**Research outcome: NO-GO for a source-faithful predictive accuracy claim in this run.** The five-minute archive passes structural checks but is not fully session-certified, the existing Yahoo fallback has no overlapping timestamps for price-parity validation, and the imported DevLucem/ZigLib/1 implementation has not been independently verified. The public TradingView library page documents its API but the accessible source materials reviewed here do not provide the implementation needed to reconstruct confirmation timing. Substituting a generic ZigZag would violate the preregistered protocol and risk look-ahead bias. Therefore, scoring is deliberately not performed; this is not evidence that the indicator is ineffective.
+
+The detailed audit passed on run [#40132605202](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40132605202). Its report confirms 92,876 parsed rows, no duplicates, sorted timestamps, no invalid OHLC, 1,244 dates, and 8 nonstandard dates. It reports 315 weekend-or-out-of-clock rows combined (including evening special-session bars); a separate clock-only diagnostic found 48 rows outside the regular 09:15–15:25 window. The 8 nonstandard dates include special/evening sessions, two shortened Saturday sessions, a shortened session on 2025-10-21, and a one-bar gap on 2026-04-21. These must be reconciled against official notices rather than dropped.
+
+| Phase | Final disposition | Evidence |
+|---|---|---|
+| 1. Protocol/source audit | PARTIAL / BLOCKED | API documented; exact library implementation and causal confirmation timing unavailable in reviewed source |
+| 2. Data audit | PARTIAL / BLOCKED | Structural checks pass; official session/expiry calendar and independent price overlap unresolved |
+| 3. Causal reconstruction | NOT AUTHORIZED | Would require guessing imported-library internals |
+| 4. Prediction evaluation | NOT RUN — GATE FAIL | No valid source-faithful signal series or target table |
+| 5. Statistical inference | NOT RUN | No eligible predictions to analyze |
+| 6. Manuscript/decision | COMPLETE AS A NO-GO REPORT | Findings, limitations, and exact restart criteria recorded |
+
+This closes the current fixed research run without making an unsupported performance claim. Restart only when the exact library source/TradingView export and a certified session/expiry table or overlapping authoritative spot data become available.
