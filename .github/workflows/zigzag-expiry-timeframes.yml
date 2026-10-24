@@ -115,6 +115,9 @@ jobs:
       - name: Validate data and derive 30-minute bars
         if: always()
         run: python research/zigzag-expiry-direction/prepare_timeframes.py --required 5,15,60,daily
+      - name: Audit timestamps and session diagnostics (no silent exclusions)
+        if: always()
+        run: python research/zigzag-expiry-direction/audit_sessions.py
       - name: Upload dataset and provenance manifest (no secrets)
         if: always()
         uses: actions/upload-artifact@v4
@@ -124,5 +127,6 @@ jobs:
             data/cache/zigzag_expiry_direction/*.csv
             reports/zigzag_data_manifest.json
             reports/zigzag_timeframe_validation.json
+            reports/zigzag_session_audit.json
           if-no-files-found: warn
           retention-days: 30
