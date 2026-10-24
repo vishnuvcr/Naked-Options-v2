@@ -47,3 +47,10 @@
 - **Severity:** Medium; open
 - **Issue:** A public GitHub mirror reproduces the indicator wrapper and repaint toggle, but does not expose DevLucem/ZigLib/1 internals and may not match the currently published revision exactly.
 - **Mitigation:** Use it only to inspect wrapper logic; do not treat it as proof of imported library semantics.
+
+
+## ZZD-009 — Free official data source identified but not yet acquired
+- **Severity:** Medium; open
+- **Evidence:** NSE/Nifty Indices publish historical NIFTY 50 index data via official historical-data portals (NSE and Nifty Indices reports pages). The public pages confirm the source exists, but no downloadable export has yet been validated and cached in this branch.
+- **Risk:** The source lead could be mistaken for an acquired dataset.
+- **Mitigation:** Acquire a dated CSV export, preserve retrieval date and source URL, validate OHLC/timestamps and cross-check overlapping dates before use.
