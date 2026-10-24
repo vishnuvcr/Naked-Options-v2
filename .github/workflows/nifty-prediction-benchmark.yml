@@ -85,7 +85,6 @@ jobs:
             echo "No new reproducibility outputs to commit."
           else
             git commit -m "Record NIFTY prediction benchmark results"
-            git pull --rebase origin "${BRANCH_NAME}"
             git push origin "HEAD:${BRANCH_NAME}"
           fi
       - name: Upload reproducibility artifacts
