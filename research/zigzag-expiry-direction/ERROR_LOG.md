@@ -120,3 +120,13 @@
 - **Root-cause assessment:** The cache key interpolated the comma-separated interval input (`1,5,15,60`) directly. This is consistent with the key-validation failure shown in the run. The exact complete annotation text is truncated in the screenshot, so this is a high-confidence diagnosis, not a verbatim full log.
 - **Fix:** Removed the comma-separated intervals value from the cache key while retaining OS and date-range scope. Commit: `907e05fc8de0363aecf9fa8e7790c9b63b683b9f`.
 - **Verification:** Fix is committed to the active developer branch and should trigger another push run. Its outcome is not yet available; do not claim the cache or acquisition succeeded until the new run is inspected.
+
+
+## ZZD-019 — Dhan credential rejected by acquisition run
+- **Severity:** High; external secret/configuration required
+- **Date:** 2026-10-25
+- **Run:** [GitHub Actions run #40126339052](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40126339052)
+- **Observed:** Unit tests passed and cache restoration passed. Acquisition requests for 1m, 5m, 15m, 60m and daily all returned HTTP 401 `DH-901`: `Client ID or user generated access token is invalid or expired.` No market datasets were acquired; subsequent validation correctly failed due to missing files. The artifact is only 899 bytes and contains reports, not usable candles.
+- **Cause:** `DHAN_ACCESS_TOKEN` secret currently contains an invalid/expired Dhan user access token, or otherwise does not match the active credential. This cannot be fixed by changing Python parsing logic.
+- **Next action:** Update the GitHub Actions repository secret `DHAN_ACCESS_TOKEN` with a fresh valid Dhan access token, then rerun the workflow. Never expose the token in chat or commit it.
+- **Status:** Open; data phase blocked. No prediction metrics exist.
