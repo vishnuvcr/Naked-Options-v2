@@ -54,3 +54,10 @@ Added unit tests for Dhan response parsing, epoch timestamp conversion, invalid 
 - Inspected the workflow and confirmed the previous version only consumed the static `DHAN_ACCESS_TOKEN` secret.
 - Updated `.github/workflows/zigzag-expiry-timeframes.yml` in commit `0705e9aeafec15949f55ebb983f1f77ec60b62ef` to generate a fresh token using `DHAN_CLIENT_ID`, `DHAN_PIN`, and `DHAN_TOTP_SECRET`, mask it, validate it through `/v2/profile`, and pass it to the data acquisition step in the same job without persisting it as a repository secret.
 - GitHub Actions run [#40126973037](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40126973037): tests and token validation succeeded; acquisition was still running at log inspection. No prediction result claimed.
+
+
+## 2026-10-25 — Session/timestamp audit of acquired artifact
+- Audited the actual CSV files in artifact [12573423696](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127255063/artifacts/12573423696), beyond the workflow's basic structural validation.
+- Found weekend-dated bars across intraday series and many 1m timestamps outside a broad 09:00–16:00 IST screen. These may mix legitimate special sessions and out-of-session observations; no automatic blanket deletion was applied.
+- Logged ZZD-021 and updated phase status: official session calendar and Dhan timestamp/interval conventions must be audited before using the data for causal signals or target labels.
+- No prediction metrics computed because source parity and target calendar remain unresolved.
