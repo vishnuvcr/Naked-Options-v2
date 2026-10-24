@@ -818,3 +818,18 @@ The NIFTY benchmark push trigger has been narrowed to executable research script
 ## Latest workflow diagnosis — 2026-10-25
 
 GitHub Actions run #33 failed before research execution: the main job stopped at `actions/setup-python@v5`; installation, tests, acquisition, and benchmark steps were skipped. The optional ARCH/MAPIE package audit succeeded. The `cache: pip` option was removed because no recognized dependency manifest was present for setup-python cache discovery. See [error log](research/nifty-prediction/ERROR_LOG.md) and [phase status](research/nifty-prediction/PHASE_STATUS.md). The correction is committed, but production benchmark success and results are still pending a verified rerun.
+
+
+## NIFTY 50 prediction — verified benchmark update (2026-10-25)
+
+GitHub Actions [run #34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710) passed the full benchmark pipeline and optional package audit. The primary dataset has 4,686 daily observations from 2007-09-17 to 2026-10-23. The 1,157-row chronological holdout (2022-02-14 to 2026-10-22) produced these balanced-accuracy results:
+
+| Model | Balanced accuracy | 95% block-bootstrap interval |
+|---|---:|---:|
+| Previous-session direction baseline | 54.10% | 51.30–56.81% |
+| Logistic regression | 52.53% | 49.75–55.34% |
+| Random forest | 50.44% | 47.67–53.03% |
+| Histogram gradient boosting | 52.82% | 50.12–55.58% |
+| Majority-class baseline | 50.00% | 50.00–50.00% |
+
+The learned models do not outperform the simple previous-session direction baseline. The second public source matched OHLC exactly, but that is not independent validation because the feeds may share an upstream source. Yahoo data is not exchange-certified. No reliable machine-learning edge is established, and no trading strategy is recommended. See the [full benchmark JSON](reports/nifty-prediction/daily_benchmark.json), [source parity audit](reports/nifty-prediction/source_parity_audit.json), [manuscript](research/nifty-prediction/MANUSCRIPT.md), [phase status](research/nifty-prediction/PHASE_STATUS.md), and [error log](research/nifty-prediction/ERROR_LOG.md).
