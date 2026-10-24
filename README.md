@@ -688,3 +688,14 @@ The active developer branch now includes a TOTP-based Dhan token bootstrap befor
 - Dhan TOTP authentication is now validated by workflow [#39844476476](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/39844476476).
 - Historical option acquisition remains incomplete: three bounded passes ended with 363/366 option requests recorded and transient Dhan read timeouts. The cache audit passed parsing checks, but prediction discovery correctly remained blocked.
 - A bounded retry mitigation (40-second timeout, four attempts, 2/4/8-second backoff) and regression assertion updates are committed on the developer branch. See [phase status](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/PHASE_STATUS.md) and [error log QE-NOB2-E010](https://github.com/vishnuvcr/Naked-Options-v2/blob/research/quant-evolve-nob-v2-discovery-developer/research/quant-evolve-nob/ERROR_LOG.md). Do not treat cache parse success as research completion; wait for the acquisition rerun and data quality gates.
+
+
+## TradingAgents benchmark feasibility (2026-10-25)
+
+A separate feasibility review is underway on [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents), pinned to upstream commit [e8f5503](https://github.com/TauricResearch/TradingAgents/commit/e8f5503e9b86d5c2710b0c76b1f686703968c9df). Static review is complete; the pinned upstream test workflow is now configured, and no upstream test pass is claimed until its run is inspected. The framework is only a candidate benchmark, not a replacement for the preregistered ZigZag++ experiment.
+
+- [Feasibility report](research/tradingagents/FEASIBILITY_REPORT.md)
+- [Test plan and gates](research/tradingagents/TEST_PLAN.md)
+- [Pinned upstream compatibility workflow](.github/workflows/tradingagents-compatibility.yml)
+
+**Current decision:** CONDITIONAL CANDIDATE. NIFTY-specific data availability, 10:00 IST timestamp alignment, point-in-time input integrity, and a structured UP/DOWN/ABSTAIN forecast contract remain untested. No accuracy result exists.
