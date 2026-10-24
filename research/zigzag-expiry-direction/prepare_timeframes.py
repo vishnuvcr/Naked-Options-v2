@@ -22,18 +22,34 @@ def read_rows(path):
 def valid_ohlc(row):
     return row["low"] <= min(row["open"], row["close"]) <= max(row["open"], row["close"]) <= row["high"]
 
-def structural_issues(rows):
-    issues = []
+def validate(rows, expected_minutes=None):
+    problems = []
     stamps = [r["timestamp_ist"] for r in rows]
     if len(stamps) != len(set(stamps)):
-        issues.append("duplicate timestamps")
+        problems.append("duplicate timestamps")
     if stamps != sorted(stamps):
-        issues.append("timestamps not sorted")
+        problems.append("timestamps not sorted")
+    for r in rows:
+        if not valid_ohlc(r):
+            problems.append("invalid OHLC at " + r["timestamp_ist"])
+            break
+        if r["dt"].tzinfo is None or r["dt"].utcoffset() is None:
+            problems.append("timezone-naive timestamp at " + r["timestamp_ist"])
+            break
+    return problems
+
+def structural_issues(rows):
+    problems = []
+    stamps = [r["timestamp_ist"] for r in rows]
+    if len(stamps) != len(set(stamps)):
+        problems.append("duplicate timestamps")
+    if stamps != sorted(stamps):
+        problems.append("timestamps not sorted")
     for r in rows:
         if r["dt"].tzinfo is None or r["dt"].utcoffset() is None:
-            issues.append("timezone-naive timestamp at " + r["timestamp_ist"])
+            problems.append("timezone-naive timestamp at " + r["timestamp_ist"])
             break
-    return issues
+    return problems
 
 def write_rows(path, rows):
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -66,8 +82,8 @@ def derive_30m(rows):
           "low": min(x["low"] for x in bars), "close": bars[-1]["close"],
           "volume": sum(x["volume"] for x in bars), "dt": stamp})
     path = ROOT / "nifty50_30m_resampled.csv"
-    info = write_rows(path, result)
-    return result, dropped, info
+    write_rows(path, result)
+    return result, dropped, path
 
 def main():
     import argparse
@@ -110,8 +126,9 @@ def main():
     if five_clean.exists():
         try:
             rows = read_rows(five_clean)
-            derived, dropped, info = derive_30m(rows)
-            reports["derived"].append({"timeframe": "30m", **info,
+            derived, dropped, path = derive_30m(rows)
+            reports["derived"].append({"timeframe": "30m", "path": str(path), "rows": len(derived),
+              "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
               "dropped_incomplete_bars": len(dropped), "dropped_examples": dropped[:20],
               "construction": "six contiguous validated 5m bars; bins anchored 09:15 IST; incomplete bins excluded"})
         except Exception as exc:
