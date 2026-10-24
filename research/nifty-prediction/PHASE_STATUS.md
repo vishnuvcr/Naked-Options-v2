@@ -41,3 +41,9 @@ The GitHub commit-status endpoint returned no status entries for the new benchma
 - Added a preliminary balanced-accuracy SVG chart at [preliminary_balanced_accuracy.svg](../../reports/nifty-prediction/preliminary_balanced_accuracy.svg).
 - Added a free-source fallback to the public NIFTY 50 parquet dataset if Yahoo acquisition fails; the cache is considered reusable only when provenance/hash/schema are acceptable and the latest date is recent.
 - The workflow is configured to persist the cache, manifest, and benchmark JSON to the research branch. This session cannot confirm that the workflow executed, because no run/artifact result is visible through the available GitHub interface.
+
+
+## Multi-source audit gate — 2026-10-25
+- Identified a second public dataset repository whose index catalog lists NIFTY 50 daily OHLC from 2007-09-17 through 2026-10-23 (4,686 rows), plus India VIX, NIFTY Bank, SENSEX and macro/flow datasets. These coverage details are upstream metadata, not independent validation.
+- Added [audit_source_parity.py](audit_source_parity.py) to compare cached primary OHLC with the second free source and write [source_parity_audit.json](../../reports/nifty-prediction/source_parity_audit.json). The audit is non-blocking if the secondary source is unavailable.
+- The source audit and production benchmark are wired into GitHub Actions, but actual execution remains unverified from this interface. No parity numbers are claimed yet.
