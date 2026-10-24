@@ -29,3 +29,11 @@ Current decision: **IN PROGRESS — NO EMPIRICAL PREDICTION CLAIM**
 - Added NWCP-E009 (high): regression coverage did not test missing anchor/expiry bars and provenance gate. Added tests for these conditions and Holm-adjustment invariants.
 - Run [#14](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40104096953) completed with **failure** after the test step passed: `13 passed in 1.38s`. The full data/baseline stage failed in `_evolve_rule` with `KeyError: 'f1'` because archive records were passed as candidates in the next generation. Fixed by unwrapping elite candidate dictionaries and correcting parent/crossover references; added a multi-generation regression test. New workflow run is pending. Phase 2 remains blocked until the full data/baseline stage and source validation complete.
 - No prediction accuracy or winning rule is claimed. The current research remains blocked until the test suite runs and source/calendar validation succeeds.
+
+
+## Corrective end-to-end run #18 — 2026-10-24
+
+- [Workflow run #18](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40109273486) completed successfully at the CI/job level.
+- Regression suite: **14 passed in 2.12 seconds**.
+- Runner reported **398 valid labels, 398 features**, with final status `OOS_GATE_NOT_PASSED_OR_INSUFFICIENT`.
+- This confirms the prior evolutionary-search crash is corrected and the bounded pipeline executes. It does **not** pass the prediction gate. Phase 2 is operational but remains scientifically conditional on public-source license/provenance, timestamp convention, official expiry-calendar completeness and source-overlap audit. Phases 3–7 remain blocked for accepted prediction claims pending detailed OOS metric/sample-size report review.
