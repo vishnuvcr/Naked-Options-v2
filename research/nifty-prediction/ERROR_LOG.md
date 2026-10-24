@@ -43,3 +43,14 @@
 - **Severity:** Medium for exact reproducibility against production pipeline.
 - **Issue:** Preliminary logistic results were calculated with a custom Node.js gradient-descent implementation, not scikit-learn LogisticRegression. Random forest and gradient boosting were not included in this diagnostic.
 - **Mitigation:** Treat scores as preliminary only. Verify the production Python benchmark and all planned model families before finalizing conclusions.
+
+
+## NP-009 — Production workflow results still unavailable (open)
+- **Severity:** High for final empirical conclusions.
+- **Issue:** The available GitHub integration can read and write repository content but has not exposed a dispatch or complete workflow-run listing. No production benchmark JSON or source-parity artifact is present in the branch.
+- **Mitigation:** The workflow is triggered by research-code pushes and persists outputs; continue to report execution as unverified until actual artifacts appear. Do not promote the preliminary custom diagnostic to final evidence.
+
+## NP-010 — Second free dataset is a third-party mirror (open)
+- **Severity:** Medium/high for data provenance.
+- **Issue:** The new source catalog claims recent daily NIFTY 50 data through 2026-10-23, but is not exchange-certified and has not yet been parity-audited against the primary series.
+- **Mitigation:** Run the cross-source OHLC audit, preserve the source hash and mismatch distribution, and seek official Nifty Indices/NSE data for final confirmation.
