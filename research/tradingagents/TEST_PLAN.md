@@ -30,3 +30,11 @@
 
 ## Developer self-check (no independent tester)
 The user explicitly instructed: “No tester.” Do not create an independent tester branch, tester role, or tester approval gate. The developer will inspect CI logs, record defects, fix them, and continue the planned gates autonomously. Software CI remains a normal automated test suite, not a separate tester role.
+## Execution update — 2026-10-25
+
+- Phase A static review: COMPLETE.
+- Phase B pinned upstream software checks: PASS in [run #40129883044](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40129883044): dependency install, unit suite, Ruff, and clean-install import passed.
+- Phase C NIFTY Yahoo data probe: ADDED, pending new workflow run. It probes `^NSEI` daily (1 month) and 5-minute (5 days) bars and records timestamps/timezone/row counts. It is diagnostic only.
+- Phases D–G: NOT STARTED/BLOCKED until the data and point-in-time contract is validated.
+
+No independent tester branch or tester approval gate will be created. Ordinary CI tests remain part of development quality control.
