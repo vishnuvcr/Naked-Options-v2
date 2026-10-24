@@ -88,3 +88,11 @@
 - **Severity:** Medium; open
 - **Issue:** The available GitHub integration exposes workflow-job/artifact reads and reruns, but no direct workflow dispatch action was found; a successful run/artifact could not yet be confirmed through the available interface.
 - **Mitigation:** Workflow is configured to run on matching branch pushes and supports manual dispatch. Verify a resulting run before claiming acquisition success.
+
+
+## ZZD-015 — repaint default conflicts with causal historical prediction
+- **Severity:** High; open pending exact-source verification
+- **Date:** 2026-10-25
+- **Evidence:** Public wrapper mirror https://github.com/rohitbhure65/pine-scripts/blob/master/zigzag.pine sets `repaint = input(true, 'Repaint Levels')`; the alternate branch draws only on direction changes using prior-bar points.
+- **Risk:** Using retrospective pivot labels in a historical prediction backtest leaks future information.
+- **Mitigation:** Primary comparison is explicitly non-repaint mode; use direction-change availability timestamp and prior-bar point values, and do not label results as default repaint-on performance. Still block scoring until the imported ZigLib v1 source behavior is verified or faithfully reproduced.
