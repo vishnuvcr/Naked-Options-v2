@@ -98,3 +98,10 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Successful run [#40128335927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927): tests, token validation, data acquisition, validation/resampling, audit, and artifact upload all succeeded.
 - Artifact [#12574310370](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927/artifacts/12574310370) inspected. All audited files had sorted timestamps and zero duplicates. Raw OHLC findings: 1m 12; 5m 5; 15m 3; 30m 0; 60m 2; daily 0.
 - Decision unchanged: no scoring until official NSE sessions and Dhan timestamp convention are verified, and exact ZigLib signal availability plus historical expiry mapping are established.
+
+
+## 2026-10-25 — Official expiry/session source review
+- Reviewed NSE official NIFTY F&O product documentation and circulars NSE/FAOP/68747 (2025-06-25) and NSE/FAOP/65336 (2024-11-29), plus the official NSE market holiday/timing page.
+- Confirmed current Tuesday weekly expiry with previous-trading-session shift for Tuesday holidays, and a 2025 Thursday-to-Tuesday transition that has to be handled at contract level rather than with a single global weekday rule.
+- Reviewed Dhan v2 historical-data documentation: epoch timestamp and 90-day request limit are documented; candle start/end timestamp semantics remain unspecified in the docs reviewed.
+- Added OFFICIAL_CALENDAR_PROTOCOL.md. No session calendar has been certified and no prediction score was run.
