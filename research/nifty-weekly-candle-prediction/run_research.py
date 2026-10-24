@@ -345,7 +345,7 @@ def get_expiry_calendar(session_dates: set[date]) -> tuple[list[date], dict]:
             provenance[d.isoformat()] = "nse_expiry_api"
     dates = sorted(d for d in chosen if START_DATE <= d <= TODAY)
     audit = {
-        "source": "mixed_official_and_fallback" if official else "calendar_fallback_only",
+        "source": "mixed_official_and_fallback" if official and len(dates) > 0 and any(provenance.get(d.isoformat()) == "calendar_fallback" for d in dates) else ("official_within_year_coverage_thresholds" if official else "calendar_fallback_only"),
         "official_expiry_count": len(official),
         "fallback_expiry_count": len(fallback),
         "selected_expiry_count": len(dates),
@@ -376,8 +376,12 @@ def make_target_rows(bars: pd.DataFrame, expiries: list[date], expiry_audit: dic
     except Exception:
         official_sessions = observed_sessions
         calendar_source = "observed_price_source_dates_only"
-    # Include exchange-observed special sessions; weekly expiry logic still comes from official expiry dates when available.
-    sessions = sorted(set(official_sessions) | set(observed_sessions))
+    # Use only dates recognized by the exchange-session calendar and observed in the price data.
+    # Some archives intentionally include weekend special sessions; those are excluded unless a
+    # separately reviewed official exception list is introduced. This is conservative rather than
+    # accidentally treating a weekend row as the next regular trading session.
+    sessions = sorted(set(official_sessions) & set(observed_sessions))
+    excluded_noncalendar_sessions = sorted(str(d) for d in set(observed_sessions) - set(official_sessions))
     by_start = {ts: row for ts, row in data.set_index("bar_start").iterrows()}
     session_rows = {}
     for session_date, group in data.groupby("session_date", sort=True):
@@ -426,6 +430,8 @@ def make_target_rows(bars: pd.DataFrame, expiries: list[date], expiry_audit: dic
     audit = {
         "status": "OK" if len(frame) else "BLOCKED_NO_VALID_LABELS",
         "calendar_source": calendar_source,
+        "observed_sessions_excluded_by_calendar_count": len(excluded_noncalendar_sessions),
+        "observed_sessions_excluded_by_calendar_examples": excluded_noncalendar_sessions[:20],
         "expiry_count": len(expiries), "candidate_intervals": max(0, len(expiries) - 1),
         "valid_labels": len(frame), "excluded_intervals": len(excluded), "excluded_examples": excluded[:25],
         "ties": int((frame.label == "TIE").sum()) if len(frame) else 0,
