@@ -130,3 +130,13 @@
 - **Cause:** `DHAN_ACCESS_TOKEN` secret currently contains an invalid/expired Dhan user access token, or otherwise does not match the active credential. This cannot be fixed by changing Python parsing logic.
 - **Next action:** Update the GitHub Actions repository secret `DHAN_ACCESS_TOKEN` with a fresh valid Dhan access token, then rerun the workflow. Never expose the token in chat or commit it.
 - **Status:** Open; data phase blocked. No prediction metrics exist.
+
+
+## ZZD-020 — Automated token generation verified; acquisition pending
+- **Severity:** Medium; pipeline execution in progress
+- **Date:** 2026-10-25
+- **Run:** [GitHub Actions run #40126973037](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40126973037)
+- **Observed:** Unit tests passed. Token generation from repository secrets succeeded and the resulting token passed Dhan `/v2/profile` validation for the configured client ID. Acquisition step started; no data completion has yet been verified.
+- **Security:** Token is masked and used at runtime; no token value is logged, committed, or uploaded as an artifact.
+- **Next action:** Verify data acquisition, manifest coverage and validation outputs before starting prediction scoring.
+- **Status:** Open until data acquisition/validation concludes. No prediction metrics exist.
