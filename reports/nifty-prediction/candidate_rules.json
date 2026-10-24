@@ -1,100 +1,165 @@
 {
-  "status": "COMPUTED",
+  "status": "COMPUTED_BY_AUTOMATED_EXPERIMENT; persistence repair rerun in progress",
   "source": "data/cache/nifty-prediction/nifty50_daily.csv",
-  "first_test_date": "2022-01-21",
+  "first_test_date": "2022-02-14",
   "last_test_date": "2026-10-22",
-  "n": 1172,
-  "split_rule": "chronological 75/25; no parameter tuning",
+  "n": 1157,
+  "split_rule": "chronological 75/25 after 60-session warm-up; common test dates with baseline benchmark",
+  "volatility_threshold": 0.011863679139815701,
+  "volatility_threshold_method": "70th percentile of training-period 20-session rolling volatility, fixed before test scoring",
   "rules": [
     {
       "rule": "previous_session_direction_baseline",
-      "n": 1172,
-      "accuracy": 0.5426621160409556,
-      "balanced_accuracy": 0.5418282176730237,
-      "gross_long_short_mean_daily_return": 0.0005977189723450692,
-      "gross_long_short_compounded_return": 0.9278740353668979,
-      "positive_gross_days_pct": 0.5418088737201365,
-      "mean_absolute_daily_index_return": 0.006327126300431951,
-      "costs_included": false,
-      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+      "n": 1157,
+      "accuracy": 0.5419187554019015,
+      "balanced_accuracy": 0.5410269690909308,
+      "gross_long_short_mean_daily_return": 0.0005514455923414606,
+      "gross_long_short_compounded_return": 0.8138821055901855,
+      "positive_gross_days_pct": 0.5410544511668107,
+      "mean_absolute_daily_index_return": 0.0062519131965765515,
+      "confusion_matrix_labels_down_up": [
+        [
+          288,
+          265
+        ],
+        [
+          265,
+          339
+        ]
+      ],
+      "costs_included": false
     },
     {
       "rule": "3_session_momentum",
-      "n": 1172,
-      "accuracy": 0.5315699658703071,
-      "balanced_accuracy": 0.5302417649101003,
-      "gross_long_short_mean_daily_return": 0.00014521522387506554,
-      "gross_long_short_compounded_return": 0.13427419614716718,
-      "positive_gross_days_pct": 0.5307167235494881,
-      "mean_absolute_daily_index_return": 0.006327126300431951,
-      "costs_included": false,
-      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+      "n": 1157,
+      "accuracy": 0.533275713050994,
+      "balanced_accuracy": 0.5318326886459169,
+      "gross_long_short_mean_daily_return": 0.00016731980055378331,
+      "gross_long_short_compounded_return": 0.16295620341836248,
+      "positive_gross_days_pct": 0.5324114088159032,
+      "mean_absolute_daily_index_return": 0.0062519131965765515,
+      "confusion_matrix_labels_down_up": [
+        [
+          276,
+          277
+        ],
+        [
+          263,
+          341
+        ]
+      ],
+      "costs_included": false
     },
     {
       "rule": "5_session_momentum",
-      "n": 1172,
-      "accuracy": 0.5136518771331058,
-      "balanced_accuracy": 0.5120357323110765,
-      "gross_long_short_mean_daily_return": 8.612320070115597e-05,
-      "gross_long_short_compounded_return": 0.058431735117715045,
-      "positive_gross_days_pct": 0.5127986348122867,
-      "mean_absolute_daily_index_return": 0.006327126300431951,
-      "costs_included": false,
-      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+      "n": 1157,
+      "accuracy": 0.5159896283491789,
+      "balanced_accuracy": 0.5142075733805971,
+      "gross_long_short_mean_daily_return": 0.00010803700550501816,
+      "gross_long_short_compounded_return": 0.0859033467873096,
+      "positive_gross_days_pct": 0.5151253241140882,
+      "mean_absolute_daily_index_return": 0.0062519131965765515,
+      "confusion_matrix_labels_down_up": [
+        [
+          262,
+          291
+        ],
+        [
+          269,
+          335
+        ]
+      ],
+      "costs_included": false
     },
     {
       "rule": "1_session_mean_reversion",
-      "n": 1172,
-      "accuracy": 0.45819112627986347,
-      "balanced_accuracy": 0.4590630479241243,
-      "gross_long_short_mean_daily_return": -0.0005713211603793619,
-      "gross_long_short_compounded_return": -0.5101947875101271,
-      "positive_gross_days_pct": 0.45819112627986347,
-      "mean_absolute_daily_index_return": 0.006327126300431951,
-      "costs_included": false,
-      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+      "n": 1157,
+      "accuracy": 0.4589455488331893,
+      "balanced_accuracy": 0.4598771900410764,
+      "gross_long_short_mean_daily_return": -0.000524705544265567,
+      "gross_long_short_compounded_return": -0.4777736244742975,
+      "positive_gross_days_pct": 0.4589455488331893,
+      "mean_absolute_daily_index_return": 0.0062519131965765515,
+      "confusion_matrix_labels_down_up": [
+        [
+          266,
+          287
+        ],
+        [
+          339,
+          265
+        ]
+      ],
+      "costs_included": false
     },
     {
       "rule": "3_session_mean_reversion",
-      "n": 1172,
-      "accuracy": 0.4684300341296928,
-      "balanced_accuracy": 0.46975823508989967,
-      "gross_long_short_mean_daily_return": -0.00014521522387506554,
-      "gross_long_short_compounded_return": -0.19286416837478415,
-      "positive_gross_days_pct": 0.4684300341296928,
-      "mean_absolute_daily_index_return": 0.006327126300431951,
-      "costs_included": false,
-      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+      "n": 1157,
+      "accuracy": 0.46672428694900603,
+      "balanced_accuracy": 0.46816731135408307,
+      "gross_long_short_mean_daily_return": -0.00016731980055378331,
+      "gross_long_short_compounded_return": -0.21029093668863652,
+      "positive_gross_days_pct": 0.46672428694900603,
+      "mean_absolute_daily_index_return": 0.0062519131965765515,
+      "confusion_matrix_labels_down_up": [
+        [
+          277,
+          276
+        ],
+        [
+          341,
+          263
+        ]
+      ],
+      "costs_included": false
     },
     {
       "rule": "20_session_trend_filter",
-      "n": 1172,
-      "accuracy": 0.5409556313993175,
-      "balanced_accuracy": 0.5383681816723118,
-      "gross_long_short_mean_daily_return": 0.00021236191284338435,
-      "gross_long_short_compounded_return": 0.2272049061266228,
-      "positive_gross_days_pct": 0.5401023890784983,
-      "mean_absolute_daily_index_return": 0.006327126300431951,
-      "costs_included": false,
-      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+      "n": 1157,
+      "accuracy": 0.5419187554019015,
+      "balanced_accuracy": 0.538965665904219,
+      "gross_long_short_mean_daily_return": 0.0001990075005822751,
+      "gross_long_short_compounded_return": 0.2064235179135674,
+      "positive_gross_days_pct": 0.5410544511668107,
+      "mean_absolute_daily_index_return": 0.0062519131965765515,
+      "confusion_matrix_labels_down_up": [
+        [
+          261,
+          292
+        ],
+        [
+          238,
+          366
+        ]
+      ],
+      "costs_included": false
     },
     {
       "rule": "volatility_conditioned_momentum_reversal",
-      "n": 1172,
-      "accuracy": 0.5110921501706485,
-      "balanced_accuracy": 0.5100183504438824,
-      "gross_long_short_mean_daily_return": -0.00018636515745219705,
-      "gross_long_short_compounded_return": -0.23100812663906078,
-      "positive_gross_days_pct": 0.5102389078498294,
-      "mean_absolute_daily_index_return": 0.006327126300431951,
-      "costs_included": false,
-      "note": "Index-direction proxy only; not a tradable instrument or net profitability estimate."
+      "n": 1157,
+      "accuracy": 0.5082108902333622,
+      "balanced_accuracy": 0.5071389650671233,
+      "gross_long_short_mean_daily_return": -0.0002572996634707087,
+      "gross_long_short_compounded_return": -0.28851154813565694,
+      "positive_gross_days_pct": 0.5073465859982714,
+      "mean_absolute_daily_index_return": 0.0062519131965765515,
+      "confusion_matrix_labels_down_up": [
+        [
+          267,
+          286
+        ],
+        [
+          283,
+          321
+        ]
+      ],
+      "costs_included": false
     }
   ],
   "limitations": [
-    "Daily third-party index data, not exchange-certified.",
-    "Rules are predeclared simple diagnostics, not optimized strategies.",
-    "Gross long/short index proxy ignores futures/options basis, leverage, turnover, brokerage, taxes, slippage, and execution.",
-    "The volatility-conditioned rule uses an expanding 70th-percentile threshold and is exploratory; its result is not independent confirmation."
+    "These candidate metrics were printed by automated run #37; that run passed candidate execution but failed later at artifact persistence. Run #40 is rerunning and should verify persistence.",
+    "Gross daily sign proxy is not executable P&L and excludes futures/options basis, leverage, turnover, brokerage, taxes, slippage and execution.",
+    "Single holdout used for screening; any candidate requires a fresh untouched forward period before a strategy claim.",
+    "Source is third-party and not exchange-certified."
   ]
 }
