@@ -700,7 +700,10 @@ def _evolve_rule(x_train, y_train, x_valid, y_valid, feature_names, seed=1729, m
         if not population:
             proposed = [_new_candidate(rng, x_train.shape[1], thresholds) for _ in range(population_size)]
         else:
-            elites = sorted(population, key=lambda row: row["train_fitness"], reverse=True)[:12]
+            elite_records = sorted(population, key=lambda row: row["train_fitness"], reverse=True)[:12]
+            # Population stores archive records; the next generation must contain candidate
+            # dictionaries, not wrapper records, or _rule_prediction lacks the f1/op1/t1 keys.
+            elites = [row["candidate"] for row in elite_records]
             proposed = elites[:4]
             while len(proposed) < population_size:
                 roll = rng.random()
