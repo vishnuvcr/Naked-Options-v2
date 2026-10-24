@@ -61,3 +61,10 @@ Added unit tests for Dhan response parsing, epoch timestamp conversion, invalid 
 - Found weekend-dated bars across intraday series and many 1m timestamps outside a broad 09:00–16:00 IST screen. These may mix legitimate special sessions and out-of-session observations; no automatic blanket deletion was applied.
 - Logged ZZD-021 and updated phase status: official session calendar and Dhan timestamp/interval conventions must be audited before using the data for causal signals or target labels.
 - No prediction metrics computed because source parity and target calendar remain unresolved.
+
+
+## 2026-10-25 — 1-minute artifact audit
+- Continued after user instruction “Ok proceed”.
+- Downloaded/inspected the actual successful data artifact and independently checked raw 1-minute timestamps and OHLC consistency.
+- Found 511,268 rows, 2,636 weekend-dated rows, 47,612 out-of-session rows, 12 OHLC-inconsistent rows, and exact 10:00 rows on 1,236 dates.
+- Logged this as ZZD-021 and updated phase/results documentation. No signals were generated and no accuracy was calculated because exact ZigLib parity and historical expiry target mapping remain unverified.
