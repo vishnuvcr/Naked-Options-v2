@@ -4,7 +4,7 @@ Updated: 2026-10-25
 
 | Phase | Status | Evidence / blocker |
 |---|---|---|
-| P0 Scope/provenance | PARTIAL | Added 4,954-row third-party historical CSV (2000-01-03 to 2019-12-02), with zero duplicate dates and zero basic OHLC invariant failures. It is not exchange-certified and is stale for current-market claims. Production cache/workflow verification remains pending. |
+| P0 Scope/provenance | PARTIAL | Added 4,954-row third-party historical CSV (2000-01-03 to 2019-12-02), with zero duplicate dates and zero basic OHLC invariant failures. It is not exchange-certified and is stale for current-market claims. Fresh-cache validation and a free public-parquet fallback are now implemented; production acquisition execution remains pending verification. |
 | P1 Leakage-safe benchmark | PARTIAL RESULTS | A custom Node.js expanding logistic diagnostic and naive baselines produced preliminary historical results. The production Python/scikit-learn benchmark, unit tests, random forest, and gradient boosting remain unverified. |
 | P2 Statistical evaluation | PRELIMINARY RESULTS RECORDED | Preliminary historical diagnostic: logistic balanced accuracy 52.78% (95% block-bootstrap interval 50.11–55.36%), versus previous-direction baseline 52.60% (49.72–55.56%). Intervals overlap; no robust edge established. Production results remain pending. |
 | P3 Volatility/uncertainty | DEFERRED | Optional ARCH/MAPIE dependency audit workflow added. No GARCH or conformal results yet. |
@@ -37,3 +37,7 @@ The GitHub commit-status endpoint returned no status entries for the new benchma
 - Logistic balanced-accuracy improvement over previous-direction baseline is about 0.18 percentage points; bootstrap intervals overlap substantially.
 - This is a preliminary diagnostic from a custom Node.js implementation, not the production scikit-learn benchmark. No trading strategy or current-market edge is established.
 - Reproducible script: [preliminary_historical_diagnostic.js](preliminary_historical_diagnostic.js); report: [preliminary_historical_diagnostic.md](../../reports/nifty-prediction/preliminary_historical_diagnostic.md); JSON: [preliminary_historical_diagnostic.json](../../reports/nifty-prediction/preliminary_historical_diagnostic.json).
+
+- Added a preliminary balanced-accuracy SVG chart at [preliminary_balanced_accuracy.svg](../../reports/nifty-prediction/preliminary_balanced_accuracy.svg).
+- Added a free-source fallback to the public NIFTY 50 parquet dataset if Yahoo acquisition fails; the cache is considered reusable only when provenance/hash/schema are acceptable and the latest date is recent.
+- The workflow is configured to persist the cache, manifest, and benchmark JSON to the research branch. This session cannot confirm that the workflow executed, because no run/artifact result is visible through the available GitHub interface.
