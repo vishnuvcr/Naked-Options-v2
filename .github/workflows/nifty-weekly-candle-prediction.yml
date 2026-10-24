@@ -42,7 +42,7 @@ jobs:
       - name: Restore public and Dhan source cache
         uses: actions/cache/restore@v4
         with:
-          path: data/cache/nifty_weekly_candle_prediction_v1
+          path: data/cache/nifty_weekly_candle_prediction_v1/public
           key: nwcp-v1-${{ runner.os }}-${{ hashFiles('research/nifty-weekly-candle-prediction/run_research.py') }}-${{ github.run_id }}
           restore-keys: |
             nwcp-v1-${{ runner.os }}-${{ hashFiles('research/nifty-weekly-candle-prediction/run_research.py') }}-
@@ -56,6 +56,7 @@ jobs:
       - name: Bounded source acquisition and preliminary model comparison
         env:
           DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+          NWCP_DHAN_CACHE_DIR: ${{ runner.temp }}/nwcp_dhan_cache
           REFRESH_DATA: ${{ inputs.refresh_data || false }}
           PYTHONUNBUFFERED: "1"
         run: |
@@ -67,7 +68,7 @@ jobs:
         if: always()
         uses: actions/cache/save@v4
         with:
-          path: data/cache/nifty_weekly_candle_prediction_v1
+          path: data/cache/nifty_weekly_candle_prediction_v1/public
           key: nwcp-v1-${{ runner.os }}-${{ hashFiles('research/nifty-weekly-candle-prediction/run_research.py') }}-${{ github.run_id }}
       - name: Upload sanitized audit and metrics only
         if: always()
