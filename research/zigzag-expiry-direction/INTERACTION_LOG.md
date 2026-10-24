@@ -74,3 +74,9 @@ Added unit tests for Dhan response parsing, epoch timestamp conversion, invalid 
 - Added `audit_sessions.py` to inspect timestamps and OHLC for every acquired timeframe, flag weekend dates and broad clock-time anomalies without deleting observations.
 - Updated the Actions workflow to run the diagnostic and upload `zigzag_session_audit.json` alongside other data reports.
 - Added ZZD-022: this is not official exchange-calendar certification. Need authoritative NSE session calendar and Dhan bar timestamp convention before scoring. No prediction metrics generated.
+
+
+## 2026-10-25 — CI test failure diagnosed and corrected
+- Inspected run [#40127961418](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127961418) logs after adding session diagnostics.
+- Found the 30m test incorrectly indexed the returned `Path` as if it were a dictionary. Corrected the assertion in commit `1b6845b3b0d81b333ede7be9071ecd6ebbff2d10`.
+- Since the unit-test gate failed, the run skipped Dhan authentication and acquisition. Do not interpret its missing-file reports as a new data-provider failure. Check the next workflow result.
