@@ -45,3 +45,10 @@ The successful data artifact was inspected directly. Its 1-minute CSV contains 5
 
 ## Verified acquisition and diagnostic audit — 2026-10-25
 Successful workflow [#40128335927](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927) uploaded [artifact #12574310370](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40128335927/artifacts/12574310370). Tests, Dhan authentication, acquisition, timeframe validation, 30m resampling, and diagnostic audit all passed. Dataset counts: 1m 511,268; 5m 92,795; 15m 30,985; 30m 14,814; 60m 8,663; daily 1,240. The raw audit found 12/5/3/0/2/0 OHLC findings respectively, with weekend and broad-clock flags detailed in reports/zigzag_session_audit.json inside the artifact. The audit decision remains NOT_ELIGIBLE_FOR_SCORING_UNTIL_OFFICIAL_SESSION_CALENDAR_AND_DHAN_TIMESTAMP_CONVENTION_ARE_VERIFIED. **No predictions have been scored and no accuracy claim is available.**
+
+
+## 2026-10-25 — Independent local diagnostics of public 5-minute archive
+
+Downloaded and inspected workflow artifact 12575426805. Preliminary diagnostic counts: 92,876 rows; 1,244 dates; zero duplicate timestamps; sorted timestamps; zero OHLC-invalid rows. 1,236 dates contain 75 rows (09:15 through 15:25). Six dates fall on weekends and 48 rows are outside the regular session clock window; these are flagged for classification, not silently removed. The public archive ends 2026-04-21, whereas the Yahoo fallback begins later, so current artifacts have zero common timestamps and do not provide an overlap price-parity check.
+
+A reusable report generator, `research/zigzag-expiry-direction/audit_public_5m.py`, was added to the workflow. **These are data diagnostics only, not prediction results. No ZigZag forecast has been scored, and no accuracy or predictive-value claim is available.**
