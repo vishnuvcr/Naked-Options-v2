@@ -41,3 +41,7 @@ Primary metric: balanced accuracy on eligible out-of-sample forecasts. Secondary
 - Do not use NWCP-1.0 scores, selected models, or labels as ZigZag results.
 - Do not claim Pine compilation unless a TradingView compile result is actually observed.
 - User explicitly waived independent tester review for this task; no tester gate is part of this protocol.
+
+
+## Protocol amendment 1.1 — causal repaint setting (2026-10-25)
+A publicly accessible mirror of the ZigZag++ wrapper shows `repaint=true` as the default. Its alternate branch only draws on a direction change and uses prior-bar values (`z1[1]`, `z2[1]`). Because the study is explicitly predictive and forbids look-ahead, the primary multi-timeframe test must use the wrapper's non-repaint mode (`repaint=false`) and timestamp the signal at the bar where that branch makes it available—not at the retrospective pivot location. This is a deliberate configuration choice and must be reported as such; do not describe results as default-setting performance. The imported ZigLib v1 internals are still not independently verified, so this wrapper-level evidence does not pass the exact-library gate. Source mirror: https://github.com/rohitbhure65/pine-scripts/blob/master/zigzag.pine
