@@ -190,12 +190,14 @@ def audit_dhan_internal_consistency(one_path: Path = DHAN_1M, five_path: Path = 
     misaligned = []
     incomplete = 0
     compared = 0
+    misaligned_count = 0
     mismatch_rows = []
     max_diff = 0.0
     for stamp, bar in sorted(five.items()):
         start = datetime.fromisoformat(stamp)
         offset = (start.hour * 60 + start.minute - (9 * 60 + 15)) % 5
         if offset != 0:
+            misaligned_count += 1
             if len(misaligned) < 20:
                 misaligned.append(stamp)
             continue
@@ -230,9 +232,7 @@ def audit_dhan_internal_consistency(one_path: Path = DHAN_1M, five_path: Path = 
         "complete_groups": compared,
         "incomplete_groups": incomplete,
         "mismatch_groups": len(mismatch_rows),
-        "misaligned_five_minute_timestamps": five_raw - five_duplicates - len(misaligned) if False else sum(
-            1 for stamp in five if (datetime.fromisoformat(stamp).hour * 60 + datetime.fromisoformat(stamp).minute - (9 * 60 + 15)) % 5 != 0
-        ),
+        "misaligned_five_minute_timestamps": misaligned_count,
         "misaligned_examples": misaligned,
         "maximum_absolute_ohlc_difference": max_diff,
         "mismatch_examples": mismatch_rows[:20],
