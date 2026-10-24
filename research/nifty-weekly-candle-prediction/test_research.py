@@ -139,3 +139,21 @@ def test_holm_adjustment_is_monotonic_and_bounded():
 
 
 # CI dispatch probe: this comment-only commit triggers the repository's push workflow so the committed suite is executed in GitHub Actions.
+
+
+def test_evolutionary_search_runs_across_multiple_generations():
+    # Exercise elite carry-forward, mutation and crossover; this caught wrapper-record leakage
+    # from the archive into the candidate population in the real workflow.
+    rng = np.random.default_rng(20261024)
+    x_train = rng.normal(size=(120, 6))
+    y_train = (x_train[:, 0] + 0.4 * x_train[:, 1] > 0).astype(int)
+    x_valid = rng.normal(size=(50, 6))
+    y_valid = (x_valid[:, 0] + 0.4 * x_valid[:, 1] > 0).astype(int)
+    result = mod._evolve_rule(
+        x_train, y_train, x_valid, y_valid,
+        [f"f{i}" for i in range(6)], seed=19,
+        max_candidates=100, max_generations=5,
+    )
+    assert result["status"] == "OK"
+    assert result["candidate_count"] > 0
+    assert result["best_candidate"]["candidate"]["f1"] in range(6)
