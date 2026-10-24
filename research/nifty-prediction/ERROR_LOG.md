@@ -77,3 +77,15 @@
 - **Likely cause:** `setup-python` had `cache: pip` configured, but this repository path does not contain a recognized pip dependency manifest (`requirements.txt`, `pyproject.toml`, etc.) for cache key discovery. This matches the failure step, but full log text was not available through the run summary, so label this a high-confidence diagnosis rather than a confirmed error string.
 - **Fix:** Removed `cache: pip` from the setup-python step, avoiding automatic dependency-file discovery. Commit: `3ba7e1e9d79a2a4a7323bc555a7e8ae76dc06f0b`.
 - **Verification:** The fix push should trigger a new run. Do not claim success until a run shows setup-python, tests, acquisition, benchmark, and artifact steps completed.
+
+
+## NP-013 — GitHub Actions setup-python failed before tests (resolved and verified)
+- **Evidence:** Run #33 failed at `actions/setup-python@v5`; research steps were skipped.
+- **Cause hypothesis:** pip caching without a recognized dependency manifest. The exact log text was not accessible from the run summary, so this remains a likely rather than verbatim-confirmed cause.
+- **Fix:** Removed `cache: pip` in commit `3ba7e1e9d79a2a4a7323bc555a7e8ae76dc06f0b`.
+- **Verification:** Run [#34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710) subsequently passed both jobs and all main-job steps including tests, acquisition, parity audit, benchmark, persistence, and artifact upload.
+
+## NP-014 — Exact source parity is not independent validation
+- **Severity:** Medium (interpretation risk).
+- **Observation:** The second-source audit found exactly identical OHLC values across all 4,686 overlapping daily rows. This could indicate common upstream dependencies or a mirrored copy, so it cannot be treated as independent confirmation of market-data correctness.
+- **Mitigation:** State this caveat prominently; seek official Nifty Indices/NSE source data before any high-confidence claim. Do not infer source independence from zero mismatch.
