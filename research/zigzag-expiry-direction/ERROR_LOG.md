@@ -243,3 +243,10 @@
 - **Risk:** A historical run could receive daily or ancillary data that does not represent only information available by the 10:00 IST cutoff. A forecast-record timestamp validator cannot independently prove the model's actual input set.
 - **Mitigation:** Use a custom frozen market-only snapshot/adapter, no unrestricted Yahoo market retrieval, no undated news/fundamentals/social data, and hash the exact input manifest. Add tests proving any requested data timestamps are <= cutoff. Keep formal evaluation blocked until this is demonstrated.
 
+
+
+## TA-005 — Snapshot validator is not yet a source or session certification (open gate)
+- **Severity:** Medium; historical evaluation remains blocked.
+- **Details:** New validator checks timestamp and OHLC record integrity, but cannot prove source timestamps are bar-start vs bar-end, completeness of official trading sessions, immutability/revision history, or source accuracy.
+- **Mitigation:** Require source/query provenance, SHA-256 of frozen source files, independent overlap checks, official session membership, and a cutoff-specific materialized snapshot before graph invocation.
+
