@@ -19,13 +19,14 @@ OUT = Path("reports/zigzag_session_audit.json")
 IST = ZoneInfo("Asia/Kolkata")
 FILES = {
     "1m": ROOT / "nifty50_1m.csv",
-    "5m": ROOT / "nifty50_5m.csv",
+    "5m_dhan": ROOT / "nifty50_5m_dhan.csv",
+    "5m_public_archive": ROOT / "nifty50_5m_public_archive.csv",
     "15m": ROOT / "nifty50_15m.csv",
     "30m": ROOT / "nifty50_30m_resampled.csv",
     "60m": ROOT / "nifty50_60m.csv",
     "daily": ROOT / "nifty50_daily.csv",
 }
-OPTIONAL = {"1m"}
+OPTIONAL = {"1m", "5m_dhan", "5m_public_archive"}
 BROAD_START, BROAD_END = time(9, 0), time(16, 0)
 
 
@@ -94,7 +95,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default=str(OUT))
     args = parser.parse_args()
-    datasets = {tf: audit_file(path, tf) for tf, path in FILES.items()}
+    files = dict(FILES)
+    primary_5m = next((candidate for candidate in (
+        ROOT / "nifty50_5m_public_archive.csv",
+        ROOT / "nifty50_5m_dhan.csv",
+        ROOT / "nifty50_5m.csv",
+    ) if candidate.exists()), ROOT / "nifty50_5m.csv")
+    files["5m"] = primary_5m
+    datasets = {tf: audit_file(path, tf.replace("_dhan", "").replace("_public_archive", "")) for tf, path in files.items()}
     errors = []
     for tf, result in datasets.items():
         if result.get("status") == "INVALID_SCHEMA":
@@ -109,6 +117,7 @@ def main():
                                "note": "Diagnostic only, not official eligibility criteria."},
         "official_nse_session_calendar_provided": False,
         "datasets": datasets,
+        "primary_5m_source": str(primary_5m),
         "errors": errors,
         "decision": "NOT_ELIGIBLE_FOR_SCORING_UNTIL_OFFICIAL_SESSION_CALENDAR_AND_DHAN_TIMESTAMP_CONVENTION_ARE_VERIFIED"
     }
