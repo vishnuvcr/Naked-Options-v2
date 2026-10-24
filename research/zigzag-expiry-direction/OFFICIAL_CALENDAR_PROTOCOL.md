@@ -49,3 +49,17 @@ Create a reproducible date-level mapping for each prediction cutoff and its next
 ## Explicit prohibition
 
 Do not substitute a hand-written weekday calendar for the official session table; do not treat a public wrapper as the ZigLib library implementation; do not infer performance from the mere success of data acquisition or validation.
+
+
+## Official holiday-source leads by year
+
+These are official NSE circulars or the official NSE holiday portal. They establish a source collection route, **not yet a complete ingested session calendar**.
+
+- 2021 Capital Market holiday circular: https://archives.nseindia.com/content/circulars/CMTR46623.pdf
+- 2022 F&O holiday circular: https://nsearchives.nseindia.com/content/circulars/FAOP50561.pdf
+- 2024 Capital Market holiday circular: https://archives.nseindia.com/content/circulars/CMTR59722.pdf
+- 2025 official NSE holiday page: https://www.nseindia.com/static/holidays-for-the-calendar-year-2025
+- 2026 F&O holiday circular: https://nsearchives.nseindia.com/content/circulars/FAOP71777.pdf
+- Current interactive official holiday portal (must select the relevant product/segment and year): https://www.nseindia.com/resources/exchange-communication-holidays
+
+**Important:** Capital Market and F&O holiday lists can differ in purpose and need not be treated as interchangeable without checking segment applicability. The target is the NIFTY 50 spot index, while the weekly-expiry schedule is a derivatives contract schedule. Use the official session calendar applicable to the underlying spot index for spot timestamps and the applicable F&O circular/contract record for expiry dates. Check special sessions and any ad-hoc circulars before certifying dates.
