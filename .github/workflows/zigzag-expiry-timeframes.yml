@@ -28,6 +28,7 @@ on:
       - "research/zigzag-expiry-direction-developer"
     paths:
       - "research/zigzag-expiry-direction/acquire_dhan_timeframes.py"
+      - "research/zigzag-expiry-direction/prepare_timeframes.py"
       - ".github/workflows/zigzag-expiry-timeframes.yml"
 
 permissions:
@@ -62,6 +63,10 @@ jobs:
           ARGS=(--start "$START_DATE" --end "$END_DATE" --intervals "$INTERVALS")
           if [ "$REFRESH_DATA" = "true" ]; then ARGS+=(--refresh); fi
           python research/zigzag-expiry-direction/acquire_dhan_timeframes.py "${ARGS[@]}"
+      - name: Validate data and derive 30-minute bars
+        if: always()
+        run: python research/zigzag-expiry-direction/prepare_timeframes.py --required 5,15,60,daily
+      - name: Upload dataset and provenance manifest (no secrets)
       - name: Upload dataset and provenance manifest (no secrets)
         if: always()
         uses: actions/upload-artifact@v4
@@ -70,5 +75,6 @@ jobs:
           path: |
             data/cache/zigzag_expiry_direction/*.csv
             reports/zigzag_data_manifest.json
+            reports/zigzag_timeframe_validation.json
           if-no-files-found: warn
           retention-days: 30
