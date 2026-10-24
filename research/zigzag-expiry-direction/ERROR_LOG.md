@@ -67,3 +67,11 @@
 - **Issue:** The target protocol uses a 10:00 IST NIFTY 50 spot reference, which daily OHLC data cannot establish exactly.
 - **Risk:** Substituting daily open/close or futures prices would change the target definition.
 - **Mitigation:** Acquire validated intraday spot data or amend the protocol explicitly before scoring; no silent substitution.
+
+
+## ZZD-012 — Timeframe variants pre-registered; implementation/data blockers persist
+- **Severity:** High; open
+- **Date:** 2026-10-25
+- **Issue:** User asked to test various chart timeframes. The supplied script does not pin a timeframe; each timeframe can create different pivot sequences and confirmation times.
+- **Mitigation:** Added TIMEFRAME_SENSITIVITY.md pre-registering 5m, 15m, 30m, 60m and 1-day variants, with 1m conditional on data quality. Keep signal rules and targets fixed, use common intervals where possible, report per-timeframe coverage, and correct formal multi-comparison tests. Do not score until exact ZigLib behavior, intraday prices and expiry schedule are validated.
+- **Status:** Protocol decision complete; empirical execution still blocked.
