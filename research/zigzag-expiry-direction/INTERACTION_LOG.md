@@ -149,3 +149,10 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Added local unit test execution to the compatibility workflow; latest CI result pending.
 - Source review found standard TradingAgents date-window market tools and Yahoo output timezone removal do not establish a 10:00 IST cutoff. Next design step is a frozen market-only adapter with unrestricted data retrieval disabled. No model forecast or score generated.
 
+
+
+## 2026-10-25 — CI confirmed and frozen snapshot validation added
+- Inspected workflow #40130735394: all steps passed, including local contract tests, upstream pytest, Ruff, clean import, and Yahoo probe.
+- Added `market_snapshot.py` and tests to validate frozen market-only bars against cutoff, timezone, order, instrument and OHLC consistency. Added gate documentation; new CI run pending.
+- No LLM forecast invoked; no accuracy score. Standard TradingAgents data router remains disallowed for historical cutoff evaluation until a frozen-snapshot market-only path is proven.
+
