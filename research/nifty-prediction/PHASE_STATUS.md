@@ -53,3 +53,7 @@ The GitHub commit-status endpoint returned no status entries for the new benchma
 - Reviewed the benchmark workflow and found a failure path: the parity audit is intentionally non-blocking, but its JSON had been staged unconditionally. A failed download/schema audit could therefore fail the persistence step after the primary model benchmark.
 - Corrected the persistence step to stage only output files that exist and log missing optional outputs. Commit: `dcce2fc65ee91d45544ac3779b9c08bf100d0c13`.
 - This is a code-level correction only. It does not prove the workflow or tests passed; production artifacts and Actions status remain unverified.
+
+
+## Automation trigger correction — 2026-10-25
+The Actions overview screenshot confirms the benchmark workflow is triggering and shows failed runs. The push path filter previously included all `research/nifty-prediction/**` files, so status/error-log documentation updates also retriggered data acquisition and model training. Narrowed the push trigger to executable scripts, tests, and the workflow file while retaining manual dispatch. Commit: `f2ede8957f3bc2ba7cb557be04cc5c6ba04bafd4`. The screenshot does not expose the failing step; root cause of the failed run remains unresolved and is not represented as fixed.
