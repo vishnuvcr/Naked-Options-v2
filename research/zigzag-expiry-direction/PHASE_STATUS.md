@@ -89,3 +89,10 @@ Run [#40127255063](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40
 | 6. Manuscript/decision | DRAFT ONLY | Manuscript must remain explicit that no empirical prediction result has been obtained. |
 
 Current decision: **DATA ACQUISITION SUCCESSFUL; PREDICTION NOT EVALUATED; NO PERFORMANCE CLAIM.** User waived independent tester review for this experiment.
+
+
+## Artifact audit — 2026-10-25
+
+Downloaded and inspected the successful Actions artifact [12573423696](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40127255063/artifacts/12573423696). The validation report has no structural errors. Raw coverage runs from 2021-10-25 through 2026-10-23: 92,795 5m bars (5 invalid OHLC rows excluded in validated copy), 30,985 15m bars (3 excluded), 8,663 60m bars (2 excluded), and 1,240 daily bars (0 excluded). The 30m derived series contains 14,814 bars and 21 incomplete/noncontiguous bins were dropped. The artifact also contains 1m raw bars; 1m validation was not included in the current validator's required dataset report and must be added before using 1m in scoring.
+
+This audit verifies data pipeline output, not the exact imported ZigLib implementation or prediction performance. Source audit located the public wrapper [ZigZag++ [LD]](https://github.com/rohitbhure65/pine-scripts/blob/master/zigzag.pine), which imports DevLucem/ZigLib/1; public TradingView library metadata describes the function signature and returned direction/two points but does not expose sufficient source details in the available retrieval to prove exact causal pivot availability. The wrapper's default is repaint=true. No source-faithful causal signal stream has been produced, and the historically correct expiry/10:00-to-expiry target table has not been audited. Therefore no scoring should be run yet; phase 3 remains blocked and phase 4 has not started.
