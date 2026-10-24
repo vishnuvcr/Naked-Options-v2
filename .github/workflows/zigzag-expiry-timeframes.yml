@@ -31,8 +31,10 @@ on:
     paths:
       - "research/zigzag-expiry-direction/acquire_dhan_timeframes.py"
       - "research/zigzag-expiry-direction/prepare_timeframes.py"
+      - "research/zigzag-expiry-direction/migrate_legacy_5m_cache.py"
       - "research/zigzag-expiry-direction/audit_sessions.py"
       - "research/tradingagents/acquire_public_intraday_archive.py"
+      - "research/tradingagents/acquire_nifty_yahoo_fallback.py"
       - "research/zigzag-expiry-direction/audit_public_5m.py"
       - "research/zigzag-expiry-direction/audit_5m_source_parity.py"
       - "tests/test_zigzag_data_pipeline.py"
@@ -60,7 +62,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: data/cache/zigzag_expiry_direction
-          key: zigzag-dhan-v1-${{ runner.os }}-${{ inputs.start_date || '2021-10-25' }}-${{ inputs.end_date || '2026-10-25' }}
+          key: zigzag-dhan-v2-${{ runner.os }}-${{ inputs.start_date || '2021-10-25' }}-${{ inputs.end_date || '2026-10-25' }}
+      - name: Quarantine ambiguous legacy 5m cache
+        run: python research/zigzag-expiry-direction/migrate_legacy_5m_cache.py
       - name: Generate and validate Dhan token or select free fallback
         env:
           DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
@@ -188,5 +192,6 @@ jobs:
             reports/public_intraday_sources.json
             reports/public_5m_diagnostic_audit.json
             reports/zigzag_cross_source_audit.json
+            reports/zigzag_legacy_5m_cache_migration.json
           if-no-files-found: warn
           retention-days: 30
