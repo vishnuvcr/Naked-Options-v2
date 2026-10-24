@@ -191,3 +191,9 @@ The workflow did not rerun on the test/audit changes because the push path filte
 - Structural archive checks passed, but official session classification, overlapping-source price validation, and exact imported ZigLib causal timing remain unresolved.
 - Applied the preregistered rule not to substitute a generic ZigZag or score retrospective pivots. Updated phase status, results ledger, manuscript, README and error log to close this run as NO-GO FOR SOURCE-FAITHFUL PREDICTION SCORING.
 - No accuracy estimate or trading recommendation is claimed. Restart criteria are recorded in the error log and results ledger.
+
+## 2026-10-25 — Additional public source investigation
+- Located public wrapper mirror https://github.com/rohitbhure65/pine-scripts/blob/master/zigzag.pine. It confirms the configured parameters, repaint default, import path, prior-bar point references in the non-repaint branch, and bar-close direction-change alerts.
+- The mirror does not contain DevLucem/ZigLib/1 implementation. This is useful wrapper-level evidence but does not remove the causality gate.
+- Official historical daily index data portals were also confirmed as available from NSE/Nifty Indices, but daily OHLC cannot substitute for the required intraday 10:00 target observation.
+- No model score generated; no generic ZigZag substitution.
