@@ -2,12 +2,13 @@
 
 ## Current status — 2026-10-25
 
-The existing daily next-session benchmark, simple-rule screen, GARCH volatility comparison, seven-repository integration audit, and optional-model compatibility workflow are complete. They do not validate weekly-expiry prediction. The dedicated weekly-expiry protocol and experiment runner are now added; results remain pending execution.
+The daily next-session benchmark, simple-rule screen, GARCH volatility comparison, seven-repository integration audit, optional-model compatibility workflow, and dedicated weekly-expiry direction screen have run. **No predictive edge has been established.**
 
 - [Research plan](research/nifty-prediction/RESEARCH_PLAN.md)
 - [Weekly-expiry experiment protocol](research/nifty-prediction/WEEKLY_EXPIRY_DIRECTION_EXPERIMENTS.md)
 - [Weekly-expiry experiment runner](research/nifty-prediction/evaluate_weekly_expiry.py)
 - [Weekly-expiry experiment workflow](.github/workflows/nifty-weekly-expiry.yml)
+- [Weekly-expiry result report](reports/nifty-prediction/weekly_expiry_experiments.json)
 - [Phase status](research/nifty-prediction/PHASE_STATUS.md)
 - [Living manuscript](research/nifty-prediction/MANUSCRIPT.md)
 - [Error log](research/nifty-prediction/ERROR_LOG.md)
@@ -20,7 +21,7 @@ The existing daily next-session benchmark, simple-rule screen, GARCH volatility 
 - [Optional model experiment workflow](.github/workflows/nifty-optional-models.yml)
 - [Daily benchmark workflow](.github/workflows/nifty-prediction-benchmark.yml)
 
-## Existing daily benchmark (not expiry-specific)
+## Daily next-session benchmark (not expiry-specific)
 
 Common holdout: 1,157 observations from 2022-02-14 through 2026-10-22; up-session rate 52.20%.
 
@@ -32,10 +33,18 @@ Common holdout: 1,157 observations from 2022-02-14 through 2026-10-22; up-sessio
 | Random forest | 50.56% | 50.44% |
 | Histogram gradient boosting | 53.15% | 52.82% |
 
-No candidate has established a reliable edge. Existing gross index sign proxies are not executable strategy P&L and exclude realistic costs.
+## Weekly-expiry direction screen
 
-## Weekly-expiry research scope
+[Workflow run #6 succeeded](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40145451144), including unit tests and report persistence. The model predicts next observed weekly-expiry NIFTY spot direction from the prior observed expiry close, using daily OHLC-derived features only. Dataset: 923 examples; chronological train/test split 692/231; test UP rate 54.98%.
 
-The new experiment defines a separate expiry-day task using daily spot OHLC and an explicitly approximate historical weekday schedule: Thursday before September 2025 and Tuesday from September 2025, based on [NSE circular FAOP/68747](https://nsearchives.nseindia.com/web/sites/default/files/inline-files/FAOP68747.pdf). The script flags the calendar as unverified because it does not yet ingest an authoritative contract-by-contract holiday-adjusted expiry calendar. It does not pretend to evaluate historical options-chain, intraday, breadth, global-market, FII/DII, or news features without point-in-time data.
+| Method | Accuracy | Balanced accuracy |
+|---|---:|---:|
+| Training-majority baseline | 54.98% | 50.00% |
+| Previous expiry direction | 50.65% | 50.16% |
+| Logistic regression | 50.65% | 50.76% |
+| Random forest | 50.22% | 47.67% |
+| Histogram gradient boosting | 52.81% | 49.86% |
 
-The new workflow is configured for automatic runs on relevant code changes and manual dispatch. No weekly-expiry model is validated until the run and persisted JSON results are inspected. No tester branch or tester review is part of this project.
+**Conclusion:** no model establishes an expiry-direction edge; balanced accuracy is near 50%. The approximate expiry calendar is not validated against official holiday-adjusted contract dates. The data is third-party and not exchange-certified. This is not an options-premium or strategy-profitability test; slippage, brokerage, taxes and execution costs have not been evaluated because no strategy has survived prediction screening.
+
+The study does not claim testing options-chain, intraday, breadth, global-market, FII/DII or news features because validated point-in-time historical inputs are not integrated. See the [manuscript](research/nifty-prediction/MANUSCRIPT.md) for methods and limitations.
