@@ -1,0 +1,47 @@
+name: NIFTY weekly expiry direction experiments
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/tradingagents-feasibility-developer
+    paths:
+      - "research/nifty-prediction/evaluate_weekly_expiry.py"
+      - "research/nifty-prediction/WEEKLY_EXPIRY_DIRECTION_EXPERIMENTS.md"
+      - ".github/workflows/nifty-weekly-expiry.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nifty-weekly-expiry-\${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  weekly-expiry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip pandas numpy scikit-learn
+      - name: Run weekly expiry experiments
+        run: python research/nifty-prediction/evaluate_weekly_expiry.py
+      - name: Persist report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/nifty-prediction/weekly_expiry_experiments.json
+          git commit -m "Record weekly expiry direction experiment results" || echo "No report changes"
+          git push origin "HEAD:\${GITHUB_REF_NAME}"
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nifty-weekly-expiry-experiments
+          path: reports/nifty-prediction/weekly_expiry_experiments.json
+          if-no-files-found: warn
+          retention-days: 90
