@@ -65,3 +65,6 @@ The first new-hypothesis workflow run failed because the multi-horizon estimator
 
 ## NP-021 — New OHLC hypothesis tranche shows no clear predictive edge (OPEN RESEARCH LIMITATION)
 The successful chronological screening run reports 53.79% accuracy / 53.67% balanced accuracy for full-feature logistic regression; volatility specialists scored 52.60% balanced accuracy; 3- and 5-session balanced accuracy were below 50%; selective prediction covered 15.06% at 53.37% balanced accuracy and worse Brier/log loss than the full-feature model. This is a reused screening holdout, not an untouched confirmation set; no statistical-significance or trading-edge claim is made.
+
+## NP-022 — NSE schema smoke test overstated semantic validation (OPEN)
+The initial NSE sample workflow downloaded and parsed three official ZIPs, but its first parser only scanned the first 10,000 rows and did not recognize UDiFF aliases such as `TckrSymb`, `OptnTp`, `StrkPric`, and `TradDt`. The persisted `ALL_SAMPLES_PARSED` status establishes ZIP/CSV readability only, not NIFTY options-row validation or canonical legacy-to-UDiFF mapping. Do not use this report as proof of semantic validity. Correct alias mapping, scan full files for NIFTY CE/PE rows, and require explicit semantic assertions. Workflow: [#40162669263](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40162669263).
