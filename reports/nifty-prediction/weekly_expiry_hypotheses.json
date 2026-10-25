@@ -1,0 +1,148 @@
+{
+  "study": "NIFTY 50 weekly-expiry prediction hypotheses",
+  "status": "SCREENING_COMPLETE_WITH_DATA_BLOCKERS",
+  "input_sha256": "8d73f2b98d2109a5ccf6bfc6e85927de9f5c59ced889c188f6aa59a340079ab0",
+  "input_rows": 4686,
+  "examples": 923,
+  "first_cutoff": "2007-12-13",
+  "last_expiry": "2026-10-13",
+  "expiry_calendar": {
+    "rule": "Thursday before 2025-09-01; Tuesday thereafter",
+    "official_holiday_adjusted_calendar_verified": false
+  },
+  "split": {
+    "method": "chronological 60/15/25 train/calibration/test",
+    "train": 553,
+    "calibration": 139,
+    "test": 231,
+    "test_start_cutoff": "2022-02-24",
+    "test_end_expiry": "2026-10-13"
+  },
+  "features": [
+    "ret1",
+    "mom2",
+    "mom3",
+    "mom5",
+    "mom10",
+    "mom20",
+    "mom40",
+    "mom60",
+    "vol5",
+    "ma5",
+    "vol10",
+    "ma10",
+    "vol20",
+    "ma20",
+    "vol40",
+    "ma40",
+    "range_pct",
+    "gap_pct",
+    "close_location"
+  ],
+  "results": [
+    {
+      "method": "training_majority",
+      "n": 231,
+      "accuracy": 0.5497835497835498,
+      "balanced_accuracy": 0.5,
+      "mcc": 0.0,
+      "brier": 0.24752467300593742,
+      "log_loss": 0.6881883684907356
+    },
+    {
+      "method": "previous_expiry_direction",
+      "n": 231,
+      "accuracy": 0.5064935064935064,
+      "balanced_accuracy": 0.5015520896426409,
+      "mcc": 0.0031041792852816476,
+      "brier": 0.2518506493506494,
+      "log_loss": 0.6968692920226559
+    },
+    {
+      "method": "regularized_logistic",
+      "n": 231,
+      "accuracy": 0.5238095238095238,
+      "balanced_accuracy": 0.526877649909146,
+      "mcc": 0.05357308480173844,
+      "brier": 0.25045987545848897,
+      "log_loss": 0.6942095774914435
+    },
+    {
+      "method": "hist_gradient_boosting",
+      "n": 231,
+      "accuracy": 0.5151515151515151,
+      "balanced_accuracy": 0.4911417322834646,
+      "mcc": -0.02010127693551975,
+      "brier": 0.25923444255651895,
+      "log_loss": 0.7140944457505783
+    },
+    {
+      "method": "volatility_regime_specialists_fallback_global",
+      "n": 231,
+      "accuracy": 0.5411255411255411,
+      "balanced_accuracy": 0.5417549969715325,
+      "mcc": 0.08309579888925502,
+      "brier": 0.2498089167730783,
+      "log_loss": 0.6931031909742255
+    },
+    {
+      "method": "logistic_on_transition_subset",
+      "status": "BLOCKED_INSUFFICIENT_TRANSITIONS",
+      "n": 3
+    },
+    {
+      "method": "selective_logistic_calibration_threshold",
+      "n": 21,
+      "accuracy": 0.42857142857142855,
+      "balanced_accuracy": 0.35,
+      "mcc": -0.279078152825719,
+      "brier": 0.2836916253061681,
+      "log_loss": 0.7623555463632175,
+      "coverage": 0.09090909090909091,
+      "threshold_abs_probability_from_0_5": 0.07766097516855709
+    },
+    {
+      "method": "out_of_fold_residual_probability_correction",
+      "n": 231,
+      "accuracy": 0.5497835497835498,
+      "balanced_accuracy": 0.5,
+      "mcc": 0.0,
+      "brier": 0.2474243799242692,
+      "log_loss": 0.6879578964245586
+    }
+  ],
+  "multi_horizon": {
+    "1_expiry_horizon": {
+      "n_test": 231,
+      "accuracy": 0.4805194805194805,
+      "balanced_accuracy": 0.48402483343428226,
+      "brier": 0.2506219325359057
+    },
+    "2_expiry_horizon": {
+      "n_test": 231,
+      "accuracy": 0.48917748917748916,
+      "balanced_accuracy": 0.5011377427184466,
+      "brier": 0.25330337200647396
+    },
+    "3_expiry_horizon": {
+      "n_test": 231,
+      "accuracy": 0.5367965367965368,
+      "balanced_accuracy": 0.5325938824954572,
+      "brier": 0.24807287650957516
+    }
+  },
+  "residual_correction_status": "SCREENED_NOT_CONFIRMATORY",
+  "blocked_hypotheses": {
+    "global_to_india_lead_lag": "BLOCKED: point-in-time global index, FX, crude and gold history not joined",
+    "breadth_disagreement": "BLOCKED: point-in-time constituent/sector breadth and historical constituents unavailable",
+    "options_implied_expectations": "BLOCKED: timestamped historical option-chain IV/skew/OI not yet validated",
+    "opening_pressure": "BLOCKED: intraday bars and fixed intraday cutoff not integrated",
+    "event_aware_calendar": "BLOCKED: point-in-time event calendar/history not integrated"
+  },
+  "limitations": [
+    "Approximate expiry weekday rule may mislabel holiday-adjusted expiries.",
+    "Repeated research on the existing history is screening, not untouched confirmation.",
+    "No external data feature is fabricated.",
+    "Spot direction is not option premium direction or profitability."
+  ]
+}
