@@ -14,6 +14,9 @@ The daily next-session benchmark, simple-rule screen, GARCH volatility compariso
 - [New hypothesis workflow](.github/workflows/nifty-new-hypotheses.yml)
 - [New hypothesis results](reports/nifty-prediction/new_hypothesis_experiments.json)
 - [Free historical data-source assessment](research/nifty-prediction/FREE_DATA_SOURCE_ASSESSMENT.md)
+- [NSE options sample audit workflow](.github/workflows/nse-options-data-audit.yml)
+- [NSE options sample audit report](reports/nifty-prediction/nse_options_sample_audit.json)
+- [NSE options audit parser](research/nifty-prediction/audit_nse_options_sample.py)
 - [Phase status](research/nifty-prediction/PHASE_STATUS.md)
 - [Living manuscript](research/nifty-prediction/MANUSCRIPT.md)
 - [Error log](research/nifty-prediction/ERROR_LOG.md)
@@ -67,3 +70,6 @@ Official NSE report pages list daily derivatives bhavcopy, settlement, volatilit
 - [Research interpretation and limitations](research/nifty-prediction/MANUSCRIPT.md#8-new-ohlc-only-hypothesis-tranche-workflow-verified-2026-10-25)
 - [Updated phase status](research/nifty-prediction/PHASE_STATUS.md)
 - [Resolved workflow bug and open limitations](research/nifty-prediction/ERROR_LOG.md)
+
+
+**Data-ingestion caution:** the initial NSE audit workflow successfully downloaded and parsed three official ZIP/CSV samples, but its first parser did not recognize several UDiFF column aliases. Treat this as transport/CSV-read success only; NIFTY option-row semantic validation remains pending (NP-022 in the error log).
