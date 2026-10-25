@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Bounded weekly-expiry NIFTY direction experiments using daily OHLC only.
 
-Primary label: compare the actual expiry-session close with the close of the
-forecast cutoff session (previous available session). Expiry weekday regime:
-Thursday through 2025-08-28, Tuesday from 2025-09-01 onward, with holiday
-adjustment to the previous available trading session. This rule must be checked
-against authoritative historical contract calendars before using results for
-decision-making; the report flags this limitation.
+Primary label: at the close of one observed weekly expiry session, predict
+whether the next weekly expiry-session close will be higher or lower. This is
+an expiry-to-expiry forecast, not a next-day forecast. Expiry weekday regime:
+Thursday before 2025-09-01 and Tuesday from 2025-09-01 onward. Holiday-adjusted
+dates are not inferred without an authoritative contract calendar, and the
+report flags that limitation.
 """
 from __future__ import annotations
 
@@ -66,46 +66,38 @@ def build_weekly_examples(d: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     features = [c for c in d if c.startswith(("ret", "vol", "ma_gap")) or c in ("range_pct", "open_gap", "close_position")]
 
     rows = []
-    expiry_count = 0
-    for expiry_idx in range(1, len(d)):
-        expiry_date = d.loc[expiry_idx, "date"]
-        if expiry_date.weekday() != expiry_weekday(expiry_date):
-            continue
-        # Identify the preceding available session; expiry dates that land on
-        # exchange holidays naturally resolve to the prior session by the
-        # weekday-date search only if the calendar date exists. Actual holiday
-        # shifts require authoritative calendar validation and are not inferred.
-        cut_idx = expiry_idx - 1
-        # Avoid incorrectly treating a weekday-rule expiry when the expected
-        # calendar expiry was a holiday: flagged in report; no external calendar.
+    expiry_indices = [i for i in range(len(d)) if d.loc[i, "date"].weekday() == expiry_weekday(d.loc[i, "date"])]
+    # Pair successive observed expiry sessions. Features are frozen at the prior
+    # expiry close; the target is the next expiry close relative to that close.
+    for pair_idx in range(1, len(expiry_indices)):
+        cut_idx = expiry_indices[pair_idx - 1]
+        expiry_idx = expiry_indices[pair_idx]
         if cut_idx < 60:
             continue
         target_ret = d.loc[expiry_idx, "close"] / d.loc[cut_idx, "close"] - 1
         row = {c: d.loc[cut_idx, c] for c in features}
         row.update({
             "cutoff_date": d.loc[cut_idx, "date"].date().isoformat(),
-            "expiry_date": expiry_date.date().isoformat(),
+            "expiry_date": d.loc[expiry_idx, "date"].date().isoformat(),
             "cutoff_close": float(d.loc[cut_idx, "close"]),
             "expiry_close": float(d.loc[expiry_idx, "close"]),
             "target_return": float(target_ret),
             "target_up": int(target_ret > 0),
-            "regime_vol_high": int(d.loc[cut_idx, "vol20"] > d.loc[:cut_idx, "vol20"].rolling(252, min_periods=60).median().iloc[-1]) if pd.notna(d.loc[cut_idx, "vol20"]) else 0,
         })
         rows.append(row)
-        expiry_count += 1
     frame = pd.DataFrame(rows)
     if frame.empty:
         raise ValueError("No expiry examples built; check input date coverage and weekday rules")
     frame = frame.dropna(subset=features + ["target_return", "target_up"]).reset_index(drop=True)
     metadata = {
-        "expiry_rule": "Thursday before 2025-09-01; Tuesday from 2025-09-01; holiday-shifted expiry not reconstructed",
+        "expiry_rule": "Thursday before 2025-09-01; Tuesday from 2025-09-01; pairs consecutive observed weekday-rule expiry sessions; holiday-shifted dates not reconstructed",
         "authoritative_calendar_verified": False,
         "examples_before_feature_dropna": expiry_count,
         "examples": int(len(frame)),
         "first_cutoff": frame.cutoff_date.min(),
         "last_expiry": frame.expiry_date.max(),
         "feature_columns": features,
-        "label": "UP if expiry-session NIFTY 50 spot close > preceding available session close; otherwise DOWN",
+        "label": "At prior weekly expiry close, UP if the next weekly expiry NIFTY 50 spot close is higher than the prior expiry close; otherwise DOWN",
         "limitations": [
             "Daily OHLC only; no intraday cutoff variants, options chain, breadth, event, or point-in-time global data are included.",
             "Expiry weekday change is encoded as a documented approximation; official expiry calendars and holiday-shift dates were not supplied or validated.",
