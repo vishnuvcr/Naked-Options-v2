@@ -85,6 +85,7 @@ def build_weekly_examples(d: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
             "target_up": int(target_ret > 0),
         })
         rows.append(row)
+    expiry_count = len(rows)
     frame = pd.DataFrame(rows)
     if frame.empty:
         raise ValueError("No expiry examples built; check input date coverage and weekday rules")
