@@ -2,7 +2,7 @@
 
 ## Current status — 2026-10-25
 
-The daily next-session benchmark, simple-rule screen, GARCH volatility comparison, seven-repository integration audit, optional-model compatibility workflow, and dedicated weekly-expiry direction screen have run. **No predictive edge has been established.**
+The daily next-session benchmark, simple-rule screen, GARCH volatility comparison, seven-repository integration audit, optional-model compatibility workflow, dedicated weekly-expiry direction screen, and bounded OHLC hypothesis tranche have run. **No robust predictive edge has been established.**
 
 - [Research plan](research/nifty-prediction/RESEARCH_PLAN.md)
 - [Weekly-expiry experiment protocol](research/nifty-prediction/WEEKLY_EXPIRY_DIRECTION_EXPERIMENTS.md)
@@ -52,3 +52,13 @@ Common holdout: 1,157 observations from 2022-02-14 through 2026-10-22; up-sessio
 **Conclusion:** no model establishes an expiry-direction edge; balanced accuracy is near 50%. The approximate expiry calendar is not validated against official holiday-adjusted contract dates. The data is third-party and not exchange-certified. This is not an options-premium or strategy-profitability test; slippage, brokerage, taxes and execution costs have not been evaluated because no strategy has survived prediction screening.
 
 The study does not claim testing options-chain, intraday, breadth, global-market, FII/DII or news features because validated point-in-time historical inputs are not integrated. See the [manuscript](research/nifty-prediction/MANUSCRIPT.md) for methods and limitations.
+
+
+## New OHLC hypothesis tranche — completed screening
+
+[Corrected workflow run #40146027941 succeeded](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40146027941). The full-feature logistic model scored 53.79% accuracy / 53.67% balanced accuracy on the reused chronological screening holdout. Volatility-regime specialists scored 52.60% balanced accuracy; core OHLC ablation scored 51.01%. Multi-horizon balanced accuracy was 52.58% (1 session), 48.03% (3 sessions), and 48.02% (5 sessions). Selective prediction retained 15.06% of cases at 53.37% balanced accuracy but had worse probability scores. These are exploratory results, not statistical confirmation or evidence of tradable edge.
+
+- [Full machine-readable results](reports/nifty-prediction/new_hypothesis_experiments.json)
+- [Research interpretation and limitations](research/nifty-prediction/MANUSCRIPT.md#8-new-ohlc-only-hypothesis-tranche-workflow-verified-2026-10-25)
+- [Updated phase status](research/nifty-prediction/PHASE_STATUS.md)
+- [Resolved workflow bug and open limitations](research/nifty-prediction/ERROR_LOG.md)
