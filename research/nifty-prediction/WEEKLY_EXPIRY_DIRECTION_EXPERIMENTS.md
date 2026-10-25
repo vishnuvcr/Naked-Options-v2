@@ -46,3 +46,7 @@
 ## Completion rule
 
 Run this as a bounded set of ten hypothesis families, with feature-availability gates. Stop after each family has a documented result or a documented blocker, then provide a combined conclusion. Do not loop indefinitely or silently skip failed experiments.
+
+
+## Implementation note (2026-10-25)
+The initial runner now uses the previous observed expiry close as the forecast cutoff and the next observed expiry close as the target, so the primary label is expiry-to-expiry direction. The current expiry weekday mapping remains approximate until official holiday-adjusted contract dates are added.
