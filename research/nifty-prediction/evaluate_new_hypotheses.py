@@ -49,7 +49,7 @@ def main():
  for h in (1,3,5):
   q=d.copy(); q["yh"]=(q.close.shift(-h)/q.close-1>0).astype(int); q.loc[q.close.shift(-h).isna(),"yh"]=np.nan
   q=q.dropna(subset=feats+["yh"]).reset_index(drop=True); cut=int(len(q)*.75); x,y=q.iloc[:cut],q.iloc[cut:]
-  hm=model(); hm.fit(x[feats],y.yh.astype(int)); horizons[f"{h}_session"]=score(y.yh.astype(int),hm.predict_proba(y[feats])[:,1])
+  hm=model(); hm.fit(x[feats],x.yh.astype(int)); horizons[f"{h}_session"]=score(y.yh.astype(int),hm.predict_proba(y[feats])[:,1])
  conf=np.maximum(pc,1-pc); threshold=float(np.quantile(conf,.80)); mask=np.maximum(p,1-p)>=threshold
  selective={"threshold_from_calibration":threshold,"coverage":float(mask.mean()),"n_selected":int(mask.sum())}
  if mask.sum()>=30: selective.update(score(yt.to_numpy()[mask],p[mask]))
