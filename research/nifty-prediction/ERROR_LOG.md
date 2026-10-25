@@ -8,8 +8,8 @@ Primary source is Yahoo Finance; second source is a third-party parquet mirror. 
 ## NP-002 — Initial benchmark CI (RESOLVED)
 Workflow [#34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710) completed successfully, including tests, acquisition, parity audit, benchmark and artifact persistence.
 
-## NP-003 — Scope mismatch with expiry study (RESOLVED BY NEW TRACK; expiry evidence pending)
-The original study was daily next-session spot direction, not expiry-specific/intraday options prediction. A dedicated weekly-expiry experiment runner and workflow are now present. No weekly-expiry results are yet validated.
+## NP-003 — Scope mismatch with expiry study (RESOLVED BY NEW TRACK)
+The original study was daily next-session spot direction, not expiry-specific/intraday options prediction. Dedicated weekly-expiry experiment is now computed; it did not establish an edge.
 
 ## NP-004 — External repositories are not all empirically executed (OPEN)
 All seven READMEs have been reviewed and roles/guardrails recorded in [REPOSITORY_INTEGRATION.md](REPOSITORY_INTEGRATION.md). Review is not equivalent to installation or an experiment. Do not claim results for libraries without artifacts.
@@ -18,7 +18,7 @@ All seven READMEs have been reviewed and roles/guardrails recorded in [REPOSITOR
 Yahoo and public parquet mirror match exactly. Identical data does not prove accuracy or independence. Official source cross-check remains outstanding.
 
 ## NP-006 — Initial benchmark ML models do not beat the simple direction baseline (OPEN RESEARCH QUESTION)
-Previous-session direction scored 54.10% balanced accuracy on the 1,157-row holdout; logistic regression 52.53%, random forest 50.44%, histogram gradient boosting 52.82%. Do not promote these fitted models as winners.
+Previous-session direction scored 54.10% balanced accuracy on the 1,157-row daily holdout; logistic regression 52.53%, random forest 50.44%, histogram gradient boosting 52.82%. Do not promote these fitted models as winners.
 
 ## NP-007 — Trading costs not modeled (OPEN)
 All current results are prediction or gross index proxies. No strategy is viable until turnover, realistic execution, slippage, brokerage, taxes/charges and relevant futures/options basis are modeled.
@@ -42,10 +42,13 @@ Workflow now fetches/rebases before staging and retries push up to three times. 
 The optional workflow succeeded. Logistic regression achieved 53.59% accuracy and 53.31% balanced accuracy on its separate chronological test. MAPIE 1.6.0 did not expose the expected classifier entry point; PySR imported but was not fitted; tick import succeeded only. No optional model result demonstrates a directional edge.
 
 ## NP-015 — Weekly-expiry calendar is approximate (OPEN)
-The new weekly-expiry runner detects Thursdays before 2025-09-01 and Tuesdays thereafter from daily OHLC dates. It does not ingest the authoritative contract-by-contract expiry calendar or holiday-shift records. This can miss holiday-adjusted expiry sessions and mislabel observations. The report must keep this limitation visible; before any strong claim, integrate official expiry dates and test the mapping. Source for the schedule change: NSE circular FAOP/68747, https://nsearchives.nseindia.com/web/sites/default/files/inline-files/FAOP68747.pdf.
+The weekday rule uses Thursday before September 2025 and Tuesday thereafter, but does not ingest authoritative holiday-adjusted contract-by-contract dates. This can skip holiday-shifted expiry sessions and mislabel intervals. Source: NSE circular FAOP/68747, https://nsearchives.nseindia.com/web/sites/default/files/inline-files/FAOP68747.pdf.
 
-## NP-016 — Weekly-expiry workflow execution and report review pending (OPEN)
-Added `evaluate_weekly_expiry.py` and `.github/workflows/nifty-weekly-expiry.yml`. The workflow is configured for manual dispatch and relevant code changes. At this log update, no successful workflow run/report has been inspected, so no weekly-expiry metric is claimed. After execution, fix any script or workflow failures and record the actual results.
+## NP-016 — Weekly-expiry workflow execution (RESOLVED; scientific limitations remain)
+Workflow [#6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40145451144) succeeded, including unit tests, experiment calculation, report persistence and artifact upload. The initial failed runs uncovered an undefined counter variable; it was fixed and tests now pass. Results are in [weekly_expiry_experiments.json](../../reports/nifty-prediction/weekly_expiry_experiments.json). Results are exploratory because the expiry calendar is approximate.
 
 ## NP-017 — Historical point-in-time feature data not yet integrated (OPEN)
-Options-chain snapshots, intraday data, breadth/constituent history, global markets, FII/DII flows and event/news inputs are not yet validated as timestamped historical datasets. Do not infer historical features from current snapshots or claim these feature families were tested. Start with the data already available and add sources only when point-in-time integrity can be established.
+Options-chain snapshots, intraday data, breadth/constituent history, global markets, FII/DII flows and event/news inputs are not yet validated as timestamped historical datasets. Do not infer historical features from current snapshots or claim these feature families were tested.
+
+## NP-018 — Weekly-expiry model performance is near chance (RESEARCH RESULT; NO EDGE)
+On 231 chronological test examples, majority baseline accuracy was 54.98% (balanced accuracy 50.00%); previous expiry direction 50.65% accuracy / 50.16% balanced accuracy; logistic regression 50.65% / 50.76%; random forest 50.22% / 47.67%; histogram gradient boosting 52.81% / 49.86%. No model materially beats the majority baseline and balanced accuracy is near chance. Do not infer tradable or options-premium edge.
