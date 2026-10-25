@@ -52,3 +52,6 @@ Options-chain snapshots, intraday data, breadth/constituent history, global mark
 
 ## NP-018 — Weekly-expiry model performance is near chance (RESEARCH RESULT; NO EDGE)
 On 231 chronological test examples, majority baseline accuracy was 54.98% (balanced accuracy 50.00%); previous expiry direction 50.65% accuracy / 50.16% balanced accuracy; logistic regression 50.65% / 50.76%; random forest 50.22% / 47.67%; histogram gradient boosting 52.81% / 49.86%. No model materially beats the majority baseline and balanced accuracy is near chance. Do not infer tradable or options-premium edge.
+
+## NP-019 — Proposed novel prediction methods were not initially executed (RESOLVED BY IMPLEMENTATION; RESULTS PENDING)
+The earlier response listed ten research ideas but did not implement them. A bounded OHLC-only runner and a manual/automatic workflow have now been added. The run must be inspected before reporting any performance. External-data methods remain explicitly blocked where point-in-time history is absent; residual correction is deferred pending leakage-safe OOF design.
