@@ -55,17 +55,30 @@ Interpretation: neither momentum variant beats the previous-session direction ba
 
 ## 6. Volatility and optional-model experiments\n\nThe GARCH(1,1) forecast experiment used recursive daily variance updates with parameter refits every 20 sessions. QLIKE was -8.64595 for GARCH(1,1), -8.57379 for rolling 20-session variance, and -8.22293 for expanding unconditional variance (lower is better). This is a modest relative volatility-score improvement only; realized squared returns are noisy, and this result is not directional prediction skill. See [volatility forecast report](../../reports/nifty-prediction/volatility_forecast.json).\n\nA separate chronological 60/15/25 experiment on 4,626 valid feature rows scored logistic regression at 53.59% accuracy and 53.31% balanced accuracy over 1,157 test rows (2022-02-15 to 2026-10-23). The split differs slightly from the initial benchmark, so results should not be pooled. It does not establish a better model. MAPIE 1.6.0 conformal classification was skipped due to API mismatch; PySR 2.7.2 was importable but intentionally not fitted without a predeclared regression target; tick 0.8.0.2 imported only. See [optional-model report](../../reports/nifty-prediction/optional_model_experiments.json) and [workflow #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40144386537).\n\n## 7. Repository integration
 
-Roles and compatibility guardrails for all seven named repositories are in [REPOSITORY_INTEGRATION.md](REPOSITORY_INTEGRATION.md): Quantevolve, TradingAgents, AstraQuant, PySR, `arch`, `tick`, and MAPIE. README review is complete; not every repository has been installed or empirically executed. Next experiments are a separately scored GARCH-family volatility forecast using `arch`, and only then bounded attempts at symbolic regression, regularized time-dependent models and calibrated prediction sets if compatible.
+Roles and compatibility guardrails for all seven named repositories are in [REPOSITORY_INTEGRATION.md](REPOSITORY_INTEGRATION.md): Quantevolve, TradingAgents, AstraQuant, PySR, `arch`, `tick`, and MAPIE. README review is complete; not every repository has been installed or empirically executed. Next experiments are a sepThe GARCH-family volatility forecast was scored separately using `arch`; optional MAPIE, PySR and tick experiments were bounded by compatibility and target-definition constraints.
 
-## 8. Strengths and limitations
+## 9. Weekly-expiry direction experiment — implementation status
+
+The user's primary target is NIFTY 50 spot direction into the upcoming weekly options expiry. The new dedicated runner defines an expiry-to-expiry forecast: at the close of one observed weekly expiry session, estimate whether the next weekly expiry close will be higher or lower. It compares a majority baseline, previous expiry direction, logistic regression, random forest, and histogram gradient boosting using a chronological split and expanding refits.
+
+The experiment uses daily spot OHLC only. It does not yet test options-chain implied volatility/open interest, intraday opening pressure, global-market lead-lag, breadth, FII/DII flows, or event/news signals because validated point-in-time historical inputs have not been integrated. The weekday rule is approximate (Thursday before September 2025, Tuesday from September 2025); official holiday-adjusted expiry dates are not fully reconstructed. The script and unit tests are committed, and an automated/manual workflow is configured. **Results are pending workflow execution; no weekly-expiry accuracy or edge is claimed in this manuscript yet.**
+
+- [Weekly-expiry experiment protocol](WEEKLY_EXPIRY_DIRECTION_EXPERIMENTS.md)
+- [Weekly-expiry experiment runner](evaluate_weekly_expiry.py)
+- [Weekly-expiry alignment tests](../../tests/test_nifty_weekly_expiry.py)
+- [Weekly-expiry workflow](../../.github/workflows/nifty-weekly-expiry.yml)
+- [Weekly-expiry result report, when produced](../../reports/nifty-prediction/weekly_expiry_experiments.json)
+- [NSE circular FAOP/68747 on expiry schedule](https://nsearchives.nseindia.com/web/sites/default/files/inline-files/FAOP68747.pdf)
+
+## 10. Strengths and limitations
 
 **Strengths:** reproducible baseline workflow; source hashes and parity audit; chronological evaluation; predeclared, interpretable rules; same test interval across comparators.
 
 **Limitations:** third-party data not exchange-certified; exact source parity is not independent validation; candidate results use one holdout and are now screening results rather than untouched confirmation; gross index proxies are not executable P&L; no fees/slippage/execution model yet; daily bars do not validate intraday or expiry-specific options predictions.
 
-## 9. Conclusion and next work
+## 11. Conclusion and next work
 
-The current evidence does not identify a better simple direction rule than previous-session direction. No strategy is recommended at this stage. The bounded experiment set is complete for the currently available daily data and compatible tools. The evidence does not support selecting a predictive model or trading strategy. The next scientifically valid extension is a new untouched forward period with official/exchange-grade data and a predeclared evaluation protocol; do not keep tuning against the already-screened holdout. Before any trading study, model Paytm Money/NSE-NFO brokerage, statutory charges, slippage, liquidity, instrument basis, turnover, sizing, and execution. No live trading is authorized or recommended.
+The current evidence does not identify a better simple direction rule than previous-session direction. No strategy is recommended at this stage. The daily next-session experiment set is complete for the currently available daily data and compatible tools. A separate weekly-expiry research track has now been added because daily next-session scores do not answer the user's weekly-expiry question. Its code and workflow are implemented, but no weekly-expiry results are claimed until the workflow has run successfully and its report has been inspected. The daily holdout has already been screened and is not an untouched confirmation set. Before any trading study, model Paytm Money/NSE-NFO brokerage, statutory charges, slippage, liquidity, instrument basis, turnover, sizing, and execution. No live trading is authorized or recommended.
 
 ## Reproducibility links
 
