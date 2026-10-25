@@ -1,6 +1,6 @@
 # NIFTY 50 Prediction — Phase Status
 
-Updated: 2026-10-25 (weekly-expiry experiment run #6 passed; no edge established)
+Updated: 2026-10-25 (new hypothesis tranche implemented; automated run pending verification)
 
 | Phase | Status | Evidence / next action |
 |---|---|---|
@@ -9,11 +9,11 @@ Updated: 2026-10-25 (weekly-expiry experiment run #6 passed; no edge established
 | P2 Daily baseline statistics | COMPLETE FOR INITIAL BENCHMARK | Previous-session direction achieved 54.19% accuracy / 54.10% balanced accuracy on the existing daily holdout. No ML model established improvement. |
 | P3 Daily candidate rules | COMPUTED; EXPLORATORY | Candidate-rule JSON persisted; none establishes a trading edge. |
 | P4 Volatility and optional libraries | COMPUTED WITH LIMITATIONS | GARCH QLIKE comparison persisted; MAPIE skipped due API mismatch; PySR and tick not fitted. |
-| P5 Weekly-expiry target implementation | COMPLETE FOR EXPLORATORY SCREEN | Dedicated runner and three unit tests committed. Target is next observed weekly-expiry close vs previous observed weekly-expiry close. Calendar is approximate, not official holiday-adjusted. |
-| P6 Weekly-expiry model evaluation | COMPLETED; NO CLEAR EDGE | [Workflow run #6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40145451144) succeeded and persisted [weekly-expiry report](../../reports/nifty-prediction/weekly_expiry_experiments.json). 923 examples; chronological split 692 train / 231 test. Majority accuracy 54.98%; previous expiry direction 50.65%; logistic regression 50.65%; random forest 50.22%; gradient boosting 52.81%. Balanced accuracy is near 50% for all; no predictive edge established. |
-| P7 Point-in-time feature enrichment | BLOCKED ON HISTORICAL DATA AVAILABILITY | Options-chain, intraday, breadth, global markets, FII/DII, event/news data require timestamped historical inputs. Do not backfill current snapshots as if historical. |
-| P8 Final synthesis | IN PROGRESS | Update manuscript and README with weekly results; retain no-edge conclusion and data/calendar caveats. |
+| P5 Weekly-expiry direction | COMPLETED; NO CLEAR EDGE | Run #6 succeeded; 923 examples, chronological 692/231 split; balanced accuracy near 50%. Approximate expiry calendar remains a limitation. |
+| P6 New OHLC hypothesis tranche | IMPLEMENTED; AUTOMATED RUN PENDING | Added [new hypothesis runner](evaluate_new_hypotheses.py) and [automatic/manual workflow](../../.github/workflows/nifty-new-hypotheses.yml). Tests volatility-regime specialists, feature ablation, 1/3/5-session targets, and calibration-threshold selective prediction. |
+| P7 External-data hypotheses | BLOCKED ON POINT-IN-TIME INPUTS | Global lead-lag, constituent breadth, options-implied expectations, opening pressure and event-aware models are explicitly marked blocked in the report until archived timestamped data exists. Residual correction is deferred pending a leakage-safe out-of-fold residual protocol. |
+| P8 Final synthesis | IN PROGRESS | Incorporate new hypothesis results after workflow completes; do not promote a winner from the reused screening test. |
 
-## Current research decision
+## Current decision
 
-Weekly-expiry spot direction has now been tested on daily OHLC with a chronological holdout. None of the tested methods improves materially on the majority baseline; balanced accuracy is approximately 50%. This is not evidence of options-premium predictability or a tradable strategy. Do not proceed to live trading or cost-based strategy claims. Next useful work is to validate exact historical expiry dates and source provenance, then add only point-in-time features supported by real archived data; if those sources cannot be obtained, report that limitation rather than simulate missing history.
+Do not infer an edge from the earlier daily or weekly-expiry experiments. The new OHLC-only tranche is a bounded screening experiment, not a final confirmation. External-data ideas must not be fabricated from current snapshots. Any candidate requires repeatable chronological improvement and separate confirmation before strategy evaluation; execution costs apply if a later candidate survives prediction testing.
