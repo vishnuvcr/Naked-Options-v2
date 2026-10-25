@@ -1,0 +1,101 @@
+{
+  "study": "Bounded new NIFTY prediction hypotheses using daily OHLC",
+  "status": "COMPUTED_WITH_EXTERNAL_DATA_HYPOTHESES_BLOCKED",
+  "source_rows": 4645,
+  "source_first_date": "2007-11-14",
+  "source_last_date": "2026-10-22",
+  "split": {
+    "method": "chronological 60/15/25 train/calibration/test",
+    "train": 2787,
+    "calibration": 696,
+    "test": 1162,
+    "test_first_date": "2022-02-07",
+    "test_last_date": "2026-10-22"
+  },
+  "target": "next-session close-to-close direction; zero classified DOWN",
+  "results": {
+    "train_majority_baseline": {
+      "n": 1162,
+      "accuracy": 0.5223752151462995,
+      "balanced_accuracy": 0.5,
+      "mcc": 0.0,
+      "brier": 0.24949993949366342,
+      "log_loss": 0.6921467275551035
+    },
+    "logistic_full_features": {
+      "n": 1162,
+      "accuracy": 0.5378657487091222,
+      "balanced_accuracy": 0.5367454769431705,
+      "mcc": 0.07352205978385305,
+      "brier": 0.24932635495734898,
+      "log_loss": 0.6918807690732148
+    },
+    "volatility_regime_specialists": {
+      "n": 1162,
+      "accuracy": 0.5301204819277109,
+      "balanced_accuracy": 0.5260133279902637,
+      "mcc": 0.052896455080048116,
+      "brier": 0.2505277211940648,
+      "log_loss": 0.6945538842447135
+    },
+    "core_ohlc_features_ablation": {
+      "n": 1162,
+      "accuracy": 0.5137693631669535,
+      "balanced_accuracy": 0.5101310536236401,
+      "mcc": 0.02051794986245236,
+      "brier": 0.24997671222487627,
+      "log_loss": 0.6931146976317044
+    }
+  },
+  "multi_horizon": {
+    "1_session": {
+      "n": 1161,
+      "accuracy": 0.5254091300602929,
+      "balanced_accuracy": 0.5257971083448814,
+      "mcc": 0.05154595490005757,
+      "brier": 0.24969795300225342,
+      "log_loss": 0.6925757674469711
+    },
+    "3_session": {
+      "n": 1161,
+      "accuracy": 0.48578811369509045,
+      "balanced_accuracy": 0.4802754755232246,
+      "mcc": -0.03986700143666248,
+      "brier": 0.2508843396019761,
+      "log_loss": 0.6949409026256924
+    },
+    "5_session": {
+      "n": 1160,
+      "accuracy": 0.49310344827586206,
+      "balanced_accuracy": 0.48018947248729016,
+      "mcc": -0.04161653215678238,
+      "brier": 0.2511159560452208,
+      "log_loss": 0.6953890370592384
+    }
+  },
+  "selective_prediction": {
+    "threshold_from_calibration": 0.556800233961689,
+    "coverage": 0.15060240963855423,
+    "n_selected": 175,
+    "n": 175,
+    "accuracy": 0.5314285714285715,
+    "balanced_accuracy": 0.5336893459915611,
+    "mcc": 0.06711373345785461,
+    "brier": 0.25415611724951304,
+    "log_loss": 0.7020252209243569
+  },
+  "blocked": {
+    "global_lead_lag": "No synchronized point-in-time global index/FX/crude/gold inputs.",
+    "breadth_disagreement": "No point-in-time constituent and sector breadth history.",
+    "options_implied_expectations": "No timestamped historical option-chain, IV or OI snapshots.",
+    "opening_pressure": "No intraday bars or defined intraday forecast timestamp.",
+    "event_aware": "No point-in-time event calendar/history.",
+    "residual_correction": "Not run: chronological out-of-fold residual targets and incremental-value protocol must be implemented first."
+  },
+  "limitations": [
+    "Third-party daily OHLC is not exchange-certified.",
+    "Simple volatility regime proxy is not a validated latent-state model.",
+    "Single chronological screen is not untouched confirmation; no statistical-significance claim.",
+    "No options premium, execution or transaction-cost evaluation."
+  ]
+}
