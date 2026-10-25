@@ -109,3 +109,10 @@ The current evidence does not identify a better simple direction rule than previ
 - [Source parity audit](../../reports/nifty-prediction/source_parity_audit.json)
 - [Integration ledger](REPOSITORY_INTEGRATION.md)
 - [Error log](ERROR_LOG.md)
+
+
+## 11. New hypothesis tranche — implementation status
+
+The earlier ten-method proposal was not implemented at the time it was first described. To close that gap, a bounded OHLC-only experiment runner, `evaluate_new_hypotheses.py`, and an automatic/manual GitHub Actions workflow have now been added. It evaluates volatility-regime specialist models, a feature ablation, 1/3/5-session targets, and selective prediction using a calibration-only confidence threshold. It explicitly records global-to-India lead-lag, breadth disagreement, options-implied expectations, opening pressure, and event-aware prediction as blocked where their point-in-time historical inputs are absent. Residual correction is deferred rather than implemented with an in-sample residual target.
+
+Results are not yet claimed in this manuscript until the new workflow completes and the JSON report is persisted. The protocol is a screening tranche only: the chronological test is used for multiple bounded comparisons and must not be treated as an untouched confirmation set. See [new hypothesis runner](evaluate_new_hypotheses.py), [workflow](../../.github/workflows/nifty-new-hypotheses.yml), and [result report](../../reports/nifty-prediction/new_hypothesis_experiments.json).
