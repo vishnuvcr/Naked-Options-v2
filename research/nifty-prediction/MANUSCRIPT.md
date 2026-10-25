@@ -152,3 +152,22 @@ The next bounded gate is data ingestion and audit, not model tuning: obtain a sm
 ## 12. NSE source smoke test and parser limitation
 
 The [NSE audit workflow](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40162669263) downloaded and parsed the legacy 2024-07-05 archive, the UDiFF 2024-07-08 archive, and the 2026-10-23 UDiFF archive. This confirmed that the three URLs returned ZIPs containing readable CSVs. However, the first parser did not recognize UDiFF aliases (`TckrSymb`, `OptnTp`, `StrkPric`, `TradDt`) and scanned only the first 10,000 rows. Its `ALL_SAMPLES_PARSED` status therefore does not prove that NIFTY CE/PE rows were found or that schemas are semantically reconciled. This defect is recorded as NP-022. Correct field mapping and full-file NIFTY-option assertions are required before model use; no external-data model was run from these files.
+
+
+## 13. Weekly-expiry hypothesis suite — screening results (2026-10-25)
+
+The new [weekly-expiry hypothesis runner](evaluate_weekly_expiry_hypotheses.py) completed in [workflow #40163121234](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40163121234); full metrics and horizon details are in [weekly_expiry_hypotheses.json](../../reports/nifty-prediction/weekly_expiry_hypotheses.json). It uses the same 923-example expiry approximation and 231-example chronological test block as the earlier screen, so it is not an independent confirmation.
+
+| Method | Accuracy | Balanced accuracy | Brier | Log loss |
+|---|---:|---:|---:|---:|
+| Training-majority | 54.98% | 50.00% | 0.24752 | 0.68819 |
+| Previous expiry direction | 50.65% | 50.16% | 0.25185 | 0.69687 |
+| Regularized logistic | 52.38% | 52.69% | 0.25046 | 0.69421 |
+| Histogram gradient boosting | 51.52% | 49.11% | 0.25923 | 0.71409 |
+| Volatility-regime specialists (global fallback when regime sample is small) | 54.11% | 54.18% | 0.24981 | 0.69310 |
+| Selective logistic | 42.86% | 35.00% | 0.28369 | 0.76236 |
+| OOF residual probability correction | 54.98% | 50.00% | 0.24742 | 0.68796 |
+
+Multi-expiry horizon balanced accuracy was 48.40% (one expiry), 50.11% (two expiries), and 53.26% (three expiries). The transition subset had only three test examples and was not evaluated. Selective output covered 21/231 examples (9.1%) and performed poorly. The regime-specialist result is the most promising screening score so far, but it does not establish a genuine edge because it reuses the existing test period and the expiry dates are approximated rather than holiday-adjusted from an authoritative contract calendar. No significance interval or independent confirmation is available.
+
+Global-to-India lead-lag, breadth disagreement, options-implied expectations, opening pressure and event-aware features remain blocked pending validated point-in-time data. This is spot-direction prediction only; it is not an options premium forecast or a trading result. Next gate: validate actual expiry dates and build the external feature datasets before any fresh confirmation test. See [NP-023](ERROR_LOG.md).
