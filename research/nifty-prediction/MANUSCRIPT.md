@@ -140,3 +140,10 @@ Global-market lead-lag, constituent/sector breadth disagreement, options-implied
 ## 10. Updated conclusion
 
 Across the completed daily baseline, simple-rule, weekly-expiry, volatility and new OHLC-only screens, no model has established robust predictive improvement suitable for strategy development. Continue only with the predeclared bounded research plan: acquire and validate point-in-time external data where feasible, pre-register a limited follow-up, and reserve a fresh chronological confirmation set. Do not tune indefinitely against the reused holdout. No trading strategy or options profitability is recommended from these results.
+
+
+## 11. Free data-source discovery and next gate
+
+A bounded public-source review identified official NSE daily F&O bhavcopy and derivatives reports, historical index/India VIX and advances/declines reports, FII/DII activity pages, a third-party NSE F&O archive, and a Hugging Face options dataset as candidates. Details and validation gates are recorded in [FREE_DATA_SOURCE_ASSESSMENT.md](FREE_DATA_SOURCE_ASSESSMENT.md). Official NSE listings describe historical reports and derivatives archives, including a format change in July 2024; the third-party and Hugging Face coverage claims remain unverified until raw files are inspected. See [NSE derivatives reports](https://www.nseindia.com/all-reports-derivatives), [NSE historical reports](https://www.nseindia.com/static/resources/historical-reports-capital-market-daily-monthly-archives), and the [candidate Hugging Face dataset](https://huggingface.co/datasets/rissin/nse-options-intraday).
+
+The next bounded gate is data ingestion and audit, not model tuning: obtain a small reproducible sample, hash and preserve raw files, inspect coverage/missingness, reconcile the pre-/post-2024-07-08 F&O schemas, and compare sample rows to official exchange files. Until that passes, no options-implied, intraday, global lead-lag, breadth, or event-aware model result is claimed. If the data gate fails within the bounded phase, record the reason and conclude the prediction-only study with the existing limitations rather than looping indefinitely.
