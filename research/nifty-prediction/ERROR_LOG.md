@@ -58,3 +58,10 @@ The earlier response listed ten research ideas but did not implement them. A bou
 
 ## NP-020 — Multi-horizon training-label alignment bug (RESOLVED; rerun pending)
 The first new-hypothesis workflow failed because each 1/3/5-session horizon fit paired training features with test labels (sample counts differed). The fit call now uses the matching training labels; the subsequent workflow run must confirm the full report and persistence. No model metrics were produced by the failed run.
+
+
+## NP-020 — Multi-horizon label alignment bug (RESOLVED)
+The first new-hypothesis workflow run failed because the multi-horizon estimator was fitted with training features paired to test labels (3,483 vs 1,161 rows). Corrected the fit target to the training frame's aligned horizon label and reran successfully in [workflow #40146027941](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40146027941). The report is persisted at [new_hypothesis_experiments.json](../../reports/nifty-prediction/new_hypothesis_experiments.json). The initial failed run is retained in [workflow #40145950780](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40145950780).
+
+## NP-021 — New OHLC hypothesis tranche shows no clear predictive edge (OPEN RESEARCH LIMITATION)
+The successful chronological screening run reports 53.79% accuracy / 53.67% balanced accuracy for full-feature logistic regression; volatility specialists scored 52.60% balanced accuracy; 3- and 5-session balanced accuracy were below 50%; selective prediction covered 15.06% at 53.37% balanced accuracy and worse Brier/log loss than the full-feature model. This is a reused screening holdout, not an untouched confirmation set; no statistical-significance or trading-edge claim is made.
