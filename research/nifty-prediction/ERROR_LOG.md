@@ -8,8 +8,8 @@ Primary source is Yahoo Finance; second source is a third-party parquet mirror. 
 ## NP-002 — Initial benchmark CI (RESOLVED)
 Workflow [#34](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40139816710) completed successfully, including tests, acquisition, parity audit, benchmark and artifact persistence.
 
-## NP-003 — Scope mismatch with expiry study (OPEN)
-This study is daily next-session spot direction, not expiry-specific/intraday options prediction. Keep the scope explicit.
+## NP-003 — Scope mismatch with expiry study (RESOLVED BY NEW TRACK; expiry evidence pending)
+The original study was daily next-session spot direction, not expiry-specific/intraday options prediction. A dedicated weekly-expiry experiment runner and workflow are now present. No weekly-expiry results are yet validated.
 
 ## NP-004 — External repositories are not all empirically executed (OPEN)
 All seven READMEs have been reviewed and roles/guardrails recorded in [REPOSITORY_INTEGRATION.md](REPOSITORY_INTEGRATION.md). Review is not equivalent to installation or an experiment. Do not claim results for libraries without artifacts.
@@ -17,49 +17,35 @@ All seven READMEs have been reviewed and roles/guardrails recorded in [REPOSITOR
 ## NP-005 — Source agreement is not independent validation (OPEN)
 Yahoo and public parquet mirror match exactly. Identical data does not prove accuracy or independence. Official source cross-check remains outstanding.
 
-## NP-006 — Initial ML models do not beat the simple direction baseline (OPEN RESEARCH QUESTION)
+## NP-006 — Initial benchmark ML models do not beat the simple direction baseline (OPEN RESEARCH QUESTION)
 Previous-session direction scored 54.10% balanced accuracy on the 1,157-row holdout; logistic regression 52.53%, random forest 50.44%, histogram gradient boosting 52.82%. Do not promote these fitted models as winners.
 
 ## NP-007 — Trading costs not modeled (OPEN)
 All current results are prediction or gross index proxies. No strategy is viable until turnover, realistic execution, slippage, brokerage, taxes/charges and relevant futures/options basis are modeled.
 
-## NP-008 — Optional package and integration runs pending (PARTIALLY RESOLVED)
-The baseline workflow only checks `arch` and MAPIE package availability. GARCH scoring, MAPIE calibration, PySR, `tick`, Quantevolve and TradingAgents have not yet produced empirical benchmark artifacts. AstraQuant's OKX-native crypto executor is not an NSE/NFO adapter.
+## NP-008 — Optional package integration limitations (PARTIALLY RESOLVED)
+The optional experiment workflow succeeded. GARCH scoring is persisted; MAPIE calibration was skipped due to API mismatch; PySR and tick were not fitted. Quantevolve and TradingAgents remain orchestration references. AstraQuant's OKX-native crypto executor is not an NSE/NFO adapter.
 
-## NP-009 — Candidate script added after baseline workflow (OPEN UNTIL VERIFIED)
-Added `research/nifty-prediction/evaluate_candidate_rules.py` and updated the workflow to execute and persist `reports/nifty-prediction/candidate_rules.json`. Cached-data calculation indicates the previous-direction baseline remains stronger than the tested simple candidates. Automated run [#37](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40142722883) was pending at the last check; confirm success and persisted artifact before calling the code-path verified.
+## NP-009 — Candidate workflow result persistence (RESOLVED)
+The candidate-rule workflow completed and its JSON result is persisted. The screen remains exploratory and no rule establishes an edge.
 
 ## NP-010 — Gross index proxy can be mistaken for tradable performance (OPEN)
 Candidate screen multiplies next-session spot-index return by a long/short direction sign. This ignores executable instrument basis, lot sizing, turnover, margin, slippage, brokerage, taxes and execution. It is only a diagnostic; never describe its compounded value as strategy P&L.
 
-## NP-011 — Artifact persistence race during candidate workflow (RESOLVED IN WORKFLOW; latest run pending)
-- **Severity:** Medium.
-- **Evidence:** Workflow run [#37](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40142722883) passed dependency setup, unit tests, acquisition, parity audit, baseline benchmark and candidate-rule execution, but failed at artifact persistence.
-- **Cause:** An earlier run committed `candidate_rules.json` while this run was still executing from an older checkout. Its local generated artifact then conflicted during the later rebase/push.
-- **Fix:** Updated the workflow to rebase the current branch **before** staging generated outputs, and included `volatility_forecast.json` in persistence. The newer workflow run #40 is in progress; verify it completes before marking this fix confirmed.
-- **Important:** The scientific candidate calculation did run successfully in #37; the failure was in saving results, not in the benchmark or candidate-rule step.
+## NP-011 — Artifact persistence race during candidate workflow (RESOLVED IN WORKFLOW)
+An earlier run failed during persistence after scientific calculations completed. Persistence was updated to fetch/rebase before staging and retry rejected pushes. Subsequent benchmark workflow completed and reports are persisted.
 
-## NP-012 — Concurrent branch push rejected during persistence (FIX APPLIED; rerun required)
+## NP-012 — Concurrent branch push rejected during persistence (RESOLVED IN WORKFLOW)
+Workflow now fetches/rebases before staging and retries push up to three times. Reports from subsequent successful run are persisted.
 
-- **Evidence:** Workflow [#40](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40142926621) completed benchmark, candidate-rule, and GARCH steps, but the persistence step failed because the remote branch advanced after the runner's checkout/rebase.
-- **Scientific output:** Candidate rules were computed for 1,157 rows (2022-02-14 to 2026-10-22). GARCH(1,1) was computed on 1,157 observations (2022-02-15 to 2026-10-23). The run artifact uploaded successfully; branch JSON persistence did not.
-- **GARCH result:** QLIKE was -8.64595 for GARCH(1,1), -8.57379 for rolling 20-session variance, and -8.22293 for expanding unconditional variance. Lower is better. This supports a modest volatility forecast comparison only; squared returns are noisy and it is not a direction or trading result.
-- **Cause:** A concurrent branch update raced the push; pre-staging rebase alone did not eliminate the race window.
-- **Fix:** Persistence workflow now includes volatility_forecast.json, fetches/rebases before staging, and retries the push up to three times after fetching/rebasing on rejection. Workflow-file change triggers an automated rerun. Verify that run and its persisted reports before closing this entry.
+## NP-013 — Optional-model experiment completion (RESOLVED AS REPORTED; no model promotion)
+The optional workflow succeeded. Logistic regression achieved 53.59% accuracy and 53.31% balanced accuracy on its separate chronological test. MAPIE 1.6.0 did not expose the expected classifier entry point; PySR imported but was not fitted; tick import succeeded only. No optional model result demonstrates a directional edge.
 
+## NP-015 — Weekly-expiry calendar is approximate (OPEN)
+The new weekly-expiry runner detects Thursdays before 2025-09-01 and Tuesdays thereafter from daily OHLC dates. It does not ingest the authoritative contract-by-contract expiry calendar or holiday-shift records. This can miss holiday-adjusted expiry sessions and mislabel observations. The report must keep this limitation visible; before any strong claim, integrate official expiry dates and test the mapping. Source for the schedule change: NSE circular FAOP/68747, https://nsearchives.nseindia.com/web/sites/default/files/inline-files/FAOP68747.pdf.
 
-## NP-013 — Repository integration audit and optional model experiments (PARTIALLY RESOLVED)
+## NP-016 — Weekly-expiry workflow execution and report review pending (OPEN)
+Added `evaluate_weekly_expiry.py` and `.github/workflows/nifty-weekly-expiry.yml`. The workflow is configured for manual dispatch and relevant code changes. At this log update, no successful workflow run/report has been inspected, so no weekly-expiry metric is claimed. After execution, fix any script or workflow failures and record the actual results.
 
-- **Integration audit:** [run #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40143973082) succeeded. All seven upstream repositories were checked out at pinned commits. Installed versions: arch 8.0.0, MAPIE 1.6.0, scikit-learn 1.9.1; PySR and tick were not installed in that audit environment.
-- **Fix/progress:** Added `evaluate_optional_models.py` and [optional-model workflow](../../.github/workflows/nifty-optional-models.yml). It uses a chronological 60/15/25 train/calibration/test split; it records MAPIE API/coverage status and PySR/tick import compatibility. It does not permit agent labels, holdout tuning, or orders.
-- **Pending:** Workflow has just been added; do not call MAPIE/PySR/tick empirically integrated until its JSON report is committed and inspected. Optional install failures are expected to be captured rather than hidden.
-
-
-## NP-014 — Optional-model experiment completed with bounded skips (RESOLVED AS REPORTED; no model promotion)
-
-- **Evidence:** [Optional model workflow #1](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40144386537) succeeded and persisted [optional_model_experiments.json](../../reports/nifty-prediction/optional_model_experiments.json).
-- **Result:** On a chronological 60% train / 15% calibration / 25% test split (4,626 valid feature rows; 1,157 test rows, 2022-02-15 to 2026-10-23), logistic regression achieved 53.59% accuracy and 53.31% balanced accuracy. This is a separate split from the earlier benchmark; compare cautiously, and it does not establish improvement over the simple previous-session direction baseline.
-- **MAPIE:** Installed version 1.6.0 did not expose the expected classifier entry point; conformal calibration was skipped. Do not claim uncertainty-set calibration results.
-- **PySR:** Version 2.7.2 imported. No symbolic model was fitted because the current protocol has no predeclared continuous target and no separately budgeted search; this is a documented non-experiment, not a failed predictive result.
-- **tick:** Version 0.8.0.2 imported. Import compatibility is not evidence of predictive utility; no model was fitted.
-- **Action:** Preserve these outcomes, avoid widening the search indefinitely, and move to synthesis of evidence/limitations. The holdout has already been used for screening; any future model requires a new untouched forward period.
+## NP-017 — Historical point-in-time feature data not yet integrated (OPEN)
+Options-chain snapshots, intraday data, breadth/constituent history, global markets, FII/DII flows and event/news inputs are not yet validated as timestamped historical datasets. Do not infer historical features from current snapshots or claim these feature families were tested. Start with the data already available and add sources only when point-in-time integrity can be established.
