@@ -1,8 +1,8 @@
 # NIFTY 50 Next-Session Direction Prediction — Research Manuscript (Living Draft)
 
 **Updated:** 2026-10-25  
-**Status:** Core benchmarks, candidate-rule screen, GARCH volatility comparison, and optional-model compatibility workflow completed. No strategy is validated.  
-**Scope:** Daily next-session NIFTY 50 spot direction. No live trading or options profitability is established.
+**Status:** Daily benchmark and dedicated weekly-expiry direction screen completed; no predictive edge or strategy is validated.  
+**Scope:** Daily next-session and expiry-to-expiry NIFTY 50 spot direction. No live trading or options profitability is established.
 
 ## Abstract
 
@@ -57,7 +57,25 @@ Interpretation: neither momentum variant beats the previous-session direction ba
 
 Roles and compatibility guardrails for all seven named repositories are in [REPOSITORY_INTEGRATION.md](REPOSITORY_INTEGRATION.md): Quantevolve, TradingAgents, AstraQuant, PySR, `arch`, `tick`, and MAPIE. README review is complete; not every repository has been installed or empirically executed. Next experiments are a sepThe GARCH-family volatility forecast was scored separately using `arch`; optional MAPIE, PySR and tick experiments were bounded by compatibility and target-definition constraints.
 
-## 9. Weekly-expiry direction experiment — implementation status
+## 9. Weekly-expiry direction experiment — results
+
+The dedicated weekly-expiry workflow completed successfully in [run #6](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40145451144). Three unit tests passed, the experiment ran, and the JSON report was persisted at [weekly_expiry_experiments.json](../../reports/nifty-prediction/weekly_expiry_experiments.json).
+
+**Target:** at the prior observed weekly-expiry close, predict whether the next observed weekly-expiry close will be higher. The daily spot dataset has 4,686 rows from 2007-09-17 to 2026-10-23. The expiry screen produced 923 examples; chronological split: 692 training and 231 test examples. Test interval begins at cutoff 2022-02-24 and ends at expiry 2026-10-13. Test UP rate is 54.98%.
+
+| Method | Accuracy | Balanced accuracy | Brier score | Log loss |
+|---|---:|---:|---:|---:|
+| Training-majority baseline | 54.98% | 50.00% | 0.2475 | 0.6882 |
+| Previous expiry direction | 50.65% | 50.16% | 0.2519 | 0.6969 |
+| Logistic regression | 50.65% | 50.76% | 0.2506 | 0.6943 |
+| Random forest | 50.22% | 47.67% | 0.2562 | 0.7066 |
+| Histogram gradient boosting | 52.81% | 49.86% | 0.2579 | 0.7103 |
+
+**Inference:** no fitted model beats the majority baseline in accuracy; balanced accuracy remains approximately 50%, and probabilistic scores are not better than the baseline. The result does not support an expiry-direction edge. The test set has been used for this screen and is not an untouched final confirmation sample.
+
+**Critical limitations:** the calendar is only an approximate weekday rule (Thursday before September 2025; Tuesday thereafter), not a validated official holiday-adjusted contract calendar. Some holiday-shifted expiries may be omitted, changing the return horizon. Only daily spot OHLC features are used; this is not an options-premium prediction test. The input is not exchange-certified, no block-bootstrap confidence intervals or multiple-testing correction were computed for this weekly screen, and no strategy costs/P&L were evaluated.
+
+## 10. Weekly-expiry direction experiment — implementation status
 
 The user's primary target is NIFTY 50 spot direction into the upcoming weekly options expiry. The new dedicated runner defines an expiry-to-expiry forecast: at the close of one observed weekly expiry session, estimate whether the next weekly expiry close will be higher or lower. It compares a majority baseline, previous expiry direction, logistic regression, random forest, and histogram gradient boosting using a chronological split and expanding refits.
 
