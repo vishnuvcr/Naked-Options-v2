@@ -116,3 +116,27 @@ The current evidence does not identify a better simple direction rule than previ
 The earlier ten-method proposal was not implemented at the time it was first described. To close that gap, a bounded OHLC-only experiment runner, `evaluate_new_hypotheses.py`, and an automatic/manual GitHub Actions workflow have now been added. It evaluates volatility-regime specialist models, a feature ablation, 1/3/5-session targets, and selective prediction using a calibration-only confidence threshold. It explicitly records global-to-India lead-lag, breadth disagreement, options-implied expectations, opening pressure, and event-aware prediction as blocked where their point-in-time historical inputs are absent. Residual correction is deferred rather than implemented with an in-sample residual target.
 
 Results are not yet claimed in this manuscript until the new workflow completes and the JSON report is persisted. The protocol is a screening tranche only: the chronological test is used for multiple bounded comparisons and must not be treated as an untouched confirmation set. See [new hypothesis runner](evaluate_new_hypotheses.py), [workflow](../../.github/workflows/nifty-new-hypotheses.yml), and [result report](../../reports/nifty-prediction/new_hypothesis_experiments.json).
+
+
+## 8. New OHLC-only hypothesis tranche (workflow verified 2026-10-25)
+
+The bounded new-hypothesis runner completed successfully in [GitHub Actions run #40146027941](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40146027941). The machine-readable results are in [new_hypothesis_experiments.json](../../reports/nifty-prediction/new_hypothesis_experiments.json). The report contains 4,645 source rows and a chronological 60%/15%/25% train/calibration/test split; the test contains 1,162 observations from 2022-02-07 through 2026-10-22.
+
+| Method | Accuracy | Balanced accuracy | Brier | Log loss |
+|---|---:|---:|---:|---:|
+| Training-majority baseline | 52.24% | 50.00% | 0.24950 | 0.69215 |
+| Full-feature logistic regression | 53.79% | 53.67% | 0.24933 | 0.69188 |
+| Volatility-regime specialists | 53.01% | 52.60% | 0.25053 | 0.69455 |
+| Core OHLC ablation | 51.38% | 51.01% | 0.24998 | 0.69311 |
+
+Multi-horizon balanced accuracy was 52.58% at one session, 48.03% at three sessions, and 48.02% at five sessions. Calibration-threshold selective prediction retained 175/1,162 test examples (15.06% coverage) and achieved 53.37% balanced accuracy; its Brier score (0.25416) and log loss (0.70203) were worse than the full-feature logistic model. These results do not validate a deployable edge. The holdout has been reused across multiple screens, so apparent differences are exploratory and require a fresh, untouched confirmation period.
+
+The regime specialists did not outperform the global logistic model. The core-only ablation underperformed the full feature set, but the incremental difference is small and not independently confirmed. Longer horizons did not show directional skill. Selective prediction did not improve probability quality. The workflow's first run exposed a train/test label-alignment bug in the multi-horizon fit; it was corrected and the rerun succeeded (details in [ERROR_LOG.md](ERROR_LOG.md)).
+
+## 9. Hypotheses requiring additional data
+
+Global-market lead-lag, constituent/sector breadth disagreement, options-implied expectations, opening pressure, and event-aware features remain blocked because point-in-time historical inputs were not present in the cached dataset. Residual correction remains deferred until a leakage-safe chronological out-of-fold residual target and incremental-value protocol are implemented. These methods were not tested; no inference about their effectiveness is warranted.
+
+## 10. Updated conclusion
+
+Across the completed daily baseline, simple-rule, weekly-expiry, volatility and new OHLC-only screens, no model has established robust predictive improvement suitable for strategy development. Continue only with the predeclared bounded research plan: acquire and validate point-in-time external data where feasible, pre-register a limited follow-up, and reserve a fresh chronological confirmation set. Do not tune indefinitely against the reused holdout. No trading strategy or options profitability is recommended from these results.
