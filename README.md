@@ -73,3 +73,12 @@ Official NSE report pages list daily derivatives bhavcopy, settlement, volatilit
 
 
 **Data-ingestion caution:** the initial NSE audit workflow successfully downloaded and parsed three official ZIP/CSV samples, but its first parser did not recognize several UDiFF column aliases. Treat this as transport/CSV-read success only; NIFTY option-row semantic validation remains pending (NP-022 in the error log).
+
+
+## Weekly-expiry hypothesis suite — screening results
+
+[Automated run #40163121234](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40163121234) completed. Added a dedicated weekly-expiry hypothesis runner and workflow. On the existing 231-observation test block, volatility-regime specialists scored 54.18% accuracy / 54.18% balanced accuracy; regularized logistic scored 52.38% / 52.69%; gradient boosting scored 51.52% / 49.11%. Selective prediction retained only 21/231 examples (9.1%) and scored 35.0% balanced accuracy. Residual probability correction reverted to the majority result (50.0% balanced accuracy). Multi-expiry horizon balanced accuracy: 48.40% (1 expiry), 50.11% (2), 53.26% (3). These are exploratory, repeated-screen results—not confirmatory evidence. The expiry calendar is still approximate.
+
+- [Weekly-expiry hypothesis runner](research/nifty-prediction/evaluate_weekly_expiry_hypotheses.py)
+- [Workflow](.github/workflows/nifty-weekly-expiry-hypotheses.yml)
+- [Machine-readable results](reports/nifty-prediction/weekly_expiry_hypotheses.json)
