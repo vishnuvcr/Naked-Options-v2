@@ -1,0 +1,58 @@
+name: NIFTY new prediction hypotheses
+on:
+  workflow_dispatch:
+  push:
+    branches: [research/tradingagents-feasibility-developer, research/nifty-prediction-developer]
+    paths:
+      - "research/nifty-prediction/evaluate_new_hypotheses.py"
+      - ".github/workflows/nifty-new-hypotheses.yml"
+permissions:
+  contents: write
+concurrency:
+  group: nifty-new-hypotheses-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  bounded-ohcl-hypotheses:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install cached-data experiment dependencies
+        run: python -m pip install --upgrade pip pandas numpy scikit-learn
+      - name: Restore cached NIFTY data
+        uses: actions/cache@v4
+        with:
+          path: data/cache/nifty-prediction
+          key: nifty50-daily-hypotheses-v1-${{ runner.os }}-${{ hashFiles('data/cache/nifty-prediction/nifty50_daily.csv') }}
+      - name: Check required cached input
+        run: test -s data/cache/nifty-prediction/nifty50_daily.csv
+      - name: Run bounded new hypotheses
+        run: python research/nifty-prediction/evaluate_new_hypotheses.py
+      - name: Persist report
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/nifty-prediction/new_hypothesis_experiments.json
+          git commit -m "Record new NIFTY hypothesis experiment results" || exit 0
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:$BRANCH_NAME"; then exit 0; fi
+            git fetch origin "$BRANCH_NAME"
+            git rebase "origin/$BRANCH_NAME"
+          done
+          echo "Unable to persist report after three attempts"; exit 1
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nifty-new-hypothesis-results
+          path: reports/nifty-prediction/new_hypothesis_experiments.json
+          if-no-files-found: warn
+          retention-days: 90
