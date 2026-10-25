@@ -13,6 +13,7 @@ The daily next-session benchmark, simple-rule screen, GARCH volatility compariso
 - [New hypothesis experiment runner](research/nifty-prediction/evaluate_new_hypotheses.py)
 - [New hypothesis workflow](.github/workflows/nifty-new-hypotheses.yml)
 - [New hypothesis results](reports/nifty-prediction/new_hypothesis_experiments.json)
+- [Free historical data-source assessment](research/nifty-prediction/FREE_DATA_SOURCE_ASSESSMENT.md)
 - [Phase status](research/nifty-prediction/PHASE_STATUS.md)
 - [Living manuscript](research/nifty-prediction/MANUSCRIPT.md)
 - [Error log](research/nifty-prediction/ERROR_LOG.md)
@@ -53,6 +54,10 @@ Common holdout: 1,157 observations from 2022-02-14 through 2026-10-22; up-sessio
 
 The study does not claim testing options-chain, intraday, breadth, global-market, FII/DII or news features because validated point-in-time historical inputs are not integrated. See the [manuscript](research/nifty-prediction/MANUSCRIPT.md) for methods and limitations.
 
+
+## Free external-data source discovery
+
+Official NSE report pages list daily derivatives bhavcopy, settlement, volatility, participant OI and FII derivatives reports; public archives and a Hugging Face dataset are additional candidates. These sources have **not yet been ingested or validated in this research**, so data-dependent hypotheses remain blocked. See the [source assessment](research/nifty-prediction/FREE_DATA_SOURCE_ASSESSMENT.md).
 
 ## New OHLC hypothesis tranche — completed screening
 
