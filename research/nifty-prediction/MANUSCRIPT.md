@@ -71,6 +71,8 @@ The dedicated weekly-expiry workflow completed successfully in [run #6](https://
 | Random forest | 50.22% | 47.67% | 0.2562 | 0.7066 |
 | Histogram gradient boosting | 52.81% | 49.86% | 0.2579 | 0.7103 |
 
+![Weekly-expiry accuracy and balanced accuracy](../../reports/nifty-prediction/weekly_expiry_metrics.svg)
+
 **Inference:** no fitted model beats the majority baseline in accuracy; balanced accuracy remains approximately 50%, and probabilistic scores are not better than the baseline. The result does not support an expiry-direction edge. The test set has been used for this screen and is not an untouched final confirmation sample.
 
 **Critical limitations:** the calendar is only an approximate weekday rule (Thursday before September 2025; Tuesday thereafter), not a validated official holiday-adjusted contract calendar. Some holiday-shifted expiries may be omitted, changing the return horizon. Only daily spot OHLC features are used; this is not an options-premium prediction test. The input is not exchange-certified, no block-bootstrap confidence intervals or multiple-testing correction were computed for this weekly screen, and no strategy costs/P&L were evaluated.
