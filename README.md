@@ -9,6 +9,7 @@ The daily next-session benchmark, simple-rule screen, GARCH volatility compariso
 - [Weekly-expiry experiment runner](research/nifty-prediction/evaluate_weekly_expiry.py)
 - [Weekly-expiry experiment workflow](.github/workflows/nifty-weekly-expiry.yml)
 - [Weekly-expiry result report](reports/nifty-prediction/weekly_expiry_experiments.json)
+- [Weekly-expiry accuracy chart](reports/nifty-prediction/weekly_expiry_metrics.svg)
 - [Phase status](research/nifty-prediction/PHASE_STATUS.md)
 - [Living manuscript](research/nifty-prediction/MANUSCRIPT.md)
 - [Error log](research/nifty-prediction/ERROR_LOG.md)
