@@ -55,3 +55,6 @@ On 231 chronological test examples, majority baseline accuracy was 54.98% (balan
 
 ## NP-019 — Proposed novel prediction methods were not initially executed (RESOLVED BY IMPLEMENTATION; RESULTS PENDING)
 The earlier response listed ten research ideas but did not implement them. A bounded OHLC-only runner and a manual/automatic workflow have now been added. The run must be inspected before reporting any performance. External-data methods remain explicitly blocked where point-in-time history is absent; residual correction is deferred pending leakage-safe OOF design.
+
+## NP-020 — Multi-horizon training-label alignment bug (RESOLVED; rerun pending)
+The first new-hypothesis workflow failed because each 1/3/5-session horizon fit paired training features with test labels (sample counts differed). The fit call now uses the matching training labels; the subsequent workflow run must confirm the full report and persistence. No model metrics were produced by the failed run.
