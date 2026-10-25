@@ -8,6 +8,7 @@ on:
     paths:
       - "research/nifty-prediction/evaluate_weekly_expiry.py"
       - "research/nifty-prediction/WEEKLY_EXPIRY_DIRECTION_EXPERIMENTS.md"
+      - "tests/test_nifty_weekly_expiry.py"
       - ".github/workflows/nifty-weekly-expiry.yml"
 
 permissions:
@@ -28,6 +29,8 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         run: python -m pip install --upgrade pip pandas numpy scikit-learn
+      - name: Unit tests
+        run: python -m unittest discover -s tests -p "test_nifty_weekly_expiry.py" -v
       - name: Run weekly expiry experiments
         run: python research/nifty-prediction/evaluate_weekly_expiry.py
       - name: Persist report
