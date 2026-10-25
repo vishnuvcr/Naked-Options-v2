@@ -1,6 +1,6 @@
 # NIFTY 50 Prediction — Phase Status
 
-Updated: 2026-10-25 (new OHLC hypothesis workflow verified successfully)
+Updated: 2026-10-25 (NSE source smoke test run; semantic parser correction required)
 
 | Phase | Status | Evidence / next action |
 |---|---|---|
@@ -11,7 +11,7 @@ Updated: 2026-10-25 (new OHLC hypothesis workflow verified successfully)
 | P4 Volatility and optional libraries | COMPUTED WITH LIMITATIONS | GARCH QLIKE comparison persisted; MAPIE skipped due API mismatch; PySR and tick not fitted. |
 | P5 Weekly-expiry direction | COMPLETED; NO CLEAR EDGE | Run #6 succeeded; 923 examples, chronological 692/231 split; balanced accuracy near 50%. Approximate expiry calendar remains a limitation. |
 | P6 New OHLC hypothesis tranche | COMPLETED; NO CLEAR EDGE | Workflow [#40146027941](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40146027941) succeeded. Full-feature logistic regression: 53.79% accuracy / 53.67% balanced accuracy; volatility specialists: 53.01% / 52.60%; OHLC core ablation: 51.38% / 51.01%. One-, three-, and five-session balanced accuracy: 52.58%, 48.03%, 48.02%. Selective prediction covered 15.06% at 53.37% balanced accuracy. Results are screening-only and not untouched confirmation. |
-| P7 External-data hypotheses | FREE SOURCES IDENTIFIED; INGESTION PENDING | See [free data-source assessment](FREE_DATA_SOURCE_ASSESSMENT.md). Official NSE F&O bhavcopy, index/VIX/breadth and FII/DII report paths were identified, plus third-party archives. None has yet been ingested and validated for this study; point-in-time hypotheses remain blocked pending coverage, schema and provenance checks. |
+| P7 External-data hypotheses | SOURCE SMOKE TEST; SEMANTIC VALIDATION PENDING | Workflow [#40162669263](https://github.com/vishnuvcr/Naked-Options-v2/actions/runs/40162669263) downloaded three official NSE ZIPs (legacy 2024-07-05, UDiFF 2024-07-08, and 2026-10-23). CSV parsing succeeded, but the first parser missed UDiFF aliases and did not establish NIFTY option-row validity; see NP-022. Correct parser and verify sample rows before data use. |
 | P8 Final synthesis | IN PROGRESS; EVIDENCE SYNTHESIZED | Persisted OHLC hypothesis report and updated manuscript. No strategy is authorized; external-data hypotheses remain blocked and the reused screening test requires fresh confirmation. |
 
 ## Current decision
